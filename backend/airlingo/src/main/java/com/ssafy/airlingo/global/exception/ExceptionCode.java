@@ -8,14 +8,14 @@ import lombok.Getter;
 @Getter
 public enum ExceptionCode {
 
-    SERVER_EXCEPTION(500,"서버에서 예측하지 못한 에러가 발생했습니다.");
+	SERVER_EXCEPTION(500, "서버에서 예측하지 못한 에러가 발생했습니다.");
 
-    private int errorCode;
-    private String errorMessage;
+	private int errorCode;
+	private String errorMessage;
 
-    ExceptionCode(int errorCode, String errorMessage) {
-        this.errorCode = errorCode;
-        this.errorMessage = errorMessage;
-    }
+	ExceptionCode(int errorCode, String errorMessage) {
+		this.errorCode = errorCode;
+		this.errorMessage = errorMessage;
+	}
 }
 
