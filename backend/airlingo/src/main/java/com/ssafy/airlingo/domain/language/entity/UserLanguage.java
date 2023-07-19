@@ -2,7 +2,6 @@ package com.ssafy.airlingo.domain.language.entity;
 
 import com.ssafy.airlingo.domain.user.entity.User;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -37,7 +36,7 @@ public class UserLanguage {
 	@JoinColumn(name = "language_id", nullable = false)
 	private Language language;
 
-	@OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
 	@JoinColumn(name = "grade_id", nullable = false)
 	private Grade grade;
 }

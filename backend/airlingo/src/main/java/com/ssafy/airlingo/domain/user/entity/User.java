@@ -1,20 +1,19 @@
 package com.ssafy.airlingo.domain.user.entity;
 
-import java.util.List;
-
-import com.ssafy.airlingo.domain.language.entity.UserLanguage;
+import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -54,8 +53,9 @@ public class User extends BaseTimeEntity {
 	@Column(length = 100)
 	private String userBio;
 
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<UserLanguage> userNativeLanguage;
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "language_id", nullable = false)
+	private Language userNativeLanguage;
 
 	@Column(nullable = false)
 	private int userMileage;
