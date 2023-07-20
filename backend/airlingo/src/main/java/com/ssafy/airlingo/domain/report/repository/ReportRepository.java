@@ -7,5 +7,4 @@ import com.ssafy.airlingo.domain.report.entity.Report;
 
 @Repository
 public interface ReportRepository extends JpaRepository<Report, Long> {
-
 }
