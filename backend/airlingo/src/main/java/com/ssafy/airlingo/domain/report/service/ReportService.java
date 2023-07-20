@@ -35,6 +35,7 @@ public class ReportService {
 			.map(r -> r.toReportItemResponseDto(languageCode)).collect(Collectors.toList());
 	}
 
+	@Transactional
 	public Long reportUser(ReportUserRequestDto reportUserRequestDto){
 		log.info("ReportService_reportUser || 유저 신고 기능");
 		ReportItem reportItem = reportItemRepository.findById(reportUserRequestDto.getReportItemId()).get();
