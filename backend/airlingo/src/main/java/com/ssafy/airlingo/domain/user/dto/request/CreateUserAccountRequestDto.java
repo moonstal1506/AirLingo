@@ -4,6 +4,7 @@ import static com.ssafy.airlingo.domain.user.entity.UserState.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
@@ -43,7 +44,7 @@ public class CreateUserAccountRequestDto {
 	private Language userNativeLanguage;
 
 	@Schema(description = "사용자 관심언어와 해당 언어의 등급")
-	private List<LanguageWithGrade> userInterestLanguage;
+	private List<LanguageWithGrade> userInterestLanguageList;
 
 	public User toUserEntity() {
 		User user = User.builder()
@@ -65,15 +66,19 @@ public class CreateUserAccountRequestDto {
 			.userPassportStyle(1)
 			.build();
 
-		for (LanguageWithGrade languageWithGrade : userInterestLanguage) {
-			Language language = languageWithGrade.getLanguage();
-			Grade grade = languageWithGrade.getGrade();
-			UserLanguage userLanguage = UserLanguage.builder()
-				.user(user)
-				.language(language)
-				.grade(grade)
-				.build();
-			user.addUserLanguage(userLanguage);
+		if (userInterestLanguageList != null) {
+			for (LanguageWithGrade languageWithGrade : userInterestLanguageList) {
+				Language language = languageWithGrade.getLanguage();
+				Grade grade = languageWithGrade.getGrade();
+				UserLanguage userLanguage = UserLanguage.builder()
+					.user(user)
+					.language(language)
+					.grade(grade)
+					.build();
+				user.addUserLanguage(userLanguage);
+			}
+		} else {
+			// null 처리
 		}
 
 		return user;

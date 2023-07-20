@@ -1,5 +1,6 @@
 package com.ssafy.airlingo.domain.user.service;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,7 +23,6 @@ public class UserServiceImpl implements UserService {
 	public Long createUserAccount(CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserServiceImpl_createUserAccount -> 새로운 사용자 회원가입");
 		User newUserAccount = createUserAccountRequestDto.toUserEntity();
-
 		return userRepository.save(newUserAccount).getUserId();
 	}
 

@@ -18,6 +18,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -97,17 +99,12 @@ public class User extends BaseTimeEntity {
 	private List<UserLanguage> userLanguages = new ArrayList<>();
 
 	public void addUserLanguage(UserLanguage userLanguage) {
-		userLanguages = new ArrayList<>();
-		if (userLanguage != null) {
-			userLanguages.add(userLanguage);
-			userLanguage.setUser(this);
-		}
+		userLanguages.add(userLanguage);
+		userLanguage.setUser(this);
 	}
 
 	public void removeUserLanguage(UserLanguage userLanguage) {
-		if (userLanguage != null) {
-			userLanguages.remove(userLanguage);
-			userLanguage.setUser(null);
-		}
+		userLanguages.remove(userLanguage);
+		userLanguage.setUser(null);
 	}
 }

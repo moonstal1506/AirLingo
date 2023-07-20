@@ -38,7 +38,14 @@ public class UserLanguage {
 	@JoinColumn(name = "language_id", nullable = false)
 	private Language language;
 
-	@OneToOne(fetch = FetchType.LAZY, orphanRemoval = true)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "grade_id", nullable = false)
 	private Grade grade;
+
+	// User와 관련된 필드들에 대한 생성자 추가
+	public UserLanguage(User user, Language language, Grade grade) {
+		this.user = user;
+		this.language = language;
+		this.grade = grade;
+	}
 }
