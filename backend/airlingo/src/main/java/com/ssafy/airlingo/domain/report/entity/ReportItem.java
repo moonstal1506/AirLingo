@@ -1,5 +1,8 @@
 package com.ssafy.airlingo.domain.report.entity;
 
+import com.ssafy.airlingo.domain.report.dto.response.ReportItemResponseDto;
+import com.ssafy.airlingo.global.entity.LanguageCode;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -24,5 +27,17 @@ public class ReportItem {
 	private Long reportItemId;
 
 	@Column(nullable = false, unique = true)
-	private String reportItem;
+	private String reportItemKor;
+
+	@Column(nullable = false, unique = true)
+	private String reportItemEng;
+
+	public ReportItemResponseDto toReportItemResponseDto(String languageCode){
+		return ReportItemResponseDto.builder()
+			.reportItemId(reportItemId)
+			.reportItem(languageCode.equals(LanguageCode.KOR.toString())
+						? reportItemKor
+						: reportItemEng)
+			.build();
+	}
 }

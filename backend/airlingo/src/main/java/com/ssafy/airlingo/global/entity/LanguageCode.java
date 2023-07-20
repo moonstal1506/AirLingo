@@ -1,5 +1,8 @@
 package com.ssafy.airlingo.global.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum LanguageCode {
 	KOR("KOR"),
 	ENG("ENG");
