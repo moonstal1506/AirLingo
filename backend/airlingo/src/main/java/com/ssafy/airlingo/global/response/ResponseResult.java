@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import org.springframework.http.HttpStatus;
 
 import com.ssafy.airlingo.global.exception.ExceptionCode;
+import com.ssafy.airlingo.global.exception.IncorrectLanguageCodeException;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -26,7 +27,7 @@ public class ResponseResult {
 	@Schema(description = "개발자를 위한 메세지")
 	String developerMessage;
 
-	@Schema(description = "시간")
+	@Schema(description = "응답 시간")
 	LocalDateTime timestamp;
 
 	public static final ResponseResult successResponse =

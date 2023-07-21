@@ -8,6 +8,7 @@ import lombok.Getter;
 @Getter
 public enum ExceptionCode {
 
+	INCORRECT_LANGUAGE_CODE_EXCEPTION(450, "부적절한 언어 코드 입니다."),
 	SERVER_EXCEPTION(500, "서버에서 예측하지 못한 에러가 발생했습니다.");
 
 	private int errorCode;
