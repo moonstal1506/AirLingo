@@ -10,11 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Builder
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Table(name = "language")
 @Entity
 public class Language {
@@ -25,4 +27,8 @@ public class Language {
 
 	@Column(nullable = false, unique = true, length = 50)
 	private String languageName;
+
+	public Language(String languageName) {
+		this.languageName = languageName;
+	}
 }

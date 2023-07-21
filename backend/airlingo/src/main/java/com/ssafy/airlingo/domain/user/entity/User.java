@@ -1,20 +1,15 @@
 package com.ssafy.airlingo.domain.user.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.ssafy.airlingo.domain.language.dto.LanguageDto;
+import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
+import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
-import jakarta.persistence.AttributeOverride;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +23,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Entity
 public class User extends BaseTimeEntity {
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long userId;
@@ -39,7 +33,7 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false, unique = true, length = 100)
 	private String userLoginId;
 
-	@Column(nullable = false, unique = true)
+	@Column(unique = true)
 	private String userGoogleId;
 
 	@Column(nullable = false)
@@ -48,14 +42,11 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false, unique = true, length = 100)
 	private String userEmail;
 
-	@Column(nullable = false, length = 100)
+	@Column(length = 100)
 	private String userImgUrl;
 
 	@Column(length = 100)
 	private String userBio;
-
-	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<UserLanguage> userNativeLanguage;
 
 	@Column(nullable = false)
 	private int userMileage;
@@ -76,9 +67,52 @@ public class User extends BaseTimeEntity {
 	private int userComplain;
 
 	@Column(nullable = false)
-	@Enumerated(EnumType.STRING)
-	private UserState userState; //회원상태 뭐있는지
+	private int userPassportStyle;
 
 	@Column(nullable = false)
-	private int userPassportStyle;
+	@Enumerated(EnumType.STRING)
+	private UserState userState;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "language_id", nullable = false)
+	private Language userNativeLanguage;
+
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	private List<UserLanguage> userLanguages;
+
+	public UserResponseDto toDto() {
+		return UserResponseDto.builder()
+			.userId(this.getUserId())
+			.userNickname(this.getUserNickname())
+			.userLoginId(this.getUserLoginId())
+			.userGoogleId(this.getUserGoogleId())
+			.userPassword(this.getUserPassword())
+			.userEmail(this.getUserEmail())
+			.userImgUrl(this.getUserImgUrl())
+			.userBio(this.getUserBio())
+			.userNativeLanguage(this.getUserNativeLanguage())
+			.userMileage(this.getUserMileage())
+			.userTotalMileage(this.getUserTotalMileage())
+			.userRating(this.getUserRating())
+			.userTotalRating(this.getUserTotalRating())
+			.userStudyCount(this.getUserStudyCount())
+			.userComplain(this.getUserComplain())
+			.userState(this.getUserState())
+			.userPassportStyle(this.getUserPassportStyle())
+			.userLanguages(this.getUserLanguages().stream()
+				.map(userLanguage -> new LanguageDto(userLanguage.getLanguage()))
+				.collect(Collectors.toList())
+			)
+			.build();
+	}
+
+	public void addUserLanguage(UserLanguage userLanguage) {
+		userLanguages.add(userLanguage);
+		userLanguage.setUser(this);
+	}
+
+	public void removeUserLanguage(UserLanguage userLanguage) {
+		userLanguages.remove(userLanguage);
+		userLanguage.setUser(null);
+	}
 }
