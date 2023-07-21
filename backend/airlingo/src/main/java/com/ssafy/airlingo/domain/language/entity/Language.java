@@ -16,7 +16,6 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 @Table(name = "language")
 @Entity
 public class Language {
