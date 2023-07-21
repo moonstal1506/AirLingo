@@ -19,7 +19,7 @@ import lombok.Setter;
 public class UserLanguage {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Generateddescription(strategy = GenerationType.IDENTITY)
 	private Long userLanguageId;
 
 	@ManyToOne(fetch = FetchType.LAZY)
