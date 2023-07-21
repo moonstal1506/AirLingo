@@ -1,15 +1,14 @@
 package com.ssafy.airlingo.domain.user.dto.request;
 
-import static com.ssafy.airlingo.domain.user.entity.UserState.*;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import com.rabbitmq.tools.json.JSONUtil;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.entity.User;
+import com.ssafy.airlingo.domain.user.entity.UserState;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
@@ -17,10 +16,12 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @Builder
+@Slf4j
 @Schema(description = "(CreateUserAccountRequestDto) 회원가입 요청 DTO")
 public class CreateUserAccountRequestDto {
 
@@ -62,8 +63,9 @@ public class CreateUserAccountRequestDto {
 			.userTotalRating(0)
 			.userStudyCount(0)
 			.userComplain(0)
-			.userState(ACTIVE)
+			.userState(UserState.ACTIVE)
 			.userPassportStyle(1)
+			.userLanguages(new ArrayList<>())
 			.build();
 
 		if (userInterestLanguageList != null) {
