@@ -40,7 +40,7 @@ public class ReportController {
 	@ApiResponse(responseCode = "450", description = "부적절한 언어 코드 입니다.")
 	@GetMapping("/reportItems")
 	public ResponseResult getReportItemList(
-		@Parameter(description = "조회할 언어 코드", required = true)
+		@Parameter(description = "조회할 언어 코드", required = true , name = "languageCode" , example = "KOR")
 		@RequestParam String languageCode){
 		log.info("ReportController_getReportItemList");
 		return new ListResponseResult<>(reportService.getReportItemList(languageCode));

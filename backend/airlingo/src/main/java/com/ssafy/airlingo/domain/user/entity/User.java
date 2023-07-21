@@ -117,4 +117,8 @@ public class User extends BaseTimeEntity {
 		userLanguages.remove(userLanguage);
 		userLanguage.setUser(null);
 	}
+
+	public void addComplainCount() {
+		this.userComplain += 1;
+	}
 }

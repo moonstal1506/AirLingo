@@ -16,10 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CardServiceImpl {
+public class CardServiceImpl implements CardService {
 
 	private final CardRepository cardRepository;
 
+	@Override
 	public CardResponseDto getCard(String stringCardCode , String languageCode){
 		log.info("CardService_getCard || 대화 대주제에 따른 대화 소주제 랜덤 반환 ");
 
@@ -32,6 +33,7 @@ public class CardServiceImpl {
 		return cardList.get(0).toCardResponseDto(languageCode);
 	}
 
+	@Override
 	public List<CardCodeResponseDto> getCardCodeList(){
 		log.info("CardService_getCardCodeList || 모든 대화 대주제 반환 ");
 		return Arrays.stream(CardCode.values()).map(cardCode -> cardCode.toCardCodeResponseDto()).collect(Collectors.toList());

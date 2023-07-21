@@ -1,11 +1,19 @@
 package com.ssafy.airlingo.global.util;
 
+import java.util.ArrayList;
+
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.airlingo.domain.content.entity.Card;
 import com.ssafy.airlingo.domain.content.entity.CardCode;
+import com.ssafy.airlingo.domain.language.entity.Grade;
+import com.ssafy.airlingo.domain.language.entity.Language;
+import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.report.entity.ReportItem;
+import com.ssafy.airlingo.domain.user.entity.User;
+import com.ssafy.airlingo.domain.user.entity.UserState;
+
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +28,9 @@ public class InitDb {
 	   // public void init() {
 	   //     initService.reportItemInit();
 		//    initService.CardInit();
+		//    initService.gradeInit();
+		//    initService.languageInit();
+		//    initService.userInit();
 	   // }
 
 	@Component
@@ -78,8 +89,6 @@ public class InitDb {
 				.cardEng("eng2")
 				.build();
 
-
-
 			em.persist(cf1);
 			em.persist(cf2);
 			em.persist(cw1);
@@ -88,7 +97,6 @@ public class InitDb {
 			em.persist(ch2);
 			em.persist(ct1);
 			em.persist(ct2);
-
 		}
 
 		/**
@@ -138,6 +146,95 @@ public class InitDb {
 			em.persist(r5);
 			em.persist(r6);
 			em.persist(r7);
+		}
+
+		public void languageInit(){
+			Language l1 = Language.builder()
+				.languageName("한국어")
+				.build();
+
+			Language l2 = Language.builder()
+				.languageName("영어")
+				.build();
+
+			em.persist(l1);
+			em.persist(l2);
+		}
+		public void gradeInit(){
+			Grade g1 = Grade.builder()
+				.gradeName("A1")
+				.build();
+
+			Grade g2 = Grade.builder()
+				.gradeName("A2")
+				.build();
+
+			Grade g3 = Grade.builder()
+				.gradeName("B1")
+				.build();
+
+			Grade g4 = Grade.builder()
+				.gradeName("B2")
+				.build();
+
+			Grade g5 = Grade.builder()
+				.gradeName("C1")
+				.build();
+
+			Grade g6 = Grade.builder()
+				.gradeName("C2")
+				.build();
+
+			em.persist(g1);
+			em.persist(g2);
+			em.persist(g3);
+			em.persist(g4);
+			em.persist(g5);
+			em.persist(g6);
+		}
+
+		public void userInit(){
+
+			User u1 = User.builder()
+				.userComplain(0)
+				.userMileage(100)
+				.userPassportStyle(1)
+				.userRating(2)
+				.userStudyCount(2)
+				.userTotalMileage(1000)
+				.userTotalRating(5)
+				.userEmail("qwe@qwe.com")
+				.userLoginId("qwe123")
+				.userNickname("qwe")
+				.userState(UserState.ACTIVE)
+				.userPassword("123")
+				.userNativeLanguage(Language.builder().languageId(1).languageName("한국어").build())
+				.build();
+
+
+			User u2 = User.builder()
+				.userComplain(0)
+				.userMileage(500)
+				.userPassportStyle(2)
+				.userRating(2)
+				.userStudyCount(3)
+				.userTotalMileage(1000)
+				.userTotalRating(20)
+				.userEmail("asd@asd.com")
+				.userLoginId("asd123")
+				.userNickname("asd")
+				.userState(UserState.ACTIVE)
+				.userPassword("123")
+				.userNativeLanguage(Language.builder().languageId(2).languageName("영어").build())
+				.build();
+
+			ArrayList<UserLanguage> uls1 = new ArrayList<>();
+			ArrayList<UserLanguage> uls2 = new ArrayList<>();
+
+			// UserLanguage.builder().user()
+
+			em.persist(u1);
+			em.persist(u2);
 		}
 	}
 }
