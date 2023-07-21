@@ -9,4 +9,5 @@ import com.ssafy.airlingo.domain.content.entity.CardCode;
 
 public interface CardRepository extends JpaRepository<Card, Long> {
 	public List<Card> findAllByCardCode(CardCode cardCode);
+
 }

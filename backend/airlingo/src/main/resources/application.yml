@@ -15,12 +15,14 @@ spring:
       hibernate: # hibernate property 설정
         format_sql: true # 보여지는 쿼리를 예쁘게 포맷팅 -> 사용하지않으면 긴 줄 형태로 출력됌
 
+
 # 로그 레벨 설정
 logging:
   level:
     # hibernate 가 남기는 모든 로그가 debug모드로 설정
     # jpa hibernate가 생성하는 sql이 로거를 통해서 찍히도록 하는 설정
     org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
 
 # Swagger springdoc-ui Configuration
 springdoc:
@@ -28,7 +30,7 @@ springdoc:
   default-consumes-media-type: application/json;charset=UTF-8
   default-produces-media-type: application/json;charset=UTF-8
   swagger-ui:
-    path: demo-ui.html            # Swagger UI 경로 => localhost:8000/demo-ui.html
+    path: demo-ui.html
     tags-sorter: alpha            # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
     operations-sorter: alpha      # alpha: 알파벳 순 태그 정렬, method: HTTP Method 순 정렬
   api-docs:

@@ -1,5 +1,7 @@
 package com.ssafy.airlingo.domain.content.entity;
 
+import com.ssafy.airlingo.domain.content.dto.response.CardCodeResponseDto;
+
 public enum CardCode {
 	FREE_TALK("FREE_TALK","프리토킹","Free Talk"),
 	WEATHER("WEATHER","날씨","Weather"),
@@ -22,5 +24,13 @@ public enum CardCode {
 		this.code = code;
 		this.korSubject = korSubject;
 		this.engSubject = engSubject;
+	}
+
+	public CardCodeResponseDto toCardCodeResponseDto(){
+		return CardCodeResponseDto.builder()
+			.code(code)
+			.korSubject(korSubject)
+			.engSubject(engSubject)
+			.build();
 	}
 }
