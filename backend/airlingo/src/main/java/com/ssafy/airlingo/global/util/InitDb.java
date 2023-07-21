@@ -16,11 +16,11 @@ public class InitDb {
 
 	private final InitService initService;
 
-	   @PostConstruct
-	   public void init() {
-	       initService.reportItemInit();
-		   initService.CardInit();
-	   }
+	   // @PostConstruct
+	   // public void init() {
+	   //     initService.reportItemInit();
+		//    initService.CardInit();
+	   // }
 
 	@Component
 	@Transactional

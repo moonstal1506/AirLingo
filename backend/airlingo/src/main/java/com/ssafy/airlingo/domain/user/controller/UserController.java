@@ -1,23 +1,25 @@
 package com.ssafy.airlingo.domain.user.controller;
 
-import java.security.NoSuchAlgorithmException;
+import java.util.List;
 
-import org.springframework.mail.MailException;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
+import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.service.UserService;
 import com.ssafy.airlingo.global.response.ResponseResult;
+import com.ssafy.airlingo.global.response.SingleResponseResult;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.Null;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -41,6 +43,20 @@ public class UserController {
 		return ResponseResult.failResponse;
 	}
 
+	@Operation(summary = "GetProfile", description = "프로필 조회")
+	@GetMapping("/{userId}")
+	public ResponseResult findUserByUserId(@PathVariable Long userId) {
+		UserResponseDto userResponseDto = userService.findUserByUserId(userId);
+		return new SingleResponseResult<>(userResponseDto);
+	}
+
+	@Operation(summary = "GetAllRecordItems", description = "개인별 전체 기록 조회")
+	@GetMapping("/record/{userId}")
+	public ResponseResult findByUserId(@PathVariable Long userId) {
+		List<RecordResponseDto> recordResponseDto = userService.findByUserId(userId);
+
+		return new SingleResponseResult<>(recordResponseDto);
+	}
 
 
 }

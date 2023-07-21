@@ -3,7 +3,7 @@ package com.ssafy.airlingo.domain.user.entity;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.ssafy.airlingo.domain.language.dto.LanguageDto;
+import com.ssafy.airlingo.domain.language.dto.request.LanguageDto;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
@@ -33,7 +33,7 @@ public class User extends BaseTimeEntity {
 	@Column(nullable = false, unique = true, length = 100)
 	private String userLoginId;
 
-	@Column(unique = true)
+	@Column()
 	private String userGoogleId;
 
 	@Column(nullable = false)
@@ -73,6 +73,7 @@ public class User extends BaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private UserState userState;
 
+	// @JsonIgnore
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "language_id", nullable = false)
 	private Language userNativeLanguage;

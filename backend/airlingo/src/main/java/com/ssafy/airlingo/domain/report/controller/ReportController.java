@@ -8,8 +8,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.airlingo.domain.report.dto.request.ReportUserRequestDto;
-import com.ssafy.airlingo.domain.report.service.ReportService;
-import com.ssafy.airlingo.global.exception.ExceptionCode;
+import com.ssafy.airlingo.domain.report.service.ReportServiceImpl;
 import com.ssafy.airlingo.global.response.ListResponseResult;
 import com.ssafy.airlingo.global.response.ResponseResult;
 
@@ -35,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/api")
 public class ReportController {
 
-	private final ReportService reportService;
+	private final ReportServiceImpl reportService;
 
 	@Operation(summary = "GetAllReportItems", description = "모든 신고 항목 조회")
 	@ApiResponse(responseCode = "450", description = "부적절한 언어 코드 입니다.")

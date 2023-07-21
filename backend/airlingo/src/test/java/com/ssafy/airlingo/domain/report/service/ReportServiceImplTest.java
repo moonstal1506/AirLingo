@@ -10,10 +10,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import com.ssafy.airlingo.global.exception.IncorrectLanguageCodeException;
 
 @SpringBootTest
-class ReportServiceTest {
+class ReportServiceImplTest {
 
 	@Autowired
-	private ReportService reportService;
+	private ReportServiceImpl reportService;
 
 	@Test
 	@DisplayName("신고항목을 조회할때 올바르지 않은 언어 코드를 사용하면 예외가 발생한다.")

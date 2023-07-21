@@ -1,4 +1,4 @@
-package com.ssafy.airlingo.domain.language.dto;
+package com.ssafy.airlingo.domain.language.dto.request;
 
 import com.ssafy.airlingo.domain.language.entity.Language;
 

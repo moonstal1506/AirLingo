@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.airlingo.domain.content.service.CardService;
+import com.ssafy.airlingo.domain.content.service.CardServiceImpl;
 import com.ssafy.airlingo.global.response.ListResponseResult;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping(value = "/api")
 public class CardController {
 
-	private final CardService cardService;
+	private final CardServiceImpl cardServiceImpl;
 
 	@Operation(summary = "GetCard", description = "대화 대주제에 따른 랜덤 대화 소주제 제공")
 	@GetMapping("/card")
@@ -41,14 +41,14 @@ public class CardController {
 		@Parameter(description = "사용할 언어 코드", required = true, example = "KOR", name = "languageCode")
 		@RequestParam String languageCode) {
 		log.info("CardController_getCardBySubject");
-		return new SingleResponseResult<>(cardService.getCard(cardCode, languageCode));
+		return new SingleResponseResult<>(cardServiceImpl.getCard(cardCode, languageCode));
 	}
 
 	@Operation(summary = "GetAllCardCode", description = "모든 카드 대화 대주제 반환")
 	@GetMapping("/cardCode")
 	public ResponseResult getCardCodeList() {
 		log.info("CardController_getCardCodeList");
-		return new ListResponseResult<>(cardService.getCardCodeList());
+		return new ListResponseResult<>(cardServiceImpl.getCardCodeList());
 	}
 
 }

@@ -30,9 +30,9 @@ class UserRepositoryTest {
     @Test
     public void insert(){
         User user = createUser();
-        UserLanguage userLanguage = createUserLanguage(user);
+        createUserLanguage(user);
 
-        User byUserId = userRepository.findByUserId(user.getUserId());
+        User byUserId = userRepository.findById(user.getUserId()).get();
         System.out.println("byUserId = " + byUserId);
     }
 
