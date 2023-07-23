@@ -68,7 +68,7 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void setToken(User loginUser, HttpServletResponse response) {
-		log.info("로그인 성공 -> 토큰 생성");
+		log.info("UserServiceImpl_setToken -> 로그인 성공, 토큰 생성");
 		String accessToken = jwtService.createAccessToken("userLoginId", loginUser.getUserLoginId()); // key, value
 		String refreshToken = jwtService.createRefreshToken("userLoginId", loginUser.getUserLoginId()); // key, value
 
@@ -76,6 +76,12 @@ public class UserServiceImpl implements UserService {
 		response.setHeader("refresh-token", refreshToken);
 
 		refreshTokenRepository.saveRefreshToken(loginUser.getUserLoginId(), refreshToken);
+	}
+
+	@Override
+	public void logout(String userLoginId) {
+		log.info("UserServiceImpl_logout -> 로그아웃 중");
+		refreshTokenRepository.deleteRefreshToken(userLoginId);
 	}
 
 	@Override

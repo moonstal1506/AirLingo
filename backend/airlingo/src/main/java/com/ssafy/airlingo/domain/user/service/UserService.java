@@ -22,6 +22,9 @@ public interface UserService {
 
 	void setToken(User loginUser, HttpServletResponse response);
 
+	// 로그아웃 관련
+	void logout(String userLoginId);
+
 	// 프로필 조회 관련
 	UserResponseDto findUserByUserId(Long userId);
 

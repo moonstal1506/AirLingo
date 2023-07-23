@@ -32,6 +32,7 @@ public class RefreshTokenRepository {
 	}
 
 	public void deleteRefreshToken(String userLoginId) {
+		log.info("RefreshTokenRepository_deleteRefreshToken -> 토큰 삭제");
 		String key = getRefreshTokenKey(userLoginId);
 		redisTemplate.delete(key);
 	}

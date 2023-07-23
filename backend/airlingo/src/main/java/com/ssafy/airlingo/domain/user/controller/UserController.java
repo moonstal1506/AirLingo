@@ -60,6 +60,18 @@ public class UserController {
 		return new SingleResponseResult<>(loginResponseDto);
 	}
 
+	@Operation(summary = "로그아웃", description = "로그아웃")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+		@ApiResponse(responseCode = "400", description = "로그아웃 실패")
+	})
+	@GetMapping("/logout/{userLoginId}")
+	public ResponseResult logout(@PathVariable String userLoginId) {
+		log.info("UserController_logout -> 로그아웃 시도, userLoginId: {}", userLoginId);
+		userService.logout(userLoginId);
+		return ResponseResult.successResponse;
+	}
+
 	@Operation(summary = "GetProfile", description = "프로필 조회")
 	@GetMapping("/{userId}")
 	public ResponseResult findUserByUserId(@PathVariable Long userId) {
