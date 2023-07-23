@@ -3,7 +3,6 @@ package com.ssafy.airlingo.domain.user.dto.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.rabbitmq.tools.json.JSONUtil;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
@@ -13,7 +12,11 @@ import com.ssafy.airlingo.domain.user.entity.UserState;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
@@ -45,7 +48,7 @@ public class CreateUserAccountRequestDto {
 	private Language userNativeLanguage;
 
 	@Schema(description = "사용자 관심언어와 해당 언어의 등급")
-	private List<LanguageWithGrade> userInterestLanguageList;
+	private List<LanguageWithGradeDto> userInterestLanguageList;
 
 	public User toUserEntity() {
 		User user = User.builder()
@@ -69,9 +72,9 @@ public class CreateUserAccountRequestDto {
 			.build();
 
 		if (userInterestLanguageList != null) {
-			for (LanguageWithGrade languageWithGrade : userInterestLanguageList) {
-				Language language = languageWithGrade.getLanguage();
-				Grade grade = languageWithGrade.getGrade();
+			for (LanguageWithGradeDto languageWithGradeDto : userInterestLanguageList) {
+				Language language = languageWithGradeDto.getLanguage();
+				Grade grade = languageWithGradeDto.getGrade();
 				UserLanguage userLanguage = UserLanguage.builder()
 					.user(user)
 					.language(language)

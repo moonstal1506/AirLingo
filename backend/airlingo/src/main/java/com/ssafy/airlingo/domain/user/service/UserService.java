@@ -18,10 +18,11 @@ public interface UserService {
 	// 로그인 관련
 	LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response);
 
-	User findUserByUserLoginId(String userLoginId);
+	User findUserByUserLoginIdAndUserPassword(String userLoginId, String userPassword);
 
 	void setToken(User loginUser, HttpServletResponse response);
 
+	// 프로필 조회 관련
 	UserResponseDto findUserByUserId(Long userId);
 
 	List<RecordResponseDto> findByUserId(Long userId);
