@@ -13,15 +13,15 @@ import com.ssafy.airlingo.domain.user.entity.UserState;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Setter
 @Builder
 @Slf4j
+@NoArgsConstructor
+@AllArgsConstructor
 @Schema(description = "(CreateUserAccountRequestDto) 회원가입 요청 DTO")
 public class CreateUserAccountRequestDto {
 
