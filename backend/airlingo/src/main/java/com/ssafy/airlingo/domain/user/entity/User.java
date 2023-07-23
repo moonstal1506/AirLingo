@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.airlingo.domain.language.dto.request.LanguageDto;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
+import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
@@ -82,25 +83,34 @@ public class User extends BaseTimeEntity {
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
 	private List<UserLanguage> userLanguages;
 
+	public LoginResponseDto toLoginResponseDto() {
+		return LoginResponseDto.builder()
+				.userId(userId)
+				.userLoginId(userLoginId)
+				.userNickname(userNickname)
+				.build();
+
+	}
+
 	public UserResponseDto toDto() {
 		return UserResponseDto.builder()
-			.userId(this.getUserId())
-			.userNickname(this.getUserNickname())
-			.userLoginId(this.getUserLoginId())
-			.userGoogleId(this.getUserGoogleId())
-			.userPassword(this.getUserPassword())
-			.userEmail(this.getUserEmail())
-			.userImgUrl(this.getUserImgUrl())
-			.userBio(this.getUserBio())
-			.userNativeLanguage(this.getUserNativeLanguage())
-			.userMileage(this.getUserMileage())
-			.userTotalMileage(this.getUserTotalMileage())
-			.userRating(this.getUserRating())
-			.userTotalRating(this.getUserTotalRating())
-			.userStudyCount(this.getUserStudyCount())
-			.userComplain(this.getUserComplain())
-			.userState(this.getUserState())
-			.userPassportStyle(this.getUserPassportStyle())
+			.userId(userId)
+			.userNickname(userNickname)
+			.userLoginId(userLoginId)
+			.userGoogleId(userGoogleId)
+			.userPassword(userPassword)
+			.userEmail(userEmail)
+			.userImgUrl(userImgUrl)
+			.userBio(userBio)
+			.userNativeLanguage(userNativeLanguage)
+			.userMileage(userMileage)
+			.userTotalMileage(userTotalMileage)
+			.userRating(userRating)
+			.userTotalRating(userTotalRating)
+			.userStudyCount(userStudyCount)
+			.userComplain(userComplain)
+			.userState(userState)
+			.userPassportStyle(userPassportStyle)
 			.userLanguages(this.getUserLanguages().stream()
 				.map(userLanguage -> new LanguageDto(userLanguage.getLanguage()))
 				.collect(Collectors.toList())

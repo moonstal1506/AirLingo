@@ -21,11 +21,13 @@ import com.ssafy.airlingo.global.response.SingleResponseResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@Tag(name = "User Controller", description = "유저 컨트롤러")
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -34,19 +36,20 @@ public class UserController {
 
 	private final UserService userService;
 
-	@Operation(summary = "회원가입", description = "회원가입 기능")
+	@Operation(summary = "회원가입", description = "회원가입")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "회원가입 성공")
 	})
 	@PostMapping("/signup")
-	public ResponseResult createUserAccount(@Valid @RequestBody CreateUserAccountRequestDto createUserAccountRequestDto) {
+	public ResponseResult createUserAccount(
+		@Valid @RequestBody CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserController_createUserAccount -> 사용자의 회원가입");
-		if(userService.createUserAccount(createUserAccountRequestDto) >= 0)
+		if (userService.createUserAccount(createUserAccountRequestDto) >= 0)
 			return ResponseResult.successResponse;
 		return ResponseResult.failResponse;
 	}
 
-	@Operation(summary = "로그인", description = "로그인 기능")
+	@Operation(summary = "로그인", description = "로그인")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그인 성공")
 	})
@@ -54,7 +57,7 @@ public class UserController {
 	public ResponseResult login(@Valid @RequestBody LoginRequestDto loginRequestDto, HttpServletResponse response) {
 		log.info("UserController_login -> 로그인 시도");
 		LoginResponseDto loginResponseDto = userService.login(loginRequestDto, response);
-		return new SingleResponseResult<LoginResponseDto>(loginResponseDto);
+		return new SingleResponseResult<>(loginResponseDto);
 	}
 
 	@Operation(summary = "GetProfile", description = "프로필 조회")
@@ -71,6 +74,5 @@ public class UserController {
 
 		return new SingleResponseResult<>(recordResponseDto);
 	}
-
 
 }
