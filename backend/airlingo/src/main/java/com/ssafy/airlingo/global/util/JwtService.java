@@ -2,15 +2,22 @@ package com.ssafy.airlingo.global.util;
 
 import java.security.SecureRandom;
 import java.util.Date;
+import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import com.ssafy.airlingo.global.exception.ExpiredRefreshTokenException;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 
 @Component
 public class JwtService {
@@ -70,33 +77,33 @@ public class JwtService {
 		return Keys.hmacShaKeyFor(keyBytes).getEncoded();
 	}
 
-	// //	전달 받은 토큰이 제대로 생성된것인지 확인 하고 문제가 있다면 UnauthorizedException을 발생.
-	// public boolean checkToken(String jwt) {
-	// 	try {
-	// 		// setSigningKey : JWS 서명 검증을 위한  secret key 세팅
-	// 		// parseClaimsJws : 파싱하여 원본 jws 만들기
-	// 		Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(jwt);
-	// 		// Claims 는 Map의 구현체 형태
-	// 		logger.debug("claims: {}", claims);
-	// 		return true;
-	// 	} catch (Exception e) {
-	// 		logger.error(e.getMessage());
-	// 		throw new ExpiredRefreshTokenException();
-	// 	}
-	// }
-	//
-	// public Map<String, Object> get(String key) {
-	// 	HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes())
-	// 		.getRequest();
-	// 	String jwt = request.getHeader("access-token");
-	// 	Jws<Claims> claims = null;
-	// 	try {
-	// 		claims = Jwts.parser().setSigningKey(SALT.getBytes("UTF-8")).parseClaimsJws(jwt);
-	// 	} catch (Exception e) {
-	// 		throw new ExpiredRefreshTokenException();
-	// 	}
-	// 	Map<String, Object> value = claims.getBody();
-	// 	logger.info("value : {}", value);
-	// 	return value;
-	// }
+	//	전달 받은 토큰이 제대로 생성된것인지 확인 하고 문제가 있다면 UnauthorizedException을 발생.
+	public boolean checkToken(String jwt) {
+		try {
+			// setSigningKey : JWS 서명 검증을 위한  secret key 세팅
+			// parseClaimsJws : 파싱하여 원본 jws 만들기
+			Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(jwt);
+			// Claims 는 Map의 구현체 형태
+			logger.debug("claims: {}", claims);
+			return true;
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+			throw new ExpiredRefreshTokenException();
+		}
+	}
+
+	public Map<String, Object> get(String key) {
+		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes())
+			.getRequest();
+		String jwt = request.getHeader("access-token");
+		Jws<Claims> claims;
+		try {
+			claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(jwt);
+		} catch (Exception e) {
+			throw new ExpiredRefreshTokenException();
+		}
+		Map<String, Object> value = claims.getBody();
+		logger.info("value : {}", value);
+		return value;
+	}
 }
