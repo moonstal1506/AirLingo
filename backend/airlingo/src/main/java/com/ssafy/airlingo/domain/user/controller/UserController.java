@@ -15,6 +15,7 @@ import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.service.UserService;
+import com.ssafy.airlingo.global.response.ListResponseResult;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
@@ -36,7 +37,7 @@ public class UserController {
 
 	private final UserService userService;
 
-	@Operation(summary = "회원가입", description = "회원가입")
+	@Operation(summary = "회원가입", description = "사용자가 회원가입 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "회원가입 성공")
 	})
@@ -49,7 +50,7 @@ public class UserController {
 		return ResponseResult.failResponse;
 	}
 
-	@Operation(summary = "로그인", description = "로그인")
+	@Operation(summary = "로그인", description = "사용자가 로그인 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그인 성공")
 	})
@@ -60,7 +61,7 @@ public class UserController {
 		return new SingleResponseResult<>(loginResponseDto);
 	}
 
-	@Operation(summary = "로그아웃", description = "로그아웃")
+	@Operation(summary = "로그아웃", description = "사용자가 로그아웃 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
 		@ApiResponse(responseCode = "400", description = "로그아웃 실패")
@@ -70,6 +71,14 @@ public class UserController {
 		log.info("UserController_logout -> 로그아웃 시도, userLoginId: {}", userLoginId);
 		userService.logout(userLoginId);
 		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "단어장 전체 조회", description = "사용자가 저장한 단어를 모두 조회합니다.")
+	// @ApiResponse(responseCode = "440", description = "사용자가 존재하지 않습니다")
+	@GetMapping("/word/{userId}")
+	public ResponseResult getWordItemListByUserId(@PathVariable Long userId) {
+		log.info("UserController_getWordItemListByUserId");
+		return new ListResponseResult<>(userService.getWordItemListByUserId(userId));
 	}
 
 	@Operation(summary = "GetProfile", description = "프로필 조회")

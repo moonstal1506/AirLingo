@@ -7,6 +7,7 @@ import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
+import com.ssafy.airlingo.domain.user.dto.response.WordItemResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -29,4 +30,7 @@ public interface UserService {
 	UserResponseDto findUserByUserId(Long userId);
 
 	List<RecordResponseDto> findByUserId(Long userId);
+
+	// 단어장 조회 관련
+	List<WordItemResponseDto> getWordItemListByUserId(Long userId);
 }

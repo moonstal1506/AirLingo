@@ -8,14 +8,18 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.ssafy.airlingo.domain.report.dto.response.ReportItemResponseDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
+import com.ssafy.airlingo.domain.user.dto.response.WordItemResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
+import com.ssafy.airlingo.global.entity.LanguageCode;
+import com.ssafy.airlingo.global.exception.IncorrectLanguageCodeException;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
 import com.ssafy.airlingo.global.util.JwtService;
 
@@ -110,4 +114,13 @@ public class UserServiceImpl implements UserService {
 		return recordList;
 	}
 
+	@Override
+	public List<WordItemResponseDto> getWordItemListByUserId(Long userId); {
+		log.info("UserServiceImpl_getWordItemListByUserId -> 저장한 모든 단어 조회");
+		if ()
+			throw new NotExistAccountException();
+
+		return wordItemRepository.findAll().stream()
+			.map(r -> r.toWordItemResponseDto(userId)).collect(Collectors.toList());
+	}
 }

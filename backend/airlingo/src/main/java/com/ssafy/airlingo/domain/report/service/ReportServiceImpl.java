@@ -29,7 +29,7 @@ public class ReportServiceImpl {
 	private final ReportItemRepository reportItemRepository;
 	private final UserRepository userRepository;
 
-	public List<ReportItemResponseDto> getReportItemList(String languageCode){
+	public List<ReportItemResponseDto> getReportItemList(String languageCode) {
 		log.info("ReportService_getReportItemList || 모든 신고 항목 조회");
 		if (!languageCode.equals(LanguageCode.KOR.toString()) && !languageCode.equals(LanguageCode.ENG.toString()))
 			throw new IncorrectLanguageCodeException();
@@ -39,11 +39,11 @@ public class ReportServiceImpl {
 	}
 
 	@Transactional
-	public Long reportUser(ReportUserRequestDto reportUserRequestDto){
+	public Long reportUser(ReportUserRequestDto reportUserRequestDto) {
 		log.info("ReportService_reportUser || 유저 신고 기능");
 		ReportItem reportItem = reportItemRepository.findById(reportUserRequestDto.getReportItemId()).get();
 		User user = userRepository.findById(reportUserRequestDto.getUserId()).get();
 		user.addComplainCount();
-		return reportRepository.save(reportUserRequestDto.toReportEntity(user , reportItem)).getReportId();
+		return reportRepository.save(reportUserRequestDto.toReportEntity(user, reportItem)).getReportId();
 	}
 }
