@@ -1,5 +1,7 @@
 package com.ssafy.airlingo.domain.user.entity;
 
+import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -35,4 +37,12 @@ public class Word {
 
 	@Column(nullable = false, length = 100)
 	private String wordDescription;
+
+	public WordResponseDto toWordResponseDto() {
+		return WordResponseDto.builder()
+			.wordId(wordId)
+			.wordName(wordName)
+			.wordDescription(wordDescription)
+			.build();
+	}
 }

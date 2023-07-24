@@ -26,7 +26,7 @@ public class ReportUserRequestDto {
 	private Long reportItemId;
 
 	@NotNull
-	@Schema(description = "신고당한 유저 ID", example = "5", required = true)
+	@Schema(description = "신고당한 유저 ID", example = "1", required = true)
 	private Long userId;
 
 	@NotBlank

@@ -15,8 +15,16 @@ public class ExceptionController {
 
 	@ExceptionHandler(IncorrectLanguageCodeException.class)
 	public ResponseResult ExistEmailException(IncorrectLanguageCodeException e) {
-		log.info("Error : {}",e.getClass());
-		log.info("Error Message : {}",e.getMessage());
+		log.info("Error : {}", e.getClass());
+		log.info("Error Message : {}", e.getMessage());
 		return ResponseResult.exceptionResponse(ExceptionCode.INCORRECT_LANGUAGE_CODE_EXCEPTION);
 	}
+
+	@ExceptionHandler(NotExistAccountException.class)
+	public ResponseResult NotExistAccountException(NotExistAccountException e) {
+		log.info("Error : {}", e.getClass());
+		log.info("Error Message : {}", e.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.NOT_EXIST_ACCOUNT_EXCEPTION);
+	}
+
 }
