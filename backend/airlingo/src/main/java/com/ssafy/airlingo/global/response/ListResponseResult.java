@@ -15,4 +15,3 @@ public class ListResponseResult<T> extends ResponseResult {
 		this.data = data;
 	}
 }
-

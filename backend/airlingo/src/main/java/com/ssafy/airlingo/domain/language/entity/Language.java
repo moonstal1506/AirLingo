@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Builder
 @Getter
@@ -25,9 +24,8 @@ public class Language {
 	private Integer languageId;
 
 	@Column(nullable = false, unique = true, length = 50)
-	private String languageName;
+	private String languageKorName;
 
-	public Language(String languageName) {
-		this.languageName = languageName;
-	}
+	@Column(nullable = false, unique = true, length = 50)
+	private String languageEngName;
 }

@@ -13,10 +13,12 @@ import lombok.Setter;
 @AllArgsConstructor
 public class LanguageDto {
 	private int languageId;
-	private String languageName;
+	private String languageKorName;
+	private String languageEngName;
 
 	public LanguageDto(Language language) {
 		this.languageId = language.getLanguageId();
-		this.languageName = language.getLanguageName();
+		this.languageKorName = language.getLanguageKorName();
+		this.languageEngName = language.getLanguageEngName();
 	}
 }

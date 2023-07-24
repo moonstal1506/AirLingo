@@ -2,8 +2,6 @@ package com.ssafy.airlingo.domain.matching.response;
 
 import java.util.List;
 
-import com.ssafy.airlingo.global.entity.LanguageCode;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -49,5 +47,5 @@ public class MatchingUserDto {
 	private List<String> userInterestLanguages;
 
 	@Schema(description = "사용자 별점")
-	private int userRating;
+	private double userRating;
 }

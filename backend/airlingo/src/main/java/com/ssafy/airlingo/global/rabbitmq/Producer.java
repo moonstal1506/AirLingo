@@ -11,7 +11,7 @@ public class Producer {
 
 	private final RabbitTemplate rabbitTemplate;
 
-	public void producer(String exchange, String routeKey, Object object){
+	public void producer(String exchange, String routeKey, Object object) {
 		rabbitTemplate.convertAndSend(exchange, routeKey, object);
 	}
 }

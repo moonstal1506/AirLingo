@@ -97,11 +97,7 @@ public class User extends BaseTimeEntity {
 	private List<UserLanguage> userLanguages;
 
 	public LoginResponseDto toLoginResponseDto() {
-		return LoginResponseDto.builder()
-			.userId(userId)
-			.userLoginId(userLoginId)
-			.userNickname(userNickname)
-			.build();
+		return LoginResponseDto.builder().userId(userId).userLoginId(userLoginId).userNickname(userNickname).build();
 	}
 
 	public UserResponseDto toDto() {
@@ -123,10 +119,10 @@ public class User extends BaseTimeEntity {
 			.userComplain(userComplain)
 			.userState(userState)
 			.userPassportStyle(userPassportStyle)
-			.userLanguages(this.getUserLanguages().stream()
+			.userLanguages(this.getUserLanguages()
+				.stream()
 				.map(userLanguage -> new LanguageDto(userLanguage.getLanguage()))
-				.collect(Collectors.toList())
-			)
+				.collect(Collectors.toList()))
 			.build();
 	}
 
@@ -141,8 +137,8 @@ public class User extends BaseTimeEntity {
 	}
 
 	public MatchingUserDto toMatchingUserDto(MatchingRequestDto matchingRequestDto) {
-		return MatchingUserDto.builder().
-			userNickname(this.userNickname)
+		return MatchingUserDto.builder()
+			.userNickname(this.userNickname)
 			.userImgUrl(this.userImgUrl)
 			.userNativeLanguage(this.userNativeLanguage.getLanguageName())
 			.userStudyLanguage(matchingRequestDto.getStudyLanguage())
@@ -152,14 +148,15 @@ public class User extends BaseTimeEntity {
 			.userRating(this.getUserRating())
 			.userBio(this.getUserBio())
 			.build();
+	}
 
 	public void addComplainCount() {
 		this.userComplain += 1;
 	}
 
-	public void renewRatingAndStudyCount(float rating){
+	public void renewRatingAndStudyCount(float rating) {
 		userTotalRating += rating;
 		userStudyCount += 1;
-		userRating = userTotalRating/userStudyCount;
+		userRating = userTotalRating / userStudyCount;
 	}
 }
