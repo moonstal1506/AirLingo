@@ -29,8 +29,8 @@ public class UserResponseDto {
 	private String userBio;
 	private int userMileage;
 	private int userTotalMileage;
-	private int userRating;
-	private int userTotalRating;
+	private double userRating;
+	private double userTotalRating;
 	private int userStudyCount;
 	private int userComplain;
 	private int userPassportStyle;

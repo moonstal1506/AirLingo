@@ -56,10 +56,10 @@ public class User extends BaseTimeEntity {
 	private int userTotalMileage;
 
 	@Column(nullable = false)
-	private int userRating;
+	private double userRating;
 
 	@Column(nullable = false)
-	private int userTotalRating;
+	private double userTotalRating;
 
 	@Column(nullable = false)
 	private int userStudyCount;
@@ -120,5 +120,11 @@ public class User extends BaseTimeEntity {
 
 	public void addComplainCount() {
 		this.userComplain += 1;
+	}
+
+	public void renewRatingAndStudyCount(float rating){
+		userTotalRating += rating;
+		userStudyCount += 1;
+		userRating = userTotalRating/userStudyCount;
 	}
 }

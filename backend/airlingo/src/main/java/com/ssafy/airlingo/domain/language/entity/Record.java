@@ -32,7 +32,6 @@ public class Record extends BaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long recordId;
 
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "user_id", nullable = false)
 	private User user;
@@ -45,9 +44,9 @@ public class Record extends BaseTimeEntity {
 	@JoinColumn(name = "grade_id", nullable = false)
 	private Grade grade;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "study_id", nullable = false)
-	private Study study;
+		@ManyToOne(fetch = FetchType.LAZY)
+		@JoinColumn(name = "study_id", nullable = false)
+		private Study study;
 
 	public RecordResponseDto toDto(){
 		return RecordResponseDto.builder()
@@ -59,4 +58,15 @@ public class Record extends BaseTimeEntity {
 			.study(this.getStudy())
 			.build();
 	}
+
+	public static Record createNewRecord(User user , Language language , Grade grade , Study study){
+		return Record.builder()
+			.user(user)
+			.language(language)
+			.grade(grade)
+			.study(study)
+			.build();
+	}
+
 }
+
