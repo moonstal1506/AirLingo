@@ -2,6 +2,7 @@ package com.ssafy.airlingo.global.util;
 
 import java.util.ArrayList;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -11,6 +12,8 @@ import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.report.entity.ReportItem;
+import com.ssafy.airlingo.domain.study.entity.Study;
+import com.ssafy.airlingo.domain.study.entity.UserStudy;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.entity.UserState;
 
@@ -30,7 +33,7 @@ public class InitDb {
 		//    initService.CardInit();
 		//    initService.gradeInit();
 		//    initService.languageInit();
-		//    initService.userInit();
+		//    initService.userAndStudyInit();
 	   // }
 
 	@Component
@@ -193,16 +196,16 @@ public class InitDb {
 			em.persist(g6);
 		}
 
-		public void userInit(){
+		public void userAndStudyInit(){
 
 			User u1 = User.builder()
 				.userComplain(0)
 				.userMileage(100)
 				.userPassportStyle(1)
-				.userRating(2)
+				.userRating(3)
 				.userStudyCount(2)
 				.userTotalMileage(1000)
-				.userTotalRating(5)
+				.userTotalRating(6)
 				.userEmail("qwe@qwe.com")
 				.userLoginId("qwe123")
 				.userNickname("qwe")
@@ -216,10 +219,10 @@ public class InitDb {
 				.userComplain(0)
 				.userMileage(500)
 				.userPassportStyle(2)
-				.userRating(2)
-				.userStudyCount(3)
+				.userRating(4)
+				.userStudyCount(2)
 				.userTotalMileage(1000)
-				.userTotalRating(20)
+				.userTotalRating(8)
 				.userEmail("asd@asd.com")
 				.userLoginId("asd123")
 				.userNickname("asd")
@@ -235,6 +238,26 @@ public class InitDb {
 
 			em.persist(u1);
 			em.persist(u2);
+
+			Study s1 = Study.builder()
+				.studyTime(15)
+				.build();
+
+			em.persist(s1);
+
+			UserStudy us1 = UserStudy.builder()
+				.study(s1)
+				.user(u1)
+				.build();
+
+			UserStudy us2 = UserStudy.builder()
+				.study(s1)
+				.user(u2)
+				.build();
+
+			em.persist(us1);
+			em.persist(us2);
 		}
+
 	}
 }
