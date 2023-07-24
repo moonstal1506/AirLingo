@@ -13,13 +13,13 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "각 단어에 대한 정보")
-public class WordItemResponseDto {
-	@Schema(description = "단어 ID", example = "1", required = true)
+public class WordResponseDto {
+	@Schema(description = "단어 ID", example = "1")
 	private Long wordId;
 
-	@Schema(description = "단어", example = "apple", required = true)
+	@Schema(description = "단어", example = "apple")
 	private String wordName;
 
-	@Schema(description = "단어 뜻", example = "사과", required = true)
+	@Schema(description = "단어 뜻", example = "사과")
 	private String wordDescription;
 }

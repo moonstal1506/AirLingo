@@ -45,8 +45,9 @@ public class UserController {
 	public ResponseResult createUserAccount(
 		@Valid @RequestBody CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserController_createUserAccount -> 사용자의 회원가입");
-		if (userService.createUserAccount(createUserAccountRequestDto) >= 0)
+		if (userService.createUserAccount(createUserAccountRequestDto) >= 0) {
 			return ResponseResult.successResponse;
+		}
 		return ResponseResult.failResponse;
 	}
 
@@ -73,14 +74,6 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "단어장 전체 조회", description = "사용자가 저장한 단어를 모두 조회합니다.")
-	// @ApiResponse(responseCode = "440", description = "사용자가 존재하지 않습니다")
-	@GetMapping("/word/{userId}")
-	public ResponseResult getWordItemListByUserId(@PathVariable Long userId) {
-		log.info("UserController_getWordItemListByUserId");
-		return new ListResponseResult<>(userService.getWordItemListByUserId(userId));
-	}
-
 	@Operation(summary = "GetProfile", description = "프로필 조회")
 	@GetMapping("/{userId}")
 	public ResponseResult findUserByUserId(@PathVariable Long userId) {
@@ -94,6 +87,14 @@ public class UserController {
 		List<RecordResponseDto> recordResponseDto = userService.findByUserId(userId);
 
 		return new SingleResponseResult<>(recordResponseDto);
+	}
+
+	@Operation(summary = "단어장 전체 조회", description = "사용자가 저장한 단어를 모두 조회합니다.")
+	// @ApiResponse(responseCode = "440", description = "사용자가 존재하지 않습니다")
+	@GetMapping("/word/{userId}")
+	public ResponseResult getWordListByUserId(@PathVariable Long userId) {
+		log.info("UserController_getWordItemListByUserId -> 저장한 모든 단어 조회 시작");
+		return new ListResponseResult<>(userService.getWordListByUserId(userId));
 	}
 
 }

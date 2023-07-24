@@ -8,18 +8,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
-import com.ssafy.airlingo.domain.report.dto.response.ReportItemResponseDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
-import com.ssafy.airlingo.domain.user.dto.response.WordItemResponseDto;
+import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
+import com.ssafy.airlingo.domain.user.entity.Word;
 import com.ssafy.airlingo.domain.user.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
-import com.ssafy.airlingo.global.entity.LanguageCode;
-import com.ssafy.airlingo.global.exception.IncorrectLanguageCodeException;
+import com.ssafy.airlingo.domain.user.repository.WordRepository;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
 import com.ssafy.airlingo.global.util.JwtService;
 
@@ -36,6 +35,7 @@ public class UserServiceImpl implements UserService {
 	private final RecordRepository recordRepository;
 	private final JwtService jwtService;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final WordRepository wordRepository;
 
 	@Override
 	@Transactional
@@ -115,12 +115,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public List<WordItemResponseDto> getWordItemListByUserId(Long userId); {
+	public List<WordResponseDto> getWordListByUserId(Long userId) {
 		log.info("UserServiceImpl_getWordItemListByUserId -> 저장한 모든 단어 조회");
-		if ()
-			throw new NotExistAccountException();
 
-		return wordItemRepository.findAll().stream()
-			.map(r -> r.toWordItemResponseDto(userId)).collect(Collectors.toList());
+		// userId를 이용하여 데이터베이스에서 해당 유저가 저장한 단어들을 조회
+		User user = userRepository.findById(userId).get();
+		List<Word> wordList = wordRepository.findByUser(user);
+
+		// 조회 결과가 없는 경우, NotExistAccountException을 던짐
+		if (wordList.isEmpty()) {
+			throw new NotExistAccountException();
+		}
+
+		// 조회한 단어 리스트를 WordResponseDto로 변환하여 리스트로 반환
+		return wordList.stream()
+			.map(Word::toWordResponseDto)
+			.collect(Collectors.toList());
 	}
 }
