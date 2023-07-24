@@ -14,7 +14,7 @@ module.exports = {
     settings: {
         react: { version: "18.2" },
     },
-    plugins: ["react-refresh", "react-hooks", "jsx-a11", "prettier"],
+    plugins: ["react-refresh", "react-hooks", "jsx-a11y", "prettier"],
     rules: {
         "jsx-a11y/alt-text": "error",
         "react-refresh/only-export-components": ["warn", { allowConstantExport: true }],
