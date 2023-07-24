@@ -20,6 +20,7 @@ import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
 import com.ssafy.airlingo.domain.user.repository.WordRepository;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
+import com.ssafy.airlingo.global.exception.NotExistWordException;
 import com.ssafy.airlingo.global.util.JwtService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -131,5 +132,21 @@ public class UserServiceImpl implements UserService {
 		return wordList.stream()
 			.map(Word::toWordResponseDto)
 			.collect(Collectors.toList());
+	}
+
+	@Override
+	public void deleteWordByWordId(Long wordId) throws NotExistWordException {
+		log.info("UserServiceImpl_deleteWordByWordId -> 단어 삭제");
+
+		// 해당 wordId에 해당하는 단어를 데이터베이스에서 조회
+		Word word = wordRepository.findById(wordId).orElse(null);
+
+		// 조회된 단어가 없는 경우, NotExistWordException을 던짐
+		if (word == null) {
+			throw new NotExistWordException();
+		}
+
+		// 단어를 데이터베이스에서 삭제
+		wordRepository.delete(word);
 	}
 }

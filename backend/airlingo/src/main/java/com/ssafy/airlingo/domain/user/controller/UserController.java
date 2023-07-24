@@ -2,6 +2,7 @@ package com.ssafy.airlingo.domain.user.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -90,11 +91,26 @@ public class UserController {
 	}
 
 	@Operation(summary = "단어장 전체 조회", description = "사용자가 저장한 단어를 모두 조회합니다.")
-	// @ApiResponse(responseCode = "440", description = "사용자가 존재하지 않습니다")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "단어 삭제 성공"),
+		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
+	})
 	@GetMapping("/word/{userId}")
 	public ResponseResult getWordListByUserId(@PathVariable Long userId) {
-		log.info("UserController_getWordItemListByUserId -> 저장한 모든 단어 조회 시작");
+		log.info("UserController_getWordListByUserId -> 저장한 모든 단어 조회 시작");
 		return new ListResponseResult<>(userService.getWordListByUserId(userId));
+	}
+
+	@Operation(summary = "단어 삭제", description = "사용자가 선택한 단어를 삭제합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "단어 삭제 성공"),
+		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
+	})
+	@DeleteMapping("/word/{wordId}")
+	public ResponseResult deleteWordByWordId(@PathVariable Long wordId) {
+		log.info("UserController_deleteWordByWordId -> 단어 삭제 시작");
+		userService.deleteWordByWordId(wordId);
+		return ResponseResult.successResponse;
 	}
 
 }
