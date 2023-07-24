@@ -31,9 +31,9 @@ public class ReportServiceImpl {
 
 	public List<ReportItemResponseDto> getReportItemList(String languageCode) {
 		log.info("ReportService_getReportItemList || 모든 신고 항목 조회");
-		if (!languageCode.equals(LanguageCode.KOR.toString()) && !languageCode.equals(LanguageCode.ENG.toString()))
+		if (!languageCode.equals(LanguageCode.KOR.toString()) && !languageCode.equals(LanguageCode.ENG.toString())) {
 			throw new IncorrectLanguageCodeException();
-
+		}
 		return reportItemRepository.findAll().stream()
 			.map(r -> r.toReportItemResponseDto(languageCode)).collect(Collectors.toList());
 	}

@@ -32,12 +32,12 @@ public class ReportItem {
 	@Column(nullable = false, unique = true)
 	private String reportItemEng;
 
-	public ReportItemResponseDto toReportItemResponseDto(String languageCode){
+	public ReportItemResponseDto toReportItemResponseDto(String languageCode) {
 		return ReportItemResponseDto.builder()
 			.reportItemId(reportItemId)
 			.reportItem(languageCode.equals(LanguageCode.KOR.toString())
-						? reportItemKor
-						: reportItemEng)
+				? reportItemKor
+				: reportItemEng)
 			.build();
 	}
 }
