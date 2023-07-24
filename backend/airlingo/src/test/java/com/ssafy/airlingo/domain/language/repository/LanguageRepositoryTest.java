@@ -16,8 +16,12 @@ class LanguageRepositoryTest {
 	public void insert() {
 		Language kor = new Language(1, "한국어", "Korean");
 		Language eng = new Language(2, "영어", "English");
+		Language jpn = new Language(3, "일본어", "Japanese");
+		Language chn = new Language(4, "중국어", "Chinese");
 
 		languageRepository.save(kor);
 		languageRepository.save(eng);
+		languageRepository.save(jpn);
+		languageRepository.save(chn);
 	}
 }
