@@ -14,17 +14,31 @@ import lombok.extern.slf4j.Slf4j;
 public class ExceptionController {
 
 	@ExceptionHandler(IncorrectLanguageCodeException.class)
-	public ResponseResult ExistEmailException(IncorrectLanguageCodeException e) {
-		log.info("Error : {}", e.getClass());
-		log.info("Error Message : {}", e.getMessage());
+	public ResponseResult incorrectLanguageCodeException(IncorrectLanguageCodeException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
 		return ResponseResult.exceptionResponse(ExceptionCode.INCORRECT_LANGUAGE_CODE_EXCEPTION);
 	}
 
+	@ExceptionHandler(NotExistWordException.class)
+	public ResponseResult notExistWordException(NotExistWordException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.NOT_EXIST_WORD_EXCEPTION);
+	}
+
 	@ExceptionHandler(NotExistAccountException.class)
-	public ResponseResult NotExistAccountException(NotExistAccountException e) {
-		log.info("Error : {}", e.getClass());
-		log.info("Error Message : {}", e.getMessage());
+	public ResponseResult notExistAccountException(NotExistAccountException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
 		return ResponseResult.exceptionResponse(ExceptionCode.NOT_EXIST_ACCOUNT_EXCEPTION);
+	}
+
+	@ExceptionHandler(ExpiredRefreshTokenException.class)
+	public ResponseResult expiredRefreshTokenException(ExpiredRefreshTokenException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.EXPIRED_REFRESH_TOKEN_EXCEPTION);
 	}
 
 }
