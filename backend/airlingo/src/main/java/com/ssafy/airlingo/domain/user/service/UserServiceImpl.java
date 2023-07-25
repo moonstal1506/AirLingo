@@ -1,5 +1,6 @@
 package com.ssafy.airlingo.domain.user.service;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -17,6 +18,9 @@ import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.entity.Word;
+import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
+import com.ssafy.airlingo.domain.user.entity.DailyGrid;
+import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
 import com.ssafy.airlingo.domain.user.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
@@ -41,6 +45,7 @@ public class UserServiceImpl implements UserService {
 	private final WordRepository wordRepository;
 	private final LanguageRepository languageRepository;
 	private final GradeRepository gradeRepository;
+	private final DailyGridRepository dailyGridRepository;
 
 	@Override
 	@Transactional
@@ -153,4 +158,16 @@ public class UserServiceImpl implements UserService {
 		// 단어를 데이터베이스에서 삭제
 		wordRepository.delete(word);
 	}
+	public List<DailyGridResponseDto> findDailyGridByUserId(Long userId) {
+		User user = userRepository.findById(userId).orElse(null);
+		if (user == null) {
+			// 사용자를 찾지 못한 경우 빈 리스트 반환
+			return Collections.emptyList();
+		}
+		List<DailyGridResponseDto> dailyGridList = dailyGridRepository.findDailyGridByUser(user).stream()
+			.map(DailyGrid::toDto)
+			.collect(Collectors.toList());
+		return dailyGridList;
+	}
+
 }

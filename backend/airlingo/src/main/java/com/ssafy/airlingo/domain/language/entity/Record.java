@@ -1,7 +1,7 @@
 package com.ssafy.airlingo.domain.language.entity;
 
-import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.study.entity.Study;
+import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
