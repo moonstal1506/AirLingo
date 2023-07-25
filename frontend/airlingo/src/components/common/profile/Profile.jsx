@@ -1,10 +1,16 @@
 import styled from "@emotion/styled";
 
 function Profile({ src, size = "normal" }) {
-    return <ProfileWrapper src={src} size={size} />;
+    return (
+        <ProfileBox size={size}>
+            <ProfileWrapper src={src} />
+        </ProfileBox>
+    );
 }
 
-const ProfileWrapper = styled.img`
+const ProfileBox = styled.div`
+    border-radius: 70%;
+    overflow: hidden;
     ${(props) => {
         switch (props.size) {
             case "small":
@@ -26,6 +32,12 @@ const ProfileWrapper = styled.img`
                 return "";
         }
     }}
+`;
+
+const ProfileWrapper = styled.img`
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 `;
 
 export default Profile;
