@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.ssafy.airlingo.domain.language.repository.GradeRepository;
+import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
@@ -41,13 +43,15 @@ public class UserServiceImpl implements UserService {
 	private final JwtService jwtService;
 	private final RefreshTokenRepository refreshTokenRepository;
 	private final WordRepository wordRepository;
+	private final LanguageRepository languageRepository;
+	private final GradeRepository gradeRepository;
 	private final DailyGridRepository dailyGridRepository;
 
 	@Override
 	@Transactional
 	public Long createUserAccount(CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserServiceImpl_createUserAccount -> 새로운 사용자 회원가입");
-		User newUserAccount = createUserAccountRequestDto.toUserEntity();
+		User newUserAccount = createUserAccountRequestDto.toUserEntity(languageRepository, gradeRepository);
 		return userRepository.save(newUserAccount).getUserId();
 	}
 

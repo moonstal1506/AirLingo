@@ -33,7 +33,7 @@ public class ReportUserRequestDto {
 	@Schema(description = "신고 내용", example = "심한 욕설을 하였습니다.")
 	private String description;
 
-	public Report toReportEntity(User user, ReportItem reportItem){
+	public Report toReportEntity(User user, ReportItem reportItem) {
 		return Report.builder()
 			.user(user)
 			.reportItem(reportItem)

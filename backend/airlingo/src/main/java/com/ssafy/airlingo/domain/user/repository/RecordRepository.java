@@ -17,4 +17,3 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 	@EntityGraph(attributePaths = {"user", "language", "grade", "study"})
 	List<Record> findRecordByUser(User user);
 }
-

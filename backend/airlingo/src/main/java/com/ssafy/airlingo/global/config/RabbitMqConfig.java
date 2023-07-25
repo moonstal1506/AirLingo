@@ -17,17 +17,17 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class RabbitMqConfig {
 
 	@Bean
-	public DirectExchange directExchange(){
+	public DirectExchange directExchange() {
 		return new DirectExchange("matching.exchange");
 	}
 
 	@Bean
-	public Queue queue(){
+	public Queue queue() {
 		return new Queue("matching.queue");
 	}
 
 	@Bean
-	public Binding binding(DirectExchange directExchange, Queue queue){
+	public Binding binding(DirectExchange directExchange, Queue queue) {
 		return BindingBuilder.bind(queue).to(directExchange).with("matching.key");
 	}
 
@@ -35,14 +35,14 @@ public class RabbitMqConfig {
 	public RabbitTemplate rabbitTemplate(
 		ConnectionFactory connectionFactory,
 		MessageConverter messageConverter
-	){
+	) {
 		var rabbitTemplate = new RabbitTemplate(connectionFactory);
 		rabbitTemplate.setMessageConverter(messageConverter);
 		return rabbitTemplate;
 	}
 
 	@Bean
-	public MessageConverter messageConverter(ObjectMapper objectMapper){
+	public MessageConverter messageConverter(ObjectMapper objectMapper) {
 		return new Jackson2JsonMessageConverter(objectMapper);
 	}
 }

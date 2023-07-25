@@ -25,12 +25,11 @@ class ReportServiceImplTest {
 	@Test
 	@DisplayName("신고항목을 조회할때 올바르지 않은 언어 코드를 사용하면 예외가 발생한다.")
 	void inCorrectLanguageCodeThrowExceptionTest() {
-	    // given
+		// given
 		String correctLanguageCode = "KOR";
 		String inCorrectLanguageCode = "INC";
 
-
-	    // when // then
+		// when // then
 		//예외가 발생하지 않으면 TRUE
 		assertDoesNotThrow(() -> reportService.getReportItemList(correctLanguageCode));
 
@@ -42,7 +41,7 @@ class ReportServiceImplTest {
 	@Test
 	@DisplayName("유저 신고기능이 올바르게 동작하는지 테스트")
 	void reportUserTest() {
-	    // given
+		// given
 		ReportUserRequestDto report = ReportUserRequestDto.builder()
 			.userId(1L)
 			.reportItemId(1L)
@@ -73,7 +72,7 @@ class ReportServiceImplTest {
 		reportService.reportUser(report);
 
 		// then
-		assertThat(beforeUserComplainCount+1).isEqualTo(userRepository.findById(1L).get().getUserComplain());
+		assertThat(beforeUserComplainCount + 1).isEqualTo(userRepository.findById(1L).get().getUserComplain());
 	}
 
 }
