@@ -152,7 +152,7 @@ public class User extends BaseTimeEntity {
 			.userRating(this.getUserRating())
 			.userBio(this.getUserBio())
 			.build();
-
+	}
 	public void addComplainCount() {
 		this.userComplain += 1;
 	}

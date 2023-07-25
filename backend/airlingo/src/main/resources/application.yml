@@ -10,7 +10,6 @@ spring:
     port: 5672
     username: admin
     password: admin
-
   # jpa설정
   jpa:
     hibernate: # hibernate 사용 설정

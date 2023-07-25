@@ -17,6 +17,7 @@ import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.service.UserService;
 import com.ssafy.airlingo.global.response.ListResponseResult;
+import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
@@ -37,8 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-
 	@Operation(summary = "회원가입", description = "사용자가 회원가입 합니다.")
+
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "회원가입 성공")
 	})
@@ -86,7 +87,6 @@ public class UserController {
 	@GetMapping("/record/{userId}")
 	public ResponseResult findByUserId(@PathVariable Long userId) {
 		List<RecordResponseDto> recordResponseDto = userService.findByUserId(userId);
-
 		return new SingleResponseResult<>(recordResponseDto);
 	}
 
@@ -112,5 +112,10 @@ public class UserController {
 		userService.deleteWordByWordId(wordId);
 		return ResponseResult.successResponse;
 	}
-
+	@Operation(summary = "GetDailyGrid", description = "데일리 그리드 개수 조회")
+	@GetMapping("/dailyGrid/{userId}")
+	public ResponseResult getDailyGridList(@PathVariable Long userId){
+		List<DailyGridResponseDto> dailyGridResponseDto = userService.findDailyGridByUserId(userId);
+		return new SingleResponseResult<>(dailyGridResponseDto);
+	}
 }
