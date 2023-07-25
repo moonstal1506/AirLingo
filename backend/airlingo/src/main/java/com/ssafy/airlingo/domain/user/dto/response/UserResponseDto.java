@@ -38,5 +38,4 @@ public class UserResponseDto {
 	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Language userNativeLanguage;
 	private List<LanguageDto> userLanguages;
-
 }
