@@ -37,7 +37,7 @@ class UserRepositoryTest {
 	}
 
 	private User createUser() {
-		Language language = languageRepository.findById(1).orElseThrow(() -> {
+		Language language = languageRepository.findById(1L).orElseThrow(() -> {
 			throw new IllegalArgumentException("존재하지 않는 아이디 입니다.");
 		});
 
@@ -62,13 +62,11 @@ class UserRepositoryTest {
 		return userRepository.save(user);
 	}
 
-	;
-
 	private UserLanguage createUserLanguage(User user) {
-		Language interestedLanguage = languageRepository.findById(2).orElseThrow(() -> {
+		Language interestedLanguage = languageRepository.findById(2L).orElseThrow(() -> {
 			throw new IllegalArgumentException("존재하지 않는 아이디 입니다.");
 		});
-		Grade grade = gradeRepository.findById(1).orElseThrow(() -> {
+		Grade grade = gradeRepository.findById(1L).orElseThrow(() -> {
 			throw new IllegalArgumentException("존재하지 않는 아이디 입니다.");
 		});
 

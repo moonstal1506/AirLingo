@@ -12,10 +12,10 @@ import lombok.ToString;
 @ToString
 @NoArgsConstructor
 public class LanguageWithGradeDto {
-	private int languageId;
-	private int gradeId;
+	private Long languageId;
+	private Long gradeId;
 
-	public LanguageWithGradeDto(int languageId, int gradeId) {
+	public LanguageWithGradeDto(Long languageId, Long gradeId) {
 		this.languageId = languageId;
 		this.gradeId = gradeId;
 	}

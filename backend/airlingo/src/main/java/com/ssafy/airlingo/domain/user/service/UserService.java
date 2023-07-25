@@ -5,8 +5,8 @@ import java.util.List;
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
-import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
+import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
@@ -36,6 +36,7 @@ public interface UserService {
 	List<WordResponseDto> getWordListByUserId(Long userId);
 
 	void deleteWordByWordId(Long wordId);
+
 	List<DailyGridResponseDto> findDailyGridByUserId(Long userId);
 
 }

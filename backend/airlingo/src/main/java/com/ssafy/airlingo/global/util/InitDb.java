@@ -152,7 +152,7 @@ public class InitDb {
 		public void languageInit() {
 			Language l1 = Language.builder()
 				.languageKorName("한국어")
-				.languageEngName("Koream")
+				.languageEngName("Korean")
 				.build();
 
 			Language l2 = Language.builder()
@@ -160,8 +160,20 @@ public class InitDb {
 				.languageEngName("English")
 				.build();
 
+			Language l3 = Language.builder()
+				.languageKorName("일본어")
+				.languageEngName("Japanese")
+				.build();
+
+			Language l4 = Language.builder()
+				.languageKorName("중국어")
+				.languageEngName("Chinese")
+				.build();
+
 			em.persist(l1);
 			em.persist(l2);
+			em.persist(l3);
+			em.persist(l4);
 		}
 
 		public void gradeInit() {
@@ -213,7 +225,7 @@ public class InitDb {
 				.userState(UserState.ACTIVE)
 				.userPassword("123")
 				.userNativeLanguage(
-					Language.builder().languageId(1).languageKorName("한국어").languageEngName("Korean").build())
+					Language.builder().languageId(1L).languageKorName("한국어").languageEngName("Korean").build())
 				.build();
 
 			User u2 = User.builder()
@@ -230,7 +242,7 @@ public class InitDb {
 				.userState(UserState.ACTIVE)
 				.userPassword("123")
 				.userNativeLanguage(
-					Language.builder().languageId(2).languageKorName("영어").languageEngName("English").build())
+					Language.builder().languageId(2L).languageKorName("영어").languageEngName("English").build())
 				.build();
 
 			ArrayList<UserLanguage> uls1 = new ArrayList<>();
