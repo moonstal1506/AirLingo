@@ -14,6 +14,7 @@ import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -93,15 +94,11 @@ public class User extends BaseTimeEntity {
 	@JoinColumn(name = "language_id", nullable = false)
 	private Language userNativeLanguage;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<UserLanguage> userLanguages;
 
 	public LoginResponseDto toLoginResponseDto() {
-		return LoginResponseDto.builder()
-			.userId(userId)
-			.userLoginId(userLoginId)
-			.userNickname(userNickname)
-			.build();
+		return LoginResponseDto.builder().userId(userId).userLoginId(userLoginId).userNickname(userNickname).build();
 	}
 
 	public UserResponseDto toDto() {
@@ -123,10 +120,10 @@ public class User extends BaseTimeEntity {
 			.userComplain(userComplain)
 			.userState(userState)
 			.userPassportStyle(userPassportStyle)
-			.userLanguages(this.getUserLanguages().stream()
+			.userLanguages(this.getUserLanguages()
+				.stream()
 				.map(userLanguage -> new LanguageDto(userLanguage.getLanguage()))
-				.collect(Collectors.toList())
-			)
+				.collect(Collectors.toList()))
 			.build();
 	}
 
@@ -141,25 +138,26 @@ public class User extends BaseTimeEntity {
 	}
 
 	public MatchingUserDto toMatchingUserDto(MatchingRequestDto matchingRequestDto) {
-		return MatchingUserDto.builder().
-			userNickname(this.userNickname)
+		return MatchingUserDto.builder()
+			.userNickname(this.userNickname)
 			.userImgUrl(this.userImgUrl)
-			.userNativeLanguage(this.userNativeLanguage.getLanguageName())
+			.userNativeLanguage(this.userNativeLanguage.getLanguageKorName())
 			.userStudyLanguage(matchingRequestDto.getStudyLanguage())
 			.userInterestLanguages(this.userLanguages.stream()
-				.map(userLanguage -> userLanguage.getLanguage().getLanguageName())
+				.map(userLanguage -> userLanguage.getLanguage().getLanguageKorName())
 				.collect(Collectors.toList()))
 			.userRating(this.getUserRating())
 			.userBio(this.getUserBio())
 			.build();
 	}
+
 	public void addComplainCount() {
 		this.userComplain += 1;
 	}
 
-	public void renewRatingAndStudyCount(float rating){
+	public void renewRatingAndStudyCount(float rating) {
 		userTotalRating += rating;
 		userStudyCount += 1;
-		userRating = userTotalRating/userStudyCount;
+		userRating = userTotalRating / userStudyCount;
 	}
 }

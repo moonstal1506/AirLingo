@@ -34,6 +34,20 @@ public class ExceptionController {
 		return ResponseResult.exceptionResponse(ExceptionCode.NOT_EXIST_ACCOUNT_EXCEPTION);
 	}
 
+	@ExceptionHandler(NotFoundLanguageException.class)
+	public ResponseResult notFoundLanguageException(NotFoundLanguageException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.NOT_FOUND_LANGUAGE_EXCEPTION);
+	}
+
+	@ExceptionHandler(NotFoundGradeException.class)
+	public ResponseResult notFoundGradeException(NotFoundGradeException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.NOT_FOUND_GRADE_EXCEPTION);
+	}
+
 	@ExceptionHandler(ExpiredRefreshTokenException.class)
 	public ResponseResult expiredRefreshTokenException(ExpiredRefreshTokenException err) {
 		log.info("Error : {}", err.getClass());

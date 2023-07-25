@@ -7,7 +7,8 @@ import com.ssafy.airlingo.domain.language.entity.Record;
 import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.user.entity.User;
 
-public interface RecordService{
-    boolean evaluateUser(EvaluateUserRequestDto evaluateUserRequestDto);
-    Record createNewRecordAndRenewUserRating(User user , Language language , Grade grade ,Study study, float rating);
+public interface RecordService {
+	boolean evaluateUser(EvaluateUserRequestDto evaluateUserRequestDto);
+
+	Record createNewRecordAndRenewUserRating(User user, Language language, Grade grade, Study study, float rating);
 }

@@ -15,5 +15,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 	// Fetch Join을 사용하여 User 엔티티와 연관된 userLanguages 정보도 함께 조회
 	@EntityGraph(attributePaths = {"language"})
 	User findByUserId(Long userId);
-
 }

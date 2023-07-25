@@ -2,8 +2,6 @@ package com.ssafy.airlingo.domain.matching.response;
 
 import java.util.List;
 
-import com.ssafy.airlingo.global.entity.LanguageCode;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;

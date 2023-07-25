@@ -2,7 +2,6 @@ package com.ssafy.airlingo.global.util;
 
 import java.util.ArrayList;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,7 +16,6 @@ import com.ssafy.airlingo.domain.study.entity.UserStudy;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.entity.UserState;
 
-import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
@@ -27,14 +25,14 @@ public class InitDb {
 
 	private final InitService initService;
 
-	   // @PostConstruct
-	   // public void init() {
-	   //     initService.reportItemInit();
-		//    initService.CardInit();
-		//    initService.gradeInit();
-		//    initService.languageInit();
-		//    initService.userAndStudyInit();
-	   // }
+	// @PostConstruct
+	// public void init() {
+	//     initService.reportItemInit();
+	//    initService.CardInit();
+	//    initService.gradeInit();
+	//    initService.languageInit();
+	//    initService.userAndStudyInit();
+	// }
 
 	@Component
 	@Transactional
@@ -43,7 +41,7 @@ public class InitDb {
 
 		private final EntityManager em;
 
-		public void CardInit(){
+		public void CardInit() {
 			Card cf1 = Card.builder()
 				.cardCode(CardCode.FOOD)
 				.cardKor("좋아하는 요리나 음식 종류가 있으신가요?")
@@ -151,19 +149,22 @@ public class InitDb {
 			em.persist(r7);
 		}
 
-		public void languageInit(){
+		public void languageInit() {
 			Language l1 = Language.builder()
-				.languageName("한국어")
+				.languageKorName("한국어")
+				.languageEngName("Koream")
 				.build();
 
 			Language l2 = Language.builder()
-				.languageName("영어")
+				.languageKorName("영어")
+				.languageEngName("English")
 				.build();
 
 			em.persist(l1);
 			em.persist(l2);
 		}
-		public void gradeInit(){
+
+		public void gradeInit() {
 			Grade g1 = Grade.builder()
 				.gradeName("A1")
 				.build();
@@ -196,7 +197,7 @@ public class InitDb {
 			em.persist(g6);
 		}
 
-		public void userAndStudyInit(){
+		public void userAndStudyInit() {
 
 			User u1 = User.builder()
 				.userComplain(0)
@@ -211,9 +212,9 @@ public class InitDb {
 				.userNickname("qwe")
 				.userState(UserState.ACTIVE)
 				.userPassword("123")
-				.userNativeLanguage(Language.builder().languageId(1).languageName("한국어").build())
+				.userNativeLanguage(
+					Language.builder().languageId(1).languageKorName("한국어").languageEngName("Korean").build())
 				.build();
-
 
 			User u2 = User.builder()
 				.userComplain(0)
@@ -228,7 +229,8 @@ public class InitDb {
 				.userNickname("asd")
 				.userState(UserState.ACTIVE)
 				.userPassword("123")
-				.userNativeLanguage(Language.builder().languageId(2).languageName("영어").build())
+				.userNativeLanguage(
+					Language.builder().languageId(2).languageKorName("영어").languageEngName("English").build())
 				.build();
 
 			ArrayList<UserLanguage> uls1 = new ArrayList<>();

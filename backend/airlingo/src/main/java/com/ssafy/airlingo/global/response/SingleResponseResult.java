@@ -13,4 +13,3 @@ public class SingleResponseResult<T> extends ResponseResult {
 		this.data = data;
 	}
 }
-

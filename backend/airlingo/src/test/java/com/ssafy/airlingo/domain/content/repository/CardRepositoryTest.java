@@ -1,15 +1,18 @@
 package com.ssafy.airlingo.domain.content.repository;
 
-import com.ssafy.airlingo.domain.content.entity.Card;
-import com.ssafy.airlingo.domain.content.entity.CardCode;
+import static org.assertj.core.api.Assertions.*;
+
+import java.util.List;
+
 import org.assertj.core.groups.Tuple;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import java.util.List;
-import static org.assertj.core.api.Assertions.assertThat;
+
+import com.ssafy.airlingo.domain.content.entity.Card;
+import com.ssafy.airlingo.domain.content.entity.CardCode;
 
 @SpringBootTest
 class CardRepositoryTest {
@@ -18,7 +21,7 @@ class CardRepositoryTest {
 	private CardRepository cardRepository;
 
 	@BeforeEach
-	void deleteAll(){
+	void deleteAll() {
 		cardRepository.deleteAll();
 	}
 
@@ -30,18 +33,17 @@ class CardRepositoryTest {
 		Card card2 = Card.builder().cardCode(CardCode.FOOD).cardKor("음식2음식2음식2").cardEng("food2food2food2").build();
 		Card card3 = Card.builder().cardCode(CardCode.TRAVEL).cardKor("여행여행").cardEng("traveltravel").build();
 
-		cardRepository.saveAll(List.of(card1,card2,card3));
-
+		cardRepository.saveAll(List.of(card1, card2, card3));
 
 		// when
 		List<Card> cardList = cardRepository.findAllByCardCode(CardCode.FOOD);
 
 		// then
 		assertThat(cardList).hasSize(2)
-			.extracting("cardCode","cardKor","cardEng")
+			.extracting("cardCode", "cardKor", "cardEng")
 			.containsExactlyInAnyOrder(
-				Tuple.tuple(CardCode.FOOD,"음식음식음식","foodfoodfood"),
-				Tuple.tuple(CardCode.FOOD,"음식2음식2음식2","food2food2food2")
+				Tuple.tuple(CardCode.FOOD, "음식음식음식", "foodfoodfood"),
+				Tuple.tuple(CardCode.FOOD, "음식2음식2음식2", "food2food2food2")
 			);
 	}
 }
