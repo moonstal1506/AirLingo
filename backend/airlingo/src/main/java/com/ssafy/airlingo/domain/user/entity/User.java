@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.ssafy.airlingo.domain.language.dto.request.LanguageDto;
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.matching.request.MatchingRequestDto;

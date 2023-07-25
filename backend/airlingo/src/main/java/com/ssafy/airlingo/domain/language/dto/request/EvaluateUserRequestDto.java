@@ -19,10 +19,10 @@ public class EvaluateUserRequestDto {
 	private Long userId;
 
 	@Schema(description = "언어 등급 평가 결과 ID", example = "2")
-	private Integer gradeId;
+	private Long gradeId;
 
 	@Schema(description = "사용자가 사용한 언어 ID", example = "1")
-	private Integer languageId;
+	private Long languageId;
 
 	@Schema(description = "스터디 ID", example = "1")
 	private Long studyId;

@@ -3,8 +3,6 @@ package com.ssafy.airlingo.domain.user.dto.request;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
@@ -23,7 +21,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
@@ -32,8 +29,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class) //바인딩 문제
 @Schema(description = "(CreateUserAccountRequestDto) 회원가입 요청 DTO")
 public class CreateUserAccountRequestDto {
 
@@ -54,7 +49,7 @@ public class CreateUserAccountRequestDto {
 	private String userEmail;
 
 	@Schema(description = "사용자 모국어 ID")
-	private int userNativeLanguageId;
+	private Long userNativeLanguageId;
 
 	@Schema(description = "사용자 관심언어와 해당 언어의 등급")
 	private List<LanguageWithGradeDto> userInterestLanguageList;
@@ -84,8 +79,8 @@ public class CreateUserAccountRequestDto {
 		if (userInterestLanguageList != null) {
 			for (LanguageWithGradeDto languageWithGradeDto : userInterestLanguageList) {
 
-				int languageId = languageWithGradeDto.getLanguageId();
-				int gradeId = languageWithGradeDto.getGradeId();
+				Long languageId = languageWithGradeDto.getLanguageId();
+				Long gradeId = languageWithGradeDto.getGradeId();
 
 				Language language = languageRepository.findByLanguageId(languageId);
 				Grade grade = gradeRepository.findByGradeId(gradeId);

@@ -1,6 +1,5 @@
 package com.ssafy.airlingo.domain.user.service;
 
-import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,13 +12,13 @@ import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
+import com.ssafy.airlingo.domain.user.entity.DailyGrid;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.entity.Word;
-import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
-import com.ssafy.airlingo.domain.user.entity.DailyGrid;
 import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
 import com.ssafy.airlingo.domain.user.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
@@ -158,6 +157,7 @@ public class UserServiceImpl implements UserService {
 		// 단어를 데이터베이스에서 삭제
 		wordRepository.delete(word);
 	}
+
 	public List<DailyGridResponseDto> findDailyGridByUserId(Long userId) {
 		User user = userRepository.findById(userId).orElse(null);
 		if (user == null) {

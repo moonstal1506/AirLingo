@@ -13,11 +13,11 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.service.UserService;
 import com.ssafy.airlingo.global.response.ListResponseResult;
-import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
@@ -34,7 +34,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/api/user")
 public class UserController {
 
 	private final UserService userService;
@@ -47,7 +47,6 @@ public class UserController {
 	public ResponseResult createUserAccount(
 		@Valid @RequestBody CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserController_createUserAccount -> 사용자의 회원가입");
-		System.out.println(createUserAccountRequestDto);
 		if (userService.createUserAccount(createUserAccountRequestDto) >= 0) {
 			return ResponseResult.successResponse;
 		}
@@ -113,9 +112,10 @@ public class UserController {
 		userService.deleteWordByWordId(wordId);
 		return ResponseResult.successResponse;
 	}
+
 	@Operation(summary = "GetDailyGrid", description = "데일리 그리드 개수 조회")
 	@GetMapping("/dailyGrid/{userId}")
-	public ResponseResult getDailyGridList(@PathVariable Long userId){
+	public ResponseResult getDailyGridList(@PathVariable Long userId) {
 		List<DailyGridResponseDto> dailyGridResponseDto = userService.findDailyGridByUserId(userId);
 		return new SingleResponseResult<>(dailyGridResponseDto);
 	}
