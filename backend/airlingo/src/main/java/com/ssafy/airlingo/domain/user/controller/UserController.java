@@ -38,7 +38,7 @@ public class UserController {
 
 	private final UserService userService;
 
-	@Operation(summary = "회원가입", description = "사용자가 회원가입 합니다.")
+	@Operation(summary = "Sign Up", description = "사용자가 회원가입 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "회원가입 성공")
 	})
@@ -46,13 +46,14 @@ public class UserController {
 	public ResponseResult createUserAccount(
 		@Valid @RequestBody CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserController_createUserAccount -> 사용자의 회원가입");
+		System.out.println(createUserAccountRequestDto);
 		if (userService.createUserAccount(createUserAccountRequestDto) >= 0) {
 			return ResponseResult.successResponse;
 		}
 		return ResponseResult.failResponse;
 	}
 
-	@Operation(summary = "로그인", description = "사용자가 로그인 합니다.")
+	@Operation(summary = "Login", description = "사용자가 로그인 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그인 성공")
 	})
@@ -63,7 +64,7 @@ public class UserController {
 		return new SingleResponseResult<>(loginResponseDto);
 	}
 
-	@Operation(summary = "로그아웃", description = "사용자가 로그아웃 합니다.")
+	@Operation(summary = "Logout", description = "사용자가 로그아웃 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
 		@ApiResponse(responseCode = "400", description = "로그아웃 실패")
@@ -90,9 +91,9 @@ public class UserController {
 		return new SingleResponseResult<>(recordResponseDto);
 	}
 
-	@Operation(summary = "단어장 전체 조회", description = "사용자가 저장한 단어를 모두 조회합니다.")
+	@Operation(summary = "GetWordList", description = "단어장 전체 조회")
 	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "단어 삭제 성공"),
+		@ApiResponse(responseCode = "200", description = "단어장 조회 성공"),
 		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
 	})
 	@GetMapping("/word/{userId}")
@@ -101,7 +102,7 @@ public class UserController {
 		return new ListResponseResult<>(userService.getWordListByUserId(userId));
 	}
 
-	@Operation(summary = "단어 삭제", description = "사용자가 선택한 단어를 삭제합니다.")
+	@Operation(summary = "DeleteWord", description = "선택한 단어 삭제")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "단어 삭제 성공"),
 		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")

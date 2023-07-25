@@ -14,6 +14,7 @@ import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.AttributeOverride;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -93,7 +94,7 @@ public class User extends BaseTimeEntity {
 	@JoinColumn(name = "language_id", nullable = false)
 	private Language userNativeLanguage;
 
-	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<UserLanguage> userLanguages;
 
 	public LoginResponseDto toLoginResponseDto() {
