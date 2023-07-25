@@ -16,7 +16,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "매칭 요청 정보")
-@JsonNaming(PropertyNamingStrategy.UpperCamelCaseStrategy.class) //바인딩 문제
 public class MatchingRequestDto {
 
 	@NotNull
