@@ -30,13 +30,15 @@ public interface UserService {
 	// 프로필 조회 관련
 	UserResponseDto findUserByUserId(Long userId);
 
+	List<DailyGridResponseDto> findDailyGridByUserId(Long userId);
+
 	List<RecordResponseDto> findByUserId(Long userId);
 
 	// 단어장 관련
 	List<WordResponseDto> getWordListByUserId(Long userId);
 
-	void deleteWordByWordId(Long wordId);
+	List<WordResponseDto> getWordTestListByUserId(Long userId);
 
-	List<DailyGridResponseDto> findDailyGridByUserId(Long userId);
+	void deleteWordByWordId(Long wordId);
 
 }

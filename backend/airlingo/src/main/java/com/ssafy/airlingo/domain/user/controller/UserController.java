@@ -90,7 +90,8 @@ public class UserController {
 		return new SingleResponseResult<>(recordResponseDto);
 	}
 
-	@Operation(summary = "GetWordList", description = "단어장 전체 조회")
+	// 단어장 관련
+	@Operation(summary = "Get Word List", description = "단어장 전체 조회")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "단어장 조회 성공"),
 		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
@@ -101,7 +102,18 @@ public class UserController {
 		return new ListResponseResult<>(userService.getWordListByUserId(userId));
 	}
 
-	@Operation(summary = "DeleteWord", description = "선택한 단어 삭제")
+	@Operation(summary = "Get Word Test List", description = "단어 테스트 리스트 조회")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "단어 테스트 리스트 조회 성공"),
+		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
+	})
+	@GetMapping("/word/test/{userId}")
+	public ResponseResult getWordTestListByUserId(@PathVariable Long userId) {
+		log.info("UserController_getWordTestListByUserId -> 단어 테스트 리스트 조회 시작");
+		return new ListResponseResult<>(userService.getWordTestListByUserId(userId));
+	}
+
+	@Operation(summary = "Delete Word", description = "선택한 단어 삭제")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "단어 삭제 성공"),
 		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")

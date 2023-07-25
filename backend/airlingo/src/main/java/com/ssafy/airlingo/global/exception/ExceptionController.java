@@ -48,6 +48,13 @@ public class ExceptionController {
 		return ResponseResult.exceptionResponse(ExceptionCode.NOT_FOUND_GRADE_EXCEPTION);
 	}
 
+	@ExceptionHandler(EmptyWordListException.class)
+	public ResponseResult emptyWordListException(EmptyWordListException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.EMPTY_WORD_LIST_EXCEPTION);
+	}
+
 	@ExceptionHandler(ExpiredRefreshTokenException.class)
 	public ResponseResult expiredRefreshTokenException(ExpiredRefreshTokenException err) {
 		log.info("Error : {}", err.getClass());
