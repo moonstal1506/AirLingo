@@ -26,14 +26,14 @@ public class InitDb {
 
 	private final InitService initService;
 
-	// @PostConstruct
-	// public void init() {
-	//     initService.reportItemInit();
-	//    initService.CardInit();
-	//    initService.gradeInit();
-	//    initService.languageInit();
-	//    initService.userAndStudyInit();
-	// }
+	@PostConstruct
+	public void init() {
+		initService.reportItemInit();
+		initService.CardInit();
+		initService.gradeInit();
+		initService.languageInit();
+		initService.userAndStudyInit();
+	}
 
 	@Component
 	@Transactional
@@ -226,11 +226,11 @@ public class InitDb {
 				.userStudyCount(2)
 				.userTotalMileage(1000)
 				.userTotalRating(6)
-				.userEmail("qwe@qwe.com")
-				.userLoginId("qwe123")
-				.userNickname("qwe")
+				.userEmail("user1@gmail.com")
+				.userLoginId("user1")
+				.userNickname("user1")
 				.userState(UserState.ACTIVE)
-				.userPassword("123")
+				.userPassword("1234")
 				.userNativeLanguage(
 					Language.builder().languageId(1L).languageKorName("한국어").languageEngName("Korean").build())
 				.build();
@@ -243,11 +243,11 @@ public class InitDb {
 				.userStudyCount(2)
 				.userTotalMileage(1000)
 				.userTotalRating(8)
-				.userEmail("asd@asd.com")
-				.userLoginId("asd123")
-				.userNickname("asd")
+				.userEmail("user2@gmail.com")
+				.userLoginId("user2")
+				.userNickname("user2")
 				.userState(UserState.ACTIVE)
-				.userPassword("123")
+				.userPassword("12345")
 				.userNativeLanguage(
 					Language.builder().languageId(2L).languageKorName("영어").languageEngName("English").build())
 				.build();
@@ -255,10 +255,22 @@ public class InitDb {
 			ArrayList<UserLanguage> uls1 = new ArrayList<>();
 			ArrayList<UserLanguage> uls2 = new ArrayList<>();
 
-			// UserLanguage.builder().user()
+			Language l1 = new Language(1L, "한국어", "Korean");
+			Language l2 = new Language(2L, "영어", "English");
+			Language l3 = new Language(3L, "일본어", "Japanese");
+			Language l4 = new Language(4L, "중국어", "Chinese");
+			Grade g1 = new Grade(1L, "A1");
+			Grade g2 = new Grade(2L, "A2");
+			Grade g3 = new Grade(3L, "B1");
+			UserLanguage u1l1 = UserLanguage.builder().user(u1).language(l1).grade(g1).build();
+			UserLanguage u1l2 = UserLanguage.builder().user(u1).language(l2).grade(g2).build();
+			UserLanguage u2l3 = UserLanguage.builder().user(u2).language(l3).grade(g3).build();
 
 			em.persist(u1);
 			em.persist(u2);
+			em.persist(u1l1);
+			em.persist(u1l2);
+			em.persist(u2l3);
 
 			Study s1 = Study.builder()
 				.studyTime(15)
