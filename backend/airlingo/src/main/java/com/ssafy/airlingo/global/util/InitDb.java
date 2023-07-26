@@ -180,26 +180,32 @@ public class InitDb {
 		public void gradeInit() {
 			Grade g1 = Grade.builder()
 				.gradeName("A1")
+				.gradeScore(1)
 				.build();
 
 			Grade g2 = Grade.builder()
 				.gradeName("A2")
+				.gradeScore(2)
 				.build();
 
 			Grade g3 = Grade.builder()
 				.gradeName("B1")
+				.gradeScore(3)
 				.build();
 
 			Grade g4 = Grade.builder()
 				.gradeName("B2")
+				.gradeScore(4)
 				.build();
 
 			Grade g5 = Grade.builder()
 				.gradeName("C1")
+				.gradeScore(5)
 				.build();
 
 			Grade g6 = Grade.builder()
 				.gradeName("C2")
+				.gradeScore(6)
 				.build();
 
 			em.persist(g1);
