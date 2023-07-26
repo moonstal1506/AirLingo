@@ -21,7 +21,9 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class Matching {
 
-	private final String URL = "http://localhost:8080/api/matching/result";
+	private static final int PREMIUM_GRADE_SCORE = 3;
+	private static final int PREMIUM_USER_RATING = 4;
+	private static final String URL = "http://localhost:8080/api/matching/result";
 
 	private Queue<MatchingUserDto> matchingList = new LinkedList<>();
 
@@ -35,25 +37,46 @@ public class Matching {
 	 */
 	@Scheduled(fixedDelay = 10000, initialDelay = 1000) // 1초 후 10초마다 동작
 	public void matching() {
-		log.info("matching start");
+		log.info("matching size: {}", matchingList.size());
 		if (matchingList.size() > 1) {
 			MatchingUserDto matchingUser1 = matchingList.poll();
+
+			// 매칭 가능 유저 필터링
 			List<MatchingUserDto> matchingRequestDtoList = matchingList.stream()
-				.filter(waitingUser -> waitingUser.getUserNativeLanguage().equals(matchingUser1.getUserStudyLanguage())
-					&& matchingUser1.getUserNativeLanguage().equals(waitingUser.getUserStudyLanguage()))
+				.filter(waitingUser -> isPossibleUser(matchingUser1, waitingUser))
 				.collect(Collectors.toList());
 
 			// 매칭 실패 대기열 재진입
-			if(matchingRequestDtoList.isEmpty()){
+			if (matchingRequestDtoList.isEmpty()) {
 				log.info("matching fail");
 				matchingList.add(matchingUser1);
 				return;
 			}
 
+			// 매칭 결과 반환
 			MatchingUserDto matchingUser2 = matchingRequestDtoList.get(0);
 			matchingList.remove(matchingUser2);
 			sendMatching(new MatchingResponseDto(matchingUser1, matchingUser2));
 		}
+	}
+
+	private boolean isPossibleUser(MatchingUserDto matchingUser, MatchingUserDto waitingUser) {
+		log.info("matchingUser: {}, waitingUser: {}", matchingUser, waitingUser);
+		// 언어 필터링
+		if(!matchingUser.isMatchLanguage(waitingUser)){
+			return false;
+		}
+		// 둘다 프리미엄일 경우 둘다 프리미엄 기준을 통과해야한다.
+		if(matchingUser.isPremium() && waitingUser.isPremium()){
+			return matchingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING)
+				&& waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
+		}
+		// 현재 매칭 유저만 프리미엄일 경우 상대만 프리미엄 기준을 통과하면 된다.
+		if(matchingUser.isPremium()){
+			return waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
+		}
+		// 조건없이 매칭
+		return true;
 	}
 
 	public void sendMatching(MatchingResponseDto matchingResponseDto) {

@@ -121,6 +121,19 @@ public class UserServiceImpl implements UserService {
 		return recordList;
 	}
 
+	public List<DailyGridResponseDto> findDailyGridByUserId(Long userId) {
+		User user = userRepository.findById(userId).orElse(null);
+		if (user == null) {
+			// 사용자를 찾지 못한 경우 빈 리스트 반환
+			return Collections.emptyList();
+		}
+		List<DailyGridResponseDto> dailyGridList = dailyGridRepository.findDailyGridByUser(user)
+			.stream()
+			.map(DailyGrid::toDto)
+			.collect(Collectors.toList());
+		return dailyGridList;
+	}
+
 	@Override
 	public List<WordResponseDto> getWordListByUserId(Long userId) {
 		log.info("UserServiceImpl_getWordListByUserId -> 저장한 모든 단어 조회");
@@ -170,32 +183,22 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public void deleteWordByWordId(Long wordId) {
+	public void deleteWordsByUserIdAndWordIds(Long userId, Long[] wordIds) {
 		log.info("UserServiceImpl_deleteWordByWordId -> 단어 삭제");
 
 		// 해당 wordId에 해당하는 단어를 데이터베이스에서 조회
-		Word word = wordRepository.findById(wordId).orElse(null);
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+		for (Long wordId : wordIds) {
+			// userId와 wordId로 해당 단어를 찾아서 삭제
+			Word word = wordRepository.findByUserAndWordId(user, wordId);
 
-		// 조회된 단어가 없는 경우, NotExistWordException을 던짐
-		if (word == null) {
-			throw new NotExistWordException();
+			if (word != null) {
+				// 단어를 데이터베이스에서 삭제
+				wordRepository.delete(word);
+			} else {
+				// 조회된 단어가 없는 경우, NotExistWordException을 던짐
+				throw new NotExistWordException();
+			}
 		}
-
-		// 단어를 데이터베이스에서 삭제
-		wordRepository.delete(word);
 	}
-
-	public List<DailyGridResponseDto> findDailyGridByUserId(Long userId) {
-		User user = userRepository.findById(userId).orElse(null);
-		if (user == null) {
-			// 사용자를 찾지 못한 경우 빈 리스트 반환
-			return Collections.emptyList();
-		}
-		List<DailyGridResponseDto> dailyGridList = dailyGridRepository.findDailyGridByUser(user)
-			.stream()
-			.map(DailyGrid::toDto)
-			.collect(Collectors.toList());
-		return dailyGridList;
-	}
-
 }
