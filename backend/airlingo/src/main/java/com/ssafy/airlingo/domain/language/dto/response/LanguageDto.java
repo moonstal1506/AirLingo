@@ -25,10 +25,12 @@ public class LanguageDto {
 
 	@Schema(description = "언어 영어버전", example = "Korean")
 	private String languageEngName;
+	private String languageCode;
 
 	public LanguageDto(Language language) {
 		this.languageId = language.getLanguageId();
 		this.languageKorName = language.getLanguageKorName();
 		this.languageEngName = language.getLanguageEngName();
+		this.languageCode = language.getLanguageCode();
 	}
 }

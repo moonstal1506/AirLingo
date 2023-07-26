@@ -45,3 +45,8 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+
+#papago API
+papago:
+   id: ${PAPAGO_ID}
+   secret: ${PAPAGO_SECRET}

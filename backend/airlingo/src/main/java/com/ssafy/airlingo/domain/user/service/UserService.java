@@ -39,6 +39,6 @@ public interface UserService {
 
 	List<WordResponseDto> getWordTestListByUserId(Long userId);
 
-	void deleteWordByWordId(Long wordId);
+	void deleteWordsByUserIdAndWordIds(Long userId, Long[] wordIds);
 
 }
