@@ -1,8 +1,5 @@
 package com.ssafy.airlingo.domain.matching.request;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -25,4 +22,8 @@ public class MatchingRequestDto {
 	@NotBlank
 	@Schema(description = "사용자 학습어")
 	private String studyLanguage;
+
+	@NotNull
+	@Schema(description = "프리미엄 매칭 여부")
+	private boolean premium;
 }

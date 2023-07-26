@@ -48,4 +48,8 @@ public class MatchingUserDto {
 
 	@Schema(description = "사용자 별점")
 	private double userRating;
+
+	@NotNull
+	@Schema(description = "프리미엄 매칭 여부")
+	private boolean premium;
 }

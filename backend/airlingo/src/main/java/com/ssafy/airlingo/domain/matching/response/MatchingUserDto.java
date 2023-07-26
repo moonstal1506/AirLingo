@@ -48,4 +48,8 @@ public class MatchingUserDto {
 
 	@Schema(description = "사용자 별점")
 	private double userRating;
+
+	@NotNull
+	@Schema(description = "마일리지 사용여부")
+	private boolean usingMileage;
 }

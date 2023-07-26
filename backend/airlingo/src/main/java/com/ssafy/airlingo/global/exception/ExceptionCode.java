@@ -15,6 +15,7 @@ public enum ExceptionCode {
 	NOT_FOUND_GRADE_EXCEPTION(472, "요청한 등급을 찾을 수 없습니다."),
 	EMPTY_WORD_LIST_EXCEPTION(473, "단어장이 비어있습니다."),
 	EXPIRED_REFRESH_TOKEN_EXCEPTION(480, "Refresh Token이 만료되었습니다."),
+	NOT_ENOUGH_MILEAGE_EXCEPTION(490, "마일리지가 부족합니다."),
 	SERVER_EXCEPTION(500, "서버에서 예측하지 못한 에러가 발생했습니다.");
 
 	private final int errorCode;
