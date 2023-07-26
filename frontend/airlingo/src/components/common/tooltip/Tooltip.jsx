@@ -1,16 +1,77 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
 
+const positionCombination = {
+    left: {
+        top: {
+            down: `
+        left: 0;
+        top: -100%;
+        transform: translate(calc(-100% - 10px),0); 
+      `,
+            up: `
+        left: 0;
+        bottom: 100%;
+        transform: translate(calc(-100% - 10px),-100%); 
+      `,
+        },
+        bottom: {
+            down: `
+        left : 0;
+        top : 0%;
+        transform: translate(calc(-100% - 10px),0%); 
+      `,
+            up: `
+        left : 0;
+        bottom: 0%;
+        transform: translate(calc(-100% - 10px),-100%);
+      `,
+        },
+    },
+    right: {
+        top: {
+            down: `
+        right : -100%;
+        bottom : 100%;
+        transform: translate(calc(10px),0%);
+      `,
+            up: `
+        right : -100%;
+        bottom : 100%;
+        transform: translate(calc(10px),-100%);
+      `,
+        },
+        bottom: {
+            down: `
+        right : -100%;
+        bottom : 0;
+        transform: translate(calc(10px),0%);
+      `,
+            up: `
+         right : -100%;
+        bottom : 0;
+        transform: translate(calc(10px),-100%);
+      `,
+        },
+    },
+};
+
 function Tooltip({ position, children }) {
-    const [hover, setHover] = useState(false);
-    const handleMouseOverButton = () => setHover(true);
-    const handleMouseOutButton = () => setHover(false);
+    const { horizontal, vertical, direction } = position;
+    const [hover, setHover] = useState(true);
+    const handleMouseOver = () => setHover(true);
+    const handleMouseOut = () => setHover(false);
     return (
         <TooltipContainer>
-            <TooltipTrigger onMouseOver={handleMouseOverButton} onMouseOut={handleMouseOutButton}>
+            <TooltipTrigger onMouseOver={handleMouseOver} onMouseOut={handleMouseOut}>
                 ?
             </TooltipTrigger>
-            <TooltipBox isHover={hover} position={position}>
+            <TooltipBox
+                isHover={hover}
+                horizontal={horizontal}
+                vertical={vertical}
+                direction={direction}
+            >
                 {children}
             </TooltipBox>
         </TooltipContainer>
@@ -19,8 +80,11 @@ function Tooltip({ position, children }) {
 
 const TooltipContainer = styled.div`
     position: relative;
+    width: 20px;
+    height: 20px;
 `;
 const TooltipTrigger = styled.div`
+    cursor: pointer;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -37,70 +101,12 @@ const TooltipTrigger = styled.div`
 `;
 
 const TooltipBox = styled.div`
-    width: 300px;
-    height: 500px;
+    position: relative;
+    width: fit-content;
     background-color: red;
-    ${({ isHover }) => `display : ${isHover ? "flex" : "none"};`}
-    position : absolute;
-    ${({ position }) => {
-        const { horizontal, vertical, direction } = position;
-        if (horizontal === "left" && vertical === "top" && direction === "down") {
-            return `
-                left: 0;
-                top: 0;
-                transform: translate(-100%,0); 
-            `;
-        }
-        if (horizontal === "left" && vertical === "top" && direction === "up") {
-            return `
-                left: 0;
-                bottom: 100%;
-                transform: translate(-100%,0); 
-            `;
-        }
-        if (horizontal === "left" && vertical === "bottom" && direction === "down") {
-            return `
-                left: 0;
-                top: 100%;
-                transform: translate(-100%,0); 
-            `;
-        }
-        if (horizontal === "left" && vertical === "bottom" && direction === "up") {
-            return `
-                left : 0;
-                bottom: 0;
-                transform: translate(-100%,0%);
-            `;
-        }
-        if (horizontal === "right" && vertical === "top" && direction === "up") {
-            return `
-                left : 100%;
-                bottom : 100%;
-                transform: translate(0%,0%);
-            `;
-        }
-        if (horizontal === "right" && vertical === "top" && direction === "down") {
-            return `
-                left : 100%;
-                top : 0;
-                transform: translate(0%,0%);
-            `;
-        }
-        if (horizontal === "right" && vertical === "bottom" && direction === "up") {
-            return `
-                left : 100%;
-                bottom : 0;
-                transform: translate(0%,0%);
-            `;
-        }
-        if (horizontal === "right" && vertical === "bottom" && direction === "down") {
-            return `
-                left : 100%;
-                top : 100;
-                transform: translate(0%,0%);
-            `;
-        }
-        return "";
-    }}
+    transition: opacity 0.5s;
+    opacity: ${({ isHover }) => (isHover ? "1" : "0")};
+    ${({ horizontal, vertical, direction }) => positionCombination[horizontal][vertical][direction]}
+    visibility: ${({ isHover }) => (isHover ? "visible" : "hidden")};
 `;
 export default Tooltip;
