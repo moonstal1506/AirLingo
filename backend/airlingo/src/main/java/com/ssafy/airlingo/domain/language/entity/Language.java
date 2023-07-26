@@ -39,6 +39,7 @@ public class Language {
 			.languageId(languageId)
 			.languageKorName(languageKorName)
 			.languageEngName(languageEngName)
+			.languageCode(languageCode)
 			.build();
 	}
 }
