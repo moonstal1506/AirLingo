@@ -38,8 +38,8 @@ public class MatchingController {
 
 	@Operation(summary = "Matching", description = "매칭 대기열 등록")
 	@PostMapping("/matching")
-	public ResponseResult matching(@RequestBody @Valid MatchingRequestDto matchingRequestDto) {
-		log.info("matching : {}", matchingRequestDto);
+	public ResponseResult matching(@RequestBody MatchingRequestDto matchingRequestDto) {
+		log.info("matching request : {}", matchingRequestDto);
 		MatchingUserDto matchingUser = matchingService.findMatchingUser(matchingRequestDto);
 		producer.sendMatchingUser(matchingUser);
 		return ResponseResult.successResponse;
@@ -48,6 +48,7 @@ public class MatchingController {
 	@Operation(summary = "Matching Result", description = "매칭 결과 반환")
 	@PostMapping("/matching/result")
 	public ResponseResult matchingResult(@RequestBody MatchingResponseDto matchingResponseDto) {
+		matchingService.useMileage(matchingResponseDto);
 		log.info("matchingResult : {}", matchingResponseDto.toString());
 		return ResponseResult.successResponse;
 	}

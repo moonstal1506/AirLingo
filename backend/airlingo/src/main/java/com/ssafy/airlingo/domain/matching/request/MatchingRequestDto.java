@@ -20,8 +20,8 @@ public class MatchingRequestDto {
 	private Long userId;
 
 	@NotBlank
-	@Schema(description = "사용자 학습어")
-	private String studyLanguage;
+	@Schema(description = "사용자 학습 언어 ID")
+	private Long studyLanguageId;
 
 	@NotNull
 	@Schema(description = "프리미엄 매칭 여부")
