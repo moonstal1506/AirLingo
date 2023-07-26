@@ -19,7 +19,7 @@ public class MatchingRequestDto {
 	@Schema(description = "사용자 ID", required = true)
 	private Long userId;
 
-	@NotBlank
+	@NotNull
 	@Schema(description = "사용자 학습 언어 ID")
 	private Long studyLanguageId;
 
