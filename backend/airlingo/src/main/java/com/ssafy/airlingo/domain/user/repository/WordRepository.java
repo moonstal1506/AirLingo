@@ -11,4 +11,6 @@ import com.ssafy.airlingo.domain.user.entity.Word;
 @Repository
 public interface WordRepository extends JpaRepository<Word, Long> {
 	List<Word> findByUser(User user);
+
+	Word findByUserAndWordId(User user, Long wordId);
 }
