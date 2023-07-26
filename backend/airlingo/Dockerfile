@@ -9,7 +9,7 @@ COPY . /usr/src/app
 RUN gradle build --no-daemon -x test
 
 FROM openjdk:17-alpine
-EXPOSE 8080
+EXPOSE 8081
 WORKDIR /usr/src/app
 #--from=builder /usr/src/app/build/libs/*.jar 이전 임시 컨테이너에 생성된 파일
 #결국 /usr/src/app 밑에 airlingo-0.0.1-SNAPSHOT.jar파일을 복사!
