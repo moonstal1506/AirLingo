@@ -148,7 +148,7 @@ public class User extends BaseTimeEntity {
 				.collect(Collectors.toList()))
 			.userRating(this.getUserRating())
 			.userBio(this.getUserBio())
-			.usingMileage(matchingRequestDto.isPremium())
+			.premium(matchingRequestDto.isPremium())
 			.build();
 	}
 

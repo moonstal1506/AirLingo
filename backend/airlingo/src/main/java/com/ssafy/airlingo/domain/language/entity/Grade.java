@@ -30,8 +30,12 @@ public class Grade {
 	@Column(nullable = false, unique = true, length = 100)
 	private String gradeName;
 
-	public Grade(String gradeName) {
+	@Column(nullable = false)
+	private int gradeScore;
+
+	public Grade(String gradeName, int gradeScore) {
 		this.gradeName = gradeName;
+		this.gradeScore = gradeScore;
 	}
 
 	public GradeDto toGradeDto() {
