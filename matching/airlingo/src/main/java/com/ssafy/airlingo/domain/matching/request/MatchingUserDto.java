@@ -47,5 +47,5 @@ public class MatchingUserDto {
 	private List<String> userInterestLanguages;
 
 	@Schema(description = "사용자 별점")
-	private int userRating;
+	private double userRating;
 }
