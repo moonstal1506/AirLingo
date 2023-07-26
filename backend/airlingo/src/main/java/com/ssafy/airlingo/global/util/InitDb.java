@@ -259,9 +259,9 @@ public class InitDb {
 			Language l2 = new Language(2L, "영어", "English");
 			Language l3 = new Language(3L, "일본어", "Japanese");
 			Language l4 = new Language(4L, "중국어", "Chinese");
-			Grade g1 = new Grade(1L, "A1");
-			Grade g2 = new Grade(2L, "A2");
-			Grade g3 = new Grade(3L, "B1");
+			Grade g1 = new Grade(1L, "A1",1);
+			Grade g2 = new Grade(2L, "A2",2);
+			Grade g3 = new Grade(3L, "B1",3);
 			UserLanguage u1l1 = UserLanguage.builder().user(u1).language(l1).grade(g1).build();
 			UserLanguage u1l2 = UserLanguage.builder().user(u1).language(l2).grade(g2).build();
 			UserLanguage u2l3 = UserLanguage.builder().user(u2).language(l3).grade(g3).build();
