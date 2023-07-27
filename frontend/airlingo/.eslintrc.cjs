@@ -22,6 +22,6 @@ module.exports = {
         "react/jsx-filename-extension": ["error", { extensions: [".js", ".jsx"] }],
         "import/no-unresolved": "off",
         "import/extensions": "off",
-        "react/prop-types" : "off"
+        "react/prop-types": "off",
     },
 };
