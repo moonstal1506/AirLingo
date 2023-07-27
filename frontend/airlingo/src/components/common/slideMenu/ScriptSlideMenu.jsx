@@ -13,15 +13,15 @@ function ScriptSliderMenu({ contentGroup }) {
         setSlideIdx(+closestButton.id);
     };
 
-    const handleClickSliderButton = () => setSlideOpen((prev) => !prev);
+    const handleClickSlideButton = () => setSlideOpen((prev) => !prev);
 
     return (
-        <MainContainer>
-            <ScriptSlideButtonWrapper slideOpen={slideOpen} onClick={handleClickSliderButton}>
+        <SlideMenuContainer>
+            <SlideButtonWrapper slideOpen={slideOpen} onClick={handleClickSlideButton}>
                 <ScriptIcon />
                 스크립트
-            </ScriptSlideButtonWrapper>
-            <ScriptSliderMenuContainer slideOpen={slideOpen}>
+            </SlideButtonWrapper>
+            <MenuContainer slideOpen={slideOpen}>
                 <MenuHeaderButtonBox onClick={handleClickButton}>
                     {contentGroup.map((CurContent, idx) => (
                         <MenuHeaderButtonWrapper key={CurContent.Icon.name} id={idx}>
@@ -32,21 +32,21 @@ function ScriptSliderMenu({ contentGroup }) {
                 <MenuContentBox>
                     <CurrentContent />
                 </MenuContentBox>
-            </ScriptSliderMenuContainer>
-        </MainContainer>
+            </MenuContainer>
+        </SlideMenuContainer>
     );
 }
 
-const MainContainer = styled.div`
+const SlideMenuContainer = styled.div`
     width: 540px;
     overflow: hidden;
     position: absolute;
-    top: 0;
+    bottom: 0;
     right: 0;
     height: 100vh;
 `;
 
-const ScriptSliderMenuContainer = styled.div`
+const MenuContainer = styled.div`
     width: 420px;
     top: 0;
     right: -100%;
@@ -81,7 +81,7 @@ const MenuContentBox = styled.div`
     width: 420px;
 `;
 
-const ScriptSlideButtonWrapper = styled.button`
+const SlideButtonWrapper = styled.button`
     cursor: pointer;
     width: 120px;
     height: 100px;
