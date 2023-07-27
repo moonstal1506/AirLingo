@@ -1,6 +1,6 @@
 package com.ssafy.airlingo.domain.study.dto.response;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.ssafy.airlingo.domain.study.entity.Study;
@@ -17,10 +17,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @Builder
-@Schema(description = "날짜별 스크립트 목록")
-public class DailyScriptResponseDto {
-	private LocalDate createdDate;
+@Schema(description = "스크립트 정보")
+public class UserStudyResponseDto {
 	private Long scriptId;
+	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+	private Study study;
 	private String scriptContent;
 	private String scriptUrl;
+	private LocalDateTime createdDate;
 }
