@@ -122,7 +122,12 @@ public class User extends BaseTimeEntity {
 			.userPassportStyle(userPassportStyle)
 			.userLanguages(this.getUserLanguages()
 				.stream()
-				.map(userLanguage -> new LanguageDto(userLanguage.getLanguage()))
+				.map(userLanguage -> LanguageDto.builder()
+					.languageId(userLanguage.getLanguage().getLanguageId())
+					.gradeName(userLanguage.getGrade().getGradeName())
+						.languageKorName(userLanguage.getLanguage().getLanguageKorName())
+							.languageEngName(userLanguage.getLanguage().getLanguageEngName())
+					.build())
 				.collect(Collectors.toList()))
 			.build();
 	}
