@@ -28,6 +28,8 @@ public class JwtService {
 	private static final int ACCESS_TOKEN_EXPIRE_MINUTES = 30; // minutes
 	private static final int REFRESH_TOKEN_EXPIRE_MINUTES = 2; // weeks
 
+	private static final String SECRET_KEY = "SSAFY_A308_AIRLINGO_BACKEND_SECRET_KEY";
+
 	public <T> String createAccessToken(String key, T data) {
 		return create("access-token", key, data, 1000 * 60 * ACCESS_TOKEN_EXPIRE_MINUTES); // ms
 	}
@@ -71,10 +73,7 @@ public class JwtService {
 
 	// Signature에 사용될 secret key 생성
 	private byte[] generateKey() {
-		byte[] keyBytes = new byte[KEY_SIZE_BITS / 8];
-		SecureRandom secureRandom = new SecureRandom();
-		secureRandom.nextBytes(keyBytes);
-		return Keys.hmacShaKeyFor(keyBytes).getEncoded();
+		return Keys.hmacShaKeyFor(SECRET_KEY.getBytes()).getEncoded();
 	}
 
 	//	전달 받은 토큰이 제대로 생성된것인지 확인 하고 문제가 있다면 UnauthorizedException을 발생.
@@ -92,14 +91,13 @@ public class JwtService {
 		}
 	}
 
-	public Map<String, Object> get(String key) {
-		HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.currentRequestAttributes())
-			.getRequest();
-		String jwt = request.getHeader("access-token");
+	public Map<String, Object> get(HttpServletRequest request) {
+		String jwt = request.getHeader("Authorization");
 		Jws<Claims> claims;
 		try {
 			claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(jwt);
 		} catch (Exception e) {
+			logger.info(e.getMessage());
 			throw new ExpiredRefreshTokenException();
 		}
 		Map<String, Object> value = claims.getBody();

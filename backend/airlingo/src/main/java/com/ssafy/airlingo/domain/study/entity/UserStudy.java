@@ -1,6 +1,8 @@
 package com.ssafy.airlingo.domain.study.entity;
 
+import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.user.entity.User;
+import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -21,7 +23,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "user_study")
 @Entity
-public class UserStudy {
+public class UserStudy extends BaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,4 +36,9 @@ public class UserStudy {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "study_id", nullable = false)
 	private Study study;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "language_id", nullable = false)
+	private Language language;
+
 }
