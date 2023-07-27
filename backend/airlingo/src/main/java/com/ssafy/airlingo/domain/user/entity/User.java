@@ -7,8 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
-import com.ssafy.airlingo.domain.matching.request.MatchingRequestDto;
-import com.ssafy.airlingo.domain.matching.response.MatchingUserDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
@@ -30,6 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AttributeOverride(name = "createdDate", column = @Column(name = "user_created_date"))
 @AttributeOverride(name = "modifiedDate", column = @Column(name = "user_modified_date"))
@@ -38,6 +37,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 public class User extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -137,27 +137,21 @@ public class User extends BaseTimeEntity {
 		userLanguage.setUser(null);
 	}
 
-	public MatchingUserDto toMatchingUserDto(MatchingRequestDto matchingRequestDto) {
-		return MatchingUserDto.builder()
-			.userNickname(this.userNickname)
-			.userImgUrl(this.userImgUrl)
-			.userNativeLanguage(this.userNativeLanguage.getLanguageKorName())
-			.userStudyLanguage(matchingRequestDto.getStudyLanguage())
-			.userInterestLanguages(this.userLanguages.stream()
-				.map(userLanguage -> userLanguage.getLanguage().getLanguageKorName())
-				.collect(Collectors.toList()))
-			.userRating(this.getUserRating())
-			.userBio(this.getUserBio())
-			.build();
-	}
-
 	public void addComplainCount() {
 		this.userComplain += 1;
 	}
 
-	public void renewRatingAndStudyCount(float rating) {
+	public void renewRatingAndStudyCount(double rating) {
 		userTotalRating += rating;
 		userStudyCount += 1;
 		userRating = userTotalRating / userStudyCount;
+	}
+
+	public boolean isImpossiblePremiumMatching(int premiumMileage) {
+		return userMileage < premiumMileage;
+	}
+
+	public void useMileage(int premiumMileage) {
+		userMileage -= premiumMileage;
 	}
 }

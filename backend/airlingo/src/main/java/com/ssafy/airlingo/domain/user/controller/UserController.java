@@ -113,16 +113,21 @@ public class UserController {
 		return new ListResponseResult<>(userService.getWordTestListByUserId(userId));
 	}
 
-	@Operation(summary = "Delete Word", description = "선택한 단어 삭제")
+	@Operation(summary = "Delete Words", description = "선택한 단어 리스트 삭제")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "단어 삭제 성공"),
+		@ApiResponse(responseCode = "460", description = "요청한 단어가 존재하지 않습니다"),
 		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
 	})
-	@DeleteMapping("/word/{wordId}")
-	public ResponseResult deleteWordByWordId(@PathVariable Long wordId) {
+	@DeleteMapping("/word/{userId}")
+	public ResponseResult deleteWordByWordId(@PathVariable Long userId, @RequestBody Long[] wordIds) {
 		log.info("UserController_deleteWordByWordId -> 단어 삭제 시작");
-		userService.deleteWordByWordId(wordId);
+		// try {
+		userService.deleteWordsByUserIdAndWordIds(userId, wordIds);
 		return ResponseResult.successResponse;
+		// } catch (Exception e) {
+		// 	return ResponseResult.failResponse;
+		// }
 	}
 
 	@Operation(summary = "GetDailyGrid", description = "데일리 그리드 개수 조회")
