@@ -49,7 +49,7 @@ const MainContainer = styled.div`
 const ScriptSliderMenuContainer = styled.div`
     width: 420px;
     top: 0;
-    right: 0;
+    right: -100%;
     height: 100%;
     position: relative;
     transition: transform 0.3s ease-in-out;
@@ -89,7 +89,7 @@ const ScriptSlideButtonWrapper = styled.button`
     background: #fff;
     border: none;
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25);
-
+    z-index: 999;
     top: calc(60px);
     right: 0;
     position: absolute;
