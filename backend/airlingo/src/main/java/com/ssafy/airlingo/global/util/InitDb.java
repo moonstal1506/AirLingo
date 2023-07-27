@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.airlingo.domain.content.entity.Card;
 import com.ssafy.airlingo.domain.content.entity.CardCode;
+import com.ssafy.airlingo.domain.content.entity.Sentence;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
@@ -26,14 +27,15 @@ public class InitDb {
 
 	private final InitService initService;
 
-	@PostConstruct
-	public void init() {
-		initService.reportItemInit();
-		initService.CardInit();
-		initService.gradeInit();
-		initService.languageInit();
-		initService.userAndStudyInit();
-	}
+	// @PostConstruct
+	// public void init() {
+	// 	initService.reportItemInit();
+	// 	initService.CardInit();
+	// 	initService.gradeInit();
+	// 	initService.languageInit();
+	// 	initService.userAndStudyInit();
+	// 	initService.sentenceInit();
+	// }
 
 	@Component
 	@Transactional
@@ -290,6 +292,39 @@ public class InitDb {
 
 			em.persist(us1);
 			em.persist(us2);
+		}
+
+		public void sentenceInit() {
+			Sentence sentence1 = Sentence.builder()
+				.sentenceEng("As far as I am concerned, the report should be finished now.")
+				.sentenceKor("제가 아는 바에 의하면 지금쯤 보고서가 완성되었어야 하는데요.")
+				.build();
+
+			Sentence sentence2 = Sentence.builder()
+				.sentenceEng("I've completed the research but I still need time to write up the report.")
+				.sentenceKor("연구를 끝냈습니다만, 보고서를 작성하기 위한 시간이 더 필요해요.")
+				.build();
+
+			Sentence sentence3 = Sentence.builder()
+				.sentenceEng("We do have a table in the garden if you'd prefer to eat out there.")
+				.sentenceKor("밖에서 식사하는 것이 좋다면 정원에 테이블이 준비되어 있습니다.")
+				.build();
+
+			Sentence sentence4 = Sentence.builder()
+				.sentenceEng("he receptionist wants to know if you can help her with her computer.")
+				.sentenceKor("접수원은 당신이 컴퓨터에 관련된 도움을 줄 수 있는지 알고 싶어해요.")
+				.build();
+
+			Sentence sentence5 = Sentence.builder()
+				.sentenceEng("You still have to deal with traffic.")
+				.sentenceKor("여전히 교통 문제를 해결해야 할거에요.")
+				.build();
+
+			em.persist(sentence1);
+			em.persist(sentence2);
+			em.persist(sentence3);
+			em.persist(sentence4);
+			em.persist(sentence5);
 		}
 
 	}
