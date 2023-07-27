@@ -7,6 +7,8 @@ spring:
       hibernate: # hibernate property 설정
         format_sql: true # 보여지는 쿼리를 예쁘게 포맷팅 -> 사용하지않으면 긴 줄 형태로 출력됌
 
+server:
+  port: 8081
 
   rabbitmq:
     host: localhost
