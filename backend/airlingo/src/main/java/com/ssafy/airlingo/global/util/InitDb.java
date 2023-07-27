@@ -2,6 +2,7 @@ package com.ssafy.airlingo.global.util;
 
 import java.util.ArrayList;
 
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,6 +22,7 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
+@Profile("prod")
 @Component
 @RequiredArgsConstructor
 public class InitDb {
