@@ -12,7 +12,8 @@ import com.ssafy.airlingo.domain.user.entity.User;
 @Repository
 public interface RecordRepository extends JpaRepository<Record, Long> {
 
-	List<Record> findByUser(User user);
+	@EntityGraph(attributePaths = {"user", "language", "study"})
+	List<Record> findRecordWithUserAndLanguageAndStudyByUser(User user);
 
 	@EntityGraph(attributePaths = {"user", "language", "grade", "study"})
 	List<Record> findRecordByUser(User user);
