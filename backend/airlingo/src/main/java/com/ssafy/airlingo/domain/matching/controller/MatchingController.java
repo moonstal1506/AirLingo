@@ -1,5 +1,6 @@
 package com.ssafy.airlingo.domain.matching.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,9 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 import com.ssafy.airlingo.domain.matching.request.MatchingRequestDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingResponseDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingUserDto;
-import com.ssafy.airlingo.domain.matching.service.MatchingServiceImpl;
+import com.ssafy.airlingo.domain.matching.service.MatchingService;
 import com.ssafy.airlingo.domain.matching.service.MatchingUserProducer;
 import com.ssafy.airlingo.global.response.ResponseResult;
+import com.ssafy.airlingo.global.response.SingleResponseResult;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -30,14 +32,14 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "Matching Controller", description = "매칭 관련 컨트롤러")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/matching")
 public class MatchingController {
 
 	private final MatchingUserProducer producer;
-	private final MatchingServiceImpl matchingService;
+	private final MatchingService matchingService;
 
 	@Operation(summary = "Matching", description = "매칭 대기열 등록")
-	@PostMapping("/matching")
+	@PostMapping
 	public ResponseResult matching(@RequestBody @Valid MatchingRequestDto matchingRequestDto) {
 		log.info("matching request : {}", matchingRequestDto);
 		MatchingUserDto matchingUser = matchingService.findMatchingUser(matchingRequestDto);
@@ -46,10 +48,16 @@ public class MatchingController {
 	}
 
 	@Operation(summary = "Matching Result", description = "매칭 결과 반환")
-	@PostMapping("/matching/result")
+	@PostMapping("/result")
 	public ResponseResult matchingResult(@RequestBody @Valid MatchingResponseDto matchingResponseDto) {
 		matchingService.useMileage(matchingResponseDto);
 		log.info("matchingResult : {}", matchingResponseDto.toString());
 		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Concurrent Users size", description = "실시간 사용자 통계")
+	@GetMapping("/concurrent-users")
+	public SingleResponseResult countConcurrentUsers() {
+		return new SingleResponseResult<>(matchingService.getConcurrentUsersSize());
 	}
 }

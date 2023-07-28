@@ -19,11 +19,11 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
-public class Matching {
+public class MatchingService {
 
 	private static final int PREMIUM_GRADE_SCORE = 3;
 	private static final int PREMIUM_USER_RATING = 4;
-	private static final String URL = "http://localhost:8080/api/matching/result";
+	private static final String URL = "http://localhost:8081/api/matching/result";
 
 	private Queue<MatchingUserDto> matchingList = new LinkedList<>();
 
@@ -92,5 +92,9 @@ public class Matching {
 
 	public void add(MatchingUserDto matchingUserDto) {
 		matchingList.add(matchingUserDto);
+	}
+
+	public int countWaitingUsers() {
+		return matchingList.size();
 	}
 }

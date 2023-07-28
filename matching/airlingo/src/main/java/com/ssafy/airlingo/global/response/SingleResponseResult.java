@@ -1,9 +1,7 @@
 package com.ssafy.airlingo.global.response;
 
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
 @Getter
 public class SingleResponseResult<T> extends ResponseResult {
 
