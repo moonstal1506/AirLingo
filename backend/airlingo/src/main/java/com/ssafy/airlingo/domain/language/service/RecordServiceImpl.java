@@ -1,8 +1,13 @@
 package com.ssafy.airlingo.domain.language.service;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.stereotype.Service;
 
 import com.ssafy.airlingo.domain.language.dto.request.EvaluateUserRequestDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningLanguageResponseDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningTimeResponseDto;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.Record;
@@ -50,4 +55,22 @@ public class RecordServiceImpl implements RecordService {
 		return Record.createNewRecord(user, language, grade, study);
 	}
 
+	@Override
+	public LearningTimeResponseDto findLearningTimeByUser(Long userId) {
+		User user = userRepository.findById(userId).get();
+		List<Record> records = recordRepository.findRecordWithUserAndLanguageAndStudyByUser(user);
+
+		int totalTime = records.stream().mapToInt(record -> record.getStudy().getStudyTime()).sum();
+		List<LearningLanguageResponseDto> learningLanguageResponseDtoList = records.stream().map(record -> LearningLanguageResponseDto.builder()
+				.languageId(record.getLanguage().getLanguageId())
+				.languageName(record.getLanguage().getLanguageKorName())
+				.percent(String.format("%.1f", record.getStudy().getStudyTime() / (double)totalTime))
+				.build())
+			.collect(Collectors.toList());
+
+		return LearningTimeResponseDto.builder()
+			.learningLanguageResponseList(learningLanguageResponseDtoList)
+			.totalStudyTime(totalTime)
+			.build();
+	}
 }
