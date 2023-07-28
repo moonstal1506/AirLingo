@@ -28,6 +28,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @AttributeOverride(name = "createdDate", column = @Column(name = "user_created_date"))
 @AttributeOverride(name = "modifiedDate", column = @Column(name = "user_modified_date"))
@@ -36,6 +37,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
+@ToString
 public class User extends BaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -120,7 +122,12 @@ public class User extends BaseTimeEntity {
 			.userPassportStyle(userPassportStyle)
 			.userLanguages(this.getUserLanguages()
 				.stream()
-				.map(userLanguage -> new LanguageDto(userLanguage.getLanguage()))
+				.map(userLanguage -> LanguageDto.builder()
+					.languageId(userLanguage.getLanguage().getLanguageId())
+					.gradeName(userLanguage.getGrade().getGradeName())
+						.languageKorName(userLanguage.getLanguage().getLanguageKorName())
+							.languageEngName(userLanguage.getLanguage().getLanguageEngName())
+					.build())
 				.collect(Collectors.toList()))
 			.build();
 	}

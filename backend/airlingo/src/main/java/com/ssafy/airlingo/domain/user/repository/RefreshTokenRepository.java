@@ -29,6 +29,7 @@ public class RefreshTokenRepository {
 		log.info("RefreshTokenRepository_saveRefreshToken -> 토큰 저장");
 		String key = getRefreshTokenKey(userLoginId);
 		hashOperations.put(key, "token", refreshToken);
+		redisTemplate.expire(key, 14, TimeUnit.DAYS);
 	}
 
 	public String findRefreshToken(String userLoginId) {
