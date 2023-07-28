@@ -16,7 +16,7 @@ const ContainerWrapper = styled.div`
     align-items: center;
     width: ${({ width }) => width}px;
     height: ${({ height }) => height}px;
-    padding: 10px 20px;
+    padding: 20px 20px;
     border-radius: 20px;
     border: 3px solid ${(props) => props.theme.colors.primary4};
 `;
