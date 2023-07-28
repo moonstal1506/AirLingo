@@ -23,5 +23,11 @@ module.exports = {
         "import/no-unresolved": "off",
         "import/extensions": "off",
         "react/prop-types": "off",
+        "jsx-a11y/label-has-associated-control": [
+            2,
+            {
+                labelAttributes: ["htmlFor"],
+            },
+        ],
     },
 };
