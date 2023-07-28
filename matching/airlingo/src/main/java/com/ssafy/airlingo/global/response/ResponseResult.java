@@ -9,13 +9,11 @@ import com.ssafy.airlingo.global.exception.ExceptionCode;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
 
 @Getter
 @SuperBuilder
 @AllArgsConstructor
-@NoArgsConstructor
 @Schema(title = "요청 결과", description = "프론트에서의 요청의 성공,실패 여부")
 public class ResponseResult {
 

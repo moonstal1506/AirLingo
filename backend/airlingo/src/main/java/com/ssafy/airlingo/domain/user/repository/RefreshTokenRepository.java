@@ -1,8 +1,8 @@
 package com.ssafy.airlingo.domain.user.repository;
 
-import java.util.concurrent.TimeUnit;
-
+import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
+import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 
@@ -17,8 +17,11 @@ public class RefreshTokenRepository {
 	private final RedisTemplate<String, String> redisTemplate;
 	private final HashOperations<String, String, String> hashOperations;
 
-	public RefreshTokenRepository(RedisTemplate<String, String> redisTemplate) {
+	public RefreshTokenRepository(RedisTemplate<String, String> redisTemplate,
+		RedisConnectionFactory redisConnectionFactory) {
 		this.redisTemplate = redisTemplate;
+		this.redisTemplate.setConnectionFactory(redisConnectionFactory);
+		this.redisTemplate.afterPropertiesSet();
 		this.hashOperations = redisTemplate.opsForHash();
 	}
 
@@ -42,6 +45,11 @@ public class RefreshTokenRepository {
 
 	private String getRefreshTokenKey(String userLoginId) {
 		return REFRESH_TOKEN_KEY_PREFIX + userLoginId;
+	}
+
+	public Long countConcurrentUsers() {
+		log.info("countConcurrentUsers -> 토큰 개수로 동시접속자 수 확인");
+		return redisTemplate.execute((RedisCallback<Long>)connection -> connection.dbSize());
 	}
 }
 
