@@ -1,6 +1,7 @@
 package com.ssafy.airlingo.domain.language.service;
 
 import com.ssafy.airlingo.domain.language.dto.request.EvaluateUserRequestDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningTimeResponseDto;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.Record;
@@ -11,4 +12,6 @@ public interface RecordService {
 	boolean evaluateUser(EvaluateUserRequestDto evaluateUserRequestDto);
 
 	Record createNewRecordAndRenewUserRating(User user, Language language, Grade grade, Study study, float rating);
+
+	LearningTimeResponseDto findLearningTimeByUser(Long userId);
 }
