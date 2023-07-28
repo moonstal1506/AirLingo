@@ -1,5 +1,7 @@
 package com.ssafy.airlingo.domain.user.repository;
 
+import java.util.concurrent.TimeUnit;
+
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisCallback;
