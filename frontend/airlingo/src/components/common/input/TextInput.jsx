@@ -11,6 +11,8 @@ function TextInput({
     width = "300px",
     height = "50px",
     maxLength = 50,
+    value,
+    onChange,
 }) {
     return (
         <TextInputWrapper
@@ -20,6 +22,8 @@ function TextInput({
             width={width}
             height={height}
             maxLength={maxLength}
+            value={value}
+            onChange={onChange}
         />
     );
 }
