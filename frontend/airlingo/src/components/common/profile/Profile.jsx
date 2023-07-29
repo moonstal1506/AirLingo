@@ -1,12 +1,22 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
-function Profile({ src, size = "normal" }) {
+function Profile({ src, size }) {
     return (
         <ProfileBox size={size}>
             <ProfileWrapper src={src} />
         </ProfileBox>
     );
 }
+
+Profile.propTypes = {
+    src: PropTypes.string.isRequired,
+    size: PropTypes.oneOf(["small", "normal", "large"]),
+};
+
+Profile.defaultProps = {
+    size: "normal",
+};
 
 const ProfileBox = styled.div`
     border-radius: 70%;

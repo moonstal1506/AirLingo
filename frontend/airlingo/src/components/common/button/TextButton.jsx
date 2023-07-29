@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import theme from "@/assets/styles/Theme";
 import combineShape from "@/utils/style";
@@ -57,6 +58,19 @@ function TextButton({ type = "button", text, onClick, shape = "positive-rounded"
         </TextButtonWrapper>
     );
 }
+
+TextButton.propTypes = {
+    type: PropTypes.string,
+    text: PropTypes.string.isRequired,
+    onClick: PropTypes.func,
+    shape: PropTypes.string,
+};
+
+TextButton.defaultProps = {
+    type: "button",
+    onClick: () => {},
+    shape: "positive-rounded",
+};
 
 const TextButtonWrapper = styled.button`
     height: 50px;

@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { useState } from "react";
 import { ReactComponent as ScriptIcon } from "@/assets/imgs/icons/script-icon.svg";
@@ -36,6 +37,15 @@ function ScriptSliderMenu({ contentGroup }) {
         </SlideMenuContainer>
     );
 }
+
+ScriptSliderMenu.propTypes = {
+    contentGroup: PropTypes.arrayOf(
+        PropTypes.shape({
+            Content: PropTypes.func.isRequired,
+            Icon: PropTypes.elementType.isRequired,
+        }),
+    ).isRequired,
+};
 
 const SlideMenuContainer = styled.div`
     width: 540px;

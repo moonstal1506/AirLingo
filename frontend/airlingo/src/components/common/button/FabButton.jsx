@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import theme from "@/assets/styles/Theme";
 import combineShape from "@/utils/style";
@@ -31,14 +32,7 @@ const categoryStyle = {
 
 // ----------------------------------------------------------------------------------------------------
 
-function FabButton({
-    type = "button",
-    icon: Icon,
-    onClick,
-    category,
-    iconColor,
-    disabled = false,
-}) {
+function FabButton({ type, icon: Icon, onClick, category, iconColor, disabled }) {
     return (
         <FabButtonWrapper type={type} onClick={onClick} category={category} disabled={disabled}>
             <IconWrapper iconColor={iconColor}>
@@ -47,6 +41,23 @@ function FabButton({
         </FabButtonWrapper>
     );
 }
+
+FabButton.propTypes = {
+    type: PropTypes.string,
+    icon: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
+    category: PropTypes.oneOf(["white", "red", "active"]),
+    iconColor: PropTypes.string,
+    disabled: PropTypes.bool,
+};
+
+FabButton.defaultProps = {
+    type: "button",
+    onClick: () => {},
+    category: "white",
+    iconColor: "default",
+    disabled: false,
+};
 
 const FabButtonWrapper = styled.button`
     display: flex;

@@ -1,6 +1,5 @@
 import styled from "@emotion/styled";
-
-// ----------------------------------------------------------------------------------------------------
+import PropTypes from "prop-types";
 
 function Container({ width, height, children }) {
     return (
@@ -9,6 +8,12 @@ function Container({ width, height, children }) {
         </ContainerWrapper>
     );
 }
+
+Container.propTypes = {
+    width: PropTypes.number.isRequired,
+    height: PropTypes.number.isRequired,
+    children: PropTypes.node.isRequired,
+};
 
 const ContainerWrapper = styled.div`
     display: flex;
@@ -20,7 +25,5 @@ const ContainerWrapper = styled.div`
     border-radius: 20px;
     border: 3px solid ${(props) => props.theme.colors.primary4};
 `;
-
-// ----------------------------------------------------------------------------------------------------
 
 export default Container;

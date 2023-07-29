@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
 /*
@@ -7,6 +8,10 @@ input, textarea 우측에 icon버튼을 넣어주는 컴포넌트
 function MixIconButtonInput({ children }) {
     return <InputButtonGroupContainer>{children}</InputButtonGroupContainer>;
 }
+
+MixIconButtonInput.propTypes = {
+    children: PropTypes.node.isRequired,
+};
 
 const InputButtonGroupContainer = styled.label`
     position: relative;
