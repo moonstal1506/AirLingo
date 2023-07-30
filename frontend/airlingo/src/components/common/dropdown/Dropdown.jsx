@@ -1,79 +1,164 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
+import { keyframes } from "@emotion/react";
 import theme from "@/assets/styles/Theme";
+import { ReactComponent as DropdownIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
+import iconConfig from "@/config";
+import combineShape from "@/utils/style";
 
 // ----------------------------------------------------------------------------------------------------
 
-const { primary4 } = theme.colors;
-
-// ----------------------------------------------------------------------------------------------------
-
-const DropdownWrapper = styled.div`
-    position: relative;
-    display: inline-block;
-`;
-
-const DropdownButton = styled.button`
-    min-width: 120px;
-    background-color: ${primary4};
-    color: #ffffff;
-    padding: 10px;
-    border: none;
-    cursor: pointer;
-`;
-
-const DropdownContent = styled.div`
-    display: ${(props) => (props.open ? "block" : "none")};
-    position: absolute;
-    background-color: #fff;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    z-index: 1;
-`;
-
-const DropdownOption = styled.div`
-    padding: 10px;
-    display: flex;
-    align-items: center;
-    cursor: pointer;
-
-    img {
-        margin-right: 8px;
-        width: 24px;
-        height: 24px;
+const { primary1, primary4 } = theme.colors;
+const shapeStyle = {
+    positive: `
+        background-color: ${primary4};
+        border: none;
+        color: #FFFFFF;
+    `,
+    negative: `
+        background-color: #FFFFFF;
+        border: 3px solid ${primary4};
+        color: ${primary4};
+    `,
+};
+const dropdownOpenAnimation = keyframes`
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 `;
 
-function Dropdown({ icon, data }) {
+// ----------------------------------------------------------------------------------------------------
+
+function Dropdown({
+    width = "200px",
+    data,
+    iconColor,
+    shape = "positive",
+    defaultOption = null,
+    placeholder = "",
+}) {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(null);
+    const [selectedOption, setSelectedOption] = useState(defaultOption);
+    const [iconRotation, setIconRotation] = useState(0);
+    const dropdownRef = useRef();
+
+    useEffect(() => {
+        setSelectedOption(defaultOption);
+        const handleOutsideClick = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+                setIconRotation(0);
+            }
+        };
+        document.addEventListener("click", handleOutsideClick);
+        return () => {
+            document.removeEventListener("click", handleOutsideClick);
+        };
+    }, [defaultOption]);
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
+        setIconRotation(isOpen ? 0 : 90);
     };
 
     const handleOptionClick = (id) => {
-        setSelectedOption((prevSelectedOption) => (prevSelectedOption === id ? null : id));
+        const selected = data.find((option) => option.id === id);
+        setSelectedOption(selected);
+        setIsOpen(false);
+        setIconRotation(0);
     };
 
     return (
-        <DropdownWrapper>
-            <DropdownButton onClick={toggleDropdown}>
-                {icon && <img src={icon} alt="Icon" />}
-                {data[0].label}
+        <DropdownWrapper ref={dropdownRef} width={width}>
+            <DropdownButton onClick={toggleDropdown} shape={shape}>
+                {selectedOption ? (
+                    <>
+                        <div>
+                            <selectedOption.img />
+                        </div>
+                        <div>{selectedOption.label}</div>
+                    </>
+                ) : (
+                    <div>{placeholder}</div>
+                )}
+                <DropdownIconWrapper iconColor={iconColor} iconRotation={iconRotation}>
+                    <DropdownIcon width="25" height="25" />
+                </DropdownIconWrapper>
             </DropdownButton>
             <DropdownContent open={isOpen}>
                 {data.map((option) => (
-                    <DropdownOption
-                        key={option.id}
-                        option={option}
-                        isSelected={option.id === selectedOption}
-                        onOptionClick={handleOptionClick}
-                    />
+                    <DropdownOption key={option.id} onClick={() => handleOptionClick(option.id)}>
+                        <div>
+                            <option.img />
+                        </div>
+                        <div>{option.label}</div>
+                    </DropdownOption>
                 ))}
             </DropdownContent>
         </DropdownWrapper>
     );
 }
+
+const DropdownWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    min-width: 120px;
+    width: ${({ width }) => width};
+    border: none;
+    font-size: 20px;
+    font-weight: 700;
+    gap: 5px;
+`;
+
+const DropdownButton = styled.div`
+    height: 50px;
+    display: flex;
+    justify-content: space-between;
+    border-radius: 10px;
+    align-items: center;
+    padding: 0 15px;
+    cursor: pointer;
+    ${(props) => combineShape(shapeStyle, props.shape)}
+`;
+
+const DropdownContent = styled.div`
+    overflow: hidden;
+    display: ${(props) => (props.open ? "block" : "none")};
+    background-color: #ffffff;
+    border: 2px solid ${primary4};
+    border-radius: 10px;
+    animation: ${dropdownOpenAnimation} 0.3s ease-in-out;
+`;
+
+const DropdownOption = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    font-weight: 400;
+    padding: 15px;
+    color: ${primary4};
+    &:hover {
+        background-color: ${primary1};
+        cursor: pointer;
+    }
+`;
+
+const DropdownIconWrapper = styled.div`
+    display: block;
+    width: 25px;
+    height: 25px;
+    transform: rotate(${({ iconRotation }) => iconRotation}deg);
+    transition: all 0.2s ease-in-out;
+    svg path {
+        stroke: ${({ iconColor }) => iconConfig.color[iconColor]};
+    }
+`;
 
 // ----------------------------------------------------------------------------------------------------
 
