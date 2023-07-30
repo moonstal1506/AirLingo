@@ -22,22 +22,22 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
-@Profile("prod")
+@Profile("dev")
 @Component
 @RequiredArgsConstructor
 public class InitDb {
 
 	private final InitService initService;
 
-	// @PostConstruct
-	// public void init() {
-	// 	initService.reportItemInit();
-	// 	initService.CardInit();
-	// 	initService.gradeInit();
-	// 	initService.languageInit();
-	// 	initService.userAndStudyInit();
-	// 	initService.sentenceInit();
-	// }
+	@PostConstruct
+	public void init() {
+		initService.reportItemInit();
+		initService.CardInit();
+		initService.gradeInit();
+		initService.languageInit();
+		initService.userAndStudyInit();
+		initService.sentenceInit();
+	}
 
 	@Component
 	@Transactional
@@ -263,18 +263,18 @@ public class InitDb {
 			Language l2 = new Language(2L, "영어", "English");
 			Language l3 = new Language(3L, "일본어", "Japanese");
 			Language l4 = new Language(4L, "중국어", "Chinese");
-			Grade g1 = new Grade(1L, "A1",1);
-			Grade g2 = new Grade(2L, "A2",2);
-			Grade g3 = new Grade(3L, "B1",3);
-			UserLanguage u1l1 = UserLanguage.builder().user(u1).language(l1).grade(g1).build();
-			UserLanguage u1l2 = UserLanguage.builder().user(u1).language(l2).grade(g2).build();
-			UserLanguage u2l3 = UserLanguage.builder().user(u2).language(l3).grade(g3).build();
+			Grade g1 = new Grade(1L, "A1", 1);
+			Grade g2 = new Grade(2L, "A2", 2);
+			Grade g3 = new Grade(3L, "B1", 3);
+			UserLanguage u1l2 = UserLanguage.builder().user(u1).language(l2).grade(g1).build();
+			UserLanguage u1l3 = UserLanguage.builder().user(u1).language(l3).grade(g2).build();
+			UserLanguage u2l1 = UserLanguage.builder().user(u2).language(l1).grade(g3).build();
 
 			em.persist(u1);
 			em.persist(u2);
-			em.persist(u1l1);
 			em.persist(u1l2);
-			em.persist(u2l3);
+			em.persist(u1l3);
+			em.persist(u2l1);
 
 			Study s1 = Study.builder()
 				.studyTime(15)
@@ -285,11 +285,13 @@ public class InitDb {
 			UserStudy us1 = UserStudy.builder()
 				.study(s1)
 				.user(u1)
+				.language(l2)
 				.build();
 
 			UserStudy us2 = UserStudy.builder()
 				.study(s1)
 				.user(u2)
+				.language(l1)
 				.build();
 
 			em.persist(us1);
