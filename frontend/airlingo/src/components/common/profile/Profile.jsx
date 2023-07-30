@@ -13,20 +13,25 @@ const ProfileBox = styled.div`
     overflow: hidden;
     ${(props) => {
         switch (props.size) {
+            case "tiny":
+                return `
+                  width: 30px;
+                  height: 30px;
+                `;
             case "small":
                 return `
-                  width : 50px;
-                  height : 50px;
+                  width: 50px;
+                  height: 50px;
                 `;
             case "normal":
                 return `
-                  width : 100px;
-                  height : 100px;
+                  width: 100px;
+                  height: 100px;
                 `;
             case "large":
                 return `
-                  width : 150px;
-                  height : 150px;
+                  width: 150px;
+                  height: 150px;
                 `;
             default:
                 return "";
