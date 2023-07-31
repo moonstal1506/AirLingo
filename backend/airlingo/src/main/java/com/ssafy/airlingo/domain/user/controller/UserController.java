@@ -2,6 +2,7 @@ package com.ssafy.airlingo.domain.user.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -9,7 +10,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
@@ -86,6 +86,7 @@ public class UserController {
 		userService.updatePassword(updatePasswordRequestDto);
 		return ResponseResult.successResponse;
 	}
+
 	@Operation(summary = "UpdateBio", description = "사용자가 자기소개를 변경 합니다.")
 	@PostMapping("/bio")
 	public ResponseResult updateBio(@RequestBody UpdateBioRequestDto updateBioRequestDto) {
@@ -93,6 +94,7 @@ public class UserController {
 		userService.updateBio(updateBioRequestDto);
 		return ResponseResult.successResponse;
 	}
+
 	@Operation(summary = "UpdateImage", description = "사용자가 프로필 사진을 변경 합니다.")
 	@PostMapping("/updateImage")
 	public ResponseResult UpdateImage(@RequestBody UpdateImageRequestDto updateImageRequestDto) {
@@ -116,13 +118,16 @@ public class UserController {
 		userService.addInterestLanguage(interestLanguageRequestDto);
 		return ResponseResult.successResponse;
 	}
+
 	@Operation(summary = "DeleteInterestLanguage", description = "사용자가 관심언어를 삭제합니다.")
 	@DeleteMapping("/language")
-	public ResponseResult deleteInterestLanguage(@RequestBody DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
+	public ResponseResult deleteInterestLanguage(
+		@RequestBody DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
 		log.info("UserController_deleteInterestLanguage -> 관심 언어 삭제");
 		userService.deleteInterestLanguage(deleteInterestLanguageRequestDto);
 		return ResponseResult.successResponse;
 	}
+
 	@Operation(summary = "GetProfile", description = "프로필 조회")
 	@GetMapping("/{userId}")
 	public ResponseResult findUserByUserId(@PathVariable Long userId) {

@@ -75,10 +75,12 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	private LearningNumberResponseDto getNumberResponseDto(User user) {
-		List<LearningLanguageNumberResponseDto> languageNumbers = recordRepository.getLearningLanguageNumberStatistics(user);
+		List<LearningLanguageNumberResponseDto> languageNumbers = recordRepository.getLearningLanguageNumberStatistics(
+			user);
 		return LearningNumberResponseDto.builder()
 			.languageNumberResponseDtoList(languageNumbers)
-			.totalStudyNumber((int)languageNumbers.stream().mapToLong(languageNumber -> languageNumber.getTotalNumber()).sum())
+			.totalStudyNumber(
+				(int)languageNumbers.stream().mapToLong(languageNumber -> languageNumber.getTotalNumber()).sum())
 			.build();
 	}
 }
