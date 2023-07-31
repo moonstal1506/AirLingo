@@ -21,13 +21,13 @@ public class AmazonS3Controller {
 
 	private final Amazon3SService amazon3SService;
 
-	@PostMapping("/uploads")
-	public ResponseEntity<Object> uploadFiles(
-		@RequestPart(value = "files") List<MultipartFile> multipartFiles) {
-		return ResponseEntity
-			.status(HttpStatus.OK)
-			.body(amazon3SService.uploadFiles(multipartFiles));
-	}
+	// @PostMapping("/uploads")
+	// public ResponseEntity<Object> uploadFiles(
+	// 	@RequestPart(value = "files") List<MultipartFile> multipartFiles) {
+	// 	return ResponseEntity
+	// 		.status(HttpStatus.OK)
+	// 		.body(amazon3SService.uploadFiles(multipartFiles));
+	// }
 	@DeleteMapping("/delete")
 	public ResponseEntity<Object> deleteFile(
 		@RequestParam(value = "uuidFileName") String uuidFileName) {
