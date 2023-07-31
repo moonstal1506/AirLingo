@@ -68,6 +68,7 @@ public class MatchingController {
 		Long studyId = matchingService.createStudy(matchingResponseDto);
 		String sessionId = openViduManager.createSession();
 
+
 		// WebSocketHandler를 통해 매칭이 완료된 user 2명에게 동일한 sessionId를 보내기
 		// 구분자는 String이어야 하므로 userNickname을 사용함
 		List<String> userNicknames = new ArrayList<>();

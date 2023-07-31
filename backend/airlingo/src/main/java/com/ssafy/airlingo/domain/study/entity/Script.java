@@ -64,4 +64,17 @@ public class Script extends BaseTimeEntity {
 			.createdDate(this.getCreatedDate())
 			.build();
 	}
+
+	public static Script createNewScript(Study study , Card card , String scriptUrl){
+		return Script.builder()
+			.scriptContent("")
+			.card(card)
+			.study(study)
+			.scriptUrl(scriptUrl)
+			.build();
+	}
+
+	public void modifyScriptContent(String scriptContent){
+		this.scriptContent = scriptContent;
+	}
 }
