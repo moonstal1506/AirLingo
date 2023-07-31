@@ -151,6 +151,9 @@ const GlobalStyle = css`
 
     body {
         line-height: 1;
+        width: 100vw;
+        height: 100vh;
+        position: relative;
     }
 
     article,
@@ -187,6 +190,10 @@ const GlobalStyle = css`
     }
     svg {
         margin: 0;
+    }
+    #root {
+        width: 100%;
+        height: 100%;
     }
     ::-webkit-scrollbar-track {
         margin-top: 10px;
