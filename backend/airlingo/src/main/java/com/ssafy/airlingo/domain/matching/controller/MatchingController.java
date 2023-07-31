@@ -1,6 +1,10 @@
 package com.ssafy.airlingo.domain.matching.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -11,9 +15,13 @@ import com.ssafy.airlingo.domain.matching.response.MatchingResponseDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingUserDto;
 import com.ssafy.airlingo.domain.matching.service.MatchingService;
 import com.ssafy.airlingo.domain.matching.service.MatchingUserProducer;
+import com.ssafy.airlingo.global.handler.WebSocketHandler;
+import com.ssafy.airlingo.global.openvidu.OpenViduManager;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
+import io.openvidu.java.client.OpenViduHttpException;
+import io.openvidu.java.client.OpenViduJavaClientException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -37,6 +45,8 @@ public class MatchingController {
 
 	private final MatchingUserProducer producer;
 	private final MatchingService matchingService;
+	private final WebSocketHandler webSocketHandler;
+	private final OpenViduManager openViduManager;
 
 	@Operation(summary = "Matching", description = "매칭 대기열 등록")
 	@PostMapping
@@ -47,12 +57,35 @@ public class MatchingController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "Matching Result", description = "매칭 결과 반환")
+	@Operation(summary = "Matching Result, Send SessionId to Users using WebSocket", description = "매칭 성공 유저들에게 SessionId 반환")
 	@PostMapping("/result")
-	public ResponseResult matchingResult(@RequestBody @Valid MatchingResponseDto matchingResponseDto) {
+	public void matchingResult(@RequestBody @Valid MatchingResponseDto matchingResponseDto) throws
+		OpenViduJavaClientException,
+		OpenViduHttpException {
 		matchingService.useMileage(matchingResponseDto);
 		log.info("matchingResult : {}", matchingResponseDto.toString());
-		return ResponseResult.successResponse;
+
+		// 매칭이 완료되면 OpenVidu의 sessionId를 얻음
+		String sessionId = openViduManager.createSession();
+
+		// WebSocketHandler를 통해 매칭이 완료된 user 2명에게 동일한 sessionId를 보내기
+		// 구분자는 String이어야 하므로 userNickname을 사용함
+		List<String> userNicknames = new ArrayList<>();
+		userNicknames.add(matchingResponseDto.getUser1().getUserNickname());
+		userNicknames.add(matchingResponseDto.getUser2().getUserNickname());
+		webSocketHandler.sendSessionIdToUsers(sessionId, userNicknames);
+	}
+
+	/**
+	 * @param sessionId The Session in which to create the Connection
+	 * @return The Token associated to the Connection
+	 */
+	@Operation(summary = "Create Connection", description = "Token 발급 및 WebSocket URL 반환")
+	@PostMapping("/{sessionId}")
+	public SingleResponseResult<String> createConnection(@PathVariable("sessionId") String sessionId)
+		throws OpenViduJavaClientException, OpenViduHttpException {
+		String token = openViduManager.getToken(sessionId);
+		return new SingleResponseResult<>(token);
 	}
 
 	@Operation(summary = "Concurrent Users size", description = "실시간 사용자 통계")
