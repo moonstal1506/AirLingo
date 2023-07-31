@@ -3,8 +3,13 @@ package com.ssafy.airlingo.domain.user.service;
 import java.util.List;
 
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateImageRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
@@ -30,9 +35,27 @@ public interface UserService {
 	// 프로필 조회 관련
 	UserResponseDto findUserByUserId(Long userId);
 
+	// 데일리 그리드
 	List<DailyGridResponseDto> findDailyGridByUserId(Long userId);
 
-	List<RecordResponseDto> findByUserId(Long userId);
+	// 비밀번호 변경
+	void updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto);
+
+	// 자기소개 변경
+	void updateBio(UpdateBioRequestDto updateBioRequestDto);
+
+	//프로필 사진 변경
+	void updateImage(UpdateImageRequestDto updateImageRequestDto);
+
+	//프로필 사진 삭제
+	void deleteImage(Long userId);
+
+	// 관심 언어 추가
+	void addInterestLanguage(AddInterestLanguageRequestDto addInterestLanguageRequestDto);
+
+	// 관심 언어 삭제
+	void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto);
+
 
 	// 단어장 관련
 	List<WordResponseDto> getWordListByUserId(Long userId);

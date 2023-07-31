@@ -9,10 +9,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.ssafy.airlingo.domain.language.entity.Grade;
+import com.ssafy.airlingo.domain.language.entity.Language;
+import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
+import com.ssafy.airlingo.domain.language.repository.UserLanguageRepository;
+import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.DeleteImageRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateImageRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UserRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
@@ -39,6 +50,8 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private static final String DEFAULT_IMAGE = "https://www.google.com/url?sE";
+
 	private final UserRepository userRepository;
 	private final RecordRepository recordRepository;
 	private final JwtService jwtService;
@@ -47,6 +60,7 @@ public class UserServiceImpl implements UserService {
 	private final LanguageRepository languageRepository;
 	private final GradeRepository gradeRepository;
 	private final DailyGridRepository dailyGridRepository;
+	private final UserLanguageRepository userLanguageRepository;
 
 	@Override
 	@Transactional
@@ -96,6 +110,65 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	@Transactional
+	public void updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto) {
+		log.info("UserServiceImpl_updatePassword");
+		User user = userRepository.findById(updatePasswordRequestDto.getUserId()).get();
+		user.updatePassword(updatePasswordRequestDto.getUserPassword());
+	}
+
+	@Override
+	@Transactional
+	public void updateBio(UpdateBioRequestDto updateBioRequestDto) {
+		log.info("UserServiceImpl_updateBio");
+		User user = userRepository.findById(updateBioRequestDto.getUserId()).get();
+		user.updateBio(updateBioRequestDto.getUserBio());
+	}
+
+	@Override
+	@Transactional
+	public void updateImage(UpdateImageRequestDto updateImageRequestDto) {
+		log.info("UserServiceImpl_updateImage");
+		User user = userRepository.findById(updateImageRequestDto.getUserId()).get();
+		user.updateImage(updateImageRequestDto.getUserImgUrl());
+	}
+
+	@Override
+	@Transactional
+	public void deleteImage(Long userId) {
+		log.info("UserServiceImpl_deleteImage");
+		User user = userRepository.findById(userId).get();
+		user.updateImage(DEFAULT_IMAGE);
+	}
+
+	@Override
+	@Transactional
+	public void addInterestLanguage(AddInterestLanguageRequestDto addInterestLanguageRequestDto) {
+		log.info("UserServiceImpl_addInterestLanguage");
+		User user = userRepository.findById(addInterestLanguageRequestDto.getUserId()).get();
+		Language language = languageRepository.findByLanguageId(addInterestLanguageRequestDto.getLanguageId());
+		Grade grade = gradeRepository.findByGradeId(addInterestLanguageRequestDto.getGradeId());
+		UserLanguage userLanguage = UserLanguage.builder()
+			.user(user)
+			.language(language)
+			.grade(grade)
+			.build();
+		userLanguageRepository.save(userLanguage);
+	}
+
+
+	@Override
+	@Transactional
+	public void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
+		log.info("UserServiceImpl_deleteInterestLanguage");
+		User user = userRepository.findById(deleteInterestLanguageRequestDto.getUserId()).get();
+		Language language = languageRepository.findByLanguageId(deleteInterestLanguageRequestDto.getLanguageId());
+
+		userLanguageRepository.deleteByUserAndLanguage(user,language);
+	}
+
+
+	@Override
 	public UserResponseDto findUserByUserId(Long userId) {
 		User user = userRepository.findById(userId).orElse(null);
 		// 사용자를 찾지 못한 경우 일단 null
@@ -104,21 +177,6 @@ public class UserServiceImpl implements UserService {
 		}
 		// User(Entity)를 UserResponseDto로 변환
 		return user.toDto();
-	}
-
-	@Override
-	public List<RecordResponseDto> findByUserId(Long userId) {
-		User user = userRepository.findById(userId).orElse(null);
-		if (user == null) {
-			// 사용자를 찾지 못한 경우 빈 리스트
-			return Collections.emptyList();
-		}
-
-		List<RecordResponseDto> recordList = recordRepository.findRecordByUser(user)
-			.stream()
-			.map(r -> r.toDto())
-			.collect(Collectors.toList());
-		return recordList;
 	}
 
 	public List<DailyGridResponseDto> findDailyGridByUserId(Long userId) {

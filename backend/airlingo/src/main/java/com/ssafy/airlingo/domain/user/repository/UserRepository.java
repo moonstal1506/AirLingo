@@ -11,8 +11,4 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	// 입력받은 ID, PW를 기반으로 User 조회
 	User findUserByUserLoginIdAndUserPassword(String userLoginId, String userPassword);
-
-	// Fetch Join을 사용하여 User 엔티티와 연관된 userLanguages 정보도 함께 조회
-	@EntityGraph(attributePaths = {"language"})
-	User findByUserId(Long userId);
 }
