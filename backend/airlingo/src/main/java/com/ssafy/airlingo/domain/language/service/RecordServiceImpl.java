@@ -5,7 +5,10 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.airlingo.domain.language.dto.request.EvaluateUserRequestDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningLanguageNumberResponseDto;
 import com.ssafy.airlingo.domain.language.dto.response.LearningLanguageTimeResponseDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningNumberResponseDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningStatisticResponseDto;
 import com.ssafy.airlingo.domain.language.dto.response.LearningTimeResponseDto;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
@@ -55,9 +58,12 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	@Override
-	public LearningTimeResponseDto getStatistic(Long userId) {
+	public LearningStatisticResponseDto getStatistic(Long userId) {
 		User user = userRepository.findById(userId).get();
-		return getTimeResponseDto(user);
+		return LearningStatisticResponseDto.builder()
+			.timeResponse(getTimeResponseDto(user))
+			.numberResponse(getNumberResponseDto(user))
+			.build();
 	}
 
 	private LearningTimeResponseDto getTimeResponseDto(User user) {
@@ -65,6 +71,14 @@ public class RecordServiceImpl implements RecordService {
 		return LearningTimeResponseDto.builder()
 			.learningLanguageResponseList(languageTimes)
 			.totalStudyTime((int)languageTimes.stream().mapToLong(languageTime -> languageTime.getTotalTime()).sum())
+			.build();
+	}
+
+	private LearningNumberResponseDto getNumberResponseDto(User user) {
+		List<LearningLanguageNumberResponseDto> languageNumbers = recordRepository.getLearningLanguageNumberStatistics(user);
+		return LearningNumberResponseDto.builder()
+			.languageNumberResponseDtoList(languageNumbers)
+			.totalStudyNumber((int)languageNumbers.stream().mapToLong(languageNumber -> languageNumber.getTotalNumber()).sum())
 			.build();
 	}
 }
