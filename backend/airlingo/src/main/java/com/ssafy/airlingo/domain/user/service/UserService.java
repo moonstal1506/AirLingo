@@ -13,7 +13,6 @@ import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
-import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -56,12 +55,5 @@ public interface UserService {
 	// 관심 언어 삭제
 	void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto);
 
-
-	// 단어장 관련
-	List<WordResponseDto> getWordListByUserId(Long userId);
-
-	List<WordResponseDto> getWordTestListByUserId(Long userId);
-
-	void deleteWordsByUserIdAndWordIds(Long userId, Long[] wordIds);
 
 }

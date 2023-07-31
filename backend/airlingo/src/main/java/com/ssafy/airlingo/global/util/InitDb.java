@@ -280,7 +280,7 @@ public class InitDb {
 				.studyTime(15)
 				.build();
 
-			em.persist(s1);
+			// em.persist(s1);
 
 			UserStudy us1 = UserStudy.builder()
 				.study(s1)
@@ -294,8 +294,8 @@ public class InitDb {
 				.language(l1)
 				.build();
 
-			em.persist(us1);
-			em.persist(us2);
+			// em.persist(us1);
+			// em.persist(us2);
 		}
 
 		public void sentenceInit() {
