@@ -26,13 +26,15 @@ import lombok.extern.slf4j.Slf4j;
 	@ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
 	@ApiResponse(responseCode = "400", description = "응답이 실패하였습니다.",
 		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
-@Tag(name = "study Controller", description = "스터디 관련 컨트롤러")
+@Tag(name = "Study Controller", description = "스터디 관련 컨트롤러")
 @Slf4j
 @RequiredArgsConstructor
 @RestController
 @RequestMapping(value = "/api/study")
 public class StudyController {
+
 	private final StudyService studyService;
+
 	@Operation(summary = "GetAllStudysByUserIdAndDate", description = "사용자 아이디와 날짜별로 스터디 리스트 조회")
 	@GetMapping("/user/{userId}/date")
 	public ResponseResult getStudyListByUserIdAndDate(@PathVariable Long userId,

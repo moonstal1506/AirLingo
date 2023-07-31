@@ -26,7 +26,11 @@ public class LanguageDto {
 	@Schema(description = "언어 영어버전", example = "Korean")
 	private String languageEngName;
 
+	@Schema(description = "등급 이름(영어)", example = "A1")
 	private String gradeName;
+
+	@Schema(description = "등급 이름(한글)", example = "입문")
+	private String gradeKorName;
 
 	public LanguageDto(Language language) {
 		this.languageId = language.getLanguageId();

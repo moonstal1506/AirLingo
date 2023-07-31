@@ -16,13 +16,12 @@ class GradeRepositoryTest {
 
 	@Test
 	public void insert() {
-		Grade a1 = new Grade("A1", 1);
-		Grade a2 = new Grade("A2", 2);
-		Grade b1 = new Grade("B1", 3);
-		Grade b2 = new Grade("B2", 4);
-		Grade c1 = new Grade("C1", 5);
-		Grade c2 = new Grade("C2", 6);
-
+		Grade a1 = new Grade("A1", "입문", 1);
+		Grade a2 = new Grade("A2", "초급", 2);
+		Grade b1 = new Grade("B1", "중급", 3);
+		Grade b2 = new Grade("B2", "중상급", 4);
+		Grade c1 = new Grade("C1", "상급", 5);
+		Grade c2 = new Grade("C2", "최상급", 6);
 
 		//데이터베이스에 저장
 		Grade savedA1 = gradeRepository.save(a1);

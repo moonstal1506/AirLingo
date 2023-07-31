@@ -1,5 +1,6 @@
 package com.ssafy.airlingo.domain.language.controller;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -7,9 +8,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.airlingo.domain.language.dto.request.EvaluateUserRequestDto;
-import com.ssafy.airlingo.domain.language.dto.response.LearningTimeResponseDto;
 import com.ssafy.airlingo.domain.language.service.RecordService;
 import com.ssafy.airlingo.global.response.ResponseResult;
+import com.ssafy.airlingo.global.response.SingleResponseResult;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -43,11 +44,10 @@ public class RecordController {
 		return ResponseResult.failResponse;
 	}
 
-	@Operation(summary = "Record Statistics", description = "언어별 통계 - 학습 시간 분석")
-	@PostMapping("/record/statistics/{userId}")
-	public ResponseResult getLearningTime(@PathVariable Long userId) {
-		log.info("getLearningTime");
-		LearningTimeResponseDto learningTime = recordService.findLearningTimeByUser(userId);
-		return ResponseResult.successResponse;
+	@Operation(summary = "Record Statistic", description = "언어별 통계 - 학습 시간 분석, 학습 횟수")
+	@GetMapping("/record/statistic/{userId}")
+	public ResponseResult getStatistic(@PathVariable Long userId) {
+		log.info("getStatistic");
+		return new SingleResponseResult<>(recordService.getStatistic(userId));
 	}
 }

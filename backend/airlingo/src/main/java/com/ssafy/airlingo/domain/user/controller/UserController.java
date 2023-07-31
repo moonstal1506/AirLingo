@@ -2,22 +2,32 @@ package com.ssafy.airlingo.domain.user.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
+import com.ssafy.airlingo.domain.S3.service.Amazon3SService;
+import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateImageRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.service.UserService;
-import com.ssafy.airlingo.global.response.ListResponseResult;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
@@ -38,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
+	private final Amazon3SService amazon3SService;
 
 	@Operation(summary = "Sign Up", description = "사용자가 회원가입 합니다.")
 	@ApiResponses(value = {
@@ -76,58 +87,74 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
+	@Operation(summary = "Delete User Account", description = "회원탈퇴")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "회원탈퇴 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "회원탈퇴 실패"),
+	})
+	@DeleteMapping("/delete/{userId}")
+	public ResponseResult deleteUserAccount(@PathVariable Long userId) {
+		log.info("UserController_deleteUserAccount -> 회원탈퇴 시도, userId: {}", userId);
+		userService.deleteUserAccount(userId);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Update Password", description = "사용자가 비밀번호 변경 합니다.")
+	@PostMapping("/password")
+	public ResponseResult updatePassword(@RequestBody UpdatePasswordRequestDto updatePasswordRequestDto) {
+		log.info("UserController_updatePassword -> 비밀번호 변경");
+		userService.updatePassword(updatePasswordRequestDto);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Update Bio", description = "사용자가 자기소개를 변경 합니다.")
+	@PostMapping("/bio")
+	public ResponseResult updateBio(@RequestBody UpdateBioRequestDto updateBioRequestDto) {
+		log.info("UserController_updateBio -> 자기소개 변경");
+		userService.updateBio(updateBioRequestDto);
+		return ResponseResult.successResponse;
+	}
+
+
+	@Operation(summary = "Update Image", description = "사용자가 프로필 사진을 변경 합니다.")
+	@PostMapping("/updateImage")
+	public ResponseResult updateImage(@RequestPart(value = "files") List<MultipartFile> multipartFiles, Long userId) {
+		log.info("UserController_UpdateImage -> 프로필 사진 변경");
+		userService.uploadFiles(multipartFiles, userId);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Delete Image", description = "사용자가 프로필 사진을 삭제 합니다.")
+	@DeleteMapping("/deleteImage")
+	public ResponseResult DeleteImage(Long userId) {
+		log.info("UserController_UpdateImage -> 프로필 사진 삭제");
+		userService.deleteImage(userId);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Add Interest Language", description = "사용자가 관심언어를 추가합니다.")
+	@PostMapping("/language")
+	public ResponseResult addInterestLanguage(@RequestBody AddInterestLanguageRequestDto interestLanguageRequestDto) {
+		log.info("UserController_addInterestLanguage -> 관심 언어 추가");
+		userService.addInterestLanguage(interestLanguageRequestDto);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Delete Interest Language", description = "사용자가 관심언어를 삭제합니다.")
+	@DeleteMapping("/language")
+	public ResponseResult deleteInterestLanguage(
+		@RequestBody DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
+		log.info("UserController_deleteInterestLanguage -> 관심 언어 삭제");
+		userService.deleteInterestLanguage(deleteInterestLanguageRequestDto);
+		return ResponseResult.successResponse;
+	}
+
 	@Operation(summary = "GetProfile", description = "프로필 조회")
 	@GetMapping("/{userId}")
 	public ResponseResult findUserByUserId(@PathVariable Long userId) {
 		UserResponseDto userResponseDto = userService.findUserByUserId(userId);
 		return new SingleResponseResult<>(userResponseDto);
-	}
-
-	@Operation(summary = "GetAllRecordItems", description = "개인별 전체 기록 조회")
-	@GetMapping("/record/{userId}")
-	public ResponseResult findByUserId(@PathVariable Long userId) {
-		List<RecordResponseDto> recordResponseDto = userService.findByUserId(userId);
-		return new SingleResponseResult<>(recordResponseDto);
-	}
-
-	// 단어장 관련
-	@Operation(summary = "Get Word List", description = "단어장 전체 조회")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "단어장 조회 성공"),
-		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
-	})
-	@GetMapping("/word/{userId}")
-	public ResponseResult getWordListByUserId(@PathVariable Long userId) {
-		log.info("UserController_getWordListByUserId -> 저장한 모든 단어 조회 시작");
-		return new ListResponseResult<>(userService.getWordListByUserId(userId));
-	}
-
-	@Operation(summary = "Get Word Test List", description = "단어 테스트 리스트 조회")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "단어 테스트 리스트 조회 성공"),
-		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
-	})
-	@GetMapping("/word/test/{userId}")
-	public ResponseResult getWordTestListByUserId(@PathVariable Long userId) {
-		log.info("UserController_getWordTestListByUserId -> 단어 테스트 리스트 조회 시작");
-		return new ListResponseResult<>(userService.getWordTestListByUserId(userId));
-	}
-
-	@Operation(summary = "Delete Words", description = "선택한 단어 리스트 삭제")
-	@ApiResponses(value = {
-		@ApiResponse(responseCode = "200", description = "단어 삭제 성공"),
-		@ApiResponse(responseCode = "460", description = "요청한 단어가 존재하지 않습니다"),
-		@ApiResponse(responseCode = "470", description = "사용자가 존재하지 않습니다")
-	})
-	@DeleteMapping("/word/{userId}")
-	public ResponseResult deleteWordByWordId(@PathVariable Long userId, @RequestBody Long[] wordIds) {
-		log.info("UserController_deleteWordByWordId -> 단어 삭제 시작");
-		// try {
-		userService.deleteWordsByUserIdAndWordIds(userId, wordIds);
-		return ResponseResult.successResponse;
-		// } catch (Exception e) {
-		// 	return ResponseResult.failResponse;
-		// }
 	}
 
 	@Operation(summary = "GetDailyGrid", description = "데일리 그리드 개수 조회")

@@ -57,7 +57,7 @@ public class MatchingController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "Matching Result, Send SessionId to Users using WebSocket", description = "매칭 성공 유저들에게 SessionId 반환")
+	@Operation(summary = "Matching Result", description = "매칭 성공 유저들에게 SessionId 반환(웹소켓 이용)")
 	@PostMapping("/result")
 	public void matchingResult(@RequestBody @Valid MatchingResponseDto matchingResponseDto) throws
 		OpenViduJavaClientException,
@@ -65,15 +65,17 @@ public class MatchingController {
 		matchingService.useMileage(matchingResponseDto);
 		log.info("matchingResult : {}", matchingResponseDto.toString());
 
-		// 매칭이 완료되면 OpenVidu의 sessionId를 얻음
+		Long studyId = matchingService.createStudy(matchingResponseDto);
 		String sessionId = openViduManager.createSession();
+
 
 		// WebSocketHandler를 통해 매칭이 완료된 user 2명에게 동일한 sessionId를 보내기
 		// 구분자는 String이어야 하므로 userNickname을 사용함
 		List<String> userNicknames = new ArrayList<>();
 		userNicknames.add(matchingResponseDto.getUser1().getUserNickname());
 		userNicknames.add(matchingResponseDto.getUser2().getUserNickname());
-		webSocketHandler.sendSessionIdToUsers(sessionId, userNicknames);
+
+		webSocketHandler.sendSessionIdAndMatchingDataToUsers(sessionId, studyId, matchingResponseDto, userNicknames);
 	}
 
 	/**
