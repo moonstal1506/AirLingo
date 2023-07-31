@@ -40,6 +40,19 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 		"GROUP BY l.languageId ")
 	List<LearningLanguageNumberResponseDto> getLearningLanguageNumberStatistics(User user);
 
+	@Query(value = "SELECT grade_id " +
+		"FROM ( " +
+		"    SELECT * " +
+		"    FROM record " +
+		"    WHERE language_id = ?1 " +
+		"    ORDER BY record_created_date DESC " +
+		"    LIMIT 10 " +
+		") recent " +
+		"GROUP BY grade_id " +
+		"ORDER BY COUNT(grade_id) DESC, grade_id DESC " +
+		"LIMIT 1", nativeQuery = true)
+	Long getMostFrequentGradeIdForLanguage(Long languageId);
+
 	@EntityGraph(attributePaths = {"user", "language", "grade", "study"})
 	List<Record> findRecordByUser(User user);
 }
