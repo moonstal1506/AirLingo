@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
+import PropTypes from "prop-types";
 import theme from "@/assets/styles/Theme";
 import { ReactComponent as DropdownIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
 import iconConfig from "@/config";
@@ -159,6 +160,36 @@ const DropdownIconWrapper = styled.div`
         stroke: ${({ iconColor }) => iconConfig.color[iconColor]};
     }
 `;
+
+// ----------------------------------------------------------------------------------------------------
+
+Dropdown.propTypes = {
+    width: PropTypes.string,
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            img: PropTypes.node.isRequired,
+            label: PropTypes.string.isRequired,
+        }),
+    ),
+    iconColor: PropTypes.string,
+    shape: PropTypes.oneOf(["positive", "negative"]),
+    defaultOption: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        img: PropTypes.node.isRequired,
+        label: PropTypes.string.isRequired,
+    }),
+    placeholder: PropTypes.string,
+};
+
+Dropdown.defaultProps = {
+    width: "200px",
+    data: [],
+    iconColor: "black",
+    shape: "positive",
+    defaultOption: null,
+    placeholder: "",
+};
 
 // ----------------------------------------------------------------------------------------------------
 

@@ -1,5 +1,11 @@
+import Meeting from "@/pages/meeting";
+
 function App() {
-    return <div>App</div>;
+    return (
+        <div>
+            <Meeting />
+        </div>
+    );
 }
 
 export default App;
