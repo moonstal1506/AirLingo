@@ -1,6 +1,6 @@
-function processApiResponse({ responseFunc, statusCode }) {
+function processApiResponse({ responseFunc, response }) {
     Object.entries(responseFunc).forEach(([curStatusCode, func]) => {
-        if (curStatusCode === statusCode) func();
+        if (curStatusCode === response.statusCode) func(response);
     });
 }
 
