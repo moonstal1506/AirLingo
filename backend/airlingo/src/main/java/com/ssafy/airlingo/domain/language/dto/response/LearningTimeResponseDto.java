@@ -12,6 +12,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class LearningTimeResponseDto {
-	private List<LearningLanguageResponseDto> learningLanguageResponseList;
+	private List<LearningLanguageTimeResponseDto> learningLanguageResponseList;
 	private int totalStudyTime;
 }

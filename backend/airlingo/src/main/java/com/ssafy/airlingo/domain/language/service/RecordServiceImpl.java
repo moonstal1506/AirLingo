@@ -1,22 +1,21 @@
 package com.ssafy.airlingo.domain.language.service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
 import com.ssafy.airlingo.domain.language.dto.request.EvaluateUserRequestDto;
-import com.ssafy.airlingo.domain.language.dto.response.LearningLanguageResponseDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningLanguageTimeResponseDto;
 import com.ssafy.airlingo.domain.language.dto.response.LearningTimeResponseDto;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.Record;
 import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
+import com.ssafy.airlingo.domain.language.repository.RecordRepository;
 import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.study.repository.StudyRepository;
 import com.ssafy.airlingo.domain.user.entity.User;
-import com.ssafy.airlingo.domain.user.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
@@ -56,21 +55,16 @@ public class RecordServiceImpl implements RecordService {
 	}
 
 	@Override
-	public LearningTimeResponseDto findLearningTimeByUser(Long userId) {
+	public LearningTimeResponseDto getStatistic(Long userId) {
 		User user = userRepository.findById(userId).get();
-		List<Record> records = recordRepository.findRecordWithUserAndLanguageAndStudyByUser(user);
+		return getTimeResponseDto(user);
+	}
 
-		int totalTime = records.stream().mapToInt(record -> record.getStudy().getStudyTime()).sum();
-		List<LearningLanguageResponseDto> learningLanguageResponseDtoList = records.stream().map(record -> LearningLanguageResponseDto.builder()
-				.languageId(record.getLanguage().getLanguageId())
-				.languageName(record.getLanguage().getLanguageKorName())
-				.percent(String.format("%.1f", record.getStudy().getStudyTime() / (double)totalTime))
-				.build())
-			.collect(Collectors.toList());
-
+	private LearningTimeResponseDto getTimeResponseDto(User user) {
+		List<LearningLanguageTimeResponseDto> languageTimes = recordRepository.getLearningLanguageTimeStatistics(user);
 		return LearningTimeResponseDto.builder()
-			.learningLanguageResponseList(learningLanguageResponseDtoList)
-			.totalStudyTime(totalTime)
+			.learningLanguageResponseList(languageTimes)
+			.totalStudyTime((int)languageTimes.stream().mapToLong(languageTime -> languageTime.getTotalTime()).sum())
 			.build();
 	}
 }
