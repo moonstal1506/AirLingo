@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import theme from "@/assets/styles/Theme";
 import combineShape from "@/utils/style";
@@ -35,7 +36,7 @@ const shapeStyle = {
 
 // ----------------------------------------------------------------------------------------------------
 
-function IconButton({ type, icon: Icon, onClick, iconColor = "black", shape = "blacklined" }) {
+function IconButton({ type, icon: Icon, onClick, iconColor, shape }) {
     return (
         <IconButtonWrapper type={type} onClick={onClick} shape={shape}>
             <IconWrapper iconColor={iconColor}>
@@ -44,6 +45,21 @@ function IconButton({ type, icon: Icon, onClick, iconColor = "black", shape = "b
         </IconButtonWrapper>
     );
 }
+
+IconButton.propTypes = {
+    type: PropTypes.string,
+    icon: PropTypes.func.isRequired,
+    onClick: PropTypes.func,
+    iconColor: PropTypes.string,
+    shape: PropTypes.string,
+};
+
+IconButton.defaultProps = {
+    type: "button",
+    onClick: () => {},
+    iconColor: "black",
+    shape: "blacklined",
+};
 
 const IconButtonWrapper = styled.button`
     display: flex;

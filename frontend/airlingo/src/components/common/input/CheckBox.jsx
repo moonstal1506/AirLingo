@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
 import { ReactComponent as CheckIcon } from "@/assets/imgs/icons/check-icon.svg";
 
 function CheckBox({ checked, onChange }) {
@@ -11,6 +12,11 @@ function CheckBox({ checked, onChange }) {
         </CheckBoxContainer>
     );
 }
+
+CheckBox.propTypes = {
+    checked: PropTypes.bool.isRequired,
+    onChange: PropTypes.func.isRequired,
+};
 
 const CheckBoxWrapper = styled.div`
     display: flex;

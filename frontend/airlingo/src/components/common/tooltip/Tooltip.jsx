@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { useState } from "react";
 
@@ -77,6 +78,15 @@ function Tooltip({ position, children }) {
         </TooltipContainer>
     );
 }
+
+Tooltip.propTypes = {
+    position: PropTypes.shape({
+        horizontal: PropTypes.oneOf(["left", "right"]).isRequired,
+        vertical: PropTypes.oneOf(["top", "bottom"]).isRequired,
+        direction: PropTypes.oneOf(["down", "up"]).isRequired,
+    }).isRequired,
+    children: PropTypes.node.isRequired,
+};
 
 const TooltipContainer = styled.div`
     position: relative;

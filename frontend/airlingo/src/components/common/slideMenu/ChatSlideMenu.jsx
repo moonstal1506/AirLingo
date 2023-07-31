@@ -1,3 +1,4 @@
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 
 function ChatSlideMenu({ isOpen, children }) {
@@ -7,6 +8,12 @@ function ChatSlideMenu({ isOpen, children }) {
         </SlideMenuContainer>
     );
 }
+
+ChatSlideMenu.propTypes = {
+    isOpen: PropTypes.bool.isRequired,
+    children: PropTypes.node.isRequired,
+};
+
 const SlideMenuContainer = styled.div`
     width: 100vw;
     height: 460px;
