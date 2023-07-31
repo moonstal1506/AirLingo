@@ -8,7 +8,6 @@ import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
-import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -33,12 +32,5 @@ public interface UserService {
 	List<DailyGridResponseDto> findDailyGridByUserId(Long userId);
 
 	List<RecordResponseDto> findByUserId(Long userId);
-
-	// 단어장 관련
-	List<WordResponseDto> getWordListByUserId(Long userId);
-
-	List<WordResponseDto> getWordTestListByUserId(Long userId);
-
-	void deleteWordsByUserIdAndWordIds(Long userId, Long[] wordIds);
 
 }

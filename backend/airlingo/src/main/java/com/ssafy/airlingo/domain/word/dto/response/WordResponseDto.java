@@ -1,4 +1,4 @@
-package com.ssafy.airlingo.domain.user.dto.response;
+package com.ssafy.airlingo.domain.word.dto.response;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
