@@ -2,7 +2,6 @@ package com.ssafy.airlingo.domain.user.service;
 
 import java.util.List;
 
-import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
@@ -31,6 +30,9 @@ public interface UserService {
 	// 로그아웃 관련
 	void logout(String userLoginId);
 
+	// 회원탈퇴
+	void deleteUserAccount(Long userId);
+
 	// 프로필 조회 관련
 	UserResponseDto findUserByUserId(Long userId);
 
@@ -54,6 +56,4 @@ public interface UserService {
 
 	// 관심 언어 삭제
 	void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto);
-
-
 }
