@@ -9,6 +9,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import com.google.gson.Gson;
+import com.ssafy.airlingo.domain.matching.response.MatchingResponseDto;
+
 @Component
 public class WebSocketHandler extends TextWebSocketHandler {
 
@@ -30,9 +33,18 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	 * destination: 메시지를 전송할 대상 경로
 	 * payload: 전송할 메시지의 내용
 	 */
-	public void sendSessionIdToUsers(String sessionId, List<String> userNicknames) {
+	// sessionId 및 MatchingResponseDto 전달 메서드
+	public void sendSessionIdAndMatchingDataToUsers(String sessionId, Long studyId,
+		MatchingResponseDto matchingResponseDto,
+		List<String> userNicknames) {
+		// sessionId와 MatchingResponseDto를 JSON 형식으로 변환하여 전달
+		String matchingData =
+			"{\"sessionId\": \"" + sessionId + "\", \"studyId\": \"" + studyId + "\", \"matchingResponseDto\": "
+				+ new Gson().toJson(matchingResponseDto) + "}";
+
 		for (String userNickname : userNicknames) {
-			messagingTemplate.convertAndSendToUser(userNickname, "/queue/sessionId", sessionId);
+			messagingTemplate.convertAndSendToUser(userNickname, "/queue/matchingData", matchingData);
 		}
 	}
+
 }

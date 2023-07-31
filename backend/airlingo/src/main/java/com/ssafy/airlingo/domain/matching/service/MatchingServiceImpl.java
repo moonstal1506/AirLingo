@@ -12,6 +12,10 @@ import com.ssafy.airlingo.domain.matching.request.MatchingRequestDto;
 import com.ssafy.airlingo.domain.matching.response.ConcurrentUsersResponseDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingResponseDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingUserDto;
+import com.ssafy.airlingo.domain.study.entity.Study;
+import com.ssafy.airlingo.domain.study.entity.UserStudy;
+import com.ssafy.airlingo.domain.study.repository.StudyRepository;
+import com.ssafy.airlingo.domain.study.repository.UserStudyRepository;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
@@ -34,6 +38,8 @@ public class MatchingServiceImpl implements MatchingService {
 	private final LanguageRepository languageRepository;
 	private final UserLanguageRepository userLanguageRepository;
 	private final RefreshTokenRepository refreshTokenRepository;
+	private final StudyRepository studyRepository;
+	private final UserStudyRepository userStudyRepository;
 
 	@Override
 	public MatchingUserDto findMatchingUser(MatchingRequestDto matchingRequestDto) {
@@ -70,12 +76,39 @@ public class MatchingServiceImpl implements MatchingService {
 	public ConcurrentUsersResponseDto getConcurrentUsersSize() {
 		log.info("getConcurrentUsersSize");
 		RestTemplate restTemplate = new RestTemplate();
-		SingleResponseResult waitingUserResult = restTemplate.getForObject(CONCURRENT_USERS_NUMBER_URL, SingleResponseResult.class);
+		SingleResponseResult waitingUserResult = restTemplate.getForObject(CONCURRENT_USERS_NUMBER_URL,
+			SingleResponseResult.class);
 
 		return ConcurrentUsersResponseDto.builder()
 			.ConcurrentUsersSize(refreshTokenRepository.countConcurrentUsers())
 			.waitingUsersSize((int)waitingUserResult.getData())
 			.build();
 	}
-}
 
+	@Transactional
+	@Override
+	public Long createStudy(MatchingResponseDto matchingResponseDto) {
+		// Study 생성
+		Study study = studyRepository.save(new Study());
+
+		// UserStudy 생성
+		createUserStudy(matchingResponseDto.getUser1(), study);
+		createUserStudy(matchingResponseDto.getUser2(), study);
+
+		return study.getStudyId();
+	}
+
+	private void createUserStudy(MatchingUserDto matchingUserDto, Study study) {
+		Long userId = matchingUserDto.getUserId();
+		User user = userRepository.findById(userId).get();
+
+		UserStudy userStudy = UserStudy.builder()
+			.study(study)
+			.user(user)
+			.language(languageRepository.findByLanguageKorName(matchingUserDto.getUserStudyLanguage()))
+			.build();
+
+		userStudyRepository.save(userStudy);
+	}
+
+}
