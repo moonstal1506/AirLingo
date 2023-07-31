@@ -7,29 +7,26 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
+import com.ssafy.airlingo.domain.language.repository.RecordRepository;
 import com.ssafy.airlingo.domain.language.repository.UserLanguageRepository;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.DeleteImageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdateImageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.UserRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.entity.DailyGrid;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
-import com.ssafy.airlingo.domain.language.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
 import com.ssafy.airlingo.domain.word.repository.WordRepository;
@@ -105,6 +102,13 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void deleteUserAccount(Long userId) {
+		log.info("UserServiceImpl_deleteUserAccount -> 회원탈퇴 중");
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+		userRepository.delete(user);
+	}
+
+	@Override
 	@Transactional
 	public void updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto) {
 		log.info("UserServiceImpl_updatePassword");
@@ -151,7 +155,6 @@ public class UserServiceImpl implements UserService {
 		userLanguageRepository.save(userLanguage);
 	}
 
-
 	@Override
 	@Transactional
 	public void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
@@ -159,9 +162,8 @@ public class UserServiceImpl implements UserService {
 		User user = userRepository.findById(deleteInterestLanguageRequestDto.getUserId()).get();
 		Language language = languageRepository.findByLanguageId(deleteInterestLanguageRequestDto.getLanguageId());
 
-		userLanguageRepository.deleteByUserAndLanguage(user,language);
+		userLanguageRepository.deleteByUserAndLanguage(user, language);
 	}
-
 
 	@Override
 	public UserResponseDto findUserByUserId(Long userId) {
