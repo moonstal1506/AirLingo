@@ -1,20 +1,30 @@
+import React from "react";
 import styled from "@emotion/styled";
-import { useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { ReactComponent as TitleLogoIcon } from "@/assets/imgs/icons/title-logo-icon.svg";
-import { selectUser } from "@/features/User/UserSlice";
+import { logoutUser, selectUser } from "@/features/User/UserSlice";
 import ProfileBar from "../profileBar";
 import { TextButton } from "../common/button";
 import Dropdown from "../common/dropdown";
 import logout from "@/api/auth";
+import useRouter from "@/hooks";
 
-function Header() {
+const Header = React.memo(() => {
+    const dispatch = useDispatch();
     const { isLogIn, userNickname, userLoginId, userImg } = useSelector(selectUser);
-    const navigate = useNavigate();
+    const { routeTo } = useRouter();
 
     const handleClickLogout = async () => {
         await logout({
-            responseFunc: { 200: () => {}, 400: () => {} },
+            responseFunc: {
+                200: () => {
+                    dispatch(logoutUser);
+                    routeTo("/");
+                },
+                400: () => {
+                    /* fix me! go to error page */
+                },
+            },
             data: { userLoginId },
         });
     };
@@ -22,7 +32,7 @@ function Header() {
     return (
         <HeaderContainer>
             <HeaderInnerContainer>
-                <TitleLogoIcon />
+                <TitleLogoIcon onClick={() => routeTo("/")} />
                 <HeaderRightBox>
                     {isLogIn ? (
                         <>
@@ -39,12 +49,12 @@ function Header() {
                             <TextButton
                                 shape="positive-normal"
                                 text="로그인"
-                                onClick={() => navigate("login")}
+                                onClick={() => routeTo("login")}
                             />
                             <TextButton
                                 shape="positive-normal"
                                 text="회원가입"
-                                onClick={() => navigate("signup")}
+                                onClick={() => routeTo("signup")}
                             />
                             <Dropdown />
                         </>
@@ -53,7 +63,7 @@ function Header() {
             </HeaderInnerContainer>
         </HeaderContainer>
     );
-}
+});
 
 const HeaderContainer = styled.div`
     width: 100%;
