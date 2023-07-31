@@ -51,7 +51,7 @@ const shapeStyle = {
 
 // ----------------------------------------------------------------------------------------------------
 
-function TextButton({ type = "button", text, onClick, shape = "positive-rounded" }) {
+function TextButton({ type, text, onClick, shape }) {
     return (
         <TextButtonWrapper type={type} onClick={onClick} shape={shape}>
             {text}
@@ -75,7 +75,7 @@ TextButton.defaultProps = {
 const TextButtonWrapper = styled.button`
     height: 50px;
     padding: 10px 20px;
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
     cursor: pointer;
     ${(props) => combineShape(shapeStyle, props.shape)}
