@@ -1,7 +1,7 @@
 package com.ssafy.airlingo.domain.language.entity;
 
-import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
@@ -48,9 +48,9 @@ public class Record extends BaseTimeEntity {
 	@JoinColumn(name = "grade_id", nullable = false)
 	private Grade grade;
 
-		@ManyToOne(fetch = FetchType.LAZY)
-		@JoinColumn(name = "study_id", nullable = false)
-		private Study study;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "study_id", nullable = false)
+	private Study study;
 
 	public RecordResponseDto toDto() {
 		return RecordResponseDto.builder()
@@ -63,14 +63,8 @@ public class Record extends BaseTimeEntity {
 			.build();
 	}
 
-	public static Record createNewRecord(User user , Language language , Grade grade , Study study){
-		return Record.builder()
-			.user(user)
-			.language(language)
-			.grade(grade)
-			.study(study)
-			.build();
+	public static Record createNewRecord(User user, Language language, Grade grade, Study study) {
+		return Record.builder().user(user).language(language).grade(grade).study(study).build();
 	}
-
 }
 
