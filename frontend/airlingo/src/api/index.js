@@ -1,4 +1,5 @@
 import instance from "./instance";
-import auth from "./auth";
+import getLogout from "./auth";
+import getUserProfile from "./user";
 
-export { instance, auth };
+export { instance, getLogout, getUserProfile };
