@@ -61,9 +61,7 @@ const GlobalStyle = css`
         font-family: "Pretendard", sans-serif;
     }
     html,
-    body {
-        line-height: 1;
-    }
+    body,
     div,
     span,
     applet,
@@ -150,6 +148,11 @@ const GlobalStyle = css`
         font: inherit;
         vertical-align: baseline;
     }
+
+    body {
+        line-height: 1;
+    }
+
     article,
     aside,
     details,
