@@ -1,5 +1,7 @@
 package com.ssafy.airlingo.domain.study.controller;
 
+import java.io.IOException;
+
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -54,9 +56,9 @@ public class ScriptController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "Save script after feedback", description = "스크립트 생성")
+	@Operation(summary = "Save script before feedback", description = "스크립트 생성")
 	@PostMapping()
-	public ResponseResult CreateScript(@RequestBody CreateScriptRequestDto createScriptRequestDto) {
+	public ResponseResult CreateScript(@RequestBody CreateScriptRequestDto createScriptRequestDto) throws IOException {
 		log.info("ScriptController_CreateScript");
 		return new SingleResponseResult<>(scriptService.createScript(createScriptRequestDto));
 	}

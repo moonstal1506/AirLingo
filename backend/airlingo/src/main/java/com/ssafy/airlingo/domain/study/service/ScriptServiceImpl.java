@@ -1,8 +1,11 @@
 package com.ssafy.airlingo.domain.study.service;
 
+import java.io.IOException;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.ssafy.airlingo.domain.S3.service.Amazon3SService;
 import com.ssafy.airlingo.domain.content.entity.Card;
 import com.ssafy.airlingo.domain.content.repository.CardRepository;
 import com.ssafy.airlingo.domain.study.dto.request.CreateScriptRequestDto;
@@ -24,6 +27,7 @@ public class ScriptServiceImpl implements ScriptService {
 	private final ScriptRepository scriptRepository;
 	private final StudyRepository studyRepository;
 	private final CardRepository cardRepository;
+	private final Amazon3SService amazon3SService;
 
 	@Override
 	public ScriptResponseDto findScriptByScriptId(Long scriptId) {
@@ -42,13 +46,17 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	@Transactional
-	public Long createScript(CreateScriptRequestDto createScriptRequestDto) {
+	public Long createScript(CreateScriptRequestDto createScriptRequestDto) throws IOException {
 		log.info("ScriptServiceImpl_createScript || 녹음 파일 s3저장 및 스크립트 생성");
 		Study study = studyRepository.findById(createScriptRequestDto.getStudyId()).get();
 		Card card = cardRepository.findById(createScriptRequestDto.getCardId()).get();
 		//s3에 녹음파일 저장 후 url반환
+		String voiceFileUrl = amazon3SService.uploadVoiceFileToS3(createScriptRequestDto.getVoiceFile());
 		//stt후 대본 프론트로 다시 반환 + 스크립트id 랑 같이
-		return scriptRepository.save(Script.createNewScript(study,card,"")).getScriptId();
+
+
+
+		return scriptRepository.save(Script.createNewScript(study,card,voiceFileUrl)).getScriptId();
 	}
 
 	@Override

@@ -1,6 +1,7 @@
 package com.ssafy.airlingo.domain.S3.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
@@ -103,5 +104,24 @@ public class Amazon3SService {
 	public String getUuidFileName(String fileName) {
 		String ext = fileName.substring(fileName.indexOf(".") + 1);
 		return UUID.randomUUID().toString() + "." + ext;
+	}
+
+	public String uploadVoiceFileToS3(MultipartFile voiceFile) throws IOException {
+		log.info("UploadFileToS3_uploadVoiceFileToS3 || S3로 음성파일 업로드");
+		String originalName = voiceFile.getOriginalFilename(); // 파일 이름
+		long size = voiceFile.getSize(); // 파일 크기
+
+		ObjectMetadata objectMetaData = new ObjectMetadata();
+		objectMetaData.setContentType(voiceFile.getContentType());
+		objectMetaData.setContentLength(size);
+
+		// S3에 업로드
+		amazonS3Client.putObject(
+			new PutObjectRequest(bucketName, originalName, voiceFile.getInputStream(), objectMetaData)
+				.withCannedAcl(CannedAccessControlList.PublicRead)
+		);
+
+		String audioPath = amazonS3Client.getUrl(bucketName, originalName).toString(); // 접근가능한 URL 가져오기
+		return audioPath;
 	}
 }
