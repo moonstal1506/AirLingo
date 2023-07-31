@@ -44,4 +44,8 @@ public class UserLanguage {
 	public void setUser(User user) {
 		this.user = user;
 	}
+
+	public void updateGrade(Grade grade) {
+		this.grade = grade;
+	}
 }
