@@ -10,8 +10,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateImageRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
@@ -74,18 +79,55 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
+	@Operation(summary = "UpdatePassword", description = "사용자가 비밀번호 변경 합니다.")
+	@PostMapping("/password")
+	public ResponseResult updatePassword(@RequestBody UpdatePasswordRequestDto updatePasswordRequestDto) {
+		log.info("UserController_updatePassword -> 비밀번호 변경");
+		userService.updatePassword(updatePasswordRequestDto);
+		return ResponseResult.successResponse;
+	}
+	@Operation(summary = "UpdateBio", description = "사용자가 자기소개를 변경 합니다.")
+	@PostMapping("/bio")
+	public ResponseResult updateBio(@RequestBody UpdateBioRequestDto updateBioRequestDto) {
+		log.info("UserController_updateBio -> 자기소개 변경");
+		userService.updateBio(updateBioRequestDto);
+		return ResponseResult.successResponse;
+	}
+	@Operation(summary = "UpdateImage", description = "사용자가 프로필 사진을 변경 합니다.")
+	@PostMapping("/updateImage")
+	public ResponseResult UpdateImage(@RequestBody UpdateImageRequestDto updateImageRequestDto) {
+		log.info("UserController_UpdateImage -> 프로필 사진 변경");
+		userService.updateImage(updateImageRequestDto);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "DeleteImage", description = "사용자가 프로필 사진을 삭제 합니다.")
+	@DeleteMapping("/deleteImage")
+	public ResponseResult DeleteImage(Long userId) {
+		log.info("UserController_UpdateImage -> 프로필 사진 삭제");
+		userService.deleteImage(userId);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "AddInterestLanguage", description = "사용자가 관심언어를 추가합니다.")
+	@PostMapping("/language")
+	public ResponseResult addInterestLanguage(@RequestBody AddInterestLanguageRequestDto interestLanguageRequestDto) {
+		log.info("UserController_addInterestLanguage -> 관심 언어 추가");
+		userService.addInterestLanguage(interestLanguageRequestDto);
+		return ResponseResult.successResponse;
+	}
+	@Operation(summary = "DeleteInterestLanguage", description = "사용자가 관심언어를 삭제합니다.")
+	@DeleteMapping("/language")
+	public ResponseResult deleteInterestLanguage(@RequestBody DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
+		log.info("UserController_deleteInterestLanguage -> 관심 언어 삭제");
+		userService.deleteInterestLanguage(deleteInterestLanguageRequestDto);
+		return ResponseResult.successResponse;
+	}
 	@Operation(summary = "GetProfile", description = "프로필 조회")
 	@GetMapping("/{userId}")
 	public ResponseResult findUserByUserId(@PathVariable Long userId) {
 		UserResponseDto userResponseDto = userService.findUserByUserId(userId);
 		return new SingleResponseResult<>(userResponseDto);
-	}
-
-	@Operation(summary = "GetAllRecordItems", description = "개인별 전체 기록 조회")
-	@GetMapping("/record/{userId}")
-	public ResponseResult findByUserId(@PathVariable Long userId) {
-		List<RecordResponseDto> recordResponseDto = userService.findByUserId(userId);
-		return new SingleResponseResult<>(recordResponseDto);
 	}
 
 	@Operation(summary = "GetDailyGrid", description = "데일리 그리드 개수 조회")
