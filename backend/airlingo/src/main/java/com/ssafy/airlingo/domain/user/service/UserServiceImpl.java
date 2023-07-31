@@ -18,7 +18,7 @@ import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.entity.DailyGrid;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
-import com.ssafy.airlingo.domain.user.repository.RecordRepository;
+import com.ssafy.airlingo.domain.language.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
 import com.ssafy.airlingo.domain.word.repository.WordRepository;

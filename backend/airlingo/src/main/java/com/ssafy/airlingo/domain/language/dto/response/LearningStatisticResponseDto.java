@@ -11,8 +11,7 @@ import lombok.Setter;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class LearningLanguageResponseDto {
-	private Long languageId;
-	private String languageName;
-	private String percent;
+public class LearningStatisticResponseDto {
+	private LearningNumberResponseDto numberResponse;
+	private LearningTimeResponseDto timeResponse;
 }
