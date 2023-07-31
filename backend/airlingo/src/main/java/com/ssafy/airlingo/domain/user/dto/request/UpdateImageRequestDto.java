@@ -1,5 +1,9 @@
 package com.ssafy.airlingo.domain.user.dto.request;
 
+import java.util.List;
+
+import org.springframework.web.multipart.MultipartFile;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -23,4 +27,5 @@ public class UpdateImageRequestDto {
 	@Schema(description = "유저 이미지")
 	private String userImgUrl;
 
+	private List<MultipartFile> files;
 }

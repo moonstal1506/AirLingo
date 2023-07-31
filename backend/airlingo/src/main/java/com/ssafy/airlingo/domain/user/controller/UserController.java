@@ -2,14 +2,21 @@ package com.ssafy.airlingo.domain.user.controller;
 
 import java.util.List;
 
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
+import com.ssafy.airlingo.domain.S3.service.Amazon3SService;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
@@ -41,6 +48,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
+	private final Amazon3SService amazon3SService;
 
 	@Operation(summary = "Sign Up", description = "사용자가 회원가입 합니다.")
 	@ApiResponses(value = {
@@ -108,11 +116,12 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
+
 	@Operation(summary = "Update Image", description = "사용자가 프로필 사진을 변경 합니다.")
 	@PostMapping("/updateImage")
-	public ResponseResult UpdateImage(@RequestBody UpdateImageRequestDto updateImageRequestDto) {
+	public ResponseResult updateImage(@RequestPart(value = "files") List<MultipartFile> multipartFiles, Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 변경");
-		userService.updateImage(updateImageRequestDto);
+		userService.uploadFiles(multipartFiles, userId);
 		return ResponseResult.successResponse;
 	}
 
