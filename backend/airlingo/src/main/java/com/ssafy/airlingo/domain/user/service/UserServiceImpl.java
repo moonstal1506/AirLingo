@@ -38,7 +38,7 @@ import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
-import com.ssafy.airlingo.domain.word.repository.WordRepository;
+import com.ssafy.airlingo.global.exception.EmptyImageException;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
 import com.ssafy.airlingo.global.util.JwtService;
 
@@ -122,7 +122,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto) {
 		log.info("UserServiceImpl_updatePassword");
-		User user = userRepository.findById(updatePasswordRequestDto.getUserId()).get();
+		User user = userRepository.findById(updatePasswordRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
 		user.updatePassword(updatePasswordRequestDto.getUserPassword());
 	}
 
@@ -130,15 +130,17 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void updateBio(UpdateBioRequestDto updateBioRequestDto) {
 		log.info("UserServiceImpl_updateBio");
-		User user = userRepository.findById(updateBioRequestDto.getUserId()).get();
+		User user = userRepository.findById(updateBioRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
 		user.updateBio(updateBioRequestDto.getUserBio());
 	}
 
 	@Override
 	@Transactional
 	public List<S3FileDto> uploadFiles(List<MultipartFile> multipartFiles, Long userId) {
-		List<S3FileDto> s3files = new ArrayList<>();
-
+			List<S3FileDto> s3files = new ArrayList<>();
+			if(s3files.isEmpty()){
+				throw new EmptyImageException();
+			}
 			String originalFileName = multipartFiles.get(0).getOriginalFilename();
 			String uploadFileName = getUuidFileName(originalFileName);
 			String uploadFileUrl = "";
@@ -157,7 +159,7 @@ public class UserServiceImpl implements UserService {
 
 				// S3에 업로드한 폴더 및 파일 URL
 				uploadFileUrl = amazonS3Client.getUrl(bucketName, keyName).toString();
-				User user = userRepository.findById(userId).get();
+				User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 				user.updateImage(uploadFileUrl);
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -182,7 +184,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void deleteImage(Long userId) {
 		log.info("UserServiceImpl_deleteImage");
-		User user = userRepository.findById(userId).get();
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		user.updateImage(DEFAULT_IMAGE);
 	}
 
@@ -190,7 +192,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void addInterestLanguage(AddInterestLanguageRequestDto addInterestLanguageRequestDto) {
 		log.info("UserServiceImpl_addInterestLanguage");
-		User user = userRepository.findById(addInterestLanguageRequestDto.getUserId()).get();
+		User user = userRepository.findById(addInterestLanguageRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
 		Language language = languageRepository.findByLanguageId(addInterestLanguageRequestDto.getLanguageId());
 		Grade grade = gradeRepository.findByGradeId(addInterestLanguageRequestDto.getGradeId());
 		UserLanguage userLanguage = UserLanguage.builder()
@@ -205,7 +207,7 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
 		log.info("UserServiceImpl_deleteInterestLanguage");
-		User user = userRepository.findById(deleteInterestLanguageRequestDto.getUserId()).get();
+		User user = userRepository.findById(deleteInterestLanguageRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
 		Language language = languageRepository.findByLanguageId(deleteInterestLanguageRequestDto.getLanguageId());
 
 		userLanguageRepository.deleteByUserAndLanguage(user, language);
@@ -213,21 +215,13 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserResponseDto findUserByUserId(Long userId) {
-		User user = userRepository.findById(userId).orElse(null);
-		// 사용자를 찾지 못한 경우 일단 null
-		if (user == null) {
-			return null;
-		}
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		// User(Entity)를 UserResponseDto로 변환
 		return user.toDto();
 	}
 
 	public List<DailyGridResponseDto> findDailyGridByUserId(Long userId) {
-		User user = userRepository.findById(userId).orElse(null);
-		if (user == null) {
-			// 사용자를 찾지 못한 경우 빈 리스트 반환
-			return Collections.emptyList();
-		}
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		List<DailyGridResponseDto> dailyGridList = dailyGridRepository.findDailyGridByUser(user)
 			.stream()
 			.map(DailyGrid::toDto)

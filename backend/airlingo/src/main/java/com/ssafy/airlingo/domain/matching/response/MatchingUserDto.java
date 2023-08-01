@@ -45,6 +45,10 @@ public class MatchingUserDto {
 	@Schema(description = "사용자 모국어")
 	private String userNativeLanguage;
 
+	@NotNull
+	@Schema(description = "사용자 학습어 ID")
+	private Long userStudyLanguageId;
+
 	@NotBlank
 	@Schema(description = "사용자 학습어")
 	private String userStudyLanguage;
@@ -73,6 +77,7 @@ public class MatchingUserDto {
 			.userNickname(user.getUserNickname())
 			.userImgUrl(user.getUserImgUrl())
 			.userNativeLanguage(user.getUserNativeLanguage().getLanguageKorName())
+			.userStudyLanguageId(userLanguage.getLanguage().getLanguageId())
 			.userStudyLanguage(userLanguage.getLanguage().getLanguageKorName())
 			.userStudyLanguageGradeName(userLanguage.getGrade().getGradeName())
 			.userStudyLanguageGradeScore(userLanguage.getGrade().getGradeScore())
