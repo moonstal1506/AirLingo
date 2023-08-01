@@ -29,5 +29,6 @@ module.exports = {
                 labelAttributes: ["htmlFor"],
             },
         ],
+        "react/jsx-no-useless-fragment": [2, { allowExpressions: true }],
     },
 };
