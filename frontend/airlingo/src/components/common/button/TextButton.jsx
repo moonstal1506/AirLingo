@@ -35,6 +35,9 @@ const shapeStyle = {
             transition: ease-out 0.35s;
         }
     `,
+    large: ` 
+        min-width : 200px;
+    `,
     normal: `
         min-width: 150px;
         border-radius: 10px;
