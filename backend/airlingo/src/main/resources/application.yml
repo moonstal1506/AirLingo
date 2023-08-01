@@ -47,3 +47,17 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+
+#s3
+cloud:
+  aws:
+    s3:
+      bucket: airlingobucket
+    credentials:
+      accessKey: AKIA456JDTAY624ZQAE7
+      secretKey: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

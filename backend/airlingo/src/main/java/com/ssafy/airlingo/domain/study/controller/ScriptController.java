@@ -2,6 +2,7 @@ package com.ssafy.airlingo.domain.study.controller;
 
 import java.io.IOException;
 
+import org.json.simple.parser.ParseException;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -25,6 +26,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -56,14 +58,16 @@ public class ScriptController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "Save script before feedback", description = "스크립트 생성")
-	@PostMapping()
-	public ResponseResult CreateScript(@RequestBody CreateScriptRequestDto createScriptRequestDto) throws IOException {
+	@Operation(summary = "Save script Entity before feedback", description = "스크립트 생성")
+	@PostMapping
+	public ResponseResult CreateScript(@RequestBody CreateScriptRequestDto createScriptRequestDto) throws
+		IOException,
+		ParseException {
 		log.info("ScriptController_CreateScript");
 		return new SingleResponseResult<>(scriptService.createScript(createScriptRequestDto));
 	}
-	@Operation(summary = "Save script after feedback", description = "피드백 끝난 스크립트 저장")
-	@PutMapping()
+	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")
+	@PutMapping
 	public ResponseResult ModifyScriptContent(@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto) {
 		log.info("ScriptController_ModifyScriptContent");
 		scriptService.modifyScriptContent(modifyScriptRequestDto);
