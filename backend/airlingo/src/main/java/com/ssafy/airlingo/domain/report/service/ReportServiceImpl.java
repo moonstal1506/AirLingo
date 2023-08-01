@@ -16,6 +16,7 @@ import com.ssafy.airlingo.domain.user.repository.UserRepository;
 import com.ssafy.airlingo.global.entity.LanguageCode;
 import com.ssafy.airlingo.global.exception.IncorrectLanguageCodeException;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,11 +40,15 @@ public class ReportServiceImpl {
 	}
 
 	@Transactional
-	public Long reportUser(ReportUserRequestDto reportUserRequestDto) {
+	public Long reportUser(@NotNull ReportUserRequestDto reportUserRequestDto) {
 		log.info("ReportService_reportUser || 유저 신고 기능");
 		ReportItem reportItem = reportItemRepository.findById(reportUserRequestDto.getReportItemId()).get();
 		User user = userRepository.findById(reportUserRequestDto.getUserId()).get();
 		user.addComplainCount();
+
+		if(user.isComplainCountExceedFive())
+			user.suspendUser();
+
 		return reportRepository.save(reportUserRequestDto.toReportEntity(user, reportItem)).getReportId();
 	}
 }

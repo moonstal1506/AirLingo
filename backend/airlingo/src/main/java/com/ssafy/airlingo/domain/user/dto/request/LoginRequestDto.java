@@ -16,11 +16,11 @@ import lombok.Setter;
 public class LoginRequestDto {
 
 	@NotBlank
-	@Schema(description = "로그인 ID")
+	@Schema(description = "로그인 ID", example = "airlingo")
 	private String userLoginId;
 
 	@NotBlank
-	@Schema(description = "로그인 PW")
+	@Schema(description = "로그인 PW", example = "airlingo")
 	private String userPassword;
 
 }

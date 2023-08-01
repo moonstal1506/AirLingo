@@ -1,12 +1,19 @@
 package com.ssafy.airlingo.domain.study.service;
 
+import java.io.IOException;
+import java.util.List;
+
+import org.json.simple.parser.ParseException;
 import com.ssafy.airlingo.domain.study.dto.request.CreateScriptRequestDto;
 import com.ssafy.airlingo.domain.study.dto.request.ModifyScriptContentRequestDto;
+import com.ssafy.airlingo.domain.study.dto.response.ScriptAfterSTTResponseDto;
 import com.ssafy.airlingo.domain.study.dto.response.ScriptResponseDto;
+import com.ssafy.airlingo.domain.study.dto.response.SentenceResponseDto;
 
 public interface ScriptService {
 	ScriptResponseDto findScriptByScriptId(Long scriptId);
 	void deleteScriptById(Long scriptId);
-	Long createScript(CreateScriptRequestDto createScriptRequestDto);
+	ScriptAfterSTTResponseDto createScript(CreateScriptRequestDto createScriptRequestDto) throws IOException, ParseException;
 	void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto);
+	List<SentenceResponseDto> voiceFileSTT(String audioPath) throws ParseException;
 }

@@ -171,4 +171,14 @@ public class User extends BaseTimeEntity {
 	public void updateImage(String userImgUrl) {
 		this.userImgUrl = userImgUrl;
 	}
+
+	public boolean isComplainCountExceedFive() {
+		if(this.userComplain >= 5)
+			return true;
+		return false;
+	}
+
+	public void suspendUser(){
+		this.userState = UserState.INACTIVE;
+	}
 }

@@ -89,7 +89,7 @@ public class MatchingController {
 	@Operation(summary = "Concurrent Users size", description = "실시간 사용자 통계")
 	@GetMapping("/concurrent-users")
 	public ResponseResult countConcurrentUsers() {
-		log.info("MatchingController_createConnection");
+		log.info("MatchingController_countConcurrentUsers");
 		return new SingleResponseResult<>(matchingService.getConcurrentUsersSize());
 	}
 }

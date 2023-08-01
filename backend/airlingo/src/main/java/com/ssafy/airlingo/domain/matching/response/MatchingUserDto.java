@@ -30,45 +30,47 @@ public class MatchingUserDto {
 	private Long userId;
 
 	@NotBlank
-	@Schema(description = "사용자 닉네임")
+	@Schema(description = "사용자 닉네임", example = "링고")
 	private String userNickname;
 
 	@NotBlank
-	@Schema(description = "사용자 이미지")
+	@Schema(description = "사용자 이미지", example = "http://User.s3.amazonaws.com/profile.png")
 	private String userImgUrl;
 
 	@NotBlank
-	@Schema(description = "사용자 자기소개")
+	@Schema(description = "사용자 자기소개", example = "한국을 좋아해요.")
 	private String userBio;
 
 	@NotBlank
-	@Schema(description = "사용자 모국어")
+	@Schema(description = "사용자 모국어", example = "영어")
 	private String userNativeLanguage;
 
 	@NotNull
-	@Schema(description = "사용자 학습어 ID")
+	@Schema(description = "사용자 학습어 ID", example = "1")
 	private Long userStudyLanguageId;
 
 	@NotBlank
-	@Schema(description = "사용자 학습어")
+	@Schema(description = "사용자 학습어", example = "한국어")
 	private String userStudyLanguage;
 
 	@NotBlank
-	@Schema(description = "사용자 학습어 등급 이름")
+	@Schema(description = "사용자 학습어 등급 이름", example = "B2")
 	private String userStudyLanguageGradeName;
 
 	@NotBlank
-	@Schema(description = "사용자 학습어 등급 점수")
+	@Schema(description = "사용자 학습어 등급 점수", example = "3")
 	private int userStudyLanguageGradeScore;
 
-	@Schema(description = "사용자 관심언어")
+	@NotNull
+	@Schema(description = "사용자 관심언어", example = "한국어")
 	private List<String> userInterestLanguages;
 
-	@Schema(description = "사용자 별점")
+	@NotBlank
+	@Schema(description = "사용자 별점", example = "4.3")
 	private double userRating;
 
 	@NotNull
-	@Schema(description = "프리미엄 매칭 여부")
+	@Schema(description = "프리미엄 매칭 여부", example = "false")
 	private boolean premium;
 
 	public static MatchingUserDto toMatchingUserDto(User user, UserLanguage userLanguage, boolean premium) {

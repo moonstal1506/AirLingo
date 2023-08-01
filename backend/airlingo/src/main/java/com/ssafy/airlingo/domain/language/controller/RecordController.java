@@ -47,7 +47,7 @@ public class RecordController {
 	@Operation(summary = "Record Statistic", description = "언어별 통계 - 학습 시간 분석, 학습 횟수")
 	@GetMapping("/record/statistic/{userId}")
 	public ResponseResult getStatistic(@PathVariable Long userId) {
-		log.info("getStatistic");
+		log.info("RecordController_getStatistic");
 		return new SingleResponseResult<>(recordService.getStatistic(userId));
 	}
 }
