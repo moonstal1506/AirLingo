@@ -51,25 +51,24 @@ public class MatchingController {
 	@Operation(summary = "Matching", description = "매칭 대기열 등록")
 	@PostMapping
 	public ResponseResult matching(@RequestBody @Valid MatchingRequestDto matchingRequestDto) {
-		log.info("matching request : {}", matchingRequestDto);
+		log.info("matchingRequest : {}", matchingRequestDto.toString());
 		MatchingUserDto matchingUser = matchingService.findMatchingUser(matchingRequestDto);
 		producer.sendMatchingUser(matchingUser);
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "Matching Result", description = "매칭 성공 유저들에게 SessionId 반환(웹소켓 이용)")
+	@Operation(summary = "Matching Result", description = "매칭 성공 유저들에게 SessionId, StudyId 및 상대 정보 반환(웹소켓 이용)")
 	@PostMapping("/result")
 	public void matchingResult(@RequestBody @Valid MatchingResponseDto matchingResponseDto) throws
-		OpenViduJavaClientException,
-		OpenViduHttpException {
+		OpenViduJavaClientException, OpenViduHttpException {
 		matchingService.useMileage(matchingResponseDto);
 		log.info("matchingResult : {}", matchingResponseDto.toString());
 
+		// 매칭에 성공한 사용자들을 대상으로 스터디 생성 및 오픈비두 세션 생성
 		Long studyId = matchingService.createStudy(matchingResponseDto);
 		String sessionId = openViduManager.createSession();
 
-
-		// WebSocketHandler를 통해 매칭이 완료된 user 2명에게 동일한 sessionId를 보내기
+		// WebSocketHandler를 통해 매칭에 성공한 사용자들에게 동일한 sessionId를 보내기
 		// 구분자는 String이어야 하므로 userNickname을 사용함
 		List<String> userNicknames = new ArrayList<>();
 		userNicknames.add(matchingResponseDto.getUser1().getUserNickname());
@@ -78,21 +77,19 @@ public class MatchingController {
 		webSocketHandler.sendSessionIdAndMatchingDataToUsers(sessionId, studyId, matchingResponseDto, userNicknames);
 	}
 
-	/**
-	 * @param sessionId The Session in which to create the Connection
-	 * @return The Token associated to the Connection
-	 */
 	@Operation(summary = "Create Connection", description = "Token 발급 및 WebSocket URL 반환")
 	@PostMapping("/{sessionId}")
-	public SingleResponseResult<String> createConnection(@PathVariable("sessionId") String sessionId)
-		throws OpenViduJavaClientException, OpenViduHttpException {
+	public ResponseResult createConnection(@PathVariable("sessionId") String sessionId) throws
+		OpenViduJavaClientException, OpenViduHttpException {
+		log.info("MatchingController_createSession");
 		String token = openViduManager.getToken(sessionId);
 		return new SingleResponseResult<>(token);
 	}
 
 	@Operation(summary = "Concurrent Users size", description = "실시간 사용자 통계")
 	@GetMapping("/concurrent-users")
-	public SingleResponseResult countConcurrentUsers() {
+	public ResponseResult countConcurrentUsers() {
+		log.info("MatchingController_createConnection");
 		return new SingleResponseResult<>(matchingService.getConcurrentUsersSize());
 	}
 }

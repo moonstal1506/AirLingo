@@ -28,8 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
 @Tag(name = "Record Controller", description = "실력 평가 관련 컨트롤러")
 @Slf4j
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api")
 public class RecordController {
 
