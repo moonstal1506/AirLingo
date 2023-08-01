@@ -60,10 +60,9 @@ const GlobalStyle = css`
         font-size: 15px;
         font-family: "Pretendard", sans-serif;
     }
+
     html,
-    body {
-        line-height: 1;
-    }
+    body,
     div,
     span,
     applet,
@@ -150,6 +149,14 @@ const GlobalStyle = css`
         font: inherit;
         vertical-align: baseline;
     }
+
+    html,
+    body {
+        line-height: 1;
+        width: 100%;
+        height: 100%;
+    }
+
     article,
     aside,
     details,
@@ -184,6 +191,13 @@ const GlobalStyle = css`
     }
     svg {
         margin: 0;
+    }
+    #root {
+        width: 100%;
+        height: 100%;
+        position: relative;
+        margin: 0;
+        padding: 0;
     }
     ::-webkit-scrollbar-track {
         margin-top: 10px;
