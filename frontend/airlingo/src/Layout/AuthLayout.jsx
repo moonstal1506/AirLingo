@@ -41,10 +41,10 @@ function AuthLayout({ children }) {
 
     useEffect(() => {
         /* 1차 체킹. 현재, 로컬에 지정된 상태로 user의 프로필 정보를 받아올 수 있는지 체크 */
-        async function fetchData() {
+        async function fetchProfile() {
             checkValidAuth();
         }
-        fetchData();
+        fetchProfile();
     }, [children, checkValidAuth]);
 
     /* 2차 체킹. 받아온 userProfile과 현재 store에 저장된 storeUser가 동일한지 체킹 */
