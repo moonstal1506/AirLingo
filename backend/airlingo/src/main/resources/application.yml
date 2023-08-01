@@ -20,7 +20,7 @@ server:
   data:
     redis:
       host: localhost
-      port: 6379
+      port: 6380
       timeout: 5000 # 서버와의 연결 시도 및 응답 대기 시간 최대 5초
 
 # 로그 레벨 설정
@@ -47,3 +47,17 @@ springdoc:
       enabled: true
   cache:
     disabled: true
+
+# s3
+cloud:
+  aws:
+    s3:
+      bucket: airlingobucket
+    credentials:
+      accessKey: AKIA456JDTAY624ZQAE7
+      secretKey: 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
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false

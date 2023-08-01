@@ -13,6 +13,7 @@ import com.ssafy.airlingo.domain.study.repository.StudyRepository;
 import com.ssafy.airlingo.domain.study.repository.UserStudyRepository;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
+import com.ssafy.airlingo.global.exception.EmptyStudyListException;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
 
 import lombok.RequiredArgsConstructor;
@@ -29,10 +30,14 @@ public class StudyServiceImpl implements StudyService {
 
 	@Override
 	public List<StudyResponseDto> findStudyByUserIdAndDate(Long userId, LocalDate createdDate) {
-		User user = userRepository.findById(userId).orElseThrow(() -> new NotExistAccountException("존재하지 않는 아이디 입니다."));
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		List<UserStudy> userStudys = userStudyRepository.findUserStudyByUserIdAndCreatedDate(userId,createdDate);
-		List<StudyResponseDto> studyList = new ArrayList<>();
 
+		if(userStudys.isEmpty()){
+			throw new EmptyStudyListException();
+		}
+
+		List<StudyResponseDto> studyList = new ArrayList<>();
 		for (UserStudy userStudy : userStudys) {
 			Study study = userStudy.getStudy();
 			Long partnerId = userStudyRepository.findPartnerByStudyAndUser(study.getStudyId(), userId);
@@ -41,5 +46,4 @@ public class StudyServiceImpl implements StudyService {
 		}
 		return studyList;
 	}
-
 }

@@ -13,11 +13,12 @@ import lombok.Setter;
 @AllArgsConstructor
 @Schema(description = "(WordRequestDto) 단어 저장 요청 DTO")
 public class WordRequestDto {
+
 	@NotBlank
-	@Schema(description = "검색 단어")
+	@Schema(description = "검색 단어", example = "사과")
 	private String wordName;
 
 	@NotBlank
-	@Schema(description = "검색 단어 뜻")
+	@Schema(description = "검색 단어 뜻", example = "apple")
 	private String wordDescription;
 }

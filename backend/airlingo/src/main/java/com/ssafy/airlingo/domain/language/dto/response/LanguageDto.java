@@ -3,6 +3,7 @@ package com.ssafy.airlingo.domain.language.dto.response;
 import com.ssafy.airlingo.domain.language.entity.Language;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,9 +33,6 @@ public class LanguageDto {
 	@Schema(description = "등급 이름(한글)", example = "입문")
 	private String gradeKorName;
 
-	public LanguageDto(Language language) {
-		this.languageId = language.getLanguageId();
-		this.languageKorName = language.getLanguageKorName();
-		this.languageEngName = language.getLanguageEngName();
-	}
+	@Schema(description = "국가 이미지 URL", example = "http://Language.s3.amazonaws.com/image.png")
+	private String imageUrl;
 }

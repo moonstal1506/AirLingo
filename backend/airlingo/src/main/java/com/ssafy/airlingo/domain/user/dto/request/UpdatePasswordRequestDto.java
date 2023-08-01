@@ -16,11 +16,11 @@ import lombok.Setter;
 public class UpdatePasswordRequestDto {
 
 	@NotNull
-	@Schema(description = "유저 ID")
+	@Schema(description = "유저 ID", example = "1")
 	private Long userId;
 
 	@NotBlank
-	@Schema(description = "로그인 PW")
+	@Schema(description = "로그인 PW", example = "airlingo")
 	private String userPassword;
 
 }

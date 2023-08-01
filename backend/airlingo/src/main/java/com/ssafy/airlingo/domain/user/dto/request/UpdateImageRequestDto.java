@@ -20,12 +20,14 @@ import lombok.Setter;
 public class UpdateImageRequestDto {
 
 	@NotNull
-	@Schema(description = "유저 ID")
+	@Schema(description = "유저 ID", example = "1")
 	private Long userId;
 
 	@NotBlank
-	@Schema(description = "유저 이미지")
+	@Schema(description = "유저 이미지 url", example = "http://User.s3.amazonaws.com/profile.png")
 	private String userImgUrl;
 
+	@NotNull
+	@Schema(description = "유저 이미지 파일")
 	private List<MultipartFile> files;
 }

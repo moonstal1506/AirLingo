@@ -28,8 +28,8 @@ import lombok.extern.slf4j.Slf4j;
 		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
 @Tag(name = "Record Controller", description = "실력 평가 관련 컨트롤러")
 @Slf4j
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api")
 public class RecordController {
 
@@ -47,7 +47,7 @@ public class RecordController {
 	@Operation(summary = "Record Statistic", description = "언어별 통계 - 학습 시간 분석, 학습 횟수")
 	@GetMapping("/record/statistic/{userId}")
 	public ResponseResult getStatistic(@PathVariable Long userId) {
-		log.info("getStatistic");
+		log.info("RecordController_getStatistic");
 		return new SingleResponseResult<>(recordService.getStatistic(userId));
 	}
 }

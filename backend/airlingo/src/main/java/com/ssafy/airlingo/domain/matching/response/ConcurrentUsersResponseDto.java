@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 public class ConcurrentUsersResponseDto {
 
 	@NotNull
-	@Schema(description = "접속한 유저의 수")
+	@Schema(description = "접속한 유저의 수", example = "100")
 	private Long ConcurrentUsersSize;
 
 	@NotNull
-	@Schema(description = "매칭중인 유저의 수")
+	@Schema(description = "매칭중인 유저의 수", example = "10")
 	private int waitingUsersSize;
 }

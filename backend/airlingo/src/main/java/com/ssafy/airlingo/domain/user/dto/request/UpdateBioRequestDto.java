@@ -16,11 +16,11 @@ import lombok.Setter;
 public class UpdateBioRequestDto {
 
 	@NotNull
-	@Schema(description = "유저 ID")
+	@Schema(description = "유저 ID", example = "1")
 	private Long userId;
 
 	@NotBlank
-	@Schema(description = "유저 자기소개")
+	@Schema(description = "유저 자기소개", example = "한국을 사랑해요.")
 	private String userBio;
 
 }
