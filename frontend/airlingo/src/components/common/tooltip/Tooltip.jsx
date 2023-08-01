@@ -59,7 +59,7 @@ const positionCombination = {
 
 function Tooltip({ position, children }) {
     const { horizontal, vertical, direction } = position;
-    const [hover, setHover] = useState(true);
+    const [hover, setHover] = useState(false);
     const handleMouseOver = () => setHover(true);
     const handleMouseOut = () => setHover(false);
     return (
@@ -116,7 +116,6 @@ const TooltipBox = styled.div`
     z-index: 999;
     position: relative;
     width: fit-content;
-    background-color: red;
     transition: opacity 0.5s;
     opacity: ${({ isHover }) => (isHover ? "1" : "0")};
     ${({ horizontal, vertical, direction }) => positionCombination[horizontal][vertical][direction]}
