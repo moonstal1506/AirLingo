@@ -23,7 +23,7 @@ public class CreateScriptRequestDto {
 	@Schema(description = "카드 ID", example = "2")
 	private Long cardId;
 
-	// @Schema(description = "대화 음성 파일")
-	// private MultipartFile recordFile;
+	@Schema(description = "대화 음성 파일")
+	private MultipartFile voiceFile;
 
 }
