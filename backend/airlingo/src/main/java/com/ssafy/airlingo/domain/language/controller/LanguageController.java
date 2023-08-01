@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("api/")
+@RequestMapping("/api")
 public class LanguageController {
 
 	private final LanguageService languageService;

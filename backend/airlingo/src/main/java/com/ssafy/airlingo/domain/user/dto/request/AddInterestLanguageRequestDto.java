@@ -15,13 +15,13 @@ import lombok.Setter;
 public class AddInterestLanguageRequestDto {
 
 	@NotNull
-	@Schema(description = "유저 ID")
+	@Schema(description = "유저 ID", example = "1")
 	private Long userId;
 
-	@Schema(description = "언어 ID")
+	@Schema(description = "언어 ID", example = "1")
 	private Long languageId;
 
-	@Schema(description = "등급 ID")
+	@Schema(description = "등급 ID", example = "1")
 	private Long GradeId;
 
 }

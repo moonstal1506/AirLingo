@@ -37,7 +37,7 @@ public class MatchingService {
 	 */
 	@Scheduled(fixedDelay = 10000, initialDelay = 1000) // 1초 후 10초마다 동작
 	public void matching() {
-		log.info("matching size: {}", matchingList.size());
+		log.info("MatchingService matching size: {}", matchingList.size());
 		if (matchingList.size() > 1) {
 			MatchingUserDto matchingUser1 = matchingList.poll();
 
@@ -48,7 +48,7 @@ public class MatchingService {
 
 			// 매칭 실패 대기열 재진입
 			if (matchingRequestDtoList.isEmpty()) {
-				log.info("matching fail");
+				log.info("MatchingService matching fail");
 				matchingList.add(matchingUser1);
 				return;
 			}
@@ -61,7 +61,7 @@ public class MatchingService {
 	}
 
 	private boolean isPossibleUser(MatchingUserDto matchingUser, MatchingUserDto waitingUser) {
-		log.info("matchingUser: {}, waitingUser: {}", matchingUser, waitingUser);
+		log.info("MatchingService_isPossibleUser matchingUser: {}, waitingUser: {}", matchingUser, waitingUser);
 		// 언어 필터링
 		if(!matchingUser.isMatchLanguage(waitingUser)){
 			return false;
@@ -80,7 +80,7 @@ public class MatchingService {
 	}
 
 	public void sendMatching(MatchingResponseDto matchingResponseDto) {
-		log.info("matching success : " + matchingResponseDto.toString());
+		log.info("MatchingService_sendMatching matching success : " + matchingResponseDto.toString());
 		RestTemplate restTemplate = new RestTemplate();
 
 		HttpHeaders httpHeaders = new HttpHeaders();

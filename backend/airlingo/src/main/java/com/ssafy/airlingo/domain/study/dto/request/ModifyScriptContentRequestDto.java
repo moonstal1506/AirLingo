@@ -21,5 +21,4 @@ public class ModifyScriptContentRequestDto {
 	@Schema(description = "스크립트 내용", example = "2")
 	private String scriptContent;
 
-
 }

@@ -36,7 +36,7 @@ public class ReportController {
 
 	private final ReportServiceImpl reportService;
 
-	@Operation(summary = "GetAllReportItems", description = "모든 신고 항목 조회")
+	@Operation(summary = "Get All Report Items", description = "모든 신고 항목 조회")
 	@ApiResponse(responseCode = "450", description = "부적절한 언어 코드 입니다.")
 	@GetMapping("/reportItems")
 	public ResponseResult getReportItemList(
