@@ -52,6 +52,7 @@ public class Study extends BaseTimeEntity {
 			.studyId(this.getStudyId())
 			.studyTime(this.getStudyTime())
 			.createdDate(this.getCreatedDate())
+			.imageUrl(language.getImageUrl())
 			.languageKorName(language.getLanguageKorName())
 			.languageEngName(language.getLanguageEngName())
 			.scripts(scripts.stream().map(script -> ScriptResponseDto.builder()

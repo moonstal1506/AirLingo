@@ -30,6 +30,9 @@ public class StudyResponseDto {
 	@Schema(description = "파트너 이름", example = "에어")
 	private String partnerNickName;
 
+	@Schema(description = "공부한 언어 이미지 URL", example = "https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-britain-icon.svg")
+	private String imageUrl;
+
 	@Schema(description = "공부한 언어 - 한국어", example = "영어")
 	private String languageKorName;
 
