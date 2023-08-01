@@ -2,13 +2,14 @@ package com.ssafy.airlingo.domain.user.service;
 
 import java.util.List;
 
-import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.UpdateImageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
@@ -31,6 +32,9 @@ public interface UserService {
 	// 로그아웃 관련
 	void logout(String userLoginId);
 
+	// 회원탈퇴
+	void deleteUserAccount(Long userId);
+
 	// 프로필 조회 관련
 	UserResponseDto findUserByUserId(Long userId);
 
@@ -44,7 +48,7 @@ public interface UserService {
 	void updateBio(UpdateBioRequestDto updateBioRequestDto);
 
 	//프로필 사진 변경
-	void updateImage(UpdateImageRequestDto updateImageRequestDto);
+	List<S3FileDto> uploadFiles(List<MultipartFile> multipartFiles, Long userId);
 
 	//프로필 사진 삭제
 	void deleteImage(Long userId);
@@ -54,6 +58,4 @@ public interface UserService {
 
 	// 관심 언어 삭제
 	void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto);
-
-
 }

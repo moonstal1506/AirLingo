@@ -8,14 +8,16 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
+import com.ssafy.airlingo.domain.S3.service.Amazon3SService;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.UpdateImageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
@@ -25,6 +27,8 @@ import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -33,6 +37,10 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+@ApiResponses({
+	@ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
+	@ApiResponse(responseCode = "400", description = "응답이 실패하였습니다.",
+		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
 @Tag(name = "User Controller", description = "유저 컨트롤러")
 @Slf4j
 @RestController
@@ -41,6 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
+	private final Amazon3SService amazon3SService;
 
 	@Operation(summary = "Sign Up", description = "사용자가 회원가입 합니다.")
 	@ApiResponses(value = {
@@ -79,7 +88,25 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "UpdatePassword", description = "사용자가 비밀번호 변경 합니다.")
+	@Operation(summary = "Delete User Account", description = "회원탈퇴")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "회원탈퇴 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "회원탈퇴 실패"),
+	})
+	@DeleteMapping("/delete/{userId}")
+	public ResponseResult deleteUserAccount(@PathVariable Long userId) {
+		log.info("UserController_deleteUserAccount -> 회원탈퇴 시도, userId: {}", userId);
+		userService.deleteUserAccount(userId);
+		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Update Password", description = "사용자가 비밀번호 변경 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "비밀번호 변경 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "비밀번호 변경 실패")
+	})
 	@PostMapping("/password")
 	public ResponseResult updatePassword(@RequestBody UpdatePasswordRequestDto updatePasswordRequestDto) {
 		log.info("UserController_updatePassword -> 비밀번호 변경");
@@ -87,7 +114,12 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "UpdateBio", description = "사용자가 자기소개를 변경 합니다.")
+	@Operation(summary = "Update Bio", description = "사용자가 자기소개를 변경 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "자기소개 변경 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "자기소개 변경 실패")
+	})
 	@PostMapping("/bio")
 	public ResponseResult updateBio(@RequestBody UpdateBioRequestDto updateBioRequestDto) {
 		log.info("UserController_updateBio -> 자기소개 변경");
@@ -95,15 +127,26 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "UpdateImage", description = "사용자가 프로필 사진을 변경 합니다.")
+	@Operation(summary = "Update Image", description = "사용자가 프로필 사진을 변경 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "프로필사진 변경 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "프로필사진 변경 실패"),
+		@ApiResponse(responseCode = "491", description = "사진 파일이 비어 있습니다.")
+	})
 	@PostMapping("/updateImage")
-	public ResponseResult UpdateImage(@RequestBody UpdateImageRequestDto updateImageRequestDto) {
+	public ResponseResult updateImage(@RequestPart(value = "files") List<MultipartFile> multipartFiles, Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 변경");
-		userService.updateImage(updateImageRequestDto);
+		userService.uploadFiles(multipartFiles, userId);
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "DeleteImage", description = "사용자가 프로필 사진을 삭제 합니다.")
+	@Operation(summary = "Delete Image", description = "사용자가 프로필 사진을 삭제 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "프로필사진 삭제 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "프로필사진 삭제 실패")
+	})
 	@DeleteMapping("/deleteImage")
 	public ResponseResult DeleteImage(Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 삭제");
@@ -111,7 +154,12 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "AddInterestLanguage", description = "사용자가 관심언어를 추가합니다.")
+	@Operation(summary = "Add Interest Language", description = "사용자가 관심언어를 추가합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "관심언어 추가 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "관심언어 추가 실패")
+	})
 	@PostMapping("/language")
 	public ResponseResult addInterestLanguage(@RequestBody AddInterestLanguageRequestDto interestLanguageRequestDto) {
 		log.info("UserController_addInterestLanguage -> 관심 언어 추가");
@@ -119,7 +167,12 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "DeleteInterestLanguage", description = "사용자가 관심언어를 삭제합니다.")
+	@Operation(summary = "Delete Interest Language", description = "사용자가 관심언어를 삭제합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "관심언어 삭제 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "관심언어 삭제 실패")
+	})
 	@DeleteMapping("/language")
 	public ResponseResult deleteInterestLanguage(
 		@RequestBody DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
@@ -128,16 +181,28 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
-	@Operation(summary = "GetProfile", description = "프로필 조회")
+	@Operation(summary = "Get Profile", description = "프로필 조회")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "프로필조회 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "프로필조회 실패")
+	})
 	@GetMapping("/{userId}")
 	public ResponseResult findUserByUserId(@PathVariable Long userId) {
+		log.info("UserController_findUserByUserId -> 프로필 조회");
 		UserResponseDto userResponseDto = userService.findUserByUserId(userId);
 		return new SingleResponseResult<>(userResponseDto);
 	}
 
-	@Operation(summary = "GetDailyGrid", description = "데일리 그리드 개수 조회")
+	@Operation(summary = "Get Daily Grid", description = "데일리 그리드 개수 조회")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "데일리그리드 조회 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "데일리그리드 조회 실패")
+	})
 	@GetMapping("/dailyGrid/{userId}")
 	public ResponseResult getDailyGridList(@PathVariable Long userId) {
+		log.info("UserController_getDailyGridList -> 데일리 그리드 조회");
 		List<DailyGridResponseDto> dailyGridResponseDto = userService.findDailyGridByUserId(userId);
 		return new SingleResponseResult<>(dailyGridResponseDto);
 	}

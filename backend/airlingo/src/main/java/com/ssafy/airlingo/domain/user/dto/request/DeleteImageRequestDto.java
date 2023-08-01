@@ -16,11 +16,11 @@ import lombok.Setter;
 public class DeleteImageRequestDto {
 
 	@NotNull
-	@Schema(description = "유저 ID")
+	@Schema(description = "유저 ID", example = "1")
 	private Long userId;
 
 	@NotBlank
-	@Schema(description = "유저 이미지")
+	@Schema(description = "유저 이미지", example = "http://User.s3.amazonaws.com/profile.png")
 	private String userImgUrl;
 
 }

@@ -43,17 +43,26 @@ public class ScriptController {
 
 	private final ScriptService scriptService;
 
-	@Operation(summary = "GetScriptByScriptId", description = "스크립트 아이디로 스크립트 상세 정보 조회")
+	@Operation(summary = "Get Script By Script Id", description = "스크립트 아이디로 스크립트 상세 정보 조회")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "스크립트 조회 성공"),
+		@ApiResponse(responseCode = "461", description = "스크립트가 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "스크립트 조회 실패"),
+	})
 	@GetMapping("/{scriptId}")
 	public ResponseResult getScriptById(@PathVariable Long scriptId) {
-		log.info("ScriptController_getScriptById");
+		log.info("ScriptController_getScriptById -> 스크립트 조회");
 		return new SingleResponseResult<>(scriptService.findScriptByScriptId(scriptId));
 	}
 
-	@Operation(summary = "DeleteScriptByScriptId", description = "스크립트 아이디로 스크립트 삭제")
+	@Operation(summary = "Delete Script By Script Id", description = "스크립트 아이디로 스크립트 삭제")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "스크립트 삭제 성공"),
+		@ApiResponse(responseCode = "400", description = "스크립트 삭제 실패"),
+	})
 	@DeleteMapping("/{scriptId}")
 	public ResponseResult deleteScriptById(@PathVariable Long scriptId) {
-		log.info("ScriptController_deleteScriptById");
+		log.info("ScriptController_deleteScriptById -> 스크립트 삭제");
 		scriptService.deleteScriptById(scriptId);
 		return ResponseResult.successResponse;
 	}

@@ -31,10 +31,4 @@ public class LanguageDto {
 
 	@Schema(description = "등급 이름(한글)", example = "입문")
 	private String gradeKorName;
-
-	public LanguageDto(Language language) {
-		this.languageId = language.getLanguageId();
-		this.languageKorName = language.getLanguageKorName();
-		this.languageEngName = language.getLanguageEngName();
-	}
 }

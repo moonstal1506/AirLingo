@@ -23,7 +23,7 @@ import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.study.repository.ScriptRepository;
 import com.ssafy.airlingo.domain.study.repository.StudyRepository;
 import com.ssafy.airlingo.global.util.ClovaSpeechClient;
-
+import com.ssafy.airlingo.global.exception.NotExistScriptException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,11 +40,7 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	public ScriptResponseDto findScriptByScriptId(Long scriptId) {
-		Script script = scriptRepository.findById(scriptId).orElse(null);
-		if (script == null) {
-			// 스크립트를 찾지 못한 경우 예외 처리
-			throw new IllegalArgumentException("스크립트를 찾을 수 없습니다. scriptId: " + scriptId);
-		}
+		Script script = scriptRepository.findById(scriptId).orElseThrow(NotExistScriptException::new);
 		return script.toDto();
 	}
 
@@ -114,5 +110,6 @@ public class ScriptServiceImpl implements ScriptService {
 		}
 		log.info("STT결과 : {}",content);
 		return sentenceResponseDtoList;
+	}
 	}
 }
