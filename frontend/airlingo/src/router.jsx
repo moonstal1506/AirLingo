@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import styled from "@emotion/styled";
-import Home from "./pages/Home";
+import Home from "./pages/home/Home";
 import Notfound from "./pages/Notfound";
 import AuthLayout from "./layout/AuthLayout";
 import Header from "./components/header";
