@@ -28,8 +28,8 @@ const routerData = [
     },
     {
         id: 2,
-        path: "/wating/ready",
-        label: "WatingReady",
+        path: "/waiting/ready",
+        label: "WaitingReady",
         element: <WatingReady />,
         withAuth: false,
         headerExist: true,
