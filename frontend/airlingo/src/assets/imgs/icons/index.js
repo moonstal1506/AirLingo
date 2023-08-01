@@ -1,5 +1,7 @@
-import { ReactComponent as MicrophoneIcon } from "@/assets/imgs/icons/microphone-icon.svg";
-import { ReactComponent as VideoIcon } from "@/assets/imgs/icons/video-icon.svg";
+import { ReactComponent as MicOnIcon } from "@/assets/imgs/icons/mic-on-icon.svg";
+import { ReactComponent as MicOffIcon } from "@/assets/imgs/icons/mic-off-icon.svg";
+import { ReactComponent as VideoOnIcon } from "@/assets/imgs/icons/video-on-icon.svg";
+import { ReactComponent as VideoOffIcon } from "@/assets/imgs/icons/video-off-icon.svg";
 import { ReactComponent as ChatIcon } from "@/assets/imgs/icons/chat-icon.svg";
 import { ReactComponent as BoardIcon } from "@/assets/imgs/icons/board-icon.svg";
 import { ReactComponent as ShareIcon } from "@/assets/imgs/icons/share-icon.svg";
@@ -8,8 +10,10 @@ import { ReactComponent as ReportIcon } from "@/assets/imgs/icons/report-icon.sv
 import { ReactComponent as ExitIcon } from "@/assets/imgs/icons/exit-icon.svg";
 
 export {
-    MicrophoneIcon,
-    VideoIcon,
+    MicOnIcon,
+    MicOffIcon,
+    VideoOnIcon,
+    VideoOffIcon,
     ChatIcon,
     BoardIcon,
     ShareIcon,

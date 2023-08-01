@@ -51,7 +51,7 @@ const shapeStyle = {
 
 // ----------------------------------------------------------------------------------------------------
 
-function TextButton({ type = "button", text, onClick, shape = "positive-rounded" }) {
+function TextButton({ type, text, onClick, shape }) {
     return (
         <TextButtonWrapper type={type} onClick={onClick} shape={shape}>
             {text}
