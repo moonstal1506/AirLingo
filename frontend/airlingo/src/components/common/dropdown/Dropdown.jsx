@@ -42,6 +42,7 @@ function Dropdown({
     shape = "positive",
     defaultOption = null,
     placeholder = "",
+    onChange,
 }) {
     const [isOpen, setIsOpen] = useState(false);
     const [selectedOption, setSelectedOption] = useState(defaultOption);
@@ -70,6 +71,7 @@ function Dropdown({
     const handleOptionClick = (id) => {
         const selected = data.find((option) => option.id === id);
         setSelectedOption(selected);
+        onChange({ ...selected });
         setIsOpen(false);
         setIconRotation(0);
     };
@@ -108,6 +110,7 @@ function Dropdown({
 const DropdownWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    position: relative;
     min-width: 120px;
     width: ${({ width }) => width};
     border: none;
@@ -183,6 +186,7 @@ Dropdown.propTypes = {
         label: PropTypes.string.isRequired,
     }),
     placeholder: PropTypes.string,
+    onChange: PropTypes.func.isRequired,
 };
 
 Dropdown.defaultProps = {
