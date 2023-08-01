@@ -94,6 +94,8 @@ const TooltipContainer = styled.div`
     height: 20px;
 `;
 const TooltipTrigger = styled.div`
+    position: relative;
+    z-index: 999;
     cursor: pointer;
     display: flex;
     justify-content: center;
@@ -111,6 +113,7 @@ const TooltipTrigger = styled.div`
 `;
 
 const TooltipBox = styled.div`
+    z-index: 999;
     position: relative;
     width: fit-content;
     background-color: red;
