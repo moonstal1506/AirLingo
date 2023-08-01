@@ -22,11 +22,13 @@ module.exports = {
         "react/jsx-filename-extension": ["error", { extensions: [".js", ".jsx"] }],
         "import/no-unresolved": "off",
         "import/extensions": "off",
+        "no-param-reassign": ["error", { props: true, ignorePropertyModificationsFor: ["state"] }],
         "jsx-a11y/label-has-associated-control": [
             2,
             {
                 labelAttributes: ["htmlFor"],
             },
         ],
+        "react/jsx-no-useless-fragment": [2, { allowExpressions: true }],
     },
 };
