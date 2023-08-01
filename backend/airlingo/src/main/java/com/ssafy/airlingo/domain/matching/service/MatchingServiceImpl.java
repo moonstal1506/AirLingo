@@ -101,11 +101,12 @@ public class MatchingServiceImpl implements MatchingService {
 	private void createUserStudy(MatchingUserDto matchingUserDto, Study study) {
 		Long userId = matchingUserDto.getUserId();
 		User user = userRepository.findById(userId).get();
+		Language language = languageRepository.findById(matchingUserDto.getUserStudyLanguageId()).get();
 
 		UserStudy userStudy = UserStudy.builder()
 			.study(study)
 			.user(user)
-			.language(languageRepository.findByLanguageKorName(matchingUserDto.getUserStudyLanguage()))
+			.language(language)
 			.build();
 
 		userStudyRepository.save(userStudy);
