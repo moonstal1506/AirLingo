@@ -111,5 +111,4 @@ public class ScriptServiceImpl implements ScriptService {
 		log.info("STT결과 : {}",content);
 		return sentenceResponseDtoList;
 	}
-	}
 }

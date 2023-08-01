@@ -1,6 +1,9 @@
 package com.ssafy.airlingo.domain.study.dto.response;
 
 import java.time.LocalDateTime;
+
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
