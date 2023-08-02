@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import Dropdown from "@/components/common/dropdown";
 import { TextButton } from "@/components/common/button";
-import getLanguage from "@/api/language.js";
+// import getLanguage from "@/api/language.js";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
 import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-france-icon.svg";
@@ -28,7 +28,7 @@ function SignupLanguage() {
     const [skillLanguage, setSkillLanguage] = useState({});
     const [selectedLevel, setSelectedLevel] = useState({});
     const [languageList, setlanguageList] = useState([]);
-    console.log(languageList);
+    console.log(languageList, setTotalLanguage, setLevel);
     useEffect(() => {
         // async function fetchData() {
         //     await getLanguage({
@@ -119,7 +119,7 @@ function SignupLanguage() {
 const SignupLanguageContainer = styled.div`
     position: relative;
     width: 100%;
-    height: calc(100% - 120px);
+    /* height: calc(100% - 120px); */
     display: flex;
     justify-content: center;
     align-items: center;
@@ -147,7 +147,6 @@ const SignupLanguageTitleWrapper = styled.div`
 
 const SignupLanguageBox = styled.div`
     width: 500px;
-    height: 698px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -180,6 +179,7 @@ const StyledSelectContainer = styled.div`
     flex-shrink: 0;
     position: relative;
     z-index: 2;
+    align-items: center;
 `;
 
 const StyledSelectLanguage = styled.div`
@@ -209,7 +209,7 @@ const StyledSelectLevel = styled.div`
     display: flex;
     width: 160px;
     height: 50px;
-    padding: 10px 10px;
+    padding: 5px 10px;
     justify-content: space-between;
     align-items: center;
 `;
