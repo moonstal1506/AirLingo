@@ -12,30 +12,22 @@ import Tooltip from "@/components/common/tooltip/Tooltip";
 import Dropdown from "@/components/common/dropdown";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
 import useRouter from "@/hooks";
-import { getLanguage, getConcurrentUser } from "@/api";
+import { getConcurrentUser } from "@/api";
 import Modal from "../../components/modal";
 
-function WatingReady() {
+function WaitingReady() {
     const [modalOpen, setModalOpen] = useState(false);
-    const [totalLanguage, setTotalLanguage] = useState([
-        { id: "135", label: "한국어", img: koreaFlagIcon },
-        { id: "242", label: "일본어", img: japanFlagIcon },
-    ]);
     const [studyLanguage, setStudyLanguage] = useState({});
     const [skillLanguage, setSkillLanguage] = useState({});
     const [concurrentUser, setConcurrentUser] = useState({
         waitingUsersSize: 0,
         concurrentUsersSize: 0,
     });
-    const { userNickname } = useSelector(selectUser);
+
+    const { userNickname, skillLanguageList, studyLanguageList } = useSelector(selectUser);
 
     useEffect(() => {
         async function fetchData() {
-            await getLanguage({
-                responseFunc: {
-                    200: (response) => setTotalLanguage(response.data),
-                },
-            });
             await getConcurrentUser({
                 responseFunc: {
                     200: (response) => setConcurrentUser({ ...response.data }),
@@ -47,7 +39,7 @@ function WatingReady() {
 
     const { routeTo } = useRouter();
     const handleClickNormalMatching = () => {
-        routeTo("/waiting/matchprocess", {
+        routeTo("/waiting", {
             state: { premium: false, studyLanguage, skillLanguage },
         });
     };
@@ -57,20 +49,20 @@ function WatingReady() {
     };
 
     const handleClickPremiumSelect = () => {
-        routeTo("/waiting/matchprocess", {
+        routeTo("/waiting", {
             state: { premium: true, studyLanguage, skillLanguage },
         });
     };
 
     return (
-        <WatingReadyContainer>
+        <WaitingReadyContainer>
             {modalOpen && (
                 <Modal title="프리미엄 매칭" modalOpen={modalOpen} Icon={PremiumIcon}>
                     <ModalTextBox>
                         <div>
                             <ModalTextWrapper color="black">
                                 프리미엄 매칭 시,
-                                <ModalTextWrapper color="red">마일리지 3,000점</ModalTextWrapper>이
+                                <ModalTextWrapper color="red"> 마일리지 3,000점</ModalTextWrapper>이
                                 소모됩니다.
                             </ModalTextWrapper>
                         </div>
@@ -90,15 +82,8 @@ function WatingReady() {
                     </ModalButtonBox>
                 </Modal>
             )}
-            <WatingReadyTitle>자 이제, 떠나볼까요! </WatingReadyTitle>
+            <WaitingReadyTitle>자, 이제 떠나볼까요!</WaitingReadyTitle>
             <TicketBackgroundBox>
-                <TooltipBox>
-                    <Tooltip
-                        position={{ horizontal: "right", vertical: "bottom", direction: "up" }}
-                    >
-                        <TooltipContentContainer />
-                    </Tooltip>
-                </TooltipBox>
                 <TicketContentBox>
                     <TicketContentUpperBox>
                         <DestinationContentWrapper>
@@ -107,11 +92,10 @@ function WatingReady() {
                             <Dropdown
                                 width="175px"
                                 shape="negative"
-                                data={[...totalLanguage]}
-                                defaultOption={{ id: "korea", label: "한국어", img: koreaFlagIcon }}
-                                onChange={(data) => {
-                                    setSkillLanguage(data);
-                                }}
+                                data={[...skillLanguageList]}
+                                defaultOption={{ id: "135", label: "한국어", img: koreaFlagIcon }}
+                                selectedOption={skillLanguage}
+                                onChange={setSkillLanguage}
                             />
                         </DestinationContentWrapper>
                         <RightArrowIcon />
@@ -121,11 +105,10 @@ function WatingReady() {
                             <Dropdown
                                 width="175px"
                                 shape="negative"
-                                data={[...totalLanguage]}
-                                defaultOption={{ id: "japan", label: "일본어", img: japanFlagIcon }}
-                                onChange={(data) => {
-                                    setStudyLanguage(data);
-                                }}
+                                data={[...studyLanguageList]}
+                                defaultOption={{ id: "242", label: "일본어", img: japanFlagIcon }}
+                                selectedOption={studyLanguage}
+                                onChange={setStudyLanguage}
                             />
                         </DestinationContentWrapper>
                     </TicketContentUpperBox>
@@ -140,6 +123,17 @@ function WatingReady() {
                             text="프리미엄 매칭"
                             onClick={handleClickPremiumMatching}
                         />
+                        <TooltipBox>
+                            <Tooltip
+                                position={{
+                                    horizontal: "right",
+                                    vertical: "bottom",
+                                    direction: "up",
+                                }}
+                            >
+                                <TooltipContentContainer />
+                            </Tooltip>
+                        </TooltipBox>
                     </TicketButtonDownWrapper>
                 </TicketContentBox>
                 <TicketSubContentBox>
@@ -162,7 +156,7 @@ function WatingReady() {
                     </div>
                 </TicketSubContentBox>
             </TicketBackgroundBox>
-        </WatingReadyContainer>
+        </WaitingReadyContainer>
     );
 }
 
@@ -176,9 +170,7 @@ const ModalTextBox = styled.div`
 const ModalTextWrapper = styled.span`
     color: ${({ color }) => color};
     text-align: center;
-    font-family: Pretendard;
     font-size: 25px;
-    font-style: normal;
     font-weight: 400;
     line-height: 44px;
 `;
@@ -190,7 +182,7 @@ const ModalButtonBox = styled.div`
     gap: 50px;
 `;
 
-const WatingReadyContainer = styled.div`
+const WaitingReadyContainer = styled.div`
     position: relative;
     width: 100%;
     height: calc(100% - 120px);
@@ -201,12 +193,10 @@ const WatingReadyContainer = styled.div`
     gap: 40px;
 `;
 
-const WatingReadyTitle = styled.div`
+const WaitingReadyTitle = styled.div`
     color: #000;
     text-align: center;
-    font-family: Pretendard;
     font-size: 45px;
-    font-style: normal;
     font-weight: 800;
     line-height: 44px;
 `;
@@ -230,6 +220,7 @@ const TicketContentBox = styled.div`
     top: 50%;
     transform: translate(0, -36%);
     left: 60px;
+    z-index: 100;
 `;
 
 const TicketSubContentBox = styled.div`
@@ -241,6 +232,7 @@ const TicketSubContentBox = styled.div`
     top: 80px;
     left: 600px;
     gap: 18px;
+    z-index: 99;
 `;
 
 const TicketContentUpperBox = styled.div`
@@ -254,6 +246,8 @@ const TicketContentUpperBox = styled.div`
     div > svg {
         padding-bottom: 0px;
     }
+    position: relative;
+    z-index: 101;
 `;
 
 const DestinationContentWrapper = styled.div`
@@ -262,6 +256,7 @@ const DestinationContentWrapper = styled.div`
     align-items: center;
     flex-direction: column;
     gap: 4px;
+    position: relative;
 `;
 
 const TicketButtonDownWrapper = styled.div`
@@ -269,15 +264,14 @@ const TicketButtonDownWrapper = styled.div`
     justify-content: center;
     align-items: center;
     gap: 10px;
+    z-index: 100;
 `;
 
 const TextWrapper = styled.div`
     position: relative;
-    color: #000;
+    color: #000000;
     text-align: center;
-    font-family: Pretendard;
     line-height: normal;
-    font-style: normal;
     ${({ size }) => {
         switch (size) {
             case "title":
@@ -293,7 +287,6 @@ const TextWrapper = styled.div`
             case "langker":
                 return `
                     font-size: 17px;
-                    font-style: normal;
                     font-weight: 700;
                 `;
             default:
@@ -304,7 +297,6 @@ const TextWrapper = styled.div`
 
 const TooltipContentContainer = styled.div`
     position: relative;
-    z-index: 999;
     width: 398px;
     height: 396px;
     background-image: url(${LanguageRankBox});
@@ -314,8 +306,7 @@ const TooltipContentContainer = styled.div`
 `;
 
 const TooltipBox = styled.div`
-    position: absolute;
-    left: 500px;
-    top: 240px;
+    position: relative;
+    z-index: 100;
 `;
-export default WatingReady;
+export default WaitingReady;
