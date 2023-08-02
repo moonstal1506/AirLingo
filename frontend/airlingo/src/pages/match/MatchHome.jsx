@@ -15,7 +15,7 @@ import useRouter from "@/hooks";
 import { getConcurrentUser } from "@/api";
 import Modal from "../../components/modal";
 
-function WaitingReady() {
+function MatchHome() {
     const [modalOpen, setModalOpen] = useState(false);
     const [studyLanguage, setStudyLanguage] = useState({});
     const [skillLanguage, setSkillLanguage] = useState({});
@@ -55,7 +55,7 @@ function WaitingReady() {
     };
 
     return (
-        <WaitingReadyContainer>
+        <MatchHomeContainer>
             {modalOpen && (
                 <Modal title="프리미엄 매칭" modalOpen={modalOpen} Icon={PremiumIcon}>
                     <ModalTextBox>
@@ -82,7 +82,7 @@ function WaitingReady() {
                     </ModalButtonBox>
                 </Modal>
             )}
-            <WaitingReadyTitle>자, 이제 떠나볼까요!</WaitingReadyTitle>
+            <MatchHomeTitle>자, 이제 떠나볼까요!</MatchHomeTitle>
             <TicketBackgroundBox>
                 <TicketContentBox>
                     <TicketContentUpperBox>
@@ -156,7 +156,7 @@ function WaitingReady() {
                     </div>
                 </TicketSubContentBox>
             </TicketBackgroundBox>
-        </WaitingReadyContainer>
+        </MatchHomeContainer>
     );
 }
 
@@ -182,7 +182,7 @@ const ModalButtonBox = styled.div`
     gap: 50px;
 `;
 
-const WaitingReadyContainer = styled.div`
+const MatchHomeContainer = styled.div`
     position: relative;
     width: 100%;
     height: calc(100% - 120px);
@@ -193,7 +193,7 @@ const WaitingReadyContainer = styled.div`
     gap: 40px;
 `;
 
-const WaitingReadyTitle = styled.div`
+const MatchHomeTitle = styled.div`
     color: #000;
     text-align: center;
     font-size: 45px;
@@ -309,4 +309,4 @@ const TooltipBox = styled.div`
     position: relative;
     z-index: 100;
 `;
-export default WaitingReady;
+export default MatchHome;

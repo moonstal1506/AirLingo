@@ -4,14 +4,14 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
-import WaitingHome from "./pages/waiting/WaitingHome";
+import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
     {
         id: 0,
         path: "/",
-        label: "index",
+        label: "Home",
         element: <Home />,
         withAuth: false,
         headerExist: true,
@@ -20,7 +20,7 @@ const routerData = [
     {
         id: 1,
         path: "/test",
-        label: "Home",
+        label: "Test",
         element: <Home />,
         withAuth: true,
         headerExist: false,
@@ -28,15 +28,42 @@ const routerData = [
     },
     {
         id: 2,
-        path: "/waitinghome",
-        label: "WaitingHome",
-        element: <WaitingHome />,
+        path: "/matchhome",
+        label: "MatchHome",
+        element: <MatchHome />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
     },
     {
         id: 3,
+        path: "/matchqueue",
+        label: "MatchQueue",
+        element: <MatchQueue />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 3,
+        path: "/matchresult",
+        label: "MatchResult",
+        element: <MatchResult />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 3,
+        path: "/matchStandby",
+        label: "MatchStandby",
+        element: <MatchStandby />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 4,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
