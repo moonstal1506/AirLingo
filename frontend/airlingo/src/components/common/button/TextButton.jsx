@@ -47,6 +47,16 @@ const shapeStyle = {
         min-width: 100px;
         border-radius: 25px;
     `,
+    home: `
+        min-width: 350px;
+        border-radius: 10px;
+        height: 65px;
+        padding: 10px 20px;
+        color: #FFF;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: normal;
+    `,
 };
 
 // ----------------------------------------------------------------------------------------------------
