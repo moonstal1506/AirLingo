@@ -1,33 +1,45 @@
 package com.ssafy.airlingo.domain.user.service;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.airlingo.domain.language.dto.response.RecordResponseDto;
+import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
+import com.ssafy.airlingo.domain.language.entity.Grade;
+import com.ssafy.airlingo.domain.language.entity.Language;
+import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
+import com.ssafy.airlingo.domain.language.repository.RecordRepository;
+import com.ssafy.airlingo.domain.language.repository.UserLanguageRepository;
+import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
-import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
 import com.ssafy.airlingo.domain.user.entity.DailyGrid;
 import com.ssafy.airlingo.domain.user.entity.User;
-import com.ssafy.airlingo.domain.user.entity.Word;
 import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
-import com.ssafy.airlingo.domain.user.repository.RecordRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
-import com.ssafy.airlingo.domain.user.repository.WordRepository;
-import com.ssafy.airlingo.global.exception.EmptyWordListException;
+import com.ssafy.airlingo.global.exception.EmptyImageException;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
-import com.ssafy.airlingo.global.exception.NotExistWordException;
 import com.ssafy.airlingo.global.util.JwtService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -39,14 +51,18 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserServiceImpl implements UserService {
 
+	private static final String DEFAULT_IMAGE = "프로필 기본 사진 링크 나중에 올리기";
+	@Value("${cloud.aws.s3.bucket}")
+	private String bucketName;
+
+	private final AmazonS3Client amazonS3Client;
 	private final UserRepository userRepository;
-	private final RecordRepository recordRepository;
 	private final JwtService jwtService;
 	private final RefreshTokenRepository refreshTokenRepository;
-	private final WordRepository wordRepository;
 	private final LanguageRepository languageRepository;
 	private final GradeRepository gradeRepository;
 	private final DailyGridRepository dailyGridRepository;
+	private final UserLanguageRepository userLanguageRepository;
 
 	@Override
 	@Transactional
@@ -96,109 +112,120 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void deleteUserAccount(Long userId) {
+		log.info("UserServiceImpl_deleteUserAccount -> 회원탈퇴 중");
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+		userRepository.delete(user);
+	}
+
+	@Override
+	@Transactional
+	public void updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto) {
+		log.info("UserServiceImpl_updatePassword");
+		User user = userRepository.findById(updatePasswordRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		user.updatePassword(updatePasswordRequestDto.getUserPassword());
+	}
+
+	@Override
+	@Transactional
+	public void updateBio(UpdateBioRequestDto updateBioRequestDto) {
+		log.info("UserServiceImpl_updateBio");
+		User user = userRepository.findById(updateBioRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		user.updateBio(updateBioRequestDto.getUserBio());
+	}
+
+	@Override
+	@Transactional
+	public List<S3FileDto> uploadFiles(List<MultipartFile> multipartFiles, Long userId) {
+			List<S3FileDto> s3files = new ArrayList<>();
+			if(s3files.isEmpty()){
+				throw new EmptyImageException();
+			}
+			String originalFileName = multipartFiles.get(0).getOriginalFilename();
+			String uploadFileName = getUuidFileName(originalFileName);
+			String uploadFileUrl = "";
+
+			ObjectMetadata objectMetadata = new ObjectMetadata();
+			objectMetadata.setContentLength(multipartFiles.get(0).getSize());
+			objectMetadata.setContentType(multipartFiles.get(0).getContentType());
+
+			try (InputStream inputStream = multipartFiles.get(0).getInputStream()) {
+
+				String keyName = uploadFileName; // ex) 구분/년/월/일/파일.확장자
+
+				// S3에 폴더 및 파일 업로드
+				amazonS3Client.putObject(
+					new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata));
+
+				// S3에 업로드한 폴더 및 파일 URL
+				uploadFileUrl = amazonS3Client.getUrl(bucketName, keyName).toString();
+				User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+				user.updateImage(uploadFileUrl);
+			} catch (IOException e) {
+				e.printStackTrace();
+				log.error("Filed upload failed", e);
+			}
+
+			s3files.add(
+				S3FileDto.builder()
+					.originalFileName(originalFileName)
+					.uploadFileName(uploadFileName)
+					.uploadFileUrl(uploadFileUrl)
+					.build());
+
+		return s3files;
+	}
+
+	public String getUuidFileName(String fileName) {
+		String ext = fileName.substring(fileName.indexOf(".") + 1);
+		return UUID.randomUUID().toString() + "." + ext;
+	}
+	@Override
+	@Transactional
+	public void deleteImage(Long userId) {
+		log.info("UserServiceImpl_deleteImage");
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+		user.updateImage(DEFAULT_IMAGE);
+	}
+
+	@Override
+	@Transactional
+	public void addInterestLanguage(AddInterestLanguageRequestDto addInterestLanguageRequestDto) {
+		log.info("UserServiceImpl_addInterestLanguage");
+		User user = userRepository.findById(addInterestLanguageRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		Language language = languageRepository.findByLanguageId(addInterestLanguageRequestDto.getLanguageId());
+		Grade grade = gradeRepository.findByGradeId(addInterestLanguageRequestDto.getGradeId());
+		UserLanguage userLanguage = UserLanguage.builder()
+			.user(user)
+			.language(language)
+			.grade(grade)
+			.build();
+		userLanguageRepository.save(userLanguage);
+	}
+
+	@Override
+	@Transactional
+	public void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
+		log.info("UserServiceImpl_deleteInterestLanguage");
+		User user = userRepository.findById(deleteInterestLanguageRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		Language language = languageRepository.findByLanguageId(deleteInterestLanguageRequestDto.getLanguageId());
+
+		userLanguageRepository.deleteByUserAndLanguage(user, language);
+	}
+
+	@Override
 	public UserResponseDto findUserByUserId(Long userId) {
-		User user = userRepository.findById(userId).orElse(null);
-		// 사용자를 찾지 못한 경우 일단 null
-		if (user == null) {
-			return null;
-		}
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		// User(Entity)를 UserResponseDto로 변환
 		return user.toDto();
 	}
 
-	@Override
-	public List<RecordResponseDto> findByUserId(Long userId) {
-		User user = userRepository.findById(userId).orElse(null);
-		if (user == null) {
-			// 사용자를 찾지 못한 경우 빈 리스트
-			return Collections.emptyList();
-		}
-
-		List<RecordResponseDto> recordList = recordRepository.findRecordByUser(user)
-			.stream()
-			.map(r -> r.toDto())
-			.collect(Collectors.toList());
-		return recordList;
-	}
-
 	public List<DailyGridResponseDto> findDailyGridByUserId(Long userId) {
-		User user = userRepository.findById(userId).orElse(null);
-		if (user == null) {
-			// 사용자를 찾지 못한 경우 빈 리스트 반환
-			return Collections.emptyList();
-		}
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		List<DailyGridResponseDto> dailyGridList = dailyGridRepository.findDailyGridByUser(user)
 			.stream()
 			.map(DailyGrid::toDto)
 			.collect(Collectors.toList());
 		return dailyGridList;
-	}
-
-	@Override
-	public List<WordResponseDto> getWordListByUserId(Long userId) {
-		log.info("UserServiceImpl_getWordListByUserId -> 저장한 모든 단어 조회");
-
-		// userId를 이용하여 데이터베이스에서 해당 유저가 저장한 단어들을 조회
-		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
-		List<Word> wordList = wordRepository.findByUser(user);
-
-		// 조회 결과가 없는 경우, EmptyWordListException을 던짐 => 프론트에서 필요없을 수도 있음
-		if (wordList.isEmpty()) {
-			throw new EmptyWordListException();
-		}
-
-		// 조회한 단어 리스트를 WordResponseDto로 변환하여 리스트로 반환
-		return wordList.stream().map(Word::toWordResponseDto).collect(Collectors.toList());
-	}
-
-	@Override
-	public List<WordResponseDto> getWordTestListByUserId(Long userId) {
-		log.info("UserServiceImpl_getWordTestListByUserId -> 단어 테스트 리스트 조회");
-
-		// userId를 이용하여 데이터베이스에서 해당 유저가 저장한 단어들을 조회
-		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
-		List<Word> wordList = wordRepository.findByUser(user);
-
-		// 조회 결과가 없는 경우, EmptyWordListException을 던짐 => 테스트 불가
-		if (wordList.isEmpty()) {
-			throw new EmptyWordListException();
-		}
-
-		List<Word> wordTestList = getRandomWords(wordList, 10);
-
-		// 랜덤 단어 리스트를 WordResponseDto로 변환하여 리스트로 반환
-		return wordTestList.stream().map(Word::toWordResponseDto).collect(Collectors.toList());
-	}
-
-	// 랜덤 단어 리스트 반환
-	private List<Word> getRandomWords(List<Word> wordList, int count) {
-		if (wordList.size() <= count) {
-			return wordList;
-		}
-
-		List<Word> randomWords = new ArrayList<>(wordList);
-		Collections.shuffle(randomWords);
-
-		return randomWords.subList(0, count);
-	}
-
-	@Override
-	public void deleteWordsByUserIdAndWordIds(Long userId, Long[] wordIds) {
-		log.info("UserServiceImpl_deleteWordByWordId -> 단어 삭제");
-
-		// 해당 wordId에 해당하는 단어를 데이터베이스에서 조회
-		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
-		for (Long wordId : wordIds) {
-			// userId와 wordId로 해당 단어를 찾아서 삭제
-			Word word = wordRepository.findByUserAndWordId(user, wordId);
-
-			if (word != null) {
-				// 단어를 데이터베이스에서 삭제
-				wordRepository.delete(word);
-			} else {
-				// 조회된 단어가 없는 경우, NotExistWordException을 던짐
-				throw new NotExistWordException();
-			}
-		}
 	}
 }

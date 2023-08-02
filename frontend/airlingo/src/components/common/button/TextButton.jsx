@@ -75,7 +75,7 @@ TextButton.defaultProps = {
 const TextButtonWrapper = styled.button`
     height: 50px;
     padding: 10px 20px;
-    font-size: 17px;
+    font-size: 20px;
     font-weight: 700;
     cursor: pointer;
     ${(props) => combineShape(shapeStyle, props.shape)}

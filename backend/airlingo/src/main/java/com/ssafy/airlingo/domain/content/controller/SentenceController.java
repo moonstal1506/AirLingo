@@ -27,8 +27,8 @@ import lombok.extern.slf4j.Slf4j;
 		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
 @Tag(name = "Sentence Controller", description = "오늘의 회화 컨트롤러")
 @Slf4j
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api")
 public class SentenceController {
 

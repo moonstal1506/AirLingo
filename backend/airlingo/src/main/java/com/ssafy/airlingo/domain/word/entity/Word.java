@@ -1,6 +1,7 @@
-package com.ssafy.airlingo.domain.user.entity;
+package com.ssafy.airlingo.domain.word.entity;
 
-import com.ssafy.airlingo.domain.user.dto.response.WordResponseDto;
+import com.ssafy.airlingo.domain.user.entity.User;
+import com.ssafy.airlingo.domain.word.dto.response.WordResponseDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

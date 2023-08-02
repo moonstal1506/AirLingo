@@ -62,4 +62,24 @@ public class ExceptionController {
 		return ResponseResult.exceptionResponse(ExceptionCode.EXPIRED_REFRESH_TOKEN_EXCEPTION);
 	}
 
+	@ExceptionHandler(EmptyStudyListException.class)
+	public ResponseResult emptyStudyListException(EmptyStudyListException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.EMPTY_STUDY_LIST_EXCEPTION);
+	}
+
+	@ExceptionHandler(EmptyImageException.class)
+	public ResponseResult emptyImageException(EmptyImageException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.EMPTY_IMAGE_EXCEPTION);
+	}
+
+	@ExceptionHandler(NotExistScriptException.class)
+	public ResponseResult notExistScriptException(NotExistScriptException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.exceptionResponse(ExceptionCode.NOT_EXIST_SCRIPT_EXCEPTION);
+	}
 }

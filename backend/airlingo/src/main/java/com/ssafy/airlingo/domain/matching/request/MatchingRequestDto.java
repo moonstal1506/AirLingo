@@ -1,29 +1,28 @@
 package com.ssafy.airlingo.domain.matching.request;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Builder
 @Data
+@Builder
 @AllArgsConstructor
 @NoArgsConstructor
 @Schema(description = "매칭 요청 정보")
 public class MatchingRequestDto {
 
 	@NotNull
-	@Schema(description = "사용자 ID", required = true)
+	@Schema(description = "사용자 ID", example = "1")
 	private Long userId;
 
 	@NotNull
-	@Schema(description = "사용자 학습 언어 ID")
+	@Schema(description = "사용자 학습 언어 ID", example = "1")
 	private Long studyLanguageId;
 
 	@NotNull
-	@Schema(description = "프리미엄 매칭 여부")
+	@Schema(description = "프리미엄 매칭 여부", example = "true")
 	private boolean premium;
 }

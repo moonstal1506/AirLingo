@@ -159,4 +159,26 @@ public class User extends BaseTimeEntity {
 	public void useMileage(int premiumMileage) {
 		userMileage -= premiumMileage;
 	}
+
+	public void updatePassword(String userPassword) {
+		this.userPassword = userPassword;
+	}
+
+	public void updateBio(String userBio) {
+		this.userBio = userBio;
+	}
+
+	public void updateImage(String userImgUrl) {
+		this.userImgUrl = userImgUrl;
+	}
+
+	public boolean isComplainCountExceedFive() {
+		if(this.userComplain >= 5)
+			return true;
+		return false;
+	}
+
+	public void suspendUser(){
+		this.userState = UserState.INACTIVE;
+	}
 }

@@ -60,6 +60,7 @@ const GlobalStyle = css`
         font-size: 15px;
         font-family: "Pretendard", sans-serif;
     }
+
     html,
     body,
     div,
@@ -152,8 +153,8 @@ const GlobalStyle = css`
     html,
     body {
         line-height: 1;
-        width: 100vw;
-        height: 100vh;
+        width: 100%;
+        height: 100%;
     }
 
     article,
@@ -195,6 +196,8 @@ const GlobalStyle = css`
         width: 100%;
         height: 100%;
         position: relative;
+        margin: 0;
+        padding: 0;
     }
     ::-webkit-scrollbar-track {
         margin-top: 10px;

@@ -17,7 +17,7 @@ public class MatchingUserConsumer {
 
 	@RabbitListener(queues = "matching.queue")
 	public void matchingUserConsumer(MatchingUserDto matchingRequestDto) {
-		log.info("message queue >> {}", matchingRequestDto);
+		log.info("matchingUserConsumer: {}", matchingRequestDto);
 		matchingService.add(matchingRequestDto);
 	}
 }

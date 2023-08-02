@@ -117,6 +117,7 @@ const DropdownWrapper = styled.div`
 `;
 
 const DropdownButton = styled.div`
+    position: relative;
     height: 50px;
     display: flex;
     justify-content: space-between;
@@ -128,6 +129,8 @@ const DropdownButton = styled.div`
 `;
 
 const DropdownContent = styled.div`
+    position: absolute;
+    top: 110%;
     overflow: hidden;
     display: ${(props) => (props.open ? "block" : "none")};
     background-color: #ffffff;

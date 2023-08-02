@@ -30,11 +30,15 @@ public class Grade {
 	@Column(nullable = false, unique = true, length = 100)
 	private String gradeName;
 
+	@Column(nullable = false, unique = true, length = 100)
+	private String gradeKorName;
+
 	@Column(nullable = false)
 	private int gradeScore;
 
-	public Grade(String gradeName, int gradeScore) {
+	public Grade(String gradeName, String gradeKorName, int gradeScore) {
 		this.gradeName = gradeName;
+		this.gradeKorName = gradeKorName;
 		this.gradeScore = gradeScore;
 	}
 
@@ -42,6 +46,7 @@ public class Grade {
 		return GradeDto.builder()
 			.gradeId(gradeId)
 			.gradeName(gradeName)
+			.gradeKorName(gradeKorName)
 			.build();
 	}
 }

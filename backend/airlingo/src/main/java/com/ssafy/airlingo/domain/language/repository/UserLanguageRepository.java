@@ -8,4 +8,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface UserLanguageRepository extends JpaRepository<UserLanguage, Long> {
 	UserLanguage findByUserAndLanguage(User user, Language studyLanguage);
+
+	void deleteByUserAndLanguage(User user, Language language);
 }

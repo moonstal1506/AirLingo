@@ -26,18 +26,25 @@ import lombok.extern.slf4j.Slf4j;
 	@ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
 	@ApiResponse(responseCode = "400", description = "응답이 실패하였습니다.",
 		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
-@Tag(name = "study Controller", description = "스터디 관련 컨트롤러")
+@Tag(name = "Study Controller", description = "스터디 관련 컨트롤러")
 @Slf4j
-@RequiredArgsConstructor
 @RestController
+@RequiredArgsConstructor
 @RequestMapping(value = "/api/study")
 public class StudyController {
+
 	private final StudyService studyService;
-	@Operation(summary = "GetAllStudysByUserIdAndDate", description = "사용자 아이디와 날짜별로 스터디 리스트 조회")
+
+	@Operation(summary = "Get All Studys By UserId And Date", description = "사용자 아이디와 날짜별로 스터디 리스트 조회")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "스터디 리스트 조회 성공"),
+		@ApiResponse(responseCode = "492", description = "스터디 리스트가 존재하지 않습니다."),
+		@ApiResponse(responseCode = "500", description = "스터디 리스트 조회 실패"),
+	})
 	@GetMapping("/user/{userId}/date")
 	public ResponseResult getStudyListByUserIdAndDate(@PathVariable Long userId,
 		@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
-		log.info("GetAllStudysByUserIdAndDate");
+		log.info("StudyController_GetAllStudysByUserIdAndDate");
 		return new ListResponseResult<>(studyService.findStudyByUserIdAndDate(userId, date));
 	}
 }

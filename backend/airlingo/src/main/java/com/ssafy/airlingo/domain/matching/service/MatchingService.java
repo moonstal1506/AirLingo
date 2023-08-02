@@ -12,4 +12,6 @@ public interface MatchingService {
 	void useMileage(MatchingResponseDto matchingResponseDto);
 
 	ConcurrentUsersResponseDto getConcurrentUsersSize();
+
+	Long createStudy(MatchingResponseDto matchingResponseDto);
 }

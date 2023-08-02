@@ -1,7 +1,5 @@
 package com.ssafy.airlingo.domain.language.dto.response;
 
-import com.ssafy.airlingo.domain.language.entity.Grade;
-
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -20,11 +18,9 @@ public class GradeDto {
 	@Schema(description = "등급 ID", example = "1")
 	private Long gradeId;
 
-	@Schema(description = "등급 이름", example = "A1")
+	@Schema(description = "등급 이름(영어)", example = "A1")
 	private String gradeName;
 
-	public GradeDto(Grade grade) {
-		this.gradeId = grade.getGradeId();
-		this.gradeName = grade.getGradeName();
-	}
+	@Schema(description = "등급 이름(한글)", example = "입문")
+	private String gradeKorName;
 }

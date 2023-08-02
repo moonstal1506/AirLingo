@@ -1,6 +1,10 @@
 package com.ssafy.airlingo.domain.language.service;
 
+import java.util.List;
+
 import com.ssafy.airlingo.domain.language.dto.request.EvaluateUserRequestDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningNumberResponseDto;
+import com.ssafy.airlingo.domain.language.dto.response.LearningStatisticResponseDto;
 import com.ssafy.airlingo.domain.language.dto.response.LearningTimeResponseDto;
 import com.ssafy.airlingo.domain.language.entity.Grade;
 import com.ssafy.airlingo.domain.language.entity.Language;
@@ -13,5 +17,6 @@ public interface RecordService {
 
 	Record createNewRecordAndRenewUserRating(User user, Language language, Grade grade, Study study, float rating);
 
-	LearningTimeResponseDto findLearningTimeByUser(Long userId);
+	LearningStatisticResponseDto getStatistic(Long userId);
+
 }

@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.airlingo.domain.matching.service.MatchingService;
+import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +20,7 @@ import lombok.extern.slf4j.Slf4j;
 @ApiResponses({
 	@ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
 	@ApiResponse(responseCode = "400", description = "응답이 실패하였습니다.",
-		content = @Content(schema = @Schema(implementation = SingleResponseResult.class)))})
+		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
 @Slf4j
 @Tag(name = "Matching Controller", description = "매칭 관련 컨트롤러")
 @RequiredArgsConstructor
@@ -31,9 +32,9 @@ public class MatchingController {
 
 	@Operation(summary = "Waiting Users size", description = "실시간 매칭중인 유저수")
 	@GetMapping("/waiting-users")
-	public SingleResponseResult countWaitingUsers() {
+	public ResponseResult countWaitingUsers() {
 		int waitingUserSize = matchingService.countWaitingUsers();
-		log.info("countWaitingUsers : {}", waitingUserSize);
+		log.info("MatchingController_countWaitingUsers : {}", waitingUserSize);
 		return new SingleResponseResult<>(waitingUserSize);
 	}
 }
