@@ -38,6 +38,7 @@ const ModalContainer = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    font-family: "Pretendard";
 `;
 
 const ModalBox = styled.div`
@@ -60,9 +61,7 @@ const ModalBox = styled.div`
 const ModalTitle = styled.div`
     color: ${({ titleColor }) => iconConfig.color[titleColor]};
     text-align: center;
-    font-family: Pretendard;
     font-size: 40px;
-    font-style: normal;
     font-weight: 800;
     line-height: 44px; /* 110% */
 `;
