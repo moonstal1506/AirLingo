@@ -24,7 +24,7 @@ function Meeting() {
     const [activeButton, setActiveButton] = useState(null);
 
     useEffect(() => {
-        const TOKEN = "ws://localhost:4443?sessionId=ses_M2GrW0pAsV&token=tok_SN2IlauACf3PGkve";
+        const TOKEN = "ws://localhost:4443?sessionId=ses_NPLONj8Vp3&token=tok_EkUbx3XJKihShd3o";
 
         const OV = new OpenVidu();
         const curSession = OV.initSession();
@@ -41,8 +41,8 @@ function Meeting() {
             );
         });
 
-        curSession.on("exception", (exception) => {
-            console.warn(exception);
+        curSession.on("exception", () => {
+            // console.warn(exception);
         });
 
         curSession
@@ -56,15 +56,15 @@ function Meeting() {
                         videoSource: undefined,
                         publishAudio: true,
                         publishVideo: true,
-                        resolution: "1280x960",
+                        resolution: "1280x720",
                         frameRate: 60,
                         insertMode: "APPEND",
                         mirror: "false",
                     }),
                 );
             })
-            .catch((error) => {
-                console.error("Error Connecting to OpenVidu", error);
+            .catch(() => {
+                // console.error("Error Connecting to OpenVidu", error);
             });
 
         return () => {
@@ -194,21 +194,34 @@ function Meeting() {
             <VideoContainer>
                 <VideoFrame>
                     {publisher ? (
-                        <video ref={(node) => node && publisher.addVideoElement(node)} autoPlay />
+                        <video
+                            ref={(node) => node && publisher.addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                        />
                     ) : (
                         "카메라 로딩 중..."
                     )}
                 </VideoFrame>
                 <VideoFrame>
                     {publisher ? (
-                        <video ref={(node) => node && publisher.addVideoElement(node)} autoPlay />
+                        <video
+                            ref={(node) => node && publisher.addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                            height="100%"
+                        />
                     ) : (
                         "카메라 로딩 중..."
                     )}
                 </VideoFrame>
                 {subscribers.map((subscriber) => (
                     <VideoFrame key={subscriber.stream.streamId}>
-                        <video ref={(node) => node && subscriber.addVideoElement(node)} autoPlay />
+                        <video
+                            ref={(node) => node && subscriber.addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                        />
                     </VideoFrame>
                 ))}
             </VideoContainer>
@@ -240,11 +253,12 @@ const MeetingContainer = styled.div`
 
 const VideoContainer = styled.div`
     display: flex;
+    align-items: start;
+    gap: 20px;
 `;
 
 const VideoFrame = styled.div`
     width: 500px;
-    height: 281.25px;
 `;
 
 const ButtonMenu = styled.div`

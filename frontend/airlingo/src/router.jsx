@@ -5,6 +5,7 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
+import Meeting from "./pages/meeting";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -18,7 +19,7 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 0,
+        id: 1,
         path: "/test",
         label: "Home",
         element: <Home />,
@@ -27,7 +28,16 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 1,
+        id: 2,
+        path: "/meeting",
+        label: "Meeting",
+        element: <Meeting />,
+        withAuth: true,
+        headerExist: false,
+        mustNotAuth: false,
+    },
+    {
+        id: 3,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
