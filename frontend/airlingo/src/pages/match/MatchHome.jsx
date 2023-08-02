@@ -11,7 +11,7 @@ import { TextButton } from "@/components/common/button";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import Dropdown from "@/components/common/dropdown";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
-import useRouter from "@/hooks";
+import { useRouter } from "@/hooks";
 import { getConcurrentUser } from "@/api";
 import Modal from "../../components/modal";
 

@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
 import PropTypes from "prop-types";
 import theme from "@/assets/styles/Theme";
-import { ReactComponent as DropdownIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
+import { ReactComponent as DropdownIcon } from "@/assets/imgs/icons/right-full-arrow-icon.svg";
 import iconConfig from "@/config";
 import combineShape from "@/utils/style";
 import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/korea-flag-icon.svg";

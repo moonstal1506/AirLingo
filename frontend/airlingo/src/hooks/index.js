@@ -1,3 +1,4 @@
+import useInterval from "./useInterval";
 import useRouter from "./useRouter";
 
-export default useRouter;
+export { useInterval, useRouter };
