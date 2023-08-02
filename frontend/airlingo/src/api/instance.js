@@ -7,7 +7,7 @@ const { VITE_SERVER_URL } = import.meta.env;
 const instance = axios.create({
     baseURL: VITE_SERVER_URL,
     timeout: 10000,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json; charset=UTF-8", Accept: "*/*" },
     withCredentials: true,
 });
 
@@ -25,8 +25,9 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(
     (response) => response,
     async (error) => {
-        const { response, config } = error;
+        // const { response, config } = error;
         /* fix me! : 서버와 교신하여 token refreshing 로직이 들어갈 예정 */
+        return error;
     },
 );
 
