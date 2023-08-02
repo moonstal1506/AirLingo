@@ -198,7 +198,7 @@ Dropdown.propTypes = {
         label: PropTypes.string.isRequired,
     }),
     placeholder: PropTypes.string,
-    onChange: PropTypes.func.isRequired,
+    onChange: PropTypes.func,
 };
 
 Dropdown.defaultProps = {
@@ -207,8 +207,9 @@ Dropdown.defaultProps = {
     iconColor: "black",
     shape: "positive",
     selectedOption: { id: "", img: KoreaFlagIcon, label: "" },
-    defaultOption: {},
+    defaultOption: null,
     placeholder: "",
+    onChange: () => {},
 };
 
 // ----------------------------------------------------------------------------------------------------
