@@ -6,7 +6,7 @@ const radiusObj = {
     big: "20px",
 };
 
-function TextInput({ placeholder, radius, width, height, maxLength, value, onChange }) {
+function TextInput({ placeholder, radius, width, height, maxLength, value, onChange, color }) {
     return (
         <TextInputWrapper
             type="text"
@@ -17,6 +17,7 @@ function TextInput({ placeholder, radius, width, height, maxLength, value, onCha
             maxLength={maxLength}
             value={value}
             onChange={onChange}
+            color={color}
         />
     );
 }
@@ -29,6 +30,7 @@ TextInput.propTypes = {
     maxLength: PropTypes.number,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    color: PropTypes.string.isRequired,
 };
 
 TextInput.defaultProps = {
@@ -47,7 +49,8 @@ const TextInputWrapper = styled.input`
         height: ${height};
     `};
     border: 1px solid ${({ theme }) => theme.colors.primary4};
-    background-color: ${({ theme }) => theme.colors.primary1};
+    background-color: ${({ theme, color }) =>
+        color === "white" ? "white" : theme.colors.primary1};
     outline: none;
     padding: 0 20px;
     color: ${({ theme }) => theme.colors.secondary3};
