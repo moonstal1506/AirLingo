@@ -1,5 +1,6 @@
 package com.ssafy.airlingo.global.openvidu;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -12,12 +13,14 @@ import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 import jakarta.annotation.PostConstruct;
 
+
+@Slf4j
 @Service
 public class OpenViduManager {
-	@Value("${OPENVIDU_URL}")
+	@Value("${openviduUrl}")
 	private String OPENVIDU_URL;
 
-	@Value("${OPENVIDU_SECRET}")
+	@Value("${openviduSecret}")
 	private String OPENVIDU_SECRET;
 
 	private OpenVidu openVidu;
@@ -30,6 +33,8 @@ public class OpenViduManager {
 	// 매칭이 완료되면 OpenVidu의 sessionId를 반환하는 메서드
 	public String createSession() throws OpenViduJavaClientException, OpenViduHttpException {
 		SessionProperties properties = new SessionProperties.Builder().build();
+		log.info("OPENVIDU_URL : {}",OPENVIDU_URL);
+		log.info("OPENVIDU_SECRET : {}",OPENVIDU_SECRET);
 		Session session = openVidu.createSession(properties);
 		return session.getSessionId();
 	}
