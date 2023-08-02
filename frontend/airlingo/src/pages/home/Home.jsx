@@ -287,6 +287,7 @@ const JoinTextColor = styled.span`
 `;
 
 const FooterBox = styled.div`
+    box-sizing: border-box;
     display: flex;
     width: 100%;
     height: 256px;
@@ -318,7 +319,6 @@ const FooterText = styled.div`
 
 const ServiceTitle = styled.div`
     display: flex;
-    width: 1000px;
     height: 35px;
     flex-direction: column;
     justify-content: center;
@@ -329,7 +329,6 @@ const ServiceTitle = styled.div`
 
 const CopyrightTextWrapper = styled.div`
     display: flex;
-    width: 1000px;
     height: 35px;
     flex-direction: column;
     justify-content: center;
@@ -347,7 +346,6 @@ const CopyrightTextBold = styled.span`
 
 const AddressText = styled.div`
     display: flex;
-    width: 1000px;
     height: 35px;
     flex-direction: column;
     justify-content: center;
@@ -358,7 +356,6 @@ const AddressText = styled.div`
 
 const LinkTextWrapper = styled.div`
     display: flex;
-    width: 1000px;
     height: 35px;
     flex-direction: column;
     justify-content: center;

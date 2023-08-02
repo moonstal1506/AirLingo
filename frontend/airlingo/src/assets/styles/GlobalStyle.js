@@ -56,10 +56,6 @@ const GlobalStyle = css`
         font-weight: 900;
         src: url("src/assets/fonts/Pretendard-Black.woff") format("woff");
     }
-    * {
-        font-size: 15px;
-        font-family: "Pretendard", sans-serif;
-    }
 
     html,
     body,
@@ -145,8 +141,6 @@ const GlobalStyle = css`
         margin: 0;
         padding: 0;
         border: 0;
-        font-size: 100%;
-        font: inherit;
         vertical-align: baseline;
     }
 
@@ -217,6 +211,10 @@ const GlobalStyle = css`
     }
     ::-webkit-scrollbar-corner {
         background-color: transparent;
+    }
+
+    * {
+        font-family: "Pretendard", sans-serif;
     }
 `;
 
