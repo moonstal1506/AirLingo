@@ -23,7 +23,8 @@ public class ScriptAfterSTTResponseDto {
 	@Schema(description = "스크립트 내용", example = "2")
 	private List<SentenceResponseDto> sentenceResponseDtoList;
 
-	public static ScriptAfterSTTResponseDto createScriptAfterSttResponseDto(Long scriptId,List<SentenceResponseDto> sentenceResponseDtoList){
+	public static ScriptAfterSTTResponseDto createScriptAfterSttResponseDto(Long scriptId,
+		List<SentenceResponseDto> sentenceResponseDtoList) {
 		return ScriptAfterSTTResponseDto.builder()
 			.scriptId(scriptId)
 			.sentenceResponseDtoList(sentenceResponseDtoList)

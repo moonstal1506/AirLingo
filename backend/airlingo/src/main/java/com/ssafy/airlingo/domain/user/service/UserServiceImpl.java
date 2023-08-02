@@ -3,7 +3,6 @@ package com.ssafy.airlingo.domain.user.service;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -22,7 +21,6 @@ import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
-import com.ssafy.airlingo.domain.language.repository.RecordRepository;
 import com.ssafy.airlingo.domain.language.repository.UserLanguageRepository;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
@@ -75,22 +73,14 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response) {
 		log.info("UserServiceImpl_login -> 사용자 로그인 시도");
-		User loginUser = findUserByUserLoginIdAndUserPassword(loginRequestDto.getUserLoginId(),
-			loginRequestDto.getUserPassword());
+
+		User loginUser = userRepository.findUserByUserLoginIdAndUserPassword(loginRequestDto.getUserLoginId(),
+			loginRequestDto.getUserPassword()).orElseThrow(NotExistAccountException::new);
+
 		LoginResponseDto loginResponseDto = loginUser.toLoginResponseDto();
 
 		setToken(loginUser, response);
 		return loginResponseDto;
-	}
-
-	@Override
-	public User findUserByUserLoginIdAndUserPassword(String userLoginId, String userPassword) {
-		log.info("UserServiceImpl_findUserByUserLoginIdAndPassword -> ID, PW로 유저 찾기");
-		try {
-			return userRepository.findUserByUserLoginIdAndUserPassword(userLoginId, userPassword);
-		} catch (Exception e) {
-			throw new NotExistAccountException();
-		}
 	}
 
 	@Override
@@ -122,7 +112,8 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto) {
 		log.info("UserServiceImpl_updatePassword");
-		User user = userRepository.findById(updatePasswordRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		User user = userRepository.findById(updatePasswordRequestDto.getUserId())
+			.orElseThrow(NotExistAccountException::new);
 		user.updatePassword(updatePasswordRequestDto.getUserPassword());
 	}
 
@@ -137,41 +128,41 @@ public class UserServiceImpl implements UserService {
 	@Override
 	@Transactional
 	public List<S3FileDto> uploadFiles(List<MultipartFile> multipartFiles, Long userId) {
-			List<S3FileDto> s3files = new ArrayList<>();
-			if(s3files.isEmpty()){
-				throw new EmptyImageException();
-			}
-			String originalFileName = multipartFiles.get(0).getOriginalFilename();
-			String uploadFileName = getUuidFileName(originalFileName);
-			String uploadFileUrl = "";
+		List<S3FileDto> s3files = new ArrayList<>();
+		if (s3files.isEmpty()) {
+			throw new EmptyImageException();
+		}
+		String originalFileName = multipartFiles.get(0).getOriginalFilename();
+		String uploadFileName = getUuidFileName(originalFileName);
+		String uploadFileUrl = "";
 
-			ObjectMetadata objectMetadata = new ObjectMetadata();
-			objectMetadata.setContentLength(multipartFiles.get(0).getSize());
-			objectMetadata.setContentType(multipartFiles.get(0).getContentType());
+		ObjectMetadata objectMetadata = new ObjectMetadata();
+		objectMetadata.setContentLength(multipartFiles.get(0).getSize());
+		objectMetadata.setContentType(multipartFiles.get(0).getContentType());
 
-			try (InputStream inputStream = multipartFiles.get(0).getInputStream()) {
+		try (InputStream inputStream = multipartFiles.get(0).getInputStream()) {
 
-				String keyName = uploadFileName; // ex) 구분/년/월/일/파일.확장자
+			String keyName = uploadFileName; // ex) 구분/년/월/일/파일.확장자
 
-				// S3에 폴더 및 파일 업로드
-				amazonS3Client.putObject(
-					new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata));
+			// S3에 폴더 및 파일 업로드
+			amazonS3Client.putObject(
+				new PutObjectRequest(bucketName, keyName, inputStream, objectMetadata));
 
-				// S3에 업로드한 폴더 및 파일 URL
-				uploadFileUrl = amazonS3Client.getUrl(bucketName, keyName).toString();
-				User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
-				user.updateImage(uploadFileUrl);
-			} catch (IOException e) {
-				e.printStackTrace();
-				log.error("Filed upload failed", e);
-			}
+			// S3에 업로드한 폴더 및 파일 URL
+			uploadFileUrl = amazonS3Client.getUrl(bucketName, keyName).toString();
+			User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+			user.updateImage(uploadFileUrl);
+		} catch (IOException e) {
+			e.printStackTrace();
+			log.error("Filed upload failed", e);
+		}
 
-			s3files.add(
-				S3FileDto.builder()
-					.originalFileName(originalFileName)
-					.uploadFileName(uploadFileName)
-					.uploadFileUrl(uploadFileUrl)
-					.build());
+		s3files.add(
+			S3FileDto.builder()
+				.originalFileName(originalFileName)
+				.uploadFileName(uploadFileName)
+				.uploadFileUrl(uploadFileUrl)
+				.build());
 
 		return s3files;
 	}
@@ -180,6 +171,7 @@ public class UserServiceImpl implements UserService {
 		String ext = fileName.substring(fileName.indexOf(".") + 1);
 		return UUID.randomUUID().toString() + "." + ext;
 	}
+
 	@Override
 	@Transactional
 	public void deleteImage(Long userId) {
@@ -192,7 +184,8 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void addInterestLanguage(AddInterestLanguageRequestDto addInterestLanguageRequestDto) {
 		log.info("UserServiceImpl_addInterestLanguage");
-		User user = userRepository.findById(addInterestLanguageRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		User user = userRepository.findById(addInterestLanguageRequestDto.getUserId())
+			.orElseThrow(NotExistAccountException::new);
 		Language language = languageRepository.findByLanguageId(addInterestLanguageRequestDto.getLanguageId());
 		Grade grade = gradeRepository.findByGradeId(addInterestLanguageRequestDto.getGradeId());
 		UserLanguage userLanguage = UserLanguage.builder()
@@ -207,7 +200,8 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto) {
 		log.info("UserServiceImpl_deleteInterestLanguage");
-		User user = userRepository.findById(deleteInterestLanguageRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		User user = userRepository.findById(deleteInterestLanguageRequestDto.getUserId())
+			.orElseThrow(NotExistAccountException::new);
 		Language language = languageRepository.findByLanguageId(deleteInterestLanguageRequestDto.getLanguageId());
 
 		userLanguageRepository.deleteByUserAndLanguage(user, language);
