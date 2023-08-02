@@ -1,6 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import styled from "@emotion/styled";
 import Home from "./pages/Home";
+import Signup from "./pages/signup";
 import Notfound from "./pages/Notfound";
 import AuthLayout from "./layout/AuthLayout";
 import Header from "./components/header";
@@ -27,7 +28,16 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 1,
+        id: 2,
+        path: "/signup",
+        label: "Signup",
+        element: <Signup />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 3,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
