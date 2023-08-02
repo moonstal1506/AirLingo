@@ -4,6 +4,7 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
+import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
@@ -28,6 +29,15 @@ const routerData = [
     },
     {
         id: 2,
+        path: "/signup",
+        label: "signup",
+        element: <SignupLanguage />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 3,
         path: "/matchhome",
         label: "MatchHome",
         element: <MatchHome />,
@@ -36,7 +46,7 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 3,
+        id: 4,
         path: "/matchqueue",
         label: "MatchQueue",
         element: <MatchQueue />,
@@ -45,7 +55,7 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 3,
+        id: 5,
         path: "/matchresult",
         label: "MatchResult",
         element: <MatchResult />,
@@ -54,7 +64,7 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 3,
+        id: 6,
         path: "/matchStandby",
         label: "MatchStandby",
         element: <MatchStandby />,
@@ -63,7 +73,7 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 4,
+        id: 7,
         path: "*",
         label: "NotFound",
         element: <Notfound />,

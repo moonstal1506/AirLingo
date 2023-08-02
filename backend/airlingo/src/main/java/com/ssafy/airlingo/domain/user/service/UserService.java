@@ -25,8 +25,6 @@ public interface UserService {
 	// 로그인 관련
 	LoginResponseDto login(LoginRequestDto loginRequestDto, HttpServletResponse response);
 
-	User findUserByUserLoginIdAndUserPassword(String userLoginId, String userPassword);
-
 	void setToken(User loginUser, HttpServletResponse response);
 
 	// 로그아웃 관련

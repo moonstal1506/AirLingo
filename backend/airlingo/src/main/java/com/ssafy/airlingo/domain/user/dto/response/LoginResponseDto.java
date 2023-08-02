@@ -1,5 +1,10 @@
 package com.ssafy.airlingo.domain.user.dto.response;
 
+import java.util.List;
+
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
+import com.ssafy.airlingo.domain.language.entity.Language;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,4 +23,14 @@ public class LoginResponseDto {
 
 	@Schema(description = "로그인유저 닉네임", example = "에어링고")
 	private String userNickname;
+
+	@Schema(description = "로그인유저 프로필 이미지 URL", example = "http://User.s3.amazonaws.com")
+	private String userImgUrl;
+
+	@Schema(description = "로그인유저 모국어")
+	private Language userNativeLanguage;
+
+	@Schema(description = "로그인유저 관심언어")
+	private List<LanguageDto> userLanguages;
+
 }
