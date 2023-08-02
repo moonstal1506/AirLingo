@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "Matching Controller", description = "매칭 관련 컨트롤러")
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/matching")
+@RequestMapping("/matching")
 public class MatchingController {
 
 	private final MatchingService matchingService;

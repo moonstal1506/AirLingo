@@ -9,7 +9,7 @@ spring:
 
   rabbitmq:
     host: localhost
-    port: 5672
+    port: 5432
     username: admin
     password: admin
 
@@ -20,7 +20,7 @@ server:
   data:
     redis:
       host: localhost
-      port: 6380
+      port: 4321
       timeout: 5000 # 서버와의 연결 시도 및 응답 대기 시간 최대 5초
 
 # 로그 레벨 설정
