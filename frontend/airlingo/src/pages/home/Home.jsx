@@ -1,4 +1,5 @@
 import styled from "@emotion/styled";
+// import { useState, useEffect } from "react";
 import catchphraseBackground from "@/assets/imgs/catchphrase-background.png";
 import subcatchphrase1Background from "@/assets/imgs/subcatchphrase1-background.png";
 import subcatchphrase2Background from "@/assets/imgs/subcatchphrase2-background.png";
@@ -9,7 +10,7 @@ import useRouter from "@/hooks";
 
 const HomeContainer = styled.div`
     width: 100%;
-    height: 100%;
+    height: calc(100% - 120px);
     position: relative;
     font-family: Pretendard;
 `;
@@ -176,7 +177,7 @@ const SmallCatchphraseWrapper = styled.div`
 const WhiteSubCatchphraseBox1 = styled.div`
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 1024px;
     justify-content: center;
     align-items: center;
     gap: 70px;
@@ -187,7 +188,7 @@ const WhiteSubCatchphraseBox1 = styled.div`
 const WhiteSubCatchphraseBox2 = styled.div`
     display: flex;
     width: 100%;
-    height: 100%;
+    height: 1024px;
     justify-content: center;
     align-items: center;
     gap: 70px;
@@ -256,7 +257,7 @@ const CatchphraseContentBold = styled.span`
 const JoinContainer = styled.div`
     display: flex;
     width: 100%;
-    height: 256px;
+    height: 768px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -291,7 +292,6 @@ const FooterBox = styled.div`
     display: flex;
     width: 100%;
     height: 256px;
-    padding: 0px 30px;
     justify-content: center;
     align-items: center;
     gap: 30px;
@@ -370,5 +370,23 @@ const LinkText = styled.span``;
 const LinkTextUnderline = styled.span`
     text-decoration-line: underline;
 `;
+
+const ArrowIcon = styled.img`
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50px;
+    height: 50px;
+    cursor: pointer;
+`;
+
+const ArrowIconImage = styled.img`
+    width: 100%;
+    height: 100%;
+`;
+
+// 이미지 경로에는 실제 아이콘 이미지 파일 경로를 넣어주세요
+const ArrowImageSrc = "your-arrow-icon-image-path.png";
 
 export default Home;

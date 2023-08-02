@@ -70,6 +70,7 @@ const HeaderContainer = styled.div`
     height: 120px;
     background-color: rgba(42, 43, 45, 0.95);
     position: sticky;
+    z-index: 999;
     top: 0;
     display: flex;
     justify-content: center;
