@@ -214,7 +214,6 @@ const GlobalStyle = css`
     }
 
     * {
-        font-size: 15px;
         font-family: "Pretendard", sans-serif;
     }
 `;
