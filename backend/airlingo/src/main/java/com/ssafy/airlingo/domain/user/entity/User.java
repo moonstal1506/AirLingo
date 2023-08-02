@@ -98,7 +98,25 @@ public class User extends BaseTimeEntity {
 	private List<UserLanguage> userLanguages;
 
 	public LoginResponseDto toLoginResponseDto() {
-		return LoginResponseDto.builder().userId(userId).userLoginId(userLoginId).userNickname(userNickname).build();
+		return LoginResponseDto.builder()
+			.userId(userId)
+			.userLoginId(userLoginId)
+			.userNickname(userNickname)
+			.userImgUrl(userImgUrl)
+			.userNativeLanguage(userNativeLanguage)
+			.userLanguages(this.userLanguages
+				.stream()
+				.map(userLanguage -> LanguageDto.builder()
+					.languageId(userLanguage.getLanguage().getLanguageId())
+					.languageKorName(userLanguage.getLanguage().getLanguageKorName())
+					.languageEngName(userLanguage.getLanguage().getLanguageEngName())
+					.imageUrl(userLanguage.getLanguage().getImageUrl())
+					.gradeName(userLanguage.getGrade().getGradeName())
+					.gradeKorName(userLanguage.getGrade().getGradeKorName())
+					.build()
+				).collect(Collectors.toList())
+			)
+			.build();
 	}
 
 	public UserResponseDto toDto() {
@@ -125,8 +143,8 @@ public class User extends BaseTimeEntity {
 				.map(userLanguage -> LanguageDto.builder()
 					.languageId(userLanguage.getLanguage().getLanguageId())
 					.gradeName(userLanguage.getGrade().getGradeName())
-						.languageKorName(userLanguage.getLanguage().getLanguageKorName())
-							.languageEngName(userLanguage.getLanguage().getLanguageEngName())
+					.languageKorName(userLanguage.getLanguage().getLanguageKorName())
+					.languageEngName(userLanguage.getLanguage().getLanguageEngName())
 					.build())
 				.collect(Collectors.toList()))
 			.build();
@@ -173,12 +191,12 @@ public class User extends BaseTimeEntity {
 	}
 
 	public boolean isComplainCountExceedFive() {
-		if(this.userComplain >= 5)
+		if (this.userComplain >= 5)
 			return true;
 		return false;
 	}
 
-	public void suspendUser(){
+	public void suspendUser() {
 		this.userState = UserState.INACTIVE;
 	}
 }
