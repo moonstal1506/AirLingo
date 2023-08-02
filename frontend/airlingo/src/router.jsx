@@ -4,14 +4,14 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
-import WatingReady from "./pages/waiting/WatingReady";
+import WaitingHome from "./pages/waiting/WaitingHome";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
     {
         id: 0,
         path: "/",
-        label: "Home",
+        label: "index",
         element: <Home />,
         withAuth: false,
         headerExist: true,
@@ -28,9 +28,9 @@ const routerData = [
     },
     {
         id: 2,
-        path: "/waiting/ready",
-        label: "WaitingReady",
-        element: <WatingReady />,
+        path: "/waitinghome",
+        label: "WaitingHome",
+        element: <WaitingHome />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
