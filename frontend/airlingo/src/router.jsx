@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import Home from "./pages/home/Home";
 import Notfound from "./pages/Notfound";
-import AuthLayout from "./layout/AuthLayout";
+import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
 import WaitingHome from "./pages/waiting/WaitingHome";
