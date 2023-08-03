@@ -8,6 +8,9 @@ import { ReactComponent as ShareIcon } from "@/assets/imgs/icons/share-icon.svg"
 import { ReactComponent as CardIcon } from "@/assets/imgs/icons/card-icon.svg";
 import { ReactComponent as ReportIcon } from "@/assets/imgs/icons/report-icon.svg";
 import { ReactComponent as ExitIcon } from "@/assets/imgs/icons/exit-icon.svg";
+import { ReactComponent as DictionaryIcon } from "@/assets/imgs/icons/dictionary-icon.svg";
+import { ReactComponent as TranslatorIcon } from "@/assets/imgs/icons/translator-icon.svg";
+import { ReactComponent as ScriptIcon } from "@/assets/imgs/icons/script-icon.svg";
 
 export {
     MicOnIcon,
@@ -20,4 +23,7 @@ export {
     CardIcon,
     ReportIcon,
     ExitIcon,
+    DictionaryIcon,
+    TranslatorIcon,
+    ScriptIcon,
 };
