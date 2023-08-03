@@ -52,7 +52,7 @@ function MatchQueue() {
                 stompClient.subscribe("/user/user1/queue/matchingData", (matchingResult) => {
                     // 데이터 받기 성공
                     console.log(matchingResult);
-                    routeTo("/matchresult");
+                    // routeTo("/matchresult");
                 });
             });
         }

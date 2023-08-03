@@ -3,6 +3,10 @@ package com.ssafy.airlingo.global.handler;
 import java.io.IOException;
 import java.util.List;
 
+import org.springframework.lang.Nullable;
+import org.springframework.messaging.MessageHeaders;
+import org.springframework.messaging.simp.SimpMessageHeaderAccessor;
+import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.TextMessage;
@@ -35,16 +39,25 @@ public class WebSocketHandler extends TextWebSocketHandler {
 	 */
 	// sessionId 및 MatchingResponseDto 전달 메서드
 	public void sendSessionIdAndMatchingDataToUsers(String sessionId, Long studyId,
-		MatchingResponseDto matchingResponseDto,
-		List<String> userNicknames) {
+													MatchingResponseDto matchingResponseDto,
+													List<String> userNicknames) {
 		// sessionId와 MatchingResponseDto를 JSON 형식으로 변환하여 전달
 		String matchingData =
-			"{\"sessionId\": \"" + sessionId + "\", \"studyId\": \"" + studyId + "\", \"matchingResponseDto\": "
-				+ new Gson().toJson(matchingResponseDto) + "}";
+				"{\"sessionId\": \"" + sessionId + "\", \"studyId\": \"" + studyId + "\", \"matchingResponseDto\": "
+						+ new Gson().toJson(matchingResponseDto) + "}";
 
 		for (String userNickname : userNicknames) {
-			messagingTemplate.convertAndSendToUser(userNickname, "/queue/matchingData", matchingData);
+			messagingTemplate.convertAndSendToUser(userNickname, "/queue/matchingData", matchingData,
+					createHeaders(null));
 		}
+	}
+
+	private MessageHeaders createHeaders(@Nullable String sessionId) {
+		SimpMessageHeaderAccessor headerAccessor = SimpMessageHeaderAccessor.create(SimpMessageType.MESSAGE);
+		if (sessionId != null)
+			headerAccessor.setSessionId(sessionId);
+		headerAccessor.setLeaveMutable(true);
+		return headerAccessor.getMessageHeaders();
 	}
 
 }
