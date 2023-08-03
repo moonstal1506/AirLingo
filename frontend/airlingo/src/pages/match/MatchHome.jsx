@@ -56,9 +56,10 @@ function MatchHome() {
     useEffect(() => {
         if (isUserInfoValid()) {
             fetchConcurrentUser();
-        } else {
-            routeTo("/");
         }
+        // else {
+        //     routeTo("/");
+        // }
     }, [skillLanguageList, studyLanguage]);
 
     const handleMatching = (premium) => {
