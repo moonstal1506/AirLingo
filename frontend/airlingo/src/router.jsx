@@ -4,6 +4,7 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
+import WordBook from "./pages/mypage/wordBook";
 import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 
@@ -73,7 +74,15 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 7,
+        id: 8,
+        path: "/word",
+        label: "word",
+        element: <WordBook />,
+        withAuth: true,
+        headerExist: false,
+    },
+    {
+        id: 9,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
