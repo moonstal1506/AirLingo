@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
 import { useLocation } from "react-router-dom";
 import stomp from "stompjs";
@@ -16,50 +16,38 @@ function MatchQueue() {
     const [time, setTime] = useState(0);
     const { routeTo } = useRouter();
     const location = useLocation();
-    const socket = new SockJS("http://localhost:8081/ws");
-    const stompClient = stomp.over(socket);
+    console.log(setTime, location);
 
-    function checkValid() {
-        if (
-            !location.state ||
-            !location.state.userId ||
-            !location.state.studyLanguageId ||
-            !location.state.premium
-        ) {
-            alert("허용되지 않은 접근입니다.");
-            console.log(routeTo);
-        }
-    }
+    const matchingFunc = useCallback(async (stompClient, userId, studyLanguageId, premium) => {
+        await postMatching({
+            responseFunc: {
+                400: () => {
+                    routeTo("/notfound");
+                },
+            },
+            data: {
+                userId,
+                studyLanguageId,
+                premium,
+            },
+        });
+
+        // 연결을 시작합니다.
+        stompClient.connect({}, (frame) => {
+            console.log("connected: ", frame);
+            // /user/{nickname}/queue/matchingData
+            stompClient.subscribe("/user/user1/queue/matchingData", (matchingResult) => {
+                // 데이터 받기 성공
+                console.log(matchingResult);
+                // routeTo("/matchresult");
+            });
+        });
+    }, []);
 
     useEffect(() => {
-        async function matchingFunc() {
-            await postMatching({
-                responseFunc: {
-                    400: () => {
-                        routeTo("/notfound");
-                    },
-                },
-                data: {
-                    userId: 1,
-                    studyLanguageId: 2,
-                    premium: false,
-                },
-            });
-            // 연결을 시작합니다.
-            stompClient.connect({}, (frame) => {
-                console.log("connected: ", frame);
-                // /user/{nickname}/queue/matchingData
-                stompClient.subscribe("/user/user1/queue/matchingData", (matchingResult) => {
-                    // 데이터 받기 성공
-                    console.log(matchingResult);
-                    // routeTo("/matchresult");
-                });
-            });
-        }
-
-        // checkValid();
-        console.log(checkValid);
-        matchingFunc();
+        const socket = new SockJS("http://localhost:8081/ws");
+        const stompClient = stomp.over(socket);
+        matchingFunc(stompClient, 1, 2, false);
         const interval = setInterval(() => {
             setTime((prev) => prev + 1);
         }, 1000);
@@ -121,7 +109,7 @@ function MatchQueue() {
 const MatchQueueContainer = styled.div`
     position: relative;
     width: 100%;
-    height: calc(100% - 120px);
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
