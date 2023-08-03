@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
@@ -6,7 +7,7 @@ import theme from "@/assets/styles/Theme";
 import { ReactComponent as DropdownIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
 import iconConfig from "@/config";
 import combineShape from "@/utils/style";
-
+import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/korea-flag-icon.svg";
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1, primary4 } = theme.colors;
@@ -36,20 +37,21 @@ const dropdownOpenAnimation = keyframes`
 // ----------------------------------------------------------------------------------------------------
 
 function Dropdown({
-    width = "200px",
+    width,
     data,
     iconColor,
-    shape = "positive",
-    defaultOption = null,
-    placeholder = "",
+    shape,
+    selectedOption,
+    defaultOption,
+    placeholder,
+    onChange,
 }) {
     const [isOpen, setIsOpen] = useState(false);
-    const [selectedOption, setSelectedOption] = useState(defaultOption);
     const [iconRotation, setIconRotation] = useState(0);
     const dropdownRef = useRef();
 
     useEffect(() => {
-        setSelectedOption(defaultOption);
+        if (defaultOption) onChange(defaultOption);
         const handleOutsideClick = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
                 setIsOpen(false);
@@ -60,24 +62,24 @@ function Dropdown({
         return () => {
             document.removeEventListener("click", handleOutsideClick);
         };
-    }, [defaultOption]);
+    }, []);
+
+    const handleOptionClick = (id) => {
+        const selected = data.find((option) => option.id === id);
+        onChange({ ...selected });
+        setIsOpen(false);
+        setIconRotation(0);
+    };
 
     const toggleDropdown = () => {
         setIsOpen(!isOpen);
         setIconRotation(isOpen ? 0 : 90);
     };
 
-    const handleOptionClick = (id) => {
-        const selected = data.find((option) => option.id === id);
-        setSelectedOption(selected);
-        setIsOpen(false);
-        setIconRotation(0);
-    };
-
     return (
         <DropdownWrapper ref={dropdownRef} width={width}>
             <DropdownButton onClick={toggleDropdown} shape={shape}>
-                {selectedOption ? (
+                {selectedOption.id ? (
                     <>
                         <div>
                             <selectedOption.img />
@@ -91,7 +93,7 @@ function Dropdown({
                     <DropdownIcon width="25" height="25" />
                 </DropdownIconWrapper>
             </DropdownButton>
-            <DropdownContent open={isOpen}>
+            <DropdownContent open={isOpen} width={width}>
                 {data.map((option) => (
                     <DropdownOption key={option.id} onClick={() => handleOptionClick(option.id)}>
                         <div>
@@ -108,6 +110,7 @@ function Dropdown({
 const DropdownWrapper = styled.div`
     display: flex;
     flex-direction: column;
+    position: relative;
     min-width: 120px;
     width: ${({ width }) => width};
     border: none;
@@ -126,9 +129,13 @@ const DropdownButton = styled.div`
     padding: 0 15px;
     cursor: pointer;
     ${(props) => combineShape(shapeStyle, props.shape)}
+    div {
+        font-size: 20px;
+    }
 `;
 
 const DropdownContent = styled.div`
+    min-width: ${(props) => props.width};
     position: absolute;
     top: 110%;
     overflow: hidden;
@@ -151,6 +158,9 @@ const DropdownOption = styled.div`
         background-color: ${primary1};
         cursor: pointer;
     }
+    div {
+        font-size: 20px;
+    }
 `;
 
 const DropdownIconWrapper = styled.div`
@@ -171,18 +181,24 @@ Dropdown.propTypes = {
     data: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            img: PropTypes.node.isRequired,
+            img: PropTypes.elementType.isRequired,
             label: PropTypes.string.isRequired,
         }),
     ),
     iconColor: PropTypes.string,
     shape: PropTypes.oneOf(["positive", "negative"]),
+    selectedOption: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        img: PropTypes.elementType.isRequired,
+        label: PropTypes.string.isRequired,
+    }),
     defaultOption: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        img: PropTypes.node.isRequired,
+        img: PropTypes.elementType.isRequired,
         label: PropTypes.string.isRequired,
     }),
     placeholder: PropTypes.string,
+    onChange: PropTypes.func,
 };
 
 Dropdown.defaultProps = {
@@ -190,8 +206,10 @@ Dropdown.defaultProps = {
     data: [],
     iconColor: "black",
     shape: "positive",
+    selectedOption: { id: "", img: KoreaFlagIcon, label: "" },
     defaultOption: null,
     placeholder: "",
+    onChange: () => {},
 };
 
 // ----------------------------------------------------------------------------------------------------

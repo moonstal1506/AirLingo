@@ -31,11 +31,15 @@ public class Language {
 	@Column(nullable = false, unique = true, length = 50)
 	private String languageEngName;
 
+	@Column(nullable = false, unique = true)
+	private String imageUrl;
+
 	public LanguageDto toLanguageDto() {
 		return LanguageDto.builder()
 			.languageId(languageId)
 			.languageKorName(languageKorName)
 			.languageEngName(languageEngName)
+			.imageUrl(imageUrl)
 			.build();
 	}
 }

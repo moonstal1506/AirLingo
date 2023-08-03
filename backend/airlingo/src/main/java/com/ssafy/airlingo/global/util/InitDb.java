@@ -22,7 +22,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
-@Profile("dev")
 @Component
 @RequiredArgsConstructor
 public class InitDb {
@@ -158,21 +157,25 @@ public class InitDb {
 			Language l1 = Language.builder()
 				.languageKorName("한국어")
 				.languageEngName("Korean")
+				.imageUrl("https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg")
 				.build();
 
 			Language l2 = Language.builder()
 				.languageKorName("영어")
 				.languageEngName("English")
+				.imageUrl("https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-britain-icon.svg")
 				.build();
 
 			Language l3 = Language.builder()
 				.languageKorName("일본어")
 				.languageEngName("Japanese")
+				.imageUrl("https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg")
 				.build();
 
 			Language l4 = Language.builder()
 				.languageKorName("중국어")
 				.languageEngName("Chinese")
+				.imageUrl("https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-china-icon.svg")
 				.build();
 
 			em.persist(l1);
@@ -265,10 +268,10 @@ public class InitDb {
 			ArrayList<UserLanguage> uls1 = new ArrayList<>();
 			ArrayList<UserLanguage> uls2 = new ArrayList<>();
 
-			Language l1 = new Language(1L, "한국어", "Korean");
-			Language l2 = new Language(2L, "영어", "English");
-			Language l3 = new Language(3L, "일본어", "Japanese");
-			Language l4 = new Language(4L, "중국어", "Chinese");
+			Language l1 = new Language(1L, "한국어", "Korean","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg");
+			Language l2 = new Language(2L, "영어", "English","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-britain-icon.svg");
+			Language l3 = new Language(3L, "일본어", "Japanese","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg");
+			Language l4 = new Language(4L, "중국어", "Chinese","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-china-icon.svg");
 			Grade g1 = new Grade(1L, "A1", "입문", 1);
 			Grade g2 = new Grade(2L, "A2", "초급", 2);
 			Grade g3 = new Grade(3L, "B1", "중급", 3);

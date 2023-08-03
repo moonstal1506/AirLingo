@@ -1,25 +1,25 @@
 import { createBrowserRouter } from "react-router-dom";
-import styled from "@emotion/styled";
-import Home from "./pages/Home";
-import Signup from "./pages/signup";
+import Home from "./pages/home/Home";
 import Notfound from "./pages/Notfound";
-import AuthLayout from "./layout/AuthLayout";
+import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
+import WaitingHome from "./pages/waiting/WaitingHome";
+import SignupLanguage from "./pages/SignUp/SignupLanguage";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
     {
         id: 0,
         path: "/",
-        label: "Home",
+        label: "index",
         element: <Home />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
     },
     {
-        id: 0,
+        id: 1,
         path: "/test",
         label: "Home",
         element: <Home />,
@@ -29,15 +29,24 @@ const routerData = [
     },
     {
         id: 2,
-        path: "/signup",
-        label: "Signup",
-        element: <Signup />,
+        path: "/waitinghome",
+        label: "WaitingHome",
+        element: <WaitingHome />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
     },
     {
         id: 3,
+        path: "/signup",
+        label: "signup",
+        element: <SignupLanguage />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 4,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
@@ -48,17 +57,11 @@ const routerData = [
 ];
 
 function seperatedHeaderCheckElement(router) {
-    const HeaderDownContainer = styled.div`
-        padding-top: 120px;
-        width: 100%;
-        height: 100%;
-    `;
-
     if (router.headerExist) {
         return (
             <>
                 <Header />
-                <HeaderDownContainer>{router.element}</HeaderDownContainer>
+                {router.element}
             </>
         );
     }

@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 
-function Overlay({ zIdx = 999, children }) {
+function Overlay({ zIdx = 1000, children }) {
     return <OverlayWrapper zIdx={zIdx}>{children}</OverlayWrapper>;
 }
 
@@ -12,8 +12,8 @@ Overlay.propTypes = {
 
 const OverlayWrapper = styled.div`
     position: fixed;
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
     top: 0;
     bottom: 0;
     left: 0;
