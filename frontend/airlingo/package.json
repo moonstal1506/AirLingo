@@ -21,6 +21,8 @@
         "react-redux": "^8.1.1",
         "react-router-dom": "^6.14.2",
         "redux-persist": "^6.0.0",
+        "sockjs-client": "^1.6.1",
+        "stompjs": "^2.3.3",
         "vite-plugin-svgr": "^3.2.0"
     },
     "devDependencies": {
