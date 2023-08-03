@@ -1,4 +1,4 @@
 import ChatSlideMenu from "./ChatSlideMenu";
-import ScriptSliderMenu from "./ScriptSlideMenu";
+import ScriptSlideMenu from "./ScriptSlideMenu";
 
-export { ChatSlideMenu, ScriptSliderMenu };
+export { ChatSlideMenu, ScriptSlideMenu };
