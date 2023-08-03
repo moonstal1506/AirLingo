@@ -1,9 +1,10 @@
 import styled from "@emotion/styled";
-// import { useState, useEffect } from "react";
+import { useState } from "react";
 import catchphraseBackground from "@/assets/imgs/catchphrase-background.png";
 import subcatchphrase1Background from "@/assets/imgs/subcatchphrase1-background.png";
 import subcatchphrase2Background from "@/assets/imgs/subcatchphrase2-background.png";
 import subcatchphrase3Background from "@/assets/imgs/subcatchphrase3-background.png";
+import downIcon from "@/assets/imgs/down-icon.png";
 import developersLogo from "@/assets/imgs/developers-logo.png";
 import { TextButton } from "@/components/common/button";
 import useRouter from "@/hooks";
@@ -13,14 +14,26 @@ const HomeContainer = styled.div`
     height: calc(100% - 120px);
     position: relative;
     font-family: Pretendard;
+    padding-top: 120px;
 `;
 
 function Home() {
     const { routeTo } = useRouter();
 
+    const [setCurrentContainerIndex] = useState(0);
+
+    const scrollToNextContainer = (containerIndex) => {
+        const nextContainerIndex = containerIndex + 1;
+        const nextContainerElement = document.getElementById(`container-${nextContainerIndex}`);
+        if (nextContainerElement) {
+            nextContainerElement.scrollIntoView({ behavior: "smooth", block: "end" });
+            setCurrentContainerIndex(nextContainerIndex);
+        }
+    };
+
     return (
         <HomeContainer>
-            <MainCatchphraseBox>
+            <MainCatchphraseBox id="container-0">
                 <CatchphraseWrapper>
                     <div>
                         <CatchphraseAirLingo>에어링고</CatchphraseAirLingo>
@@ -31,9 +44,10 @@ function Home() {
                         <div>전세계 사람들과 대화를 나누며 언어를 마스터해 보세요!</div>
                     </SmallCatchphraseWrapper>
                 </CatchphraseWrapper>
+                <ArrowIcon onClick={() => scrollToNextContainer(0)} src={downIcon} />
             </MainCatchphraseBox>
 
-            <WhiteSubCatchphraseBox1>
+            <WhiteSubCatchphraseBox1 id="container-1">
                 <CatchphraseImage src={subcatchphrase1Background} />
                 <CatchphraseTextWrapper1>
                     <CatchphraseTitle>
@@ -50,9 +64,10 @@ function Home() {
                         해 보세요!
                     </CatchphraseContent>
                 </CatchphraseTextWrapper1>
+                <ArrowIcon onClick={() => scrollToNextContainer(1)} src={downIcon} />
             </WhiteSubCatchphraseBox1>
 
-            <WhiteSubCatchphraseBox2>
+            <WhiteSubCatchphraseBox2 id="container-2">
                 <CatchphraseTextWrapper2>
                     <CatchphraseTitle>
                         <CatchphraseTitleColor>다양한 주제로 대화</CatchphraseTitleColor>하며,
@@ -71,9 +86,10 @@ function Home() {
                     </CatchphraseContent>
                 </CatchphraseTextWrapper2>
                 <CatchphraseImage src={subcatchphrase2Background} />
+                <ArrowIcon onClick={() => scrollToNextContainer(2)} src={downIcon} />
             </WhiteSubCatchphraseBox2>
 
-            <WhiteSubCatchphraseBox1>
+            <WhiteSubCatchphraseBox1 id="container-3">
                 <CatchphraseImage src={subcatchphrase3Background} />
                 <CatchphraseTextWrapper2>
                     <CatchphraseTitle>
@@ -89,9 +105,10 @@ function Home() {
                         에어링고를 통해 배우고 싶은 언어의 랭커가 되길 바랍니다!
                     </CatchphraseContent>
                 </CatchphraseTextWrapper2>
+                <ArrowIcon onClick={() => scrollToNextContainer(3)} src={downIcon} />
             </WhiteSubCatchphraseBox1>
 
-            <JoinContainer>
+            <JoinContainer id="container-4">
                 <JoinTextContainer>
                     <JoinText>
                         에어링고에서는 <JoinTextColor>이외에도 다양한 기능</JoinTextColor>을
@@ -149,7 +166,6 @@ const CatchphraseWrapper = styled.div`
     text-shadow: 0px 0px 10px black;
     font-size: 55px;
     font-weight: 900;
-    line-height: normal;
 `;
 
 const CatchphraseAirLingo = styled.span`
@@ -168,16 +184,15 @@ const SmallCatchphraseWrapper = styled.div`
     margin-top: 23px;
     color: #fff;
     text-shadow: 0px 0px 10px 0px black;
-    font-family: "Pretendard";
     font-size: 18px;
     font-weight: 400;
-    line-height: normal;
 `;
 
 const WhiteSubCatchphraseBox1 = styled.div`
+    position: relative;
     display: flex;
     width: 100%;
-    height: 1024px;
+    height: 100%;
     justify-content: center;
     align-items: center;
     gap: 70px;
@@ -186,9 +201,10 @@ const WhiteSubCatchphraseBox1 = styled.div`
 `;
 
 const WhiteSubCatchphraseBox2 = styled.div`
+    position: relative;
     display: flex;
     width: 100%;
-    height: 1024px;
+    height: 100%;
     justify-content: center;
     align-items: center;
     gap: 70px;
@@ -234,7 +250,6 @@ const CatchphraseTitle = styled.div`
     font-size: 40px;
     color: black;
     font-weight: 700;
-    line-height: normal;
 `;
 
 const CatchphraseTitleColor = styled.span`
@@ -255,13 +270,14 @@ const CatchphraseContentBold = styled.span`
 `;
 
 const JoinContainer = styled.div`
+    position: relative;
     display: flex;
     width: 100%;
-    height: 768px;
+    height: 100%;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 25px;
+    gap: 40px;
     flex-shrink: 0;
     background: #e6f6f7;
 `;
@@ -276,7 +292,6 @@ const JoinTextContainer = styled.div`
     text-align: center;
     font-size: 45px;
     font-weight: 800;
-    line-height: normal;
 `;
 
 const JoinText = styled.span`
@@ -291,7 +306,7 @@ const FooterBox = styled.div`
     box-sizing: border-box;
     display: flex;
     width: 100%;
-    height: 256px;
+    height: 200px;
     justify-content: center;
     align-items: center;
     gap: 30px;
@@ -313,7 +328,7 @@ const FooterText = styled.div`
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 10px;
+    gap: 5px;
     color: #fff;
 `;
 
@@ -322,9 +337,8 @@ const ServiceTitle = styled.div`
     height: 35px;
     flex-direction: column;
     justify-content: center;
-    font-size: 30px;
+    font-size: 20px;
     font-weight: 700;
-    line-height: normal;
 `;
 
 const CopyrightTextWrapper = styled.div`
@@ -332,8 +346,7 @@ const CopyrightTextWrapper = styled.div`
     height: 35px;
     flex-direction: column;
     justify-content: center;
-    font-size: 25px;
-    line-height: normal;
+    font-size: 20px;
 `;
 
 const CopyrightText = styled.span`
@@ -349,9 +362,8 @@ const AddressText = styled.div`
     height: 35px;
     flex-direction: column;
     justify-content: center;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 400;
-    line-height: normal;
 `;
 
 const LinkTextWrapper = styled.div`
@@ -360,9 +372,8 @@ const LinkTextWrapper = styled.div`
     flex-direction: column;
     justify-content: center;
     color: #fff;
-    font-size: 25px;
+    font-size: 20px;
     font-weight: 400;
-    line-height: normal;
 `;
 
 const LinkText = styled.span``;
@@ -380,13 +391,5 @@ const ArrowIcon = styled.img`
     height: 50px;
     cursor: pointer;
 `;
-
-const ArrowIconImage = styled.img`
-    width: 100%;
-    height: 100%;
-`;
-
-// 이미지 경로에는 실제 아이콘 이미지 파일 경로를 넣어주세요
-const ArrowImageSrc = "your-arrow-icon-image-path.png";
 
 export default Home;
