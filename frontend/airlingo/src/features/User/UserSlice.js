@@ -5,7 +5,7 @@ const initialState = {
     isLogIn: false,
     userId: "",
     userLoginId: "",
-    userNickname: "",
+    userNickname: "Crassula",
     userImg: "",
     userAccessToken: "",
 };
