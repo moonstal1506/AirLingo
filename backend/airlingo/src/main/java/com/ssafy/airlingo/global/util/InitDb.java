@@ -22,7 +22,6 @@ import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 
-@Profile("dev")
 @Component
 @RequiredArgsConstructor
 public class InitDb {

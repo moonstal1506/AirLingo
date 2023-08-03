@@ -35,6 +35,9 @@ const shapeStyle = {
             transition: ease-out 0.35s;
         }
     `,
+    large: ` 
+        min-width : 200px;
+    `,
     normal: `
         min-width: 150px;
         border-radius: 10px;
@@ -46,6 +49,16 @@ const shapeStyle = {
     rounded: `
         min-width: 100px;
         border-radius: 25px;
+    `,
+    home: `
+        min-width: 350px;
+        border-radius: 10px;
+        height: 65px;
+        padding: 10px 20px;
+        color: #FFF;
+        font-size: 30px;
+        font-weight: 700;
+        line-height: normal;
     `,
 };
 
