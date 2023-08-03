@@ -2,6 +2,8 @@
 import { useState, useEffect } from "react";
 import styled from "@emotion/styled";
 import { useLocation } from "react-router-dom";
+import stomp from "stompjs";
+import SockJS from "sockjs-client";
 import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
 import { ReactComponent as RightArrowIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
@@ -14,6 +16,8 @@ function MatchQueue() {
     const [time, setTime] = useState(0);
     const { routeTo } = useRouter();
     const location = useLocation();
+    const socket = new SockJS("http://localhost:8081/ws");
+    const stompClient = stomp.over(socket);
 
     function checkValid() {
         if (
@@ -23,38 +27,48 @@ function MatchQueue() {
             !location.state.premium
         ) {
             alert("허용되지 않은 접근입니다.");
-            routeTo("/matchhome");
+            console.log(routeTo);
         }
     }
 
     useEffect(() => {
         async function matchingFunc() {
-            // checkValid();
-            console.log(checkValid);
             await postMatching({
                 responseFunc: {
-                    200: (response) => {
-                        console.log(response);
-                        routeTo("/matchingResult");
-                    },
                     400: () => {
                         routeTo("/notfound");
                     },
                 },
                 data: {
                     userId: 1,
-                    studyLanguageId: 1,
-                    premium: true,
+                    studyLanguageId: 2,
+                    premium: false,
                 },
             });
-            // }
+            // 연결을 시작합니다.
+            stompClient.connect({}, (frame) => {
+                console.log("connected: ", frame);
+                // /user/{nickname}/queue/matchingData
+                stompClient.subscribe("/user/user1/queue/matchingData", (matchingResult) => {
+                    // 데이터 받기 성공
+                    console.log(matchingResult);
+                    routeTo("/matchresult");
+                });
+            });
         }
 
+        // checkValid();
+        console.log(checkValid);
         matchingFunc();
         const interval = setInterval(() => {
             setTime((prev) => prev + 1);
         }, 1000);
-        return () => clearInterval(interval);
+        return () => {
+            clearInterval(interval);
+            stompClient.disconnect(() => {
+                console.log("Stomp client disconnected.");
+            });
+        };
     }, []);
 
     function formatTime() {
