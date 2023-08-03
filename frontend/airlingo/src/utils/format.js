@@ -1,3 +1,5 @@
+import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
+
 function formatTime(time) {
     const minutes = Math.floor(time / 60);
     const remainingSeconds = time % 60;
@@ -6,4 +8,21 @@ function formatTime(time) {
     }${remainingSeconds}`;
 }
 
-export default formatTime;
+function formatLanguage(Language) {
+    if (
+        !Language ||
+        !("languageId" in Language) ||
+        !("languageKorName" in Language) ||
+        !("imageUrl" in Language)
+    ) {
+        return { id: "1", label: "한국어", img: KoreaFlagIcon };
+    }
+    const { languageId, languageKorName, imageUrl } = Language;
+    return {
+        id: languageId,
+        label: languageKorName,
+        img: imageUrl,
+    };
+}
+
+export { formatTime, formatLanguage };

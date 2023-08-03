@@ -8,6 +8,8 @@ const initialState = {
     userNickname: "",
     userImg: "",
     userAccessToken: "",
+    userNativeLanguage: {},
+    userLanguages: [],
 };
 
 export const UserSlice = createSlice({
@@ -15,13 +17,23 @@ export const UserSlice = createSlice({
     initialState,
     reducers: {
         signinUser: (state, actions) => {
-            const { userId, userLoginId, userNickname, userImg, userAccessToken } = actions.payload;
+            const {
+                userId,
+                userLoginId,
+                userNickname,
+                userImg,
+                userAccessToken,
+                userNativeLanguage,
+                userLanguages,
+            } = actions.payload;
             state.isLogIn = true;
             state.userId = userId;
             state.userLoginId = userLoginId;
             state.userNickname = userNickname;
             state.userImg = userImg;
             state.userAccessToken = userAccessToken;
+            state.userNativeLanguage = userNativeLanguage;
+            state.userLanguages = userLanguages;
         },
         logoutUser: (state) => {
             state.isLogIn = false;
@@ -30,6 +42,8 @@ export const UserSlice = createSlice({
             state.userNickname = "";
             state.userImg = "";
             state.userAccessToken = "";
+            state.userNativeLanguage = {};
+            state.userLanguages = [];
         },
         reloadUser: (state, actions) => {
             const { userAccessToken } = actions.payload;

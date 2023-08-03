@@ -13,7 +13,7 @@ import { ReactComponent as LeftArrowIcon } from "@/assets/imgs/icons/left-arrow-
 import { postMatching } from "@/api";
 import { useRouter } from "@/hooks";
 import { selectUser } from "@/features/User/UserSlice";
-import formatTime from "@/utils/format";
+import { formatTime } from "@/utils/format";
 
 function MatchQueue() {
     const { VITE_SOCKET_URL } = import.meta.env;
