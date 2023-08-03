@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import stomp from "stompjs";
 import SockJS from "sockjs-client";
 import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
@@ -15,8 +15,8 @@ function MatchQueue() {
     const [expressionIdx, setExpressionIdx] = useState(0);
     const [time, setTime] = useState(0);
     const { routeTo } = useRouter();
-    const location = useLocation();
-    console.log(setTime, location);
+    // const location = useLocation();
+    // console.log(setTime, location);
 
     const matchingFunc = useCallback(async (stompClient, userId, studyLanguageId, premium) => {
         await postMatching({
