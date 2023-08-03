@@ -49,6 +49,7 @@ const ProgressTextWrapper = styled.div`
     color: ${(props) => (props.isProceeding ? "#333" : gray)};
     font-size: 20px;
     font-weight: 400;
+    text-align: center;
 `;
 
 // ----------------------------------------------------------------------------------------------------

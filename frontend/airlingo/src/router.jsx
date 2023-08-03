@@ -5,7 +5,7 @@ import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
 import WaitingHome from "./pages/waiting/WaitingHome";
-import SignupLanguage from "./pages/SignUp/SignupLanguage";
+import Signup3 from "./pages/SignUp/Signup3";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -40,7 +40,7 @@ const routerData = [
         id: 3,
         path: "/signup",
         label: "signup",
-        element: <SignupLanguage />,
+        element: <Signup3 />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
