@@ -39,8 +39,8 @@ const shapeStyle = {
         min-width : 200px;
     `,
     signup: `
-    min-width : 200px;
-    border-radius:10px;
+        min-width : 200px;
+        border-radius:10px;
     `,
     normal: `
         min-width: 150px;

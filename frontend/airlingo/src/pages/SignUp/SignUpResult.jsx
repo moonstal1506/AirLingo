@@ -1,29 +1,17 @@
 import styled from "@emotion/styled";
-import { TextButton } from "@/components/common/button";
 import successImage from "@/assets/imgs/img/Login-Success-Image.png";
 
-function SignupOk() {
+function SignUpResult() {
     return (
-        <SignupContainer>
-            <SignupBox>
-                <SignupTitleWrapper>회원이 되신 것을 환영합니다!</SignupTitleWrapper>
-                <SignupLine />
-                <SignupSubTitleWrapper>지금 바로 여정을 떠나보세요!</SignupSubTitleWrapper>
-                <SuccessImage />
-                <StyledSignupOk>
-                    <TextButton text="로그인 하러 가기" />
-                </StyledSignupOk>
-            </SignupBox>
-        </SignupContainer>
+        <SignupBox>
+            <SignupTitleWrapper>회원이 되신 것을 환영합니다!</SignupTitleWrapper>
+            <SignupLine />
+            <SignupSubTitleWrapper>지금 바로 여정을 떠나보세요!</SignupSubTitleWrapper>
+            <SuccessImage />
+        </SignupBox>
     );
 }
-const SignupContainer = styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-contents: center;
-`;
+
 const SignupBox = styled.div`
     width: 700px;
     height: 698px;
@@ -84,15 +72,6 @@ const SuccessImage = styled.div`
     margin-bottom: 20px;
 `;
 
-const StyledSignupOk = styled.div`
-    display: flex;
-    width: 200px;
-    height: 50px;
-    padding: 10px 20px;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 40px;
-`;
+// ----------------------------------------------------------------------------------------------------
 
-export default SignupOk;
+export default SignUpResult;

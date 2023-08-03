@@ -49,12 +49,12 @@ const Header = React.memo(() => {
                             <TextButton
                                 shape="positive-normal"
                                 text="로그인"
-                                onClick={() => routeTo("login")}
+                                onClick={() => routeTo("/login")}
                             />
                             <TextButton
                                 shape="positive-normal"
                                 text="회원가입"
-                                onClick={() => routeTo("signup")}
+                                onClick={() => routeTo("/signup")}
                             />
                             <Dropdown />
                         </>

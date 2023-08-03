@@ -7,10 +7,9 @@ import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
 import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-france-icon.svg";
-import { ProgressBox, ProgressLine } from "@/components/progress";
 import Validation from "@/components/validationList";
 
-function SignupLanguage() {
+function SignUpLanguage() {
     const [totalLanguage, setTotalLanguage] = useState([
         { id: "135", label: "한국어", img: KoreaFlagIcon },
         { id: "136", label: "영어", img: JapanFlagIcon },
@@ -85,131 +84,91 @@ function SignupLanguage() {
     };
 
     return (
-        <SignUpContainer>
-            <SignUpWrapper>회원가입</SignUpWrapper>
-            <ProgressContainer>
-                <ProgressBox step="01" text="약관 동의" isProceeding />
-                <ProgressLine />
-                <ProgressBox step="02" text="기본 정보 입력" isProceeding />
-                <ProgressLine />
-                <ProgressBox step="03" text="개인 정보 입력" isProceeding />
-                <ProgressLine />
-                <ProgressBox step="04" text="언어 설정" isProceeding />
-            </ProgressContainer>
-            <SignupLanguageContainer>
-                <SignupLanguageTitleWrapper>언어 설정</SignupLanguageTitleWrapper>
-                <SignupLanguageBox>
-                    <StyledMainLanguage>
+        <SignupLanguageContainer>
+            <SignupLanguageTitleWrapper>언어 설정</SignupLanguageTitleWrapper>
+            <SignupLanguageBox>
+                <StyledMainLanguage>
+                    <Dropdown
+                        width="100%"
+                        shape="negative"
+                        data={totalLanguage}
+                        placeholder="대표 언어 설정"
+                        // defaultOption={{ id: "korea", label: "한국어", img: KoreaFlagIcon }}
+                        selectedOption={skillLanguage}
+                        // eslint-disable-next-line no-undef
+                        onChange={setSkillLanguage}
+                    />
+                </StyledMainLanguage>
+                <StyledSelectContainer>
+                    <StyledSelectLanguage>
                         <Dropdown
-                            width="100%"
+                            width="180px"
                             shape="negative"
                             data={totalLanguage}
-                            placeholder="대표 언어 설정"
+                            placeholder="관심 언어 설정"
                             // defaultOption={{ id: "korea", label: "한국어", img: KoreaFlagIcon }}
-                            selectedOption={skillLanguage}
-                            // eslint-disable-next-line no-undef
-                            onChange={setSkillLanguage}
+                            selectedOption={studyLanguage}
+                            onChange={setStudyLanguage}
                         />
-                    </StyledMainLanguage>
-                    <StyledSelectContainer>
-                        <StyledSelectLanguage>
-                            <Dropdown
-                                width="180px"
-                                shape="negative"
-                                data={totalLanguage}
-                                placeholder="관심 언어 설정"
-                                // defaultOption={{ id: "korea", label: "한국어", img: KoreaFlagIcon }}
-                                selectedOption={studyLanguage}
-                                onChange={setStudyLanguage}
-                            />
-                        </StyledSelectLanguage>
-                        <StyledSelectLevel>
-                            <Dropdown
-                                width="160px"
-                                shape="negative"
-                                data={level}
-                                placeholder="숙련도 설정"
-                                selectedOption={selectedLevel}
-                                onChange={setSelectedLevel}
-                            />
-                        </StyledSelectLevel>
-                        <TooltipBox>
-                            <Tooltip
-                                position={{
-                                    horizontal: "right",
-                                    vertical: "bottom",
-                                    direction: "down",
-                                }}
-                            >
-                                <TooltipContentContainer />
-                            </Tooltip>
-                        </TooltipBox>
-                        <TextButton text="추가하기" onClick={handleClickLanguage} />
-                    </StyledSelectContainer>
-                </SignupLanguageBox>
-                {languageList.length > 0 && (
-                    <SelectedLanguagesContainer>
-                        {languageList.map((language, index) => (
-                            // eslint-disable-next-line react/no-array-index-key
-                            <SelectedLanguage key={index}>
-                                <SelectedLanguageLabel>
-                                    <language.img />
-                                    <span>{language.title}</span>
-                                    <span>{language.level}</span>
-                                    <DeleteButton onClick={() => handleDeleteLanguage(index)}>
-                                        X
-                                    </DeleteButton>
-                                </SelectedLanguageLabel>
-                            </SelectedLanguage>
-                        ))}
-                    </SelectedLanguagesContainer>
-                )}
-                <ValidationBox>
-                    {/* 대표 언어 선택 여부에 따른 검증 메시지 스타일 */}
-                    <Validation
-                        isValid={isMainLanguageSelected}
-                        text="능숙하게 구사할 수 있는 ‘대표 언어’를 한 가지 설정해야 합니다. "
-                    />
-                    {/* 관심 언어 선택 여부에 따른 검증 메시지 스타일 */}
-                    <Validation
-                        isValid={isInterestLanguageSelected}
-                        text="배우고 싶은 ‘관심 언어’를 한 가지 이상 설정해야 합니다."
-                    />
-                </ValidationBox>
-                <SignupButtonBox>
-                    <TextButton text="이전 단계" shape="negative-signup" />
-                    <TextButton text="회원가입 완료" shape="positive-signup" />
-                </SignupButtonBox>
-            </SignupLanguageContainer>
-        </SignUpContainer>
+                    </StyledSelectLanguage>
+                    <StyledSelectLevel>
+                        <Dropdown
+                            width="160px"
+                            shape="negative"
+                            data={level}
+                            placeholder="숙련도 설정"
+                            selectedOption={selectedLevel}
+                            onChange={setSelectedLevel}
+                        />
+                    </StyledSelectLevel>
+                    <TooltipBox>
+                        <Tooltip
+                            position={{
+                                horizontal: "right",
+                                vertical: "bottom",
+                                direction: "down",
+                            }}
+                        >
+                            <TooltipContentContainer />
+                        </Tooltip>
+                    </TooltipBox>
+                    <TextButton text="추가하기" onClick={handleClickLanguage} />
+                </StyledSelectContainer>
+            </SignupLanguageBox>
+            {languageList.length > 0 && (
+                <SelectedLanguagesContainer>
+                    {languageList.map((language, index) => (
+                        // eslint-disable-next-line react/no-array-index-key
+                        <SelectedLanguage key={index}>
+                            <SelectedLanguageLabel>
+                                <language.img />
+                                <span>{language.title}</span>
+                                <span>{language.level}</span>
+                                <DeleteButton onClick={() => handleDeleteLanguage(index)}>
+                                    X
+                                </DeleteButton>
+                            </SelectedLanguageLabel>
+                        </SelectedLanguage>
+                    ))}
+                </SelectedLanguagesContainer>
+            )}
+            <ValidationBox>
+                {/* 대표 언어 선택 여부에 따른 검증 메시지 스타일 */}
+                <Validation
+                    isValid={isMainLanguageSelected}
+                    text="능숙하게 구사할 수 있는 ‘대표 언어’를 한 가지 설정해야 합니다. "
+                />
+                {/* 관심 언어 선택 여부에 따른 검증 메시지 스타일 */}
+                <Validation
+                    isValid={isInterestLanguageSelected}
+                    text="배우고 싶은 ‘관심 언어’를 한 가지 이상 설정해야 합니다."
+                />
+            </ValidationBox>
+        </SignupLanguageContainer>
     );
 }
 
-const SignUpContainer = styled.div`
-    padding-top: 50px;
-    padding-bottom: 50px;
-    flex-direction: column;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 30px;
-`;
-
-const SignUpWrapper = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    color: var(--secondary, #2a2b2d);
-    text-align: center;
-    font-size: 45px;
-    font-weight: 800;
-    line-height: 44px;
-`;
-
-const ProgressContainer = styled.div`
-    display: flex;
-    justify-content: center;
-`;
+// ----------------------------------------------------------------------------------------------------
 
 const SignupLanguageContainer = styled.div`
     position: relative;
@@ -378,6 +337,7 @@ const SelectedLanguageLabel = styled.div`
 const ValidationBox = styled.div`
     width: 500px;
 `;
+
 const DeleteButton = styled.button`
     background: transparent;
     border: none;
@@ -385,11 +345,7 @@ const DeleteButton = styled.button`
     cursor: pointer;
     font-size: 24px;
 `;
-const SignupButtonBox = styled.div`
-    display: flex;
-    width: 500px;
-    justify-content: space-between;
-    align-items: center;
-`;
 
-export default SignupLanguage;
+// ----------------------------------------------------------------------------------------------------
+
+export default SignUpLanguage;
