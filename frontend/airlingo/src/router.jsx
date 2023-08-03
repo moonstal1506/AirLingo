@@ -4,11 +4,10 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
-import Signup3 from "./pages/SignUp/Signup3";
+import WordBook from "./pages/mypage/wordBook";
 import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import WaitingHome from "./pages/waiting/WaitingHome";
 import Meeting from "./pages/meeting";
-
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -58,6 +57,14 @@ const routerData = [
     },
     {
         id: 5,
+        path: "/word",
+        label: "word",
+        element: <WordBook />,
+        withAuth: true,
+        headerExist: false,
+    },
+    {
+        id: 6,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
