@@ -1,26 +1,32 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
-// import { useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import stomp from "stompjs";
 import SockJS from "sockjs-client";
+import { useDispatch, useSelector } from "react-redux";
+import { AddSessionId, AddOtherUser, AddStudyId } from "@/features/Meeting/MeetingSlice";
 import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
 import { ReactComponent as RightArrowIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
 import { ReactComponent as LeftArrowIcon } from "@/assets/imgs/icons/left-arrow-icon.svg";
 import { postMatching } from "@/api";
 import { useRouter } from "@/hooks";
+import { selectUser } from "@/features/User/UserSlice";
+import formatTime from "@/utils/format";
 
 function MatchQueue() {
+    const { VITE_SOCKET_URL } = import.meta.env;
+    const dispatch = useDispatch();
+    const { routeTo } = useRouter();
+    const location = useLocation();
+    const { userNickname, userId } = useSelector(selectUser);
     const [expressionIdx, setExpressionIdx] = useState(0);
     const [time, setTime] = useState(0);
-    const { routeTo } = useRouter();
-    // const location = useLocation();
-    // console.log(setTime, location);
 
-    const matchingFunc = useCallback(async (stompClient, userId, studyLanguageId, premium) => {
-        // 연결을 시작합니다.
-        stompClient.connect({}, async (frame) => {
+    const matchingFunc = useCallback(async (stompClient) => {
+        const { studyLanguageId, premium } = location.state;
+        stompClient.connect({}, async () => {
             await postMatching({
                 responseFunc: {
                     400: () => {
@@ -33,23 +39,52 @@ function MatchQueue() {
                     premium,
                 },
             });
-            console.log("connected: ", frame);
-            // /user/{nickname}/queue/matchingData
-            stompClient.subscribe("/queue/matchingData/user1", (matchingResult) => {
-                // 데이터 받기 성공
-                console.log(matchingResult);
-                // routeTo("/matchresult");
+
+            stompClient.subscribe(`/queue/matchingData/${userNickname}`, (matchingResult) => {
+                const { sessionId, studyId, matchingResponseDto } = JSON.parse(matchingResult.body);
+
+                dispatch(AddSessionId({ sessionId }));
+                dispatch(AddStudyId({ studyId }));
+                dispatch(
+                    AddOtherUser({
+                        otherUser:
+                            matchingResponseDto[
+                                Object.keys(matchingResponseDto).filter(
+                                    (key) => key !== userNickname,
+                                )
+                            ],
+                    }),
+                );
+                routeTo("/matchresult");
             });
         });
     }, []);
 
     useEffect(() => {
-        const socket = new SockJS("http://localhost:8081/ws");
+        // 비허용 접근
+        if (
+            !location.state ||
+            !location.state.studyLanguageId ||
+            !location.state.premium ||
+            !userNickname ||
+            !userId
+        ) {
+            routeTo("/");
+            return () => {};
+        }
+
+        // 소켓 설정
+        const socket = new SockJS(VITE_SOCKET_URL);
         const stompClient = stomp.over(socket);
-        matchingFunc(stompClient, 1, 2, false);
+
+        // 타이머 설정
         const interval = setInterval(() => {
             setTime((prev) => prev + 1);
         }, 1000);
+
+        // 매칭 진행
+        matchingFunc(stompClient);
+
         return () => {
             clearInterval(interval);
             stompClient.disconnect(() => {
@@ -57,14 +92,6 @@ function MatchQueue() {
             });
         };
     }, []);
-
-    function formatTime() {
-        const minutes = Math.floor(time / 60);
-        const remainingSeconds = time % 60;
-        return `${minutes < 10 ? "0" : ""}${minutes}:${
-            remainingSeconds < 10 ? "0" : ""
-        }${remainingSeconds}`;
-    }
 
     const handleClickPrevButton = () => {
         setExpressionIdx((prev) =>
@@ -83,7 +110,7 @@ function MatchQueue() {
                 <MatchQueueImgWrapper src={MatchQueueImg} alt="matchqueueimg" />
                 <MatchQueueTimerBox>
                     <MatchQueueText>대기시간</MatchQueueText>
-                    <MatchQueueTimeText>{formatTime()}</MatchQueueTimeText>
+                    <MatchQueueTimeText>{formatTime(time)}</MatchQueueTimeText>
                 </MatchQueueTimerBox>
             </MatchQueueCommonBox>
             <MatchQueueDownBox>
