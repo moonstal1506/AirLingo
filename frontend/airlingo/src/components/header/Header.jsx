@@ -7,7 +7,7 @@ import ProfileBar from "../profileBar";
 import { TextButton } from "../common/button";
 import Dropdown from "../common/dropdown";
 import logout from "@/api/auth";
-import useRouter from "@/hooks";
+import { useRouter } from "@/hooks";
 
 const Header = React.memo(() => {
     const dispatch = useDispatch();
