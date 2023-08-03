@@ -1,128 +1,135 @@
 import styled from "@emotion/styled";
-// import { useState } from "react";
-// import { TextButton } from "@/components/common/button";
-// import Validation from "@/components/validationList";
-import { ProgressBox, ProgressLine } from "@/components/Progress";
+import { useState } from "react";
+import { TextButton } from "@/components/common/button";
+import Validation from "@/components/validationList";
+import { ProgressBox, ProgressLine } from "@/components/progress";
 
-// import { CheckBox } from "@/components/common/input";
-// import theme from "@/assets/styles/Theme";
+import { TextInput } from "@/components/common/input";
+import theme from "@/assets/styles/Theme";
 
-// const { primary1, primary4 } = theme.colors;
+const { primary1, primary4 } = theme.colors;
 
-function Signup3() {
-    // const [isChecked, setIsChecked] = useState(false);
-    // const [isValid, setIsValid] = useState(false);
+function checkNickname(nickname) {
+    const nicknameRegex = /^[a-zA-Z0-9]{2,20}$/; // Modified regex for 2-20 characters, alphanumeric
+    return nicknameRegex.test(nickname);
+}
 
-    // const handleCheckboxChange = () => {
-    //     setIsChecked((prevIsChecked) => !prevIsChecked);
-    //     setIsValid((prevIsValid) => !prevIsValid);
-    // };
+function checkEmail(email) {
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    return emailRegex.test(email);
+}
+function SignUp3() {
+    const [nickname, setNickname] = useState("");
+    const [email, setEmail] = useState("");
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    const [isValidNickname, setIsValidNickname] = useState(false);
+
+    const handleIdChange = (event) => {
+        const newNickname = event.target.value;
+        setNickname(newNickname);
+        setIsValidNickname(checkNickname(newNickname));
+    };
+
+    const handleEmailChange = (event) => {
+        const newEmail = event.target.value;
+        setEmail(newEmail);
+        setIsValidEmail(checkEmail(newEmail));
+    };
 
     return (
-        <SignupContainer>
-            <SignupBox>
-                <SignupTitleWrapper>
-                    <SignupTitle>회원가입</SignupTitle>
-                </SignupTitleWrapper>
-
-                <Progresser>
-                    <ProgressBox step="01" text="약관 동의" isProceeding />
-                    <ProgressLine isProceeding />
-                    <ProgressBox step="02" text="기본 정보 입력" isProceeding />
-                    <ProgressLine isProceeding />
-                    <ProgressBox step="03" text="개인 정보 입력" isProceeding />
-                    <ProgressLine />
-                    <ProgressBox step="04" text="언어 설정" />
-                </Progresser>
-
-                <PersonalInformationBox>
-                    <SubTitleBox>
-                        <SubTitleText>개인 정보 입력</SubTitleText>
-                    </SubTitleBox>
-                </PersonalInformationBox>
-            </SignupBox>
-        </SignupContainer>
+        <SignUpContainer>
+            <SignUpWrapper>회원가입</SignUpWrapper>
+            <ProgressContainer>
+                <ProgressBox step="01" text="약관 동의" isProceeding />
+                <ProgressLine isProceeding />
+                <ProgressBox step="02" text="기본 정보 입력" isProceeding />
+                <ProgressLine />
+                <ProgressBox step="03" text="개인 정보 입력" isProceeding />
+                <ProgressLine />
+                <ProgressBox step="04" text="언어 설정" />
+            </ProgressContainer>
+            <TermsBox>
+                <TermsTitleWrapper>개인 정보 입력</TermsTitleWrapper>
+                <TextInput
+                    placeholder="닉네임"
+                    color={primary1}
+                    width="500px"
+                    height="50px"
+                    value={nickname}
+                    onChange={handleIdChange}
+                />
+                <TextInput
+                    placeholder="이메일"
+                    color={primary1}
+                    width="500px"
+                    height="50px"
+                    value={email}
+                    onChange={handleEmailChange}
+                />
+                <Validation
+                    isValid={isValidNickname}
+                    text="닉네임은 2자 이상, 20자 이하의 영어 대·소문자, 숫자의 조합입니다."
+                />{" "}
+                <Validation
+                    isValid={isValidEmail}
+                    text="이메일은 example@domain.com과 같은 형식으로 작성해야 합니다."
+                />
+                <ButtonWrapper>
+                    <TextButton shape="negative-normal" text="이전 단계" />
+                    <TextButton shape="positive-normal" text="다음 단계" />
+                </ButtonWrapper>
+            </TermsBox>
+        </SignUpContainer>
     );
 }
 
-const SignupContainer = styled.div`
-    display: flex;
-    width: 100%;
-    padding-bottom: 0px;
-    flex-direction: column;
-    align-items: center;
-    gap: 90px;
-    font-family: Pretendard;
-`;
-
-const SignupBox = styled.div`
+const SignUpContainer = styled.div`
     padding-top: 210px;
-    width: 700px;
-    height: 642px;
-`;
-
-const Progresser = styled.div`
+    padding-bottom: 50px;
+    flex-direction: column;
     display: flex;
     justify-content: center;
-    align-items: flex-start;
-    gap: -14px;
-    margin-top: 34px;
-`;
-
-const SignupTitleWrapper = styled.div`
-    display: flex;
-    width: 500px;
-    height: 65px;
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 5px;
-    flex-shrink: 0;
-`;
-
-const SignupTitle = styled.div`
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    flex: 1 0 0;
-    align-self: stretch;
-    color: #000;
-    text-align: center;
+    align-items: center;
+    gap: 30px;
     font-family: Pretendard;
+`;
+
+const SignUpWrapper = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: var(--secondary, #2a2b2d);
+    text-align: center;
     font-size: 45px;
-    font-style: normal;
     font-weight: 800;
-    line-height: 44px; /* 97.778% */
+    line-height: 44px;
 `;
 
-const PersonalInformationBox = styled.div`
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 32px;
-`;
-
-const SubTitleBox = styled.div`
+const ProgressContainer = styled.div`
     display: flex;
-    width: 500px;
-    height: 50px;
     justify-content: center;
-    align-items: center;
 `;
 
-const SubTitleText = styled.div`
+const TermsBox = styled.div`
     display: flex;
-    width: 500px;
-    height: 50px;
     flex-direction: column;
     justify-content: center;
-    flex-shrink: 0;
-    color: var(--primary, #00a8b3);
+    gap: 30px;
+    width: 500px;
+    font-family: "Pretendard";
+`;
+
+const TermsTitleWrapper = styled.div`
+    height: 50px;
     text-align: center;
-    font-family: Pretendard;
     font-size: 40px;
-    font-style: normal;
     font-weight: 700;
-    line-height: 44px; /* 110% */
+    color: ${primary4};
 `;
 
-export default Signup3;
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: space-between;
+`;
+
+export default SignUp3;
