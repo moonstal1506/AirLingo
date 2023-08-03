@@ -60,6 +60,23 @@ const shapeStyle = {
         font-weight: 700;
         line-height: normal;
     `,
+    login: `
+    background-color:#FFF;
+    align-items: center;
+    width: 300px;
+    height: 50px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    margin-top: 15px; 
+    `,
+    googleLogin: `
+    background-color:#FFF;
+    align-items: center;
+    width: 450px;
+    height: 50px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    `,
 };
 
 // ----------------------------------------------------------------------------------------------------
