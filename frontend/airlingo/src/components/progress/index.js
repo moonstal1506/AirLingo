@@ -1,3 +1,4 @@
 import ProgressBox from "./ProgressBox";
+import ProgressLine from "./ProgressLine";
 
-export default ProgressBox;
+export { ProgressBox, ProgressLine };
