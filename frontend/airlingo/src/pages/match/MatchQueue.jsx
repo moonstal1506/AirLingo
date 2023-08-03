@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect, useCallback } from "react";
 import styled from "@emotion/styled";
-import { useLocation } from "react-router-dom";
+// import { useLocation } from "react-router-dom";
 import stomp from "stompjs";
 import SockJS from "sockjs-client";
 import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
@@ -15,28 +15,27 @@ function MatchQueue() {
     const [expressionIdx, setExpressionIdx] = useState(0);
     const [time, setTime] = useState(0);
     const { routeTo } = useRouter();
-    const location = useLocation();
-    console.log(setTime, location);
+    // const location = useLocation();
+    // console.log(setTime, location);
 
     const matchingFunc = useCallback(async (stompClient, userId, studyLanguageId, premium) => {
-        await postMatching({
-            responseFunc: {
-                400: () => {
-                    routeTo("/notfound");
-                },
-            },
-            data: {
-                userId,
-                studyLanguageId,
-                premium,
-            },
-        });
-
         // 연결을 시작합니다.
-        stompClient.connect({}, (frame) => {
+        stompClient.connect({}, async (frame) => {
+            await postMatching({
+                responseFunc: {
+                    400: () => {
+                        routeTo("/notfound");
+                    },
+                },
+                data: {
+                    userId,
+                    studyLanguageId,
+                    premium,
+                },
+            });
             console.log("connected: ", frame);
             // /user/{nickname}/queue/matchingData
-            stompClient.subscribe("/user/user1/queue/matchingData", (matchingResult) => {
+            stompClient.subscribe("/queue/matchingData/user1", (matchingResult) => {
                 // 데이터 받기 성공
                 console.log(matchingResult);
                 // routeTo("/matchresult");
