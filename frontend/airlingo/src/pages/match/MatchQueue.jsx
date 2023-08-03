@@ -64,8 +64,8 @@ function MatchQueue() {
         // 비허용 접근
         if (
             !location.state ||
-            !location.state.studyLanguageId ||
-            !location.state.premium ||
+            !("studyLanguageId" in location.state) ||
+            !("premium" in location.state) ||
             !userNickname ||
             !userId
         ) {
