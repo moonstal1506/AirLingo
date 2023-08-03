@@ -2,7 +2,8 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 import { TextButton } from "@/components/common/button";
 import Validation from "@/components/validationList";
-import ProgressBox from "@/components/progress";
+import { ProgressBox, ProgressLine } from "@/components/progress";
+
 import { CheckBox } from "@/components/common/input";
 import theme from "@/assets/styles/Theme";
 
@@ -18,10 +19,18 @@ function SignUp() {
     };
 
     return (
-        <TermsContainer>
+        <SignUpContainer>
+            <SignUpWrapper>회원가입</SignUpWrapper>
+            <ProgressContainer>
+                <ProgressBox step="01" text="약관 동의" isProceeding />
+                <ProgressLine />
+                <ProgressBox step="02" text="기본 정보 입력" />
+                <ProgressLine />
+                <ProgressBox step="03" text="개인 정보 입력" />
+                <ProgressLine />
+                <ProgressBox step="04" text="언어 설정" />
+            </ProgressContainer>
             <TermsBox>
-                <SignUpWrapper>회원가입</SignUpWrapper>
-                <ProgressBox step="01" text="약관 동의" />
                 <TermsTitleWrapper>약관 동의</TermsTitleWrapper>
                 <TermsWrapper>
                     <PolicyTitleWrapper>개인정보 처리방침</PolicyTitleWrapper>
@@ -91,9 +100,19 @@ function SignUp() {
                     <TextButton shape="positive-normal" text="다음 단계" />
                 </ButtonWrapper>
             </TermsBox>
-        </TermsContainer>
+        </SignUpContainer>
     );
 }
+
+const SignUpContainer = styled.div`
+    padding-top: 50px;
+    padding-bottom: 50px;
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+`;
 
 const SignUpWrapper = styled.div`
     display: flex;
@@ -106,10 +125,9 @@ const SignUpWrapper = styled.div`
     line-height: 44px;
 `;
 
-const TermsContainer = styled.div`
+const ProgressContainer = styled.div`
     display: flex;
     justify-content: center;
-    align-items: center;
 `;
 
 const TermsBox = styled.div`
