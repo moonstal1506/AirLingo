@@ -55,12 +55,13 @@ FabButton.defaultProps = {
     type: "button",
     onClick: () => {},
     category: "white",
-    iconColor: "default",
+    iconColor: "black",
     disabled: false,
 };
 
 const FabButtonWrapper = styled.button`
     display: flex;
+    flex-shrink: 0;
     align-items: center;
     justify-content: center;
     width: 100px;

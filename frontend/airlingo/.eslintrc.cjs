@@ -30,5 +30,6 @@ module.exports = {
             },
         ],
         "react/jsx-no-useless-fragment": [2, { allowExpressions: true }],
+        "jsx-a11y/media-has-caption": "off",
     },
 };
