@@ -6,7 +6,7 @@ import { logoutUser, selectUser } from "@/features/User/UserSlice";
 import ProfileBar from "../profileBar";
 import { TextButton } from "../common/button";
 import Dropdown from "../common/dropdown";
-import logout from "@/api/auth";
+import { getLogout } from "@/api";
 import useRouter from "@/hooks";
 
 const Header = React.memo(() => {
@@ -15,7 +15,7 @@ const Header = React.memo(() => {
     const { routeTo } = useRouter();
 
     const handleClickLogout = async () => {
-        await logout({
+        await getLogout({
             responseFunc: {
                 200: () => {
                     dispatch(logoutUser);

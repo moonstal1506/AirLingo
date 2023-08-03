@@ -1,24 +1,35 @@
 import styled from "@emotion/styled";
 import { useRef } from "react";
 import { TextButton } from "@/components/common/button";
-import { loginUser } from "@/api/auth";
+import { loginUser } from "@/api";
+import useRouter from "@/hooks";
 
 function Login() {
     const loginIdRef = useRef();
     const passwordRef = useRef();
+    const { routeTo } = useRouter();
 
     const handleSubmit = async (e) => {
-        console.log("hi");
         console.log(loginIdRef.current.value, passwordRef.current.value);
         e.preventDefault();
         const loginRequetDto = {
-            userLoginId: loginIdRef,
-            userPassword: passwordRef,
+            userLoginId: loginIdRef.current.value,
+            userPassword: passwordRef.current.value,
         };
-        loginUser(loginRequetDto);
-
-        const apiRes = await loginUser(loginRequetDto);
-        console.log(apiRes);
+        console.log("hi");
+        await loginUser({
+            responseFunc: {
+                200: () => {
+                    console.log("성공!");
+                    routeTo("/");
+                },
+                400: () => {
+                    console.log("실패!");
+                    routeTo("/");
+                },
+            },
+            data: loginRequetDto,
+        });
     };
 
     return (

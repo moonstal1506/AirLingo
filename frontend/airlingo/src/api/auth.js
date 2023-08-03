@@ -27,4 +27,4 @@ const loginUser = async ({ responseFunc, data }) => {
     }
 };
 
-export default { getLogout, loginUser };
+export { getLogout, loginUser };
