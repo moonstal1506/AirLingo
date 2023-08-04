@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
+import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -73,6 +74,10 @@ public class MatchingUserDto {
 	@Schema(description = "프리미엄 매칭 여부", example = "false")
 	private boolean premium;
 
+	@NotNull
+	@Schema(description = "누적 마일리지", example = "10000")
+	private int userTotalMileage;
+
 	public static MatchingUserDto toMatchingUserDto(User user, UserLanguage userLanguage, boolean premium) {
 		return MatchingUserDto.builder()
 			.userId(user.getUserId())
@@ -89,6 +94,7 @@ public class MatchingUserDto {
 			.userRating(user.getUserRating())
 			.userBio(user.getUserBio())
 			.premium(premium)
+			.userTotalMileage(user.getUserTotalMileage())
 			.build();
 	}
 }
