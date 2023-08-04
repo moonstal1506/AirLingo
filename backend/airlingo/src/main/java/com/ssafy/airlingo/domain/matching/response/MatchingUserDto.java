@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
+import com.ssafy.airlingo.domain.language.dto.response.MileageGrade;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -77,6 +78,10 @@ public class MatchingUserDto {
 	@Schema(description = "누적 마일리지", example = "10000")
 	private int userTotalMileage;
 
+	@NotNull
+	@Schema(description = "마일리지 등급", example = "프레스티지")
+	private String mileageGrade;
+
 	public static MatchingUserDto toMatchingUserDto(User user, UserLanguage userLanguage, boolean premium) {
 		return MatchingUserDto.builder()
 			.userId(user.getUserId())
@@ -93,6 +98,7 @@ public class MatchingUserDto {
 			.userBio(user.getUserBio())
 			.premium(premium)
 			.userTotalMileage(user.getUserTotalMileage())
+			.mileageGrade(MileageGrade.getMileageGrade(user.getUserTotalMileage()))
 			.build();
 	}
 }
