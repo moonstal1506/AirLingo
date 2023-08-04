@@ -16,3 +16,4 @@ public class WebConfig implements WebMvcConfigurer {
 			.exposedHeaders("access-token","refresh-token"); // "access-token" 응답 헤더를 노출합니다.
 	}
 }
+

@@ -38,6 +38,19 @@ const shapeStyle = {
     large: ` 
         min-width : 200px;
     `,
+    signup: `
+    min-width : 200px;
+    border-radius:10px;
+    `,
+    word: `
+    min-width : 120px;
+    border-radius:10px;
+    `,
+    prev: `
+    width: 25px;
+    height: 25px;
+    border-radius:10px;
+    `,
     normal: `
         min-width: 150px;
         border-radius: 10px;
