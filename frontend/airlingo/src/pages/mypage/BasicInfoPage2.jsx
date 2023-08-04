@@ -10,8 +10,8 @@ function BasicInfoPage2() {
             <LanguageContainer>
                 <TitleContainer>
                     <TitleBox>
-                        <TitleWrapper>평점</TitleWrapper>
-                        <SubTitleWrapper>RATING</SubTitleWrapper>
+                        <TitleWrapper>관심 언어</TitleWrapper>
+                        <SubTitleWrapper>LANGUAGE WANTING TO LEARN</SubTitleWrapper>
                     </TitleBox>
                     <TooltipBox>
                         <Tooltip
@@ -26,7 +26,34 @@ function BasicInfoPage2() {
                     </TooltipBox>
                     <IconButton shape="blacklined" icon={ModifyIcon} />
                 </TitleContainer>
-                <LanguageContentBox />
+                <LanguageContentBox>
+                    <LanguageBox>
+                        <LanguageFlag
+                            src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg"
+                            alt="Korean Flag"
+                        />
+                        <LanguageNameRankBox>
+                            <LanguageName>한국어</LanguageName>
+                            <LanguageRankContainer>
+                                <LanguageRank>상급</LanguageRank>
+                                <LanguageGrade>(C1)</LanguageGrade>
+                            </LanguageRankContainer>
+                        </LanguageNameRankBox>
+                    </LanguageBox>
+                    <LanguageBox>
+                        <LanguageFlag
+                            src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg"
+                            alt="Korean Flag"
+                        />
+                        <LanguageNameRankBox>
+                            <LanguageName>한국어</LanguageName>
+                            <LanguageRankContainer>
+                                <LanguageRank>상급</LanguageRank>
+                                <LanguageGrade>(C1)</LanguageGrade>
+                            </LanguageRankContainer>
+                        </LanguageNameRankBox>
+                    </LanguageBox>
+                </LanguageContentBox>
                 <ButtonBar>
                     <TextButton text="비밀번호 변경" shape="negative-normal" />
                     <TextButton text="회원탈퇴" shape="warning-quit" />
@@ -42,6 +69,10 @@ const RightPassportPage = styled.div`
     border-radius: 0px 20px 20px 0px;
     border: 1px solid #000;
     background: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 `;
 
 const LanguageContainer = styled.div`
@@ -103,11 +134,56 @@ const LanguageContentBox = styled.div`
     display: flex;
     width: 450px;
     height: 500px;
-    flex-direction: column;
-    align-items: center;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
     gap: 5px;
     border-radius: 10px;
     border: 1px solid #000;
+    justify-content: space-between;
+    padding: 10px;
+`;
+
+const LanguageBox = styled.div`
+    display: flex;
+    align-items: center;
+`;
+
+const LanguageFlag = styled.img`
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
+`;
+
+const LanguageNameRankBox = styled.div`
+    flex-direction: column;
+`;
+
+const LanguageName = styled.div`
+    color: #000;
+    font-family: Pretendard;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+`;
+
+const LanguageRankContainer = styled.div`
+    display: flex;
+    color: var(--rainbow-blue, #35b1c9);
+    width: 90px;
+`;
+
+const LanguageRank = styled.div`
+    font-size: 20px;
+    font-weight: 700;
+`;
+
+const LanguageGrade = styled.div`
+    font-size: 15px;
+    font-weight: 400;
+    display: flex;
+    align-items: flex-end;
 `;
 
 const ButtonBar = styled.div`
