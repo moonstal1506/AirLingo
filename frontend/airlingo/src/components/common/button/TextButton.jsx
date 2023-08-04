@@ -5,12 +5,12 @@ import combineShape from "@/utils/style";
 
 // ----------------------------------------------------------------------------------------------------
 
-const { primary4, primary7, warning } = theme.colors;
+const { primary4, primary7, warning, faintgray } = theme.colors;
 const shapeStyle = {
     positive: `
         background-color: ${primary4};
         border: none;
-        color: #FFFFFF;
+        color: white;
         &:hover {
             background-color: ${primary7};
             transition: ease-out 0.35s;
@@ -22,20 +22,27 @@ const shapeStyle = {
         color: ${primary4};
         &:hover {
             background-color: ${primary4};
-            color: #FFFFFF;
+            color: white;
             transition: ease-out 0.35s;
         }
     `,
     warning: `
         background-color: ${warning};
         border: none;
-        color: #FFFFFF;
+        color: white;
         &:hover {
-            background-color: #000000;
+            background-color: black;
             transition: ease-out 0.35s;
         }
     `,
-    large: ` 
+    disabled: `
+        background-color: ${faintgray};
+        border: none;
+        border-radius: 20px;
+        color: white;
+        cursor: default;
+    `,
+    large: `
         min-width : 200px;
     `,
     signup: `
@@ -59,18 +66,23 @@ const shapeStyle = {
         border-radius: 10px;
         height: 65px;
         padding: 10px 20px;
-        color: #FFF;
+        color: white;
         font-size: 30px;
         font-weight: 700;
-        line-height: normal;
     `,
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-function TextButton({ type, text, width, onClick, shape }) {
+function TextButton({ type, text, width, onClick, shape, disabled }) {
     return (
-        <TextButtonWrapper type={type} width={width} onClick={onClick} shape={shape}>
+        <TextButtonWrapper
+            type={type}
+            width={width}
+            onClick={onClick}
+            shape={shape}
+            disabled={disabled}
+        >
             {text}
         </TextButtonWrapper>
     );
@@ -82,6 +94,7 @@ TextButton.propTypes = {
     width: PropTypes.string,
     onClick: PropTypes.func,
     shape: PropTypes.string,
+    disabled: PropTypes.bool,
 };
 
 TextButton.defaultProps = {
@@ -89,6 +102,7 @@ TextButton.defaultProps = {
     width: "120px",
     onClick: () => {},
     shape: "positive-rounded",
+    disabled: false,
 };
 
 const TextButtonWrapper = styled.button`
@@ -98,7 +112,10 @@ const TextButtonWrapper = styled.button`
     font-size: 20px;
     font-weight: 700;
     cursor: pointer;
-    ${(props) => combineShape(shapeStyle, props.shape)}
+    ${(props) =>
+        props.disabled
+            ? combineShape(shapeStyle, "disabled")
+            : combineShape(shapeStyle, props.shape)}
 `;
 
 // ----------------------------------------------------------------------------------------------------

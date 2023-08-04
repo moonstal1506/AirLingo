@@ -1,15 +1,17 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
-import Validation from "@/components/validationList";
+import PropTypes from "prop-types";
+import ValidationItem from "@/components/validationList";
 import { TextInput } from "@/components/common/input";
 import theme from "@/assets/styles/Theme";
+import { TextButton } from "@/components/common/button";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1, primary4 } = theme.colors;
 
 function checkNickname(nickname) {
-    const nicknameRegex = /^[a-zA-Z0-9]{2,20}$/; // Modified regex for 2-20 characters, alphanumeric
+    const nicknameRegex = /^[a-zA-Z0-9]{2,20}$/;
     return nicknameRegex.test(nickname);
 }
 
@@ -20,11 +22,13 @@ function checkEmail(email) {
 
 // ----------------------------------------------------------------------------------------------------
 
-function SignUpProfile() {
-    const [nickname, setNickname] = useState("");
-    const [email, setEmail] = useState("");
-    const [isValidEmail, setIsValidEmail] = useState(false);
+function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
+    const [nickname, setNickname] = useState(totalState.nickname);
+    const [email, setEmail] = useState(totalState.email);
     const [isValidNickname, setIsValidNickname] = useState(false);
+    const [isValidEmail, setIsValidEmail] = useState(false);
+    // const [isPasswordDirty, setIsPasswordDirty] = useState(false);
+    // const [isEmailDirty, setIsEmailDirty] = useState(false);
 
     const handleIdChange = (event) => {
         const newNickname = event.target.value;
@@ -39,7 +43,7 @@ function SignUpProfile() {
     };
 
     return (
-        <TermsBox>
+        <ProfileContainer>
             <TermsTitleWrapper>개인 정보 입력</TermsTitleWrapper>
             <TextInput
                 placeholder="닉네임"
@@ -57,27 +61,52 @@ function SignUpProfile() {
                 value={email}
                 onChange={handleEmailChange}
             />
-            <Validation
+            <ValidationItem
                 isValid={isValidNickname}
-                text="닉네임은 2자 이상, 20자 이하의 영어 대·소문자, 숫자의 조합입니다."
+                text="닉네임은 2 ~ 20자의 영어 대 · 소문자, 숫자의 조합입니다."
             />{" "}
-            <Validation
+            <ValidationItem
                 isValid={isValidEmail}
                 text="이메일은 example@domain.com과 같은 형식으로 작성해야 합니다."
             />
-        </TermsBox>
+            <ButtonWrapper>
+                <TextButton
+                    shape="negative-curved"
+                    text="이전 단계"
+                    width="200px"
+                    onClick={() => onHandlePrevStep({ nickname })}
+                />
+                <TextButton
+                    shape="positive-curved"
+                    text="다음 단계"
+                    width="200px"
+                    onClick={() => onHandleNextStep({ nickname, email })}
+                    disabled={!isValidEmail || !isValidNickname}
+                />
+            </ButtonWrapper>
+        </ProfileContainer>
     );
 }
 
+SignUpProfile.propTypes = {
+    totalState: PropTypes.shape({
+        termsAgreed: PropTypes.bool,
+        id: PropTypes.string,
+        password: PropTypes.string,
+        nickname: PropTypes.string,
+        email: PropTypes.string,
+    }).isRequired,
+    onHandlePrevStep: PropTypes.func.isRequired,
+    onHandleNextStep: PropTypes.func.isRequired,
+};
+
 // ----------------------------------------------------------------------------------------------------
 
-const TermsBox = styled.div`
+const ProfileContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: center;
-    gap: 30px;
     width: 500px;
-    font-family: "Pretendard";
 `;
 
 const TermsTitleWrapper = styled.div`
@@ -86,6 +115,13 @@ const TermsTitleWrapper = styled.div`
     font-size: 40px;
     font-weight: 700;
     color: ${primary4};
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
+    margin-top: 25px;
+    width: 500px;
 `;
 
 // ----------------------------------------------------------------------------------------------------

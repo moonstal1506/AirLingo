@@ -7,8 +7,6 @@ import SignUpProfile from "./SignUpProfile";
 import SignUpLanguage from "./SignUpLanguage";
 import SignUpResult from "./SignUpResult";
 import theme from "@/assets/styles/Theme";
-import { TextButton } from "@/components/common/button";
-import useRouter from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -17,14 +15,22 @@ const { distinctgray } = theme.colors;
 // ----------------------------------------------------------------------------------------------------
 
 function SignUp() {
-    const { routeTo } = useRouter();
     const [curStep, setCurStep] = useState(1);
+    const [totalState, setTotalState] = useState({
+        termsAgreed: false,
+        id: "",
+        password: "",
+        nickname: "",
+        email: "",
+    });
 
-    const handleNextStep = () => {
+    const handleNextStep = (state) => {
+        setTotalState((prev) => ({ ...prev, ...state }));
         setCurStep((prevStep) => prevStep + 1);
     };
 
-    const handlePrevStep = () => {
+    const handlePrevStep = (state) => {
+        setTotalState((prev) => ({ ...prev, ...state }));
         setCurStep((prevStep) => prevStep - 1);
     };
 
@@ -45,12 +51,26 @@ function SignUp() {
                 </>
             )}
 
-            {curStep === 1 && <SignUpTerms />}
-            {curStep === 2 && <SignUpInfo />}
-            {curStep === 3 && <SignUpProfile />}
-            {curStep === 4 && <SignUpLanguage />}
-            {curStep === 5 && <SignUpResult />}
-            <ButtonWrapper>
+            {curStep === 1 && (
+                <SignUpTerms totalState={totalState} onHandleNextStep={handleNextStep} />
+            )}
+            {curStep === 2 && (
+                <SignUpInfo
+                    totalState={totalState}
+                    onHandlePrevStep={handlePrevStep}
+                    onHandleNextStep={handleNextStep}
+                />
+            )}
+            {curStep === 3 && (
+                <SignUpProfile
+                    totalState={totalState}
+                    onHandlePrevStep={handlePrevStep}
+                    onHandleNextStep={handleNextStep}
+                />
+            )}
+            {curStep === 4 && <SignUpLanguage onTotalChage={setTotalState} />}
+            {curStep === 5 && <SignUpResult onTotalChage={setTotalState} />}
+            {/* <ButtonWrapper>
                 {curStep > 1 && curStep < 5 && (
                     <TextButton
                         shape="negative-normal"
@@ -75,7 +95,7 @@ function SignUp() {
                         onClick={() => routeTo("/login")}
                     />
                 )}
-            </ButtonWrapper>
+            </ButtonWrapper> */}
         </SignUpContainer>
     );
 }
@@ -105,13 +125,6 @@ const ProgressBarContainer = styled.div`
     display: flex;
     justify-content: center;
     margin-bottom: 25px;
-`;
-
-const ButtonWrapper = styled.div`
-    display: flex;
-    justify-content: space-around;
-    margin-top: 25px;
-    width: 500px;
 `;
 
 // ----------------------------------------------------------------------------------------------------

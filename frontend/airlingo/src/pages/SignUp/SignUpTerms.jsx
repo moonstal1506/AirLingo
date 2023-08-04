@@ -1,7 +1,9 @@
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
 import { useState } from "react";
-import Validation from "@/components/validationList";
+import ValidationItem from "@/components/validationList";
 import { CheckBox } from "@/components/common/input";
+import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 
 // ----------------------------------------------------------------------------------------------------
@@ -10,13 +12,13 @@ const { primary1, primary4 } = theme.colors;
 
 // ----------------------------------------------------------------------------------------------------
 
-function SignUpInfo() {
-    const [isChecked, setIsChecked] = useState(false);
-    const [isValid, setIsValid] = useState(false);
+function SignUpInfo({ totalState, onHandleNextStep }) {
+    const [termsAgreed, setTermsAgreed] = useState(totalState.termsAgreed);
+    const [isTermsDirty, setIsTermsDirty] = useState(false);
 
     const handleCheckboxChange = () => {
-        setIsChecked((prevIsChecked) => !prevIsChecked);
-        setIsValid((prevIsValid) => !prevIsValid);
+        setTermsAgreed((prevTermsAgreed) => !prevTermsAgreed);
+        setIsTermsDirty(true);
     };
 
     return (
@@ -116,18 +118,41 @@ function SignUpInfo() {
                 </TermsTextWrapper>
             </TermsWrapper>
             <CheckBoxContainer>
-                <CheckBox checked={isChecked} onChange={handleCheckboxChange} />
-                <AgreeTextWrapper>
-                    개인정보 처리방침 및 서비스 이용 약관에 모두 동의합니다.
-                </AgreeTextWrapper>
+                <CheckBox checked={termsAgreed} onChange={handleCheckboxChange} />
+                <CheckTextWrapper>
+                    <b>개인정보 처리방침</b>&nbsp;및&nbsp;<b>서비스 이용 약관</b>에 모두 동의합니다.
+                </CheckTextWrapper>
             </CheckBoxContainer>
-            <Validation
-                isValid={isValid}
-                text="개인정보 처리방침 및 서비스 이용 약관에 동의해야 합니다."
-            />
+            <ValidationList>
+                <ValidationItem
+                    isValid={termsAgreed}
+                    isDirty={isTermsDirty}
+                    text="개인정보 처리방침 및 서비스 이용 약관에 동의해야 합니다."
+                />
+            </ValidationList>
+            <ButtonWrapper>
+                <TextButton
+                    shape="positive-curved"
+                    text="다음 단계"
+                    width="200px"
+                    onClick={() => onHandleNextStep({ termsAgreed })}
+                    disabled={!termsAgreed}
+                />
+            </ButtonWrapper>
         </TermsContainer>
     );
 }
+
+SignUpInfo.propTypes = {
+    totalState: PropTypes.shape({
+        termsAgreed: PropTypes.bool,
+        id: PropTypes.string,
+        password: PropTypes.string,
+        nickname: PropTypes.string,
+        email: PropTypes.string,
+    }).isRequired,
+    onHandleNextStep: PropTypes.func.isRequired,
+};
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -149,7 +174,7 @@ const SubTitleWrapper = styled.div`
 
 const TermsWrapper = styled.div`
     box-sizing: border-box;
-    overflow: scroll;
+    overflow-y: auto;
     width: 500px;
     height: 250px;
     margin-bottom: 10px;
@@ -191,14 +216,27 @@ const CheckBoxContainer = styled.div`
     gap: 10px;
 `;
 
-const AgreeTextWrapper = styled.div`
+const CheckTextWrapper = styled.div`
     display: flex;
     align-items: center;
-    color: #000000;
-    font-size: 15px;
+    color: black;
+    font-size: 17px;
     font-weight: 400;
-    height: 18px;
-    margin: 3px;
+    height: 20px;
+`;
+
+const ValidationList = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    margin-top: 25px;
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
+    margin-top: 25px;
+    width: 500px;
 `;
 
 // ----------------------------------------------------------------------------------------------------

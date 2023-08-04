@@ -1,13 +1,24 @@
 import styled from "@emotion/styled";
 import successImage from "@/assets/imgs/img/Login-Success-Image.png";
+import useRouter from "@/hooks";
+import { TextButton } from "@/components/common/button";
 
 function SignUpResult() {
+    const { routeTo } = useRouter();
     return (
         <SignupBox>
             <SignupTitleWrapper>회원이 되신 것을 환영합니다!</SignupTitleWrapper>
             <SignupLine />
             <SignupSubTitleWrapper>지금 바로 여정을 떠나보세요!</SignupSubTitleWrapper>
             <SuccessImage />
+            <ButtonWrapper>
+                <TextButton
+                    shape="positive-normal"
+                    text="로그인 하러 가기"
+                    width="300px"
+                    onClick={() => routeTo("/login")}
+                />
+            </ButtonWrapper>
         </SignupBox>
     );
 }
@@ -70,6 +81,13 @@ const SuccessImage = styled.div`
     border-radius: 20px;
     background-image: url(${successImage});
     margin-bottom: 20px;
+`;
+
+const ButtonWrapper = styled.div`
+    display: flex;
+    justify-content: space-around;
+    margin-top: 25px;
+    width: 500px;
 `;
 
 // ----------------------------------------------------------------------------------------------------

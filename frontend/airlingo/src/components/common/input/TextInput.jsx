@@ -1,10 +1,16 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
+import theme from "@/assets/styles/Theme";
 
+// ----------------------------------------------------------------------------------------------------
+
+const { primary1, primary4, secondary3 } = theme.colors;
 const radiusObj = {
     small: "10px",
     big: "20px",
 };
+
+// ----------------------------------------------------------------------------------------------------
 
 function TextInput({
     type,
@@ -53,26 +59,34 @@ TextInput.defaultProps = {
     maxLength: 50,
 };
 
+// ----------------------------------------------------------------------------------------------------
+
 const TextInputWrapper = styled.input`
     box-sizing: border-box;
+    border: 1px solid ${primary4};
     border-radius: ${({ radius }) => radiusObj[radius]};
     ${({ width, height }) => `
         width: ${width};
         height: ${height};
     `};
-    border: 1px solid ${({ theme }) => theme.colors.primary4};
-    background-color: ${({ theme, color }) =>
-        color === "white" ? "white" : theme.colors.primary1};
+    background-color: ${({ color }) => (color === "white" ? "white" : primary1)};
     outline: none;
     padding: 0 20px;
-    color: ${({ theme }) => theme.colors.secondary3};
-
+    color: ${secondary3};
+    font-size: 20px;
     &::placeholder {
-        color: ${({ theme }) => theme.colors.primary4};
+        color: ${primary4};
+        font-weight: 400;
+        opacity: 0.3;
     }
     &:hover {
         cursor: pointer;
     }
+    &:focus {
+        border: 3px solid ${primary4};
+    }
 `;
+
+// ----------------------------------------------------------------------------------------------------
 
 export default TextInput;

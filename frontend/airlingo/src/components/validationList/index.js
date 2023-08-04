@@ -1,3 +1,3 @@
-import Validation from "./Validation";
+import ValidationItem from "./ValidationItem";
 
-export default Validation;
+export default ValidationItem;

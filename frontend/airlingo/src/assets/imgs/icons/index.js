@@ -11,6 +11,9 @@ import { ReactComponent as ExitIcon } from "@/assets/imgs/icons/exit-icon.svg";
 import { ReactComponent as DictionaryIcon } from "@/assets/imgs/icons/dictionary-icon.svg";
 import { ReactComponent as TranslatorIcon } from "@/assets/imgs/icons/translator-icon.svg";
 import { ReactComponent as ScriptIcon } from "@/assets/imgs/icons/script-icon.svg";
+import { ReactComponent as ValidationCleanIcon } from "@/assets/imgs/icons/validation-clean-icon.svg";
+import { ReactComponent as ValidationValidIcon } from "@/assets/imgs/icons/validation-valid-icon.svg";
+import { ReactComponent as ValidationInvalidIcon } from "@/assets/imgs/icons/validation-invalid-icon.svg";
 
 export {
     MicOnIcon,
@@ -26,4 +29,7 @@ export {
     DictionaryIcon,
     TranslatorIcon,
     ScriptIcon,
+    ValidationCleanIcon,
+    ValidationValidIcon,
+    ValidationInvalidIcon,
 };
