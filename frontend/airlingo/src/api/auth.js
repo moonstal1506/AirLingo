@@ -4,7 +4,7 @@ import processApiResponse from "@/utils/api";
 const getLogout = async ({ responseFunc, data }) => {
     const { userLoginId } = data;
     try {
-        const response = await instance.get(`/user/logout/${userLoginId}`);
+        const response = await instance.get(`api/user/logout/${userLoginId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

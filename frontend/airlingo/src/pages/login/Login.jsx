@@ -105,11 +105,13 @@ function Login() {
 }
 
 const PageLayout = styled.div`
-    width: 100%;
-    height: 100%;
     display: flex;
     flex-direction: column;
     align-items: center;
+    width: 100%;
+    height: calc(100% - 120px);
+    padding-top: 140px;
+    padding-bottom: 50px;
 `;
 
 const LoginContainer = styled.div`
@@ -118,7 +120,6 @@ const LoginContainer = styled.div`
     align-items: center;
     width: 501px;
     height: 600px;
-    padding: 20px 20px;
     border-radius: 20px;
     border: 3px solid;
     margin-top: 30px;
@@ -153,6 +154,7 @@ const LoginTitle = styled.div`
     margin-bottom: 50px;
     display: flex;
     flex-direction: column;
+    padding-top: 20px;
     justify-content: center;
     color: #000;
     text-align: center;
@@ -171,7 +173,7 @@ const LoginForm = styled.form`
 
 const TextInputBox = styled.input`
     box-sizing: border-box;
-    width: 500px;
+    width: 400px;
     height: 50px;
     outline: none;
     padding: 10px 20px;
