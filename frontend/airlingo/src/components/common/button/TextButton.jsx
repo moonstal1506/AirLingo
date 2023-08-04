@@ -68,9 +68,9 @@ const shapeStyle = {
 
 // ----------------------------------------------------------------------------------------------------
 
-function TextButton({ type, text, onClick, shape }) {
+function TextButton({ type, text, width, onClick, shape }) {
     return (
-        <TextButtonWrapper type={type} onClick={onClick} shape={shape}>
+        <TextButtonWrapper type={type} width={width} onClick={onClick} shape={shape}>
             {text}
         </TextButtonWrapper>
     );
@@ -79,17 +79,20 @@ function TextButton({ type, text, onClick, shape }) {
 TextButton.propTypes = {
     type: PropTypes.string,
     text: PropTypes.string.isRequired,
+    width: PropTypes.string,
     onClick: PropTypes.func,
     shape: PropTypes.string,
 };
 
 TextButton.defaultProps = {
     type: "button",
+    width: "120px",
     onClick: () => {},
     shape: "positive-rounded",
 };
 
 const TextButtonWrapper = styled.button`
+    width: ${(props) => props.width};
     height: 50px;
     padding: 10px 20px;
     font-size: 20px;

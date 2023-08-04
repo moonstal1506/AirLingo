@@ -52,15 +52,26 @@ function SignUp() {
             {curStep === 5 && <SignUpResult />}
             <ButtonWrapper>
                 {curStep > 1 && curStep < 5 && (
-                    <TextButton shape="negative-normal" text="이전 단계" onClick={handlePrevStep} />
+                    <TextButton
+                        shape="negative-normal"
+                        text="이전 단계"
+                        width="200px"
+                        onClick={handlePrevStep}
+                    />
                 )}
                 {curStep < 5 && (
-                    <TextButton shape="positive-normal" text="다음 단계" onClick={handleNextStep} />
+                    <TextButton
+                        shape="positive-normal"
+                        text="다음 단계"
+                        width="200px"
+                        onClick={handleNextStep}
+                    />
                 )}
                 {curStep === 5 && (
                     <TextButton
                         shape="positive-normal"
                         text="로그인 하러 가기"
+                        width="300px"
                         onClick={() => routeTo("/login")}
                     />
                 )}
@@ -98,7 +109,9 @@ const ProgressBarContainer = styled.div`
 
 const ButtonWrapper = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    margin-top: 25px;
+    width: 500px;
 `;
 
 // ----------------------------------------------------------------------------------------------------
