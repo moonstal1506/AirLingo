@@ -5,7 +5,8 @@ import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
 import WaitingHome from "./pages/waiting/WaitingHome";
-import SignupLanguage from "./pages/SignUp/SignupLanguage";
+import StatisticHome from "./pages/statistic/StatisticHome";
+import TabBar from "./components/common/tab/TabBar";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -38,9 +39,18 @@ const routerData = [
     },
     {
         id: 3,
-        path: "/signup",
-        label: "signup",
-        element: <SignupLanguage />,
+        path: "/statistic",
+        label: "statistic",
+        element: <StatisticHome />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 4,
+        path: "/tabbar",
+        label: "tabbar",
+        element: <TabBar />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
