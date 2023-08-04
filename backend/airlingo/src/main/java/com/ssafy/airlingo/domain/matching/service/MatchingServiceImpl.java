@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class MatchingServiceImpl implements MatchingService {
 
-	private static final String CONCURRENT_USERS_NUMBER_URL = "http://localhost:8082/api/matching/waiting-users";
+	private static final String CONCURRENT_USERS_NUMBER_URL = "http://localhost:8082/matching/waiting-users";
 	private static final int PREMIUM_MILEAGE = 3000;
 
 	private final UserRepository userRepository;
