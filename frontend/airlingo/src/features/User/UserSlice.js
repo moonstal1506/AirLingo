@@ -6,7 +6,7 @@ const initialState = {
     userId: "",
     userLoginId: "",
     userNickname: "",
-    userImg: "",
+    userImgUrl: "",
     userAccessToken: "",
     userNativeLanguage: {},
     userLanguages: [],
@@ -30,7 +30,7 @@ export const UserSlice = createSlice({
             state.userId = userId;
             state.userLoginId = userLoginId;
             state.userNickname = userNickname;
-            state.userImg = userImg;
+            state.userImgUrl = userImgUrl;
             state.userAccessToken = userAccessToken;
             state.userNativeLanguage = userNativeLanguage;
             state.userLanguages = userLanguages;
@@ -40,7 +40,7 @@ export const UserSlice = createSlice({
             state.userId = "";
             state.userLoginId = "";
             state.userNickname = "";
-            state.userImg = "";
+            state.userImgUrl = "";
             state.userAccessToken = "";
             state.userNativeLanguage = {};
             state.userLanguages = [];
