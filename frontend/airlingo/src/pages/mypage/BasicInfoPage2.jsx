@@ -42,11 +42,11 @@ function BasicInfoPage2() {
                     </LanguageBox>
                     <LanguageBox>
                         <LanguageFlag
-                            src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg"
-                            alt="Korean Flag"
+                            src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg"
+                            alt="Japanese Flag"
                         />
                         <LanguageNameRankBox>
-                            <LanguageName>한국어</LanguageName>
+                            <LanguageName>일본어</LanguageName>
                             <LanguageRankContainer>
                                 <LanguageRank>상급</LanguageRank>
                                 <LanguageGrade>(C1)</LanguageGrade>
@@ -147,6 +147,7 @@ const LanguageContentBox = styled.div`
 const LanguageBox = styled.div`
     display: flex;
     align-items: center;
+    padding: 10px;
 `;
 
 const LanguageFlag = styled.img`
@@ -166,6 +167,7 @@ const LanguageName = styled.div`
     font-style: normal;
     font-weight: 700;
     line-height: normal;
+    padding-bottom: 10px;
 `;
 
 const LanguageRankContainer = styled.div`
