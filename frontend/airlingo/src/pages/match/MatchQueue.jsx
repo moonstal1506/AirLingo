@@ -74,7 +74,7 @@ function MatchQueue() {
         }
 
         // 소켓 설정
-        const socket = new SockJS("http://localhost:8081/ws");
+        const socket = new SockJS("https://i9a308.p.ssafy.io/ws");
         const stompClient = stomp.over(socket);
 
         // 타이머 설정
