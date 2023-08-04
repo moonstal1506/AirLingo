@@ -203,7 +203,7 @@ function WordBook() {
                 <Modal title="단어 테스트" modalOpen={modalOpenWordTest} Icon={DeleteIcon}>
                     <ModalTextBox>
                         <ModalTextWrapper>
-                            단어 테스트 결과 <b>10문제 중 7문제</b>를 맞췄습니다!
+                            단어 테스트 결과 10문제 중 <span>7문제</span>를 맞췄습니다!
                         </ModalTextWrapper>
                         <ModalTextWrapper>단어 테스트를 다시 시작하시겠습니까?</ModalTextWrapper>
                     </ModalTextBox>
@@ -330,7 +330,6 @@ const ButtonBox = styled.div`
     gap: 10px;
     display: flex;
 `;
-
 const WordBookButtonBox = styled.div`
     display: flex;
     width: 450px;
@@ -444,28 +443,23 @@ const ModalTextWrapper = styled.span`
     font-style: normal;
     font-weight: 400;
     line-height: 44px;
+    span {
+        color: #00b4d8;
+        font-weight: bolder;
+    }
 `;
-const ModalTestBox = styled.div`
-    display: flex;
-    width: 700px;
-    height: 500px;
-    padding: 40px 0px;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-`;
+const ModalTestBox = styled.div``;
 const ModalTestText = styled.div`
     color: #000;
     text-align: center;
     font-family: Pretendard;
-    font-size: 25px;
+    font-size: 23px;
     font-style: normal;
     font-weight: 400;
     line-height: 44px;
-    margin-bottom: 10px;
     span {
         color: #00b4d8;
+        font-weight: bolder;
     }
 `;
 
