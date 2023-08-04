@@ -3,7 +3,7 @@ import processApiResponse from "@/utils/api";
 
 const getConcurrentUser = async ({ responseFunc }) => {
     try {
-        const response = await instance.get(`/matching/concurrent-users`);
+        const response = await instance.get(`/api/matching/concurrent-users`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
@@ -14,7 +14,7 @@ const getConcurrentUser = async ({ responseFunc }) => {
 
 const postMatching = async ({ responseFunc, data }) => {
     try {
-        const response = await instance.post(`/matching`, data);
+        const response = await instance.post(`/api/matching`, data);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

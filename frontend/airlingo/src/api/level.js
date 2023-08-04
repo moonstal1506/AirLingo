@@ -3,7 +3,7 @@ import processApiResponse from "@/utils/api";
 
 const getLevel = async ({ responseFunc }) => {
     try {
-        const response = await instance.get(`/language`);
+        const response = await instance.get(`/api/language`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

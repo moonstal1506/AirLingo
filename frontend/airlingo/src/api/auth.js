@@ -4,7 +4,7 @@ import processApiResponse from "@/utils/api";
 const getLogout = async ({ responseFunc, data }) => {
     const { userLoginId } = data;
     try {
-        const response = await instance.get(`api/user/logout/${userLoginId}`);
+        const response = await instance.get(`/api/user/logout/${userLoginId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
@@ -16,7 +16,7 @@ const getLogout = async ({ responseFunc, data }) => {
 const loginUser = async ({ responseFunc, data }) => {
     const loginRequestDto = data;
     try {
-        const response = await instance.post(`/user/login`, loginRequestDto);
+        const response = await instance.post(`/api/user/login`, loginRequestDto);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
