@@ -8,6 +8,7 @@ import WordBook from "./pages/mypage/wordBook";
 import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import Login from "./pages/login/Login";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
+import Meeting from "./pages/meeting";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -87,6 +88,15 @@ const routerData = [
         path: "/login",
         label: "Login",
         element: <Login />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 10,
+        path: "/meeting",
+        label: "Meeting",
+        element: <Meeting />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
