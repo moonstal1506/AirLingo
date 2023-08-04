@@ -7,6 +7,7 @@ WORKDIR /usr/src/app
 COPY package*.json .
 #종속성 다운
 RUN npm install --no-optional
+RUN npm install websocket
 #모든 소스코드들 WORKDIR로 복사
 COPY . .
 # VITE_OPEN 환경변수 설정
