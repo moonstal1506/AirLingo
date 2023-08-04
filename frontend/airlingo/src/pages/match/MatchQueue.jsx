@@ -16,7 +16,7 @@ import { selectUser } from "@/features/User/UserSlice";
 import { formatTime } from "@/utils/format";
 
 function MatchQueue() {
-    const { VITE_SOCKET_URL } = import.meta.env;
+    // const { VITE_SOCKET_URL } = import.meta.env;
     const dispatch = useDispatch();
     const { routeTo } = useRouter();
     const location = useLocation();
@@ -74,7 +74,7 @@ function MatchQueue() {
         }
 
         // 소켓 설정
-        const socket = new SockJS(VITE_SOCKET_URL);
+        const socket = new SockJS("https://i9a308.p.ssafy.io/ws");
         const stompClient = stomp.over(socket);
 
         // 타이머 설정

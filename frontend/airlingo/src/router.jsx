@@ -68,7 +68,7 @@ const routerData = [
     },
     {
         id: 6,
-        path: "/matchStandby",
+        path: "/matchstandby",
         label: "MatchStandby",
         element: <MatchStandby />,
         withAuth: false,
