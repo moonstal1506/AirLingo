@@ -1,26 +1,33 @@
 import styled from "@emotion/styled";
 import { useRef } from "react";
+import { useDispatch } from "react-redux";
 import { TextButton } from "@/components/common/button";
 import { loginUser } from "@/api";
 import useRouter from "@/hooks";
+import { signinUser } from "@/features/User/UserSlice";
 
 function Login() {
+    const dispatch = useDispatch();
     const loginIdRef = useRef();
     const passwordRef = useRef();
     const { routeTo } = useRouter();
 
     const handleSubmit = async (e) => {
-        console.log(loginIdRef.current.value, passwordRef.current.value);
         e.preventDefault();
         const loginRequetDto = {
             userLoginId: loginIdRef.current.value,
             userPassword: passwordRef.current.value,
         };
-        console.log("hi");
         await loginUser({
             responseFunc: {
-                200: () => {
-                    console.log("성공!");
+                200: (response) => {
+                    console.log("로그인 성공!");
+                    dispatch(
+                        signinUser({
+                            ...response.data.data,
+                            userAccessToken: response.headers["access-token"],
+                        }),
+                    );
                     routeTo("/");
                 },
                 400: () => {

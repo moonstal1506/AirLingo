@@ -11,14 +11,15 @@ import useRouter from "@/hooks";
 
 const Header = React.memo(() => {
     const dispatch = useDispatch();
-    const { isLogIn, userNickname, userLoginId, userImg } = useSelector(selectUser);
+    const { isLogIn, userNickname, userLoginId, userImgUrl } = useSelector(selectUser);
     const { routeTo } = useRouter();
 
     const handleClickLogout = async () => {
         await getLogout({
             responseFunc: {
                 200: () => {
-                    dispatch(logoutUser);
+                    console.log("logout");
+                    dispatch(logoutUser());
                     routeTo("/");
                 },
                 400: () => {
@@ -36,7 +37,11 @@ const Header = React.memo(() => {
                 <HeaderRightBox>
                     {isLogIn ? (
                         <>
-                            <ProfileBar imgSize="small" imgSrc={userImg} nickname={userNickname} />
+                            <ProfileBar
+                                imgSize="small"
+                                imgSrc={userImgUrl}
+                                nickname={userNickname}
+                            />
                             <TextButton
                                 shape="positive-normal"
                                 text="로그아웃"

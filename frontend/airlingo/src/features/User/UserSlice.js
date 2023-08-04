@@ -6,7 +6,7 @@ const initialState = {
     userId: "",
     userLoginId: "",
     userNickname: "",
-    userImg: "",
+    userImgUrl: "",
     userAccessToken: "",
 };
 
@@ -15,12 +15,13 @@ export const UserSlice = createSlice({
     initialState,
     reducers: {
         signinUser: (state, actions) => {
-            const { userId, userLoginId, userNickname, userImg, userAccessToken } = actions.payload;
+            const { userId, userLoginId, userNickname, userImgUrl, userAccessToken } =
+                actions.payload;
             state.isLogIn = true;
             state.userId = userId;
             state.userLoginId = userLoginId;
             state.userNickname = userNickname;
-            state.userImg = userImg;
+            state.userImgUrl = userImgUrl;
             state.userAccessToken = userAccessToken;
         },
         logoutUser: (state) => {
@@ -28,7 +29,7 @@ export const UserSlice = createSlice({
             state.userId = "";
             state.userLoginId = "";
             state.userNickname = "";
-            state.userImg = "";
+            state.userImgUrl = "";
             state.userAccessToken = "";
         },
         reloadUser: (state, actions) => {
