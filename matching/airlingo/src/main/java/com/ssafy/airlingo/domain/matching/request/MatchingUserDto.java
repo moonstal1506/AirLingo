@@ -70,6 +70,10 @@ public class MatchingUserDto {
 	private boolean premium;
 
 	@NotNull
+	@Schema(description = "마일리지 등급", example = "프레스티지")
+	private String mileageGrade;
+
+	@NotNull
 	@Schema(description = "누적 마일리지", example = "10000")
 	private int userTotalMileage;
 	public boolean isMatchLanguage(MatchingUserDto matchingUserDto) {
