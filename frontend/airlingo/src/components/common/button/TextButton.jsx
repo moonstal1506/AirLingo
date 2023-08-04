@@ -46,6 +46,7 @@ const shapeStyle = {
     min-width : 120px;
     border-radius:10px;
     `,
+
     prev: `
     width: 25px;
     height: 25px;
