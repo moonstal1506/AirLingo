@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { OpenVidu } from "openvidu-browser";
