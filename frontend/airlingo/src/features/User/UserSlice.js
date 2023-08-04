@@ -21,7 +21,7 @@ export const UserSlice = createSlice({
                 userId,
                 userLoginId,
                 userNickname,
-                userImg,
+                userImgUrl,
                 userAccessToken,
                 userNativeLanguage,
                 userLanguages,
