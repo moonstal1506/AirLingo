@@ -23,4 +23,15 @@ const postMatching = async ({ responseFunc, data }) => {
     }
 };
 
-export { getConcurrentUser, postMatching };
+const postOpenviduToken = async ({ responseFunc, data }) => {
+    if (!("sessionId" in data)) return {};
+    try {
+        const response = await instance.post(`/matching/${data.sessionId}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
+export { getConcurrentUser, postMatching, postOpenviduToken };
