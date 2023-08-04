@@ -1,12 +1,6 @@
 server:
   port: 8082
 
-spring:
-  rabbitmq:
-    host: localhost
-    port: 5672
-    username: admin
-    password: admin
 
 # Swagger springdoc-ui Configuration
 springdoc:
