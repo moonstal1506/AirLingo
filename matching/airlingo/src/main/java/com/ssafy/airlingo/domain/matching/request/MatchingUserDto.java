@@ -77,8 +77,8 @@ public class MatchingUserDto {
 	@Schema(description = "누적 마일리지", example = "10000")
 	private int userTotalMileage;
 	public boolean isMatchLanguage(MatchingUserDto matchingUserDto) {
-		return this.userStudyLanguage.equals(matchingUserDto.getUserNativeLanguage())
-			&& this.userNativeLanguage.equals(matchingUserDto.getUserStudyLanguage());
+		return this.userStudyLanguage.equals(matchingUserDto.getUserNativeLanguage().getLanguageKorName())
+			&& this.userNativeLanguage.getLanguageKorName().equals(matchingUserDto.getUserStudyLanguage());
 	}
 
 	public boolean isPossiblePremiumUser(int premiumGradeScore, int premiumUserRating) {
