@@ -26,7 +26,7 @@ const postMatching = async ({ responseFunc, data }) => {
 const postOpenviduToken = async ({ responseFunc, data }) => {
     if (!("sessionId" in data)) return {};
     try {
-        const response = await instance.post(`/matching/${data.sessionId}`);
+        const response = await instance.post(`/api/matching/${data.sessionId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
