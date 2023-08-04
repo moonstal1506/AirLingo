@@ -37,9 +37,9 @@ public class MatchingUserDto {
 	@Schema(description = "사용자 자기소개", example = "한국을 좋아해요.")
 	private String userBio;
 
-	@NotBlank
-	@Schema(description = "사용자 모국어", example = "영어")
-	private String userNativeLanguage;
+	@NotNull
+	@Schema(description = "사용자 모국어")
+	private LanguageDto userNativeLanguage;
 
 	@NotNull
 	@Schema(description = "사용자 학습어 ID", example = "1")
@@ -58,8 +58,8 @@ public class MatchingUserDto {
 	private int userStudyLanguageGradeScore;
 
 	@NotNull
-	@Schema(description = "사용자 관심언어", example = "한국어")
-	private List<String> userInterestLanguages;
+	@Schema(description = "사용자 관심언어")
+	private List<LanguageDto> userInterestLanguages;
 
 	@NotBlank
 	@Schema(description = "사용자 별점", example = "4.3")
@@ -69,6 +69,13 @@ public class MatchingUserDto {
 	@Schema(description = "프리미엄 매칭 여부", example = "false")
 	private boolean premium;
 
+	@NotNull
+	@Schema(description = "마일리지 등급", example = "프레스티지")
+	private String mileageGrade;
+
+	@NotNull
+	@Schema(description = "누적 마일리지", example = "10000")
+	private int userTotalMileage;
 	public boolean isMatchLanguage(MatchingUserDto matchingUserDto) {
 		return this.userStudyLanguage.equals(matchingUserDto.getUserNativeLanguage())
 			&& this.userNativeLanguage.equals(matchingUserDto.getUserStudyLanguage());
