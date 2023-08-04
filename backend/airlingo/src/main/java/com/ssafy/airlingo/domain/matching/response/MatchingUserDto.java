@@ -3,11 +3,10 @@ package com.ssafy.airlingo.domain.matching.response;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.entity.User;
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.persistence.Column;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -42,9 +41,9 @@ public class MatchingUserDto {
 	@Schema(description = "사용자 자기소개", example = "한국을 좋아해요.")
 	private String userBio;
 
-	@NotBlank
-	@Schema(description = "사용자 모국어", example = "영어")
-	private String userNativeLanguage;
+	@NotNull
+	@Schema(description = "사용자 모국어")
+	private LanguageDto userNativeLanguage;
 
 	@NotNull
 	@Schema(description = "사용자 학습어 ID", example = "1")
@@ -63,8 +62,8 @@ public class MatchingUserDto {
 	private int userStudyLanguageGradeScore;
 
 	@NotNull
-	@Schema(description = "사용자 관심언어", example = "한국어")
-	private List<String> userInterestLanguages;
+	@Schema(description = "사용자 관심언어")
+	private List<LanguageDto> userInterestLanguages;
 
 	@NotBlank
 	@Schema(description = "사용자 별점", example = "4.3")
@@ -83,14 +82,13 @@ public class MatchingUserDto {
 			.userId(user.getUserId())
 			.userNickname(user.getUserNickname())
 			.userImgUrl(user.getUserImgUrl())
-			.userNativeLanguage(user.getUserNativeLanguage().getLanguageKorName())
+			.userNativeLanguage(user.getUserNativeLanguage().toLanguageDto())
 			.userStudyLanguageId(userLanguage.getLanguage().getLanguageId())
 			.userStudyLanguage(userLanguage.getLanguage().getLanguageKorName())
 			.userStudyLanguageGradeName(userLanguage.getGrade().getGradeName())
 			.userStudyLanguageGradeScore(userLanguage.getGrade().getGradeScore())
 			.userInterestLanguages(user.getUserLanguages().stream()
-				.map(userInterestLanguage -> userInterestLanguage.getLanguage().getLanguageKorName())
-				.collect(Collectors.toList()))
+				.map(userInterestLanguage -> userInterestLanguage.getLanguage().toLanguageDto()).collect(Collectors.toList()))
 			.userRating(user.getUserRating())
 			.userBio(user.getUserBio())
 			.premium(premium)
