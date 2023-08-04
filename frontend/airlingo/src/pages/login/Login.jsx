@@ -3,7 +3,7 @@ import { useRef } from "react";
 import { useDispatch } from "react-redux";
 import { TextButton } from "@/components/common/button";
 import { loginUser } from "@/api";
-import useRouter from "@/hooks";
+import { useRouter } from "@/hooks";
 import { signinUser } from "@/features/User/UserSlice";
 
 function Login() {

@@ -9,7 +9,6 @@ import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import Login from "./pages/login/Login";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 
-
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
     {
