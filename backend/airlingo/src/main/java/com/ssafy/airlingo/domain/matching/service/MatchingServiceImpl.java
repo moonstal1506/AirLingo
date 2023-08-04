@@ -55,6 +55,8 @@ public class MatchingServiceImpl implements MatchingService {
 			}
 		}
 
+		System.out.println("userLanguage = " + userLanguage);
+		System.out.println("studyLanguage = " + studyLanguage);
 		return MatchingUserDto.toMatchingUserDto(user, userLanguage, matchingRequestDto.isPremium());
 	}
 
