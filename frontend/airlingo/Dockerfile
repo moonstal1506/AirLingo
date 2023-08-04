@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 #package.json 복사
 COPY package*.json .
 #종속성 다운
-RUN npm install
+RUN npm install --no-optional
 #모든 소스코드들 WORKDIR로 복사
 COPY . .
 # VITE_OPEN 환경변수 설정
