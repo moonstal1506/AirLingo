@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
-import useRouter from "../hooks";
+import { useRouter } from "../hooks";
 import { getLogout, getUserProfile } from "@/api";
 import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
 

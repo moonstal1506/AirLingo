@@ -5,15 +5,18 @@ import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
 import SignUp from "./pages/signup";
-import WaitingHome from "./pages/waiting/WaitingHome";
 import Meeting from "./pages/meeting";
+import WordBook from "./pages/mypage/wordBook";
+import Login from "./pages/login/Login";
+import Script from "./pages/mypage/script";
+import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
     {
         id: 0,
         path: "/",
-        label: "index",
+        label: "Home",
         element: <Home />,
         withAuth: false,
         headerExist: true,
@@ -22,7 +25,7 @@ const routerData = [
     {
         id: 1,
         path: "/test",
-        label: "Home",
+        label: "Test",
         element: <Home />,
         withAuth: true,
         headerExist: false,
@@ -39,23 +42,77 @@ const routerData = [
     },
     {
         id: 3,
-        path: "/waitinghome",
-        label: "WaitingHome",
-        element: <WaitingHome />,
+        path: "/matchhome",
+        label: "MatchHome",
+        element: <MatchHome />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
     },
     {
         id: 4,
+        path: "/matchqueue",
+        label: "MatchQueue",
+        element: <MatchQueue />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 5,
+        path: "/matchresult",
+        label: "MatchResult",
+        element: <MatchResult />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 6,
+        path: "/matchstandby",
+        label: "MatchStandby",
+        element: <MatchStandby />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 7,
         path: "/meeting",
         label: "Meeting",
         element: <Meeting />,
         withAuth: true,
         headerExist: false,
+        mustNotAuth: false,
     },
     {
-        id: 5,
+        id: 8,
+        path: "/word",
+        label: "word",
+        element: <WordBook />,
+        withAuth: true,
+        headerExist: false,
+    },
+    {
+        id: 9,
+        path: "/login",
+        label: "Login",
+        element: <Login />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 10,
+        path: "/script",
+        label: "Script",
+        element: <Script />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 11,
         path: "*",
         label: "NotFound",
         element: <Notfound />,

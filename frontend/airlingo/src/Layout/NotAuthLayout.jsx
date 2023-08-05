@@ -1,6 +1,6 @@
 import PropTypes from "prop-types";
 import { useSelector } from "react-redux";
-import useRouter from "../hooks";
+import { useRouter } from "../hooks";
 import { selectUser } from "@/features/User/UserSlice.js";
 
 function NotAuthLayout({ children }) {

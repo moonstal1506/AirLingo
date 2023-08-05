@@ -5,7 +5,7 @@ import processApiResponse from "@/utils/api";
 
 const getLanguage = async ({ responseFunc }) => {
     try {
-        const response = await instance.get(`/language`);
+        const response = await instance.get(`/api/language`);
         processApiResponse({ responseFunc, response });
         console.log("리스트 줄래?", response.data);
         return response;

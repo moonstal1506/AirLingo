@@ -1,10 +1,14 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { OpenVidu } from "openvidu-browser";
+import { useSelector } from "react-redux";
 import { ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
 import { FabButton } from "@/components/common/button";
 import * as Icons from "@/assets/imgs/icons";
+import { selectMeeting } from "@/features/Meeting/MeetingSlice";
+import { useRouter } from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -26,10 +30,12 @@ function Meeting() {
     const [isActiveVideo, setIsActiveVideo] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
     const [isActiveSlide, setIsActiveSlide] = useState(false);
+    const { openViduToken } = useSelector(selectMeeting);
+    const { routeTo } = useRouter();
+
     console.log(setTopic);
     useEffect(() => {
-        const TOKEN = "ws://localhost:4443?sessionId=ses_NPLONj8Vp3&token=tok_EkUbx3XJKihShd3o";
-
+        if (!openViduToken) routeTo("/");
         const OV = new OpenVidu();
         const curSession = OV.initSession();
         setSession(curSession);
@@ -50,7 +56,7 @@ function Meeting() {
         });
 
         curSession
-            .connect(TOKEN, {
+            .connect(openViduToken, {
                 clientData: "Crassula",
             })
             .then(() => {

@@ -7,7 +7,7 @@ import subcatchphrase3Background from "@/assets/imgs/subcatchphrase3-background.
 import downIcon from "@/assets/imgs/down-icon.png";
 import developersLogo from "@/assets/imgs/developers-logo.png";
 import { TextButton } from "@/components/common/button";
-import useRouter from "@/hooks";
+import { useRouter } from "@/hooks";
 
 const HomeContainer = styled.div`
     width: 100%;
