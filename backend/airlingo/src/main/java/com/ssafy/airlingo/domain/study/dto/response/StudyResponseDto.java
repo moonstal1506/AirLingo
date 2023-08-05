@@ -42,6 +42,9 @@ public class StudyResponseDto {
 	@Schema(description = "공부한 시각", example = "2023-07-31 16:19:27.689513")
 	private LocalDateTime createdDate;
 
+	@Schema(description = "종료한 시각", example = "2023-07-31 16:19:27.689513")
+	private LocalDateTime modifiedDate;
+
 	@Schema(description = "공부한 스크립트 정보")
 	private List<ScriptResponseDto> scripts;
 }
