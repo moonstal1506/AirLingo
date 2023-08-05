@@ -9,12 +9,21 @@ import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-
 import { ReactComponent as BritainFlagIcon } from "@/assets/imgs/icons/flag-britain-icon.svg";
 import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-japan-icon.svg";
 import { ReactComponent as ChinaFlagIcon } from "@/assets/imgs/icons/flag-china-icon.svg";
+import { ReactComponent as CloseIcon } from "@/assets/imgs/icons/close-icon.svg";
+import { ReactComponent as CameraIcon } from "@/assets/imgs/icons/camera-icon.svg";
+import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Dropdown from "@/components/common/dropdown";
+import Modal from "@/components/modal";
 
 const { primary4 } = theme.colors;
 
 function BasicInfoPage2() {
+    const [imageModalOpen, setImageModalOpen] = useState(false);
+    const handleImageModalOpen = () => {
+        setImageModalOpen(true);
+    };
+
     const totalLanguage = [
         { id: "135", label: "한국어", img: KoreaFlagIcon },
         { id: "136", label: "영어", img: BritainFlagIcon },
@@ -55,6 +64,34 @@ function BasicInfoPage2() {
 
     return (
         <LeftPassportPage>
+            {imageModalOpen && (
+                <Modal title="프로필 이미지 편집" modalOpen={imageModalOpen} Icon={CameraIcon}>
+                    <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
+                        <CloseIcon />
+                    </CloseIconWrapper>
+                    <ProfileImageBox>
+                        <ProfileImage src={catchphraseBackground} />
+                    </ProfileImageBox>
+
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="변경"
+                            onClick={() => setImageModalOpen(false)}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="삭제"
+                            onClick={() => setImageModalOpen(false)}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => setImageModalOpen(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
             <ProfileContainer>
                 <ProfileImageBox>
                     <GradeBackgroundIconWrapper>
@@ -66,7 +103,7 @@ function BasicInfoPage2() {
                     <GradeTextWrapper>3</GradeTextWrapper>
                     <ProfileImage src={catchphraseBackground} />
                     <SettingIconWrapper>
-                        <SettingIcon />
+                        <SettingIcon onClick={handleImageModalOpen} />
                     </SettingIconWrapper>
                 </ProfileImageBox>
 
@@ -151,6 +188,21 @@ function BasicInfoPage2() {
     );
 }
 
+const CloseIconWrapper = styled.div`
+    position: absolute;
+    top: 150px;
+    right: 550px;
+    cursor: pointer;
+`;
+
+const ModalButtonBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding-top: 10px;
+`;
+
 const LeftPassportPage = styled.div`
     width: 500px;
     height: 700px;
@@ -220,6 +272,9 @@ const SettingIconWrapper = styled.div`
     z-index: 5;
     bottom: 0;
     right: 0;
+    &:hover {
+        cursor: pointer;
+    }
 `;
 
 const ProfileContentContainer = styled.div`
