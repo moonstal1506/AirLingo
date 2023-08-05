@@ -9,6 +9,7 @@ import Validation from "@/components/validationList";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
 import { ReactComponent as ModifyIcon } from "@/assets/imgs/icons/modify-icon.svg";
 import { ReactComponent as KeyIcon } from "@/assets/imgs/icons/key-icon.svg";
+import { ReactComponent as AlertIcon } from "@/assets/imgs/icons/alert-icon.svg";
 
 const { primary1 } = theme.colors;
 
@@ -22,6 +23,7 @@ function checkConfirmPassword(password, confirmPassword) {
 }
 
 function BasicInfoPage2() {
+    // password modal
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const handlePasswordModalOpen = () => {
         setPasswordModalOpen(true);
@@ -44,6 +46,12 @@ function BasicInfoPage2() {
         const newConfirmPassword = event.target.value.trim();
         setConfirmPassword(newConfirmPassword);
         setIsEqualPassword(checkConfirmPassword(password, newConfirmPassword));
+    };
+
+    // quit modal
+    const [quitModalOpen, setQuitModalOpen] = useState(false);
+    const handleQuitModalOpen = () => {
+        setQuitModalOpen(true);
     };
 
     return (
@@ -90,6 +98,36 @@ function BasicInfoPage2() {
                             shape="positive-curved"
                             text="취소"
                             onClick={() => setPasswordModalOpen(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
+            {quitModalOpen && (
+                <Modal
+                    title="회원 탈퇴"
+                    modalOpen={quitModalOpen}
+                    Icon={AlertIcon}
+                    iconColor="red"
+                    titleColor="red"
+                >
+                    <ModalDescriptionTextBox>
+                        <DescriptionTextWrapper>
+                            정말 회원 탈퇴를 진행하시겠습니까?
+                        </DescriptionTextWrapper>
+                        <WaitingTimeTextWrapper>
+                            계정이 삭제되며, 이 작업은 되돌릴 수 없습니다!
+                        </WaitingTimeTextWrapper>
+                    </ModalDescriptionTextBox>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="warning-curved"
+                            text="회원 탈퇴"
+                            onClick={() => setQuitModalOpen(false)}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setQuitModalOpen(false)}
                         />
                     </ModalButtonBox>
                 </Modal>
@@ -147,7 +185,11 @@ function BasicInfoPage2() {
                         shape="negative-normal"
                         onClick={handlePasswordModalOpen}
                     />
-                    <TextButton text="회원탈퇴" shape="warning-quit" />
+                    <TextButton
+                        text="회원탈퇴"
+                        shape="warning-quit"
+                        onClick={handleQuitModalOpen}
+                    />
                 </ButtonBar>
             </LanguageContainer>
         </RightPassportPage>
@@ -188,6 +230,28 @@ const ModalButtonBox = styled.div`
     justify-content: center;
     align-items: center;
     gap: 50px;
+`;
+
+const ModalDescriptionTextBox = styled.div`
+    display: flex;
+    width: 600px;
+    height: 40px;
+    flex-direction: column;
+    justify-content: center;
+    color: #000;
+    text-align: center;
+    font-size: 25px;
+    padding: 20px 0px;
+`;
+
+const DescriptionTextWrapper = styled.div`
+    font-weight: 400;
+    line-height: 44px;
+`;
+
+const WaitingTimeTextWrapper = styled.div`
+    font-size: 25px;
+    font-weight: 700;
 `;
 
 const LanguageContainer = styled.div`
