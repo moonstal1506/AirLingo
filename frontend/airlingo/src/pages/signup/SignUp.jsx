@@ -22,6 +22,8 @@ function SignUp() {
         password: "",
         nickname: "",
         email: "",
+        primaryLang: null,
+        learningLang: [],
     });
 
     const handleNextStep = (state) => {
@@ -68,7 +70,13 @@ function SignUp() {
                     onHandleNextStep={handleNextStep}
                 />
             )}
-            {curStep === 4 && <SignUpLanguage onTotalChage={setTotalState} />}
+            {curStep === 4 && (
+                <SignUpLanguage
+                    totalState={totalState}
+                    onHandlePrevStep={handlePrevStep}
+                    onHandleNextStep={handleNextStep}
+                />
+            )}
             {curStep === 5 && <SignUpResult onTotalChage={setTotalState} />}
             {/* <ButtonWrapper>
                 {curStep > 1 && curStep < 5 && (

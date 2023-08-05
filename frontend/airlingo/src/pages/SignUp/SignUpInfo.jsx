@@ -5,68 +5,60 @@ import ValidationItem from "@/components/validationList";
 import { TextInput } from "@/components/common/input";
 import theme from "@/assets/styles/Theme";
 import { TextButton } from "@/components/common/button";
+import { checkId, checkPassword, checkConfirmPassword } from "@/utils/validationCheck";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1, primary4 } = theme.colors;
 
-function checkId(id) {
-    const idRegex = /^[a-z0-9]{4,20}$/;
-    return idRegex.test(id);
-}
-
-function checkPassword(password) {
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
-    return passwordRegex.test(password);
-}
-
-function checkConfirmPassword(password, confirmPassword) {
-    return password === confirmPassword;
-}
-
 // ----------------------------------------------------------------------------------------------------
 
 function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
-    const [id, setId] = useState(totalState.id);
-    const [password, setPassword] = useState("");
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [isValidId, setIsValidId] = useState(false);
-    const [isValidPassword, setIsValidPassword] = useState(false);
-    const [isEqualPassword, setIsEqualPassword] = useState(false);
-    const [isIdDirty, setIsIdDirty] = useState(false);
-    const [isPasswordDirty, setIsPasswordDirty] = useState(false);
-    const [isConfirmPasswordDirty, setIsConfirmPasswordDirty] = useState(false);
+    const [id, setId] = useState({ value: totalState.id, valid: false, dirty: false });
+    const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
+    const [confirmPassword, setConfirmPassword] = useState({
+        value: "",
+        valid: false,
+        dirty: false,
+    });
 
     const handleIdChange = (event) => {
         const newId = event.target.value.trim();
-        setId(newId);
-        setIsValidId(checkId(newId));
-        setIsIdDirty(true);
+        setId((prev) => ({ ...prev, value: newId, valid: checkId(newId), dirty: true }));
     };
 
     const handlePasswordChange = (event) => {
         const newPassword = event.target.value.trim();
-        setPassword(newPassword);
-        setIsValidPassword(checkPassword(newPassword));
-        setIsEqualPassword(checkConfirmPassword(newPassword, confirmPassword));
-        setIsPasswordDirty(true);
+        setPassword((prev) => ({
+            ...prev,
+            value: newPassword,
+            valid: checkPassword(newPassword),
+            dirty: true,
+        }));
+        setConfirmPassword((prev) => ({
+            ...prev,
+            valid: checkConfirmPassword(newPassword, confirmPassword.value),
+        }));
     };
 
     const handleConfirmPasswordChange = (event) => {
         const newConfirmPassword = event.target.value.trim();
-        setConfirmPassword(newConfirmPassword);
-        setIsEqualPassword(checkConfirmPassword(password, newConfirmPassword));
-        setIsConfirmPasswordDirty(true);
+        setConfirmPassword((prev) => ({
+            ...prev,
+            value: newConfirmPassword,
+            valid: checkConfirmPassword(password.value, newConfirmPassword),
+            dirty: true,
+        }));
     };
 
     return (
         <InfoContainer>
             <SubTitleWrapper>기본 정보 입력</SubTitleWrapper>
-            <InputContainer>
+            <InputBox>
                 <TextInput
                     placeholder="아이디"
                     width="500px"
-                    value={id}
+                    value={id.value}
                     onChange={handleIdChange}
                     color={primary1}
                 />
@@ -74,7 +66,7 @@ function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     type="password"
                     placeholder="비밀번호"
                     width="500px"
-                    value={password}
+                    value={password.value}
                     onChange={handlePasswordChange}
                     color={primary1}
                 />
@@ -82,43 +74,43 @@ function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     type="password"
                     placeholder="비밀번호 확인"
                     width="500px"
-                    value={confirmPassword}
+                    value={confirmPassword.value}
                     onChange={handleConfirmPasswordChange}
                     color={primary1}
                 />
-            </InputContainer>
+            </InputBox>
             <ValidationList>
                 <ValidationItem
-                    isValid={isValidId}
-                    isDirty={isIdDirty}
+                    isValid={id.valid}
+                    isDirty={id.dirty}
                     text="아이디는 4 ~ 20자의 영어 소문자와 숫자의 조합입니다."
                 />
                 <ValidationItem
-                    isValid={isValidPassword}
-                    isDirty={isPasswordDirty}
+                    isValid={password.valid}
+                    isDirty={password.dirty}
                     text="비밀번호는 8 ~ 20자의 영어 대 · 소문자, 숫자, 특수문자의 조합입니다."
                 />
                 <ValidationItem
-                    isValid={isEqualPassword}
-                    isDirty={isConfirmPasswordDirty}
+                    isValid={confirmPassword.valid}
+                    isDirty={confirmPassword.dirty}
                     text="비밀번호와 비밀번호 확인은 동일해야 합니다."
                 />
             </ValidationList>
-            <ButtonWrapper>
+            <ButtonBox>
                 <TextButton
                     shape="negative-curved"
                     text="이전 단계"
                     width="200px"
-                    onClick={() => onHandlePrevStep({ id })}
+                    onClick={() => onHandlePrevStep({ id: id.value })}
                 />
                 <TextButton
                     shape="positive-curved"
                     text="다음 단계"
                     width="200px"
-                    onClick={() => onHandleNextStep({ id, password })}
-                    disabled={!isValidId || !isValidPassword || !isEqualPassword}
+                    onClick={() => onHandleNextStep({ id: id.value, password: password.value })}
+                    disabled={!id.valid || !password.valid || !confirmPassword.valid}
                 />
-            </ButtonWrapper>
+            </ButtonBox>
         </InfoContainer>
     );
 }
@@ -130,6 +122,8 @@ SignUpInfo.propTypes = {
         password: PropTypes.string,
         nickname: PropTypes.string,
         email: PropTypes.string,
+        primaryLang: PropTypes.number,
+        learningLang: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number, PropTypes.string)),
     }).isRequired,
     onHandlePrevStep: PropTypes.func.isRequired,
     onHandleNextStep: PropTypes.func.isRequired,
@@ -153,7 +147,7 @@ const SubTitleWrapper = styled.div`
     text-align: center;
 `;
 
-const InputContainer = styled.div`
+const InputBox = styled.div`
     display: flex;
     flex-direction: column;
     gap: 25px;
@@ -166,7 +160,7 @@ const ValidationList = styled.div`
     margin-top: 25px;
 `;
 
-const ButtonWrapper = styled.div`
+const ButtonBox = styled.div`
     display: flex;
     justify-content: space-around;
     margin-top: 25px;

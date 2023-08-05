@@ -27,6 +27,7 @@ instance.interceptors.response.use(
     async (error) => {
         const { response, config } = error;
         /* fix me! : 서버와 교신하여 token refreshing 로직이 들어갈 예정 */
+        
     },
 );
 

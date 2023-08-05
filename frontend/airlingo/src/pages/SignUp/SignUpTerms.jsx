@@ -12,7 +12,7 @@ const { primary1, primary4 } = theme.colors;
 
 // ----------------------------------------------------------------------------------------------------
 
-function SignUpInfo({ totalState, onHandleNextStep }) {
+function SignUpTerms({ totalState, onHandleNextStep }) {
     const [termsAgreed, setTermsAgreed] = useState(totalState.termsAgreed);
     const [isTermsDirty, setIsTermsDirty] = useState(false);
 
@@ -143,13 +143,15 @@ function SignUpInfo({ totalState, onHandleNextStep }) {
     );
 }
 
-SignUpInfo.propTypes = {
+SignUpTerms.propTypes = {
     totalState: PropTypes.shape({
         termsAgreed: PropTypes.bool,
         id: PropTypes.string,
         password: PropTypes.string,
         nickname: PropTypes.string,
         email: PropTypes.string,
+        primaryLang: PropTypes.number,
+        learningLang: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number, PropTypes.string)),
     }).isRequired,
     onHandleNextStep: PropTypes.func.isRequired,
 };
@@ -241,4 +243,4 @@ const ButtonWrapper = styled.div`
 
 // ----------------------------------------------------------------------------------------------------
 
-export default SignUpInfo;
+export default SignUpTerms;

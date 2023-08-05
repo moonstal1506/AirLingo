@@ -1,56 +1,55 @@
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
+import PropTypes from "prop-types";
 import Dropdown from "@/components/common/dropdown";
 import { TextButton } from "@/components/common/button";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
-// import getLanguage from "@/api/language.js";
+import getLanguage from "@/api/language.js";
+import getGrade from "@/api/language.js";
 import Tooltip from "@/components/common/tooltip/Tooltip";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-france-icon.svg";
 import Validation from "@/components/validationList";
+import theme from "@/assets/styles/Theme";
 
-function SignUpLanguage() {
-    const [totalLanguage, setTotalLanguage] = useState([
-        { id: "135", label: "한국어", img: KoreaFlagIcon },
-        { id: "136", label: "영어", img: JapanFlagIcon },
-        { id: "137", label: "일본어", img: JapanFlagIcon },
-        { id: "138", label: "중국어", img: JapanFlagIcon },
-        { id: "139", label: "프랑스어", img: JapanFlagIcon },
-        { id: "140", label: "스페인어", img: JapanFlagIcon },
-    ]);
+// ----------------------------------------------------------------------------------------------------
 
-    const [level, setLevel] = useState([
-        { id: "135", label: "A1", img: KoreaFlagIcon },
-        { id: "136", label: "A2", img: JapanFlagIcon },
-        { id: "137", label: "B1", img: JapanFlagIcon },
-        { id: "138", label: "B2", img: JapanFlagIcon },
-    ]);
+const { primary4 } = theme.colors;
 
-    const [skillLanguage, setSkillLanguage] = useState({}); // 대표 언어
-    const [studyLanguage, setStudyLanguage] = useState({}); // 관심 언어
-    const [selectedLevel, setSelectedLevel] = useState({}); // 숙련도
-    const [languageList, setLanguageList] = useState([]);
-    // 대표 언어가 선택되었는지 확인하는 변수
-    const isMainLanguageSelected = !!skillLanguage.label;
+// ----------------------------------------------------------------------------------------------------
 
-    // 관심 언어가 한 개 이상 선택되었는지 확인하는 변수
-    const isInterestLanguageSelected = languageList.length > 0;
-    console.log(languageList, setTotalLanguage, setLevel);
+function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
+    const [language, setLanguage] = useState([]);
+    const [level, setLevel] = useState([]);
+    const [primaryLang, setPrimaryLang] = useState({
+        value: totalState.primaryLang,
+        valid: false,
+        dirty: false,
+    });
+    const [learningLang, setLearningLang] = useState({
+        value: totalState.learningLang,
+        valid: false,
+        dirty: false,
+    });
+
+    // const isMainLanguageSelected = !!skillLanguage.label;
+
+    // // 관심 언어가 한 개 이상 선택되었는지 확인하는 변수
+    // const isInterestLanguageSelected = languageList.length > 0;
+    // console.log(languageList, setTotalLanguage, setLevel);
     useEffect(() => {
-        // async function fetchData() {
-        //     await getLanguage({
-        //         responseFunc: {
-        //             200: (response) => setTotalLanguage(response.data),
-        //         },
-        //     });
-        //     console.log(setLevel);
-        //     // await getLevel({
-        //     //     responseFunc: {
-        //     //         200: (response) => setLevel(response.data),
-        //     //     },
-        //     // });
-        // }
-        // fetchData();
+        async function fetchData() {
+            await getLanguage({
+                responseFunc: {
+                    200: (response) => setLanguage(response.data),
+                },
+            });
+            console.log(setLevel);
+            await getLevel({
+                responseFunc: {
+                    200: (response) => setLevel(response.data),
+                },
+            });
+        }
+        fetchData();
     }, []);
 
     const handleClickLanguage = () => {
@@ -84,43 +83,37 @@ function SignUpLanguage() {
     };
 
     return (
-        <SignupLanguageContainer>
-            <SignupLanguageTitleWrapper>언어 설정</SignupLanguageTitleWrapper>
-            <SignupLanguageBox>
-                <StyledMainLanguage>
+        <LanguageContainer>
+            <SubTitleWrapper>언어 설정</SubTitleWrapper>
+            <InputBox>
+                <Dropdown
+                    width="100%"
+                    shape="negative"
+                    data={totalLanguage}
+                    placeholder="대표 언어 설정"
+                    // defaultOption={{ id: "korea", label: "한국어", img: KoreaFlagIcon }}
+                    selectedOption={skillLanguage}
+                    // eslint-disable-next-line no-undef
+                    onChange={setSkillLanguage}
+                />
+                <LearningLangBox>
                     <Dropdown
-                        width="100%"
+                        width="180px"
                         shape="negative"
                         data={totalLanguage}
-                        placeholder="대표 언어 설정"
+                        placeholder="관심 언어 설정"
                         // defaultOption={{ id: "korea", label: "한국어", img: KoreaFlagIcon }}
-                        selectedOption={skillLanguage}
-                        // eslint-disable-next-line no-undef
-                        onChange={setSkillLanguage}
+                        selectedOption={studyLanguage}
+                        onChange={setStudyLanguage}
                     />
-                </StyledMainLanguage>
-                <StyledSelectContainer>
-                    <StyledSelectLanguage>
-                        <Dropdown
-                            width="180px"
-                            shape="negative"
-                            data={totalLanguage}
-                            placeholder="관심 언어 설정"
-                            // defaultOption={{ id: "korea", label: "한국어", img: KoreaFlagIcon }}
-                            selectedOption={studyLanguage}
-                            onChange={setStudyLanguage}
-                        />
-                    </StyledSelectLanguage>
-                    <StyledSelectLevel>
-                        <Dropdown
-                            width="160px"
-                            shape="negative"
-                            data={level}
-                            placeholder="숙련도 설정"
-                            selectedOption={selectedLevel}
-                            onChange={setSelectedLevel}
-                        />
-                    </StyledSelectLevel>
+                    <Dropdown
+                        width="160px"
+                        shape="negative"
+                        data={level}
+                        placeholder="숙련도 설정"
+                        selectedOption={selectedLevel}
+                        onChange={setSelectedLevel}
+                    />
                     <TooltipBox>
                         <Tooltip
                             position={{
@@ -133,10 +126,10 @@ function SignUpLanguage() {
                         </Tooltip>
                     </TooltipBox>
                     <TextButton text="추가하기" onClick={handleClickLanguage} />
-                </StyledSelectContainer>
-            </SignupLanguageBox>
+                </LearningLangBox>
+            </InputBox>
             {languageList.length > 0 && (
-                <SelectedLanguagesContainer>
+                <LearningLangList>
                     {languageList.map((language, index) => (
                         // eslint-disable-next-line react/no-array-index-key
                         <SelectedLanguage key={index}>
@@ -150,53 +143,85 @@ function SignUpLanguage() {
                             </SelectedLanguageLabel>
                         </SelectedLanguage>
                     ))}
-                </SelectedLanguagesContainer>
+                </LearningLangList>
             )}
-            <ValidationBox>
-                {/* 대표 언어 선택 여부에 따른 검증 메시지 스타일 */}
+            <ValidationList>
                 <Validation
-                    isValid={isMainLanguageSelected}
-                    text="능숙하게 구사할 수 있는 ‘대표 언어’를 한 가지 설정해야 합니다. "
+                    isValid={primaryLang.valid}
+                    isDirty={primaryLang.dirty}
+                    text="능숙하게 구사할 수 있는 ‘대표 언어’를 한 가지 설정해야 합니다."
                 />
-                {/* 관심 언어 선택 여부에 따른 검증 메시지 스타일 */}
                 <Validation
-                    isValid={isInterestLanguageSelected}
+                    isValid={learningLang.valid}
+                    isDirty={learningLang.dirty}
                     text="배우고 싶은 ‘관심 언어’를 한 가지 이상 설정해야 합니다."
                 />
-            </ValidationBox>
-        </SignupLanguageContainer>
+            </ValidationList>
+            <ButtonBox>
+                <TextButton
+                    shape="negative-curved"
+                    text="이전 단계"
+                    width="200px"
+                    onClick={() =>
+                        onHandlePrevStep({
+                            primaryLang: primaryLang.value,
+                            learningLang: learningLang.value,
+                        })
+                    }
+                />
+                <TextButton
+                    shape="positive-curved"
+                    text="회원가입 완료"
+                    width="200px"
+                    onClick={() =>
+                        onHandleNextStep({
+                            primaryLang: primaryLang.value,
+                            learningLang: learningLang.value,
+                        })
+                    }
+                    disabled={!primaryLang.valid || !learningLang.valid}
+                />
+            </ButtonBox>
+        </LanguageContainer>
     );
 }
 
+SignUpLanguage.propTypes = {
+    totalState: PropTypes.shape({
+        termsAgreed: PropTypes.bool,
+        id: PropTypes.string,
+        password: PropTypes.string,
+        nickname: PropTypes.string,
+        email: PropTypes.string,
+        primaryLang: PropTypes.number,
+        learningLang: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number, PropTypes.string)),
+    }).isRequired,
+    onHandlePrevStep: PropTypes.func.isRequired,
+    onHandleNextStep: PropTypes.func.isRequired,
+};
+
 // ----------------------------------------------------------------------------------------------------
 
-const SignupLanguageContainer = styled.div`
-    position: relative;
-    width: 100%;
-    /* height: calc(100% - 120px); */
+const LanguageContainer = styled.div`
     display: flex;
-    justify-content: center;
-    align-items: center;
     flex-direction: column;
-    gap: 30px;
+    justify-content: center;
+    width: 500px;
 `;
 
-const SignupLanguageTitleWrapper = styled.div`
-    display: flex;
-    width: 500px;
-    height: 50px;
-    flex-direction: column;
-    justify-content: center;
-    flex-shrink: 0;
-    color: #000;
-    text-align: center;
-    font-family: Pretendard;
+const SubTitleWrapper = styled.div`
+    margin-top: 25px;
+    margin-bottom: 25px;
     font-size: 40px;
-    font-style: normal;
     font-weight: 700;
-    line-height: 44px;
-    align-items: center;
-    padding: 32px;
+    color: ${primary4};
+    text-align: center;
+`;
+
+const InputBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
 `;
 
 const SignupLanguageBox = styled.div`
@@ -334,9 +359,6 @@ const SelectedLanguageLabel = styled.div`
         margin-right: 10px;
     }
 `;
-const ValidationBox = styled.div`
-    width: 500px;
-`;
 
 const DeleteButton = styled.button`
     background: transparent;
@@ -344,6 +366,20 @@ const DeleteButton = styled.button`
     color: red;
     cursor: pointer;
     font-size: 24px;
+`;
+
+const ValidationList = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    margin-top: 25px;
+`;
+
+const ButtonBox = styled.div`
+    display: flex;
+    justify-content: space-around;
+    margin-top: 25px;
+    width: 500px;
 `;
 
 // ----------------------------------------------------------------------------------------------------

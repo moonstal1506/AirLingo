@@ -5,85 +5,96 @@ import ValidationItem from "@/components/validationList";
 import { TextInput } from "@/components/common/input";
 import theme from "@/assets/styles/Theme";
 import { TextButton } from "@/components/common/button";
+import { checkNickname, checkEmail } from "@/utils/validationCheck";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1, primary4 } = theme.colors;
 
-function checkNickname(nickname) {
-    const nicknameRegex = /^[a-zA-Z0-9]{2,20}$/;
-    return nicknameRegex.test(nickname);
-}
-
-function checkEmail(email) {
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return emailRegex.test(email);
-}
-
 // ----------------------------------------------------------------------------------------------------
 
 function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
-    const [nickname, setNickname] = useState(totalState.nickname);
-    const [email, setEmail] = useState(totalState.email);
-    const [isValidNickname, setIsValidNickname] = useState(false);
-    const [isValidEmail, setIsValidEmail] = useState(false);
-    // const [isPasswordDirty, setIsPasswordDirty] = useState(false);
-    // const [isEmailDirty, setIsEmailDirty] = useState(false);
+    const [nickname, setNickname] = useState({
+        value: totalState.nickname,
+        valid: false,
+        dirty: false,
+    });
+    const [email, setEmail] = useState({
+        value: totalState.email,
+        valid: false,
+        dirty: false,
+    });
 
     const handleIdChange = (event) => {
-        const newNickname = event.target.value;
-        setNickname(newNickname);
-        setIsValidNickname(checkNickname(newNickname));
+        const newNickname = event.target.value.trim();
+        setNickname((prev) => ({
+            ...prev,
+            value: newNickname,
+            valid: checkNickname(newNickname),
+            dirty: true,
+        }));
     };
 
     const handleEmailChange = (event) => {
-        const newEmail = event.target.value;
-        setEmail(newEmail);
-        setIsValidEmail(checkEmail(newEmail));
+        const newEmail = event.target.value.trim();
+        setEmail((prev) => ({
+            ...prev,
+            value: newEmail,
+            valid: checkEmail(newEmail),
+            dirty: true,
+        }));
     };
 
     return (
         <ProfileContainer>
-            <TermsTitleWrapper>개인 정보 입력</TermsTitleWrapper>
-            <TextInput
-                placeholder="닉네임"
-                color={primary1}
-                width="500px"
-                height="50px"
-                value={nickname}
-                onChange={handleIdChange}
-            />
-            <TextInput
-                placeholder="이메일"
-                color={primary1}
-                width="500px"
-                height="50px"
-                value={email}
-                onChange={handleEmailChange}
-            />
-            <ValidationItem
-                isValid={isValidNickname}
-                text="닉네임은 2 ~ 20자의 영어 대 · 소문자, 숫자의 조합입니다."
-            />{" "}
-            <ValidationItem
-                isValid={isValidEmail}
-                text="이메일은 example@domain.com과 같은 형식으로 작성해야 합니다."
-            />
-            <ButtonWrapper>
+            <SubTitleWrapper>개인 정보 입력</SubTitleWrapper>
+            <InputBox>
+                <TextInput
+                    placeholder="닉네임"
+                    width="500px"
+                    value={nickname.value}
+                    onChange={handleIdChange}
+                    color={primary1}
+                />
+                <TextInput
+                    placeholder="이메일"
+                    width="500px"
+                    value={email.value}
+                    onChange={handleEmailChange}
+                    color={primary1}
+                />
+            </InputBox>
+            <ValidationList>
+                <ValidationItem
+                    isValid={nickname.valid}
+                    isDirty={nickname.dirty}
+                    text="닉네임은 2 ~ 20자의 영어 대 · 소문자, 숫자의 조합입니다."
+                />{" "}
+                <ValidationItem
+                    isValid={email.valid}
+                    isDirty={email.dirty}
+                    text="이메일은 example@domain.com과 같은 형식으로 작성해야 합니다."
+                />
+            </ValidationList>
+            <ButtonBox>
                 <TextButton
                     shape="negative-curved"
                     text="이전 단계"
                     width="200px"
-                    onClick={() => onHandlePrevStep({ nickname })}
+                    onClick={() =>
+                        onHandlePrevStep({ nickname: nickname.value, email: email.value })
+                    }
                 />
                 <TextButton
                     shape="positive-curved"
                     text="다음 단계"
                     width="200px"
-                    onClick={() => onHandleNextStep({ nickname, email })}
-                    disabled={!isValidEmail || !isValidNickname}
+                    onClick={() =>
+                        onHandleNextStep({ nickname: nickname.value, email: email.value })
+                    }
+                    disabled={!nickname.valid || !email.valid}
                 />
-            </ButtonWrapper>
+            </ButtonBox>
         </ProfileContainer>
     );
 }
@@ -95,6 +106,8 @@ SignUpProfile.propTypes = {
         password: PropTypes.string,
         nickname: PropTypes.string,
         email: PropTypes.string,
+        primaryLang: PropTypes.number,
+        learningLang: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number, PropTypes.string)),
     }).isRequired,
     onHandlePrevStep: PropTypes.func.isRequired,
     onHandleNextStep: PropTypes.func.isRequired,
@@ -109,15 +122,29 @@ const ProfileContainer = styled.div`
     width: 500px;
 `;
 
-const TermsTitleWrapper = styled.div`
-    height: 50px;
-    text-align: center;
+const SubTitleWrapper = styled.div`
+    margin-top: 25px;
+    margin-bottom: 25px;
     font-size: 40px;
     font-weight: 700;
     color: ${primary4};
+    text-align: center;
 `;
 
-const ButtonWrapper = styled.div`
+const InputBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+`;
+
+const ValidationList = styled.div`
+    display: flex;
+    flex-direction: column;
+    width: 500px;
+    margin-top: 25px;
+`;
+
+const ButtonBox = styled.div`
     display: flex;
     justify-content: space-around;
     margin-top: 25px;
