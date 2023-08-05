@@ -1,12 +1,99 @@
 import styled from "@emotion/styled";
-import Tooltip from "@/components/common/tooltip/Tooltip";
-import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
+import { useState } from "react";
 import { IconButton, TextButton } from "@/components/common/button";
+import { TextInput } from "@/components/common/input";
+import Tooltip from "@/components/common/tooltip/Tooltip";
+import theme from "@/assets/styles/Theme";
+import Modal from "@/components/modal";
+import Validation from "@/components/validationList";
+import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
 import { ReactComponent as ModifyIcon } from "@/assets/imgs/icons/modify-icon.svg";
+import { ReactComponent as KeyIcon } from "@/assets/imgs/icons/key-icon.svg";
+
+const { primary1 } = theme.colors;
+
+function checkPassword(password) {
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
+    return passwordRegex.test(password);
+}
+
+function checkConfirmPassword(password, confirmPassword) {
+    return password === confirmPassword;
+}
 
 function BasicInfoPage2() {
+    const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+    const handlePasswordModalOpen = () => {
+        setPasswordModalOpen(true);
+    };
+
+    const [password, setPassword] = useState("");
+    const [isValidPassword, setIsValidPassword] = useState(false);
+
+    const [confirmPassword, setConfirmPassword] = useState("");
+    const [isEqualPassword, setIsEqualPassword] = useState(false);
+
+    const handlePasswordChange = (event) => {
+        const newPassword = event.target.value.trim();
+        setPassword(newPassword);
+        setIsValidPassword(checkPassword(newPassword));
+        setIsEqualPassword(checkConfirmPassword(newPassword, confirmPassword));
+    };
+
+    const handleConfirmPasswordChange = (event) => {
+        const newConfirmPassword = event.target.value.trim();
+        setConfirmPassword(newConfirmPassword);
+        setIsEqualPassword(checkConfirmPassword(password, newConfirmPassword));
+    };
+
     return (
         <RightPassportPage>
+            {passwordModalOpen && (
+                <Modal title="비밀번호 변경" modalOpen={passwordModalOpen} Icon={KeyIcon}>
+                    <TextInput
+                        type="password"
+                        placeholder="비밀번호"
+                        color={primary1}
+                        width="500px"
+                        height="50px"
+                        value={password}
+                        onChange={handlePasswordChange}
+                    />
+                    <TextInput
+                        type="password"
+                        placeholder="비밀번호 확인"
+                        color={primary1}
+                        width="500px"
+                        height="50px"
+                        value={confirmPassword}
+                        onChange={handleConfirmPasswordChange}
+                    />
+                    <ModalValidationContainer>
+                        <ModalValidationBox>
+                            <Validation
+                                isValid={isValidPassword}
+                                text="비밀번호는 8자 이상, 20자 이하의 영어 대·소문자, 숫자, 특수문자의 조합입니다."
+                            />
+                            <Validation
+                                isValid={isEqualPassword}
+                                text="비밀번호와 비밀번호 확인은 동일해야 합니다."
+                            />
+                        </ModalValidationBox>
+                    </ModalValidationContainer>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => setPasswordModalOpen(false)}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setPasswordModalOpen(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
             <LanguageContainer>
                 <TitleContainer>
                     <TitleBox>
@@ -55,7 +142,11 @@ function BasicInfoPage2() {
                     </LanguageBox>
                 </LanguageContentBox>
                 <ButtonBar>
-                    <TextButton text="비밀번호 변경" shape="negative-normal" />
+                    <TextButton
+                        text="비밀번호 변경"
+                        shape="negative-normal"
+                        onClick={handlePasswordModalOpen}
+                    />
                     <TextButton text="회원탈퇴" shape="warning-quit" />
                 </ButtonBar>
             </LanguageContainer>
@@ -73,6 +164,30 @@ const RightPassportPage = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+`;
+
+const ModalValidationContainer = styled.div`
+    display: flex;
+    width: 650px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 24px;
+`;
+
+const ModalValidationBox = styled.div`
+    display: flex;
+    height: 60px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+`;
+
+const ModalButtonBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
 `;
 
 const LanguageContainer = styled.div`
