@@ -5,7 +5,6 @@ import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
 import StatisticHome from "./pages/statistic/StatisticHome";
-import TabBar from "./components/common/tab/TabBar";
 import WordBook from "./pages/mypage/wordBook";
 import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import Login from "./pages/login/Login";

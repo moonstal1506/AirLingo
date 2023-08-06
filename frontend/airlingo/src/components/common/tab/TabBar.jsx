@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { css } from "@emotion/react";
 import theme from "@/assets/styles/Theme";
-import useRouter from "@/hooks";
+import { useRouter } from "@/hooks";
 
 const { white, black, red, yellow, green, blue } = theme.colors;
 
