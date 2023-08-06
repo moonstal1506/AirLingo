@@ -69,7 +69,7 @@ function StatisticHome() {
 const PassportContainer = styled.div`
     display: flex;
     justify-content: space-between;
-    padding-top: 191px;
+    padding-top: 151px;
     width: 1015px;
     height: 755px;
 `;
