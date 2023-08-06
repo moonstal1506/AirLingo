@@ -19,6 +19,7 @@ import { getReportItems, postReport } from "@/api/report";
 import { TextArea } from "@/components/common/input";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatReportItem } from "@/utils/format";
+import { postScript } from "@/api/record";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -33,10 +34,17 @@ const contentGroupData = [
 
 function Meeting() {
     const dispatch = useDispatch();
+    const [localRecorder, setLocalRecorder] = useState(null);
     const [reportList, setReportList] = useState([]);
     const [cardCode, setCardCode] = useState([]);
     const { sessionId, meetingData, didReport } = useSelector(selectMeeting);
-    const { userId } = useSelector(selectUser);
+    const { userId, userNickname } = useSelector(selectUser);
+    console.log("맨 첫화면에서 찍는 로컬리코더!!!", localRecorder);
+
+    /*
+     내 connection id 를 알아서 한번 찍어봐야 알 듯 한데...
+     보기에는  보내는 another connection id가 더 이상 상대방 거랑 달라서 저러는 느낌
+    */
 
     const [session, setSession] = useState(null); // Initial value changed to null
     const [publisher, setPublisher] = useState(null);
@@ -55,6 +63,10 @@ function Meeting() {
     const [reportState, setReportState] = useState({});
     const [reportText, setReportText] = useState("");
     const [openReportConfirmModal, setOpenReportConfirmModal] = useState(false);
+
+    const [openFeedbackStartModal, setOpenFeedbackStartModal] = useState(false);
+    const [openFeedbackRequestModal, setOpenFeedbackRequestModal] = useState(false);
+    const [isRecordingUser, setIsRecordingUser] = useState(false);
 
     // 세션 연결 함수
     async function connectSession() {
@@ -111,55 +123,12 @@ function Meeting() {
             setAnotherConnection(event.connection);
         });
 
-        curSession.on("signal", (event) => {
-            const { data, type } = event;
-            const typeArr = type.split(":");
-            switch (typeArr[1]) {
-                case "cardcode-select-request":
-                    console.log(
-                        "상대방에게서 특정 카드 코드로 대주제를 선택하자고 요청이 왔습니다.",
-                        data,
-                    );
-                    setOpenCardRequestModal(true);
-                    setRequestCardCode(data);
-                    break;
-                case "cardcode-select-response":
-                    const jsonData = JSON.parse(data);
-                    console.log("상대방에게서, 카드 코드를 선택 또는 비선택의 응답을 받았습니다.");
-                    if (jsonData.agree) {
-                        console.log(
-                            "상대가 내 카드 코드 선택에 동의했고, 랜덤된 세부주제를 받았습니다.",
-                        );
-                        console.log({
-                            ...meetingData,
-                            currentCardCode: jsonData.currentCardCode,
-                            currentCard: jsonData.currentCard,
-                        });
-                        dispatch(
-                            AddMeetingData({
-                                meetingData: {
-                                    ...meetingData,
-                                    currentCardCode: jsonData.currentCardCode,
-                                    currentCard: jsonData.currentCard,
-                                },
-                            }),
-                        );
-                    } else {
-                        console.log("상대가 내 카드 코드 선택에 동의하지 않았습니다");
-                    }
-                    setOpenResponseWaitModal(false);
-                    break;
-                default:
-                    console.log("없는 이벤트타입입니다.");
-            }
-        });
-
         curSession
             .connect(response.data.data, {
-                clientData: "Crassula",
+                clientData: userNickname,
             })
             .then(() => {
-                const publisher = OV.initPublisher(undefined, {
+                return OV.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
                     publishAudio: true,
@@ -169,12 +138,106 @@ function Meeting() {
                     insertMode: "APPEND",
                     mirror: "false",
                 });
+            })
+            .then((publisher) => {
+                console.log(publisher);
+                const value = OV.initLocalRecorder(publisher.stream);
+                console.log(value);
+                setLocalRecorder(value);
                 setPublisher(publisher);
                 curSession.publish(publisher);
             })
             .catch((error) => {
                 console.error("Error Connecting to OpenVidu", error);
             });
+
+        curSession.on("signal", (event) => {
+            const { data, type } = event;
+            const typeArr = type.split(":");
+            async function processSignal() {
+                switch (typeArr[1]) {
+                    case "cardcode-select-request":
+                        (() => {
+                            console.log(
+                                "상대방에게서 특정 카드 코드로 대주제를 선택하자고 요청이 왔습니다.",
+                                data,
+                            );
+                            setOpenCardRequestModal(true);
+                            setRequestCardCode(data);
+                        })();
+                        break;
+                    case "cardcode-select-response":
+                        await (async () => {
+                            const jsonData = JSON.parse(data);
+                            console.log(
+                                "상대방에게서, 카드 코드를 선택 또는 비선택의 응답을 받았습니다.",
+                            );
+                            if (jsonData.agree) {
+                                console.log(
+                                    "상대가 내 카드 코드 선택에 동의했고, 랜덤된 세부주제를 받았습니다.",
+                                );
+                                console.log({
+                                    ...meetingData,
+                                    currentCardCode: jsonData.currentCardCode,
+                                    currentCard: jsonData.currentCard,
+                                });
+                                dispatch(
+                                    AddMeetingData({
+                                        meetingData: {
+                                            ...meetingData,
+                                            currentCardCode: jsonData.currentCardCode,
+                                            currentCard: jsonData.currentCard,
+                                        },
+                                    }),
+                                );
+                                setIsRecordingUser(true);
+                                setOpenResponseWaitModal(false);
+                                console.log(localRecorder);
+                                await localRecorder.record({
+                                    mimeType: "video/webm;codecs=vp8",
+                                    audioBitsPerSecond: 128000,
+                                    videoBitsPerSecond: 2500000,
+                                });
+                            } else {
+                                console.log("상대가 내 카드 코드 선택에 동의하지 않았습니다");
+                            }
+                        })();
+                        break;
+                    case "feedback-start-request":
+                        (() => {
+                            // 1. 응답 모달창을 열어준다.
+                            setOpenFeedbackRequestModal(true);
+                        })();
+                        break;
+                    case "feedback-start-response":
+                        await (async () => {
+                            const jsonData = JSON.parse(data);
+                            if (jsonData.agree && isRecordingUser) {
+                                await localRecorder.stop(); // 현재 녹음하던 것을 끝낸다.
+                                const recordedBlob = localRecorder.getBlob();
+
+                                const formData = new FormData();
+                                formData.append("studyId", "135");
+                                formData.append("cardId", meetingData.currentCardCode);
+                                formData.append("voiceFile", recordedBlob);
+
+                                const response = await postScript({
+                                    responseFunc: {},
+                                    data: formData,
+                                });
+                                console.log(response.data.data);
+                            } else {
+                                console.log("거절 또는 당신은 요청을 보낸 사람입니다.");
+                            }
+                        })();
+                        break;
+                    default:
+                        console.log("없는 이벤트타입입니다.");
+                }
+            }
+
+            processSignal();
+        });
     }
 
     useEffect(() => {
@@ -267,6 +330,7 @@ function Meeting() {
         // 1. 현재 카드를 인지했고, 해당 카드에서 정보를 가져온다.
         const cardCode = closestCard.id;
         // 2. 가져온 정보를 통해서 상대방에게 현재 대주제로 할 것인지 고르라고 한다.
+        console.log("카드 선택해줘!!!", anotherConnection);
         session.signal({
             data: cardCode,
             to: [anotherConnection],
@@ -302,7 +366,7 @@ function Meeting() {
                             currentCardCode: requestCardCode,
                             currentCard: response.data.data.subject,
                         }),
-                        to: [],
+                        to: [anotherConnection],
                         type: "cardcode-select-response",
                     });
                 },
@@ -332,6 +396,30 @@ function Meeting() {
             },
         });
         dispatch(AddDidReport(true));
+    };
+
+    const handleClickOpenFeedback = async () => {
+        // 피드백 시작을 요청하는 창을 연다.
+        setOpenFeedbackStartModal(true);
+
+        // 상대방에게 피드백 시작을 요청한다.
+        session.signal({
+            data: "",
+            to: [anotherConnection],
+            type: "feedback-start-request",
+        });
+    };
+
+    const handleClickOpenFeedbackConfirm = (agree) => {
+        // 상대방에게 피드백 시착에 따른 동의/거절 여부를 보내준다.
+        session.signal({
+            data: JSON.stringify({ agree }),
+            to: [anotherConnection],
+            type: "feedback-start-response",
+        });
+
+        // 피드백 요청 확인 창을 닫는다.
+        openFeedbackRequestModal(false);
     };
 
     const buttonList = [
@@ -507,6 +595,37 @@ function Meeting() {
                     </ModalButtonBox>
                 </Modal>
             )}
+            {openFeedbackStartModal && (
+                <Modal zIdx={4} Icon={DictionaryIcon} title="스크립트 피드백 요청">
+                    <ModalTextWrapper weight="400px">
+                        상대방에게 스크립트 피드백 요청을 보냈습니다.
+                    </ModalTextWrapper>
+                </Modal>
+            )}
+            {openFeedbackRequestModal && (
+                <Modal zIdx={4} Icon={DictionaryIcon} title="스크립트 피드백 요청">
+                    <ModalTextBox>
+                        <ModalTextWrapper weight="400px">
+                            상대방으로부터 스크립트 피드백 요청을 받았습니다.
+                        </ModalTextWrapper>
+                        <ModalTextWrapper weight="400px">
+                            스크립트 피드백을 진행하시겠습니까?
+                        </ModalTextWrapper>
+                    </ModalTextBox>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="수락"
+                            onClick={() => handleClickOpenFeedbackConfirm(false)}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="거절"
+                            onClick={() => handleClickOpenFeedbackConfirm(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
             <VideoContainer>
                 <VideoFrame>
                     {publisher ? (
@@ -532,6 +651,12 @@ function Meeting() {
             <TopicContainer>
                 <TopicHeader>현재 대화 주제</TopicHeader>
                 <TopicContent>{meetingData ? meetingData.currentCard : "없음"}</TopicContent>
+                <TextButton
+                    shape="positive-curved-large"
+                    type="button"
+                    onClick={handleClickOpenFeedback}
+                    text="스크립트 피드백"
+                />
             </TopicContainer>
             <ButtonMenu isActiveSlide={isActiveSlide}>
                 {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
