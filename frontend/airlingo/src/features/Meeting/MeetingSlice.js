@@ -6,6 +6,7 @@ const initialState = {
     studyId: "",
     otherUser: {},
     meetingData: {},
+    didReport: false,
 };
 
 export const MeetingSlice = createSlice({
@@ -30,6 +31,9 @@ export const MeetingSlice = createSlice({
             state.otherUser = otherUser;
             state.studyId = studyId;
         },
+        AddDidReport: (state, actions) => {
+            state.didReport = actions.payload.didReport;
+        },
         removeInfo: (state) => {
             state.sessionId = "";
             state.otherUser = {};
@@ -42,7 +46,14 @@ export const MeetingSlice = createSlice({
     },
 });
 
-export const { AddSessionId, AddOtherUser, AddStudyId, AddMeetingData, AddInfo, removeInfo } =
-    MeetingSlice.actions;
+export const {
+    AddSessionId,
+    AddOtherUser,
+    AddStudyId,
+    AddMeetingData,
+    AddInfo,
+    AddDidReport,
+    removeInfo,
+} = MeetingSlice.actions;
 export const selectMeeting = (state) => state.Meeting;
 export default MeetingSlice.reducer;
