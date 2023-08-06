@@ -15,7 +15,9 @@ function TextArea({ placeholder, radius, width, height, maxLength, value, onChan
             height={height}
             maxLength={maxLength}
             value={value}
-            onChange={onChange}
+            onChange={(e) => {
+                onChange(e.target.value);
+            }}
         />
     );
 }
@@ -35,7 +37,7 @@ TextArea.defaultProps = {
     radius: "small",
     width: "400px",
     height: "350px",
-    maxLength: 500,
+    maxLength: 255,
 };
 
 const TextAreaWrapper = styled.textarea`

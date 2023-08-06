@@ -6,10 +6,20 @@ const radiusObj = {
     big: "20px",
 };
 
-function TextInput({ placeholder, radius, width, height, maxLength, value, onChange, color }) {
+function TextInput({
+    type,
+    placeholder,
+    radius,
+    width,
+    height,
+    maxLength,
+    value,
+    onChange,
+    color,
+}) {
     return (
         <TextInputWrapper
-            type="text"
+            type={type}
             placeholder={placeholder}
             radius={radius}
             width={width}
@@ -23,6 +33,7 @@ function TextInput({ placeholder, radius, width, height, maxLength, value, onCha
 }
 
 TextInput.propTypes = {
+    type: PropTypes.string,
     placeholder: PropTypes.string,
     radius: PropTypes.oneOf(["small", "big"]),
     width: PropTypes.string,
@@ -34,6 +45,7 @@ TextInput.propTypes = {
 };
 
 TextInput.defaultProps = {
+    type: "text",
     placeholder: "",
     radius: "small",
     width: "300px",
@@ -42,6 +54,7 @@ TextInput.defaultProps = {
 };
 
 const TextInputWrapper = styled.input`
+    font-size: 20px;
     box-sizing: border-box;
     border-radius: ${({ radius }) => radiusObj[radius]};
     ${({ width, height }) => `

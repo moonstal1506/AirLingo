@@ -41,10 +41,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
 		String matchingData =
 			"{\"sessionId\": \"" + sessionId + "\", \"studyId\": \"" + studyId + "\", \"matchingResponseDto\": "
 				+ new Gson().toJson(matchingResponseDto) + "}";
-
 		for (String userNickname : userNicknames) {
-			messagingTemplate.convertAndSendToUser(userNickname, "/queue/matchingData", matchingData);
+			messagingTemplate.convertAndSend("/queue/matchingData/" + userNickname, matchingData);
 		}
 	}
-
 }

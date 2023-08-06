@@ -4,7 +4,7 @@ import processApiResponse from "@/utils/api";
 const getUserProfile = async ({ responseFunc, data }) => {
     const { userLoginId } = data;
     try {
-        const response = await instance.get(`/user/${userLoginId}`);
+        const response = await instance.get(`/api/user/${userLoginId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

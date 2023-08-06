@@ -3,9 +3,8 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 import { ReactComponent as ScriptIcon } from "@/assets/imgs/icons/script-icon.svg";
 
-function ScriptSliderMenu({ contentGroup }) {
+function ScriptSliderMenu({ contentGroup, onClick, slideOpen }) {
     const [slideIdx, setSlideIdx] = useState(0);
-    const [slideOpen, setSlideOpen] = useState(false);
     const CurrentContent = contentGroup[slideIdx].Content;
 
     const handleClickButton = (e) => {
@@ -14,11 +13,9 @@ function ScriptSliderMenu({ contentGroup }) {
         setSlideIdx(+closestButton.id);
     };
 
-    const handleClickSlideButton = () => setSlideOpen((prev) => !prev);
-
     return (
         <SlideMenuContainer>
-            <SlideButtonWrapper slideOpen={slideOpen} onClick={handleClickSlideButton}>
+            <SlideButtonWrapper slideOpen={slideOpen} onClick={onClick}>
                 <ScriptIcon />
                 스크립트
             </SlideButtonWrapper>
@@ -41,10 +38,12 @@ function ScriptSliderMenu({ contentGroup }) {
 ScriptSliderMenu.propTypes = {
     contentGroup: PropTypes.arrayOf(
         PropTypes.shape({
-            Content: PropTypes.func.isRequired,
+            Content: PropTypes.node.isRequired,
             Icon: PropTypes.elementType.isRequired,
         }),
     ).isRequired,
+    onClick: PropTypes.func.isRequired,
+    slideOpen: PropTypes.bool.isRequired,
 };
 
 const SlideMenuContainer = styled.div`

@@ -26,6 +26,7 @@ import com.ssafy.airlingo.global.util.ClovaSpeechClient;
 import com.ssafy.airlingo.global.exception.NotExistScriptException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,11 +52,11 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	@Transactional
-	public ScriptAfterSTTResponseDto createScript(CreateScriptRequestDto createScriptRequestDto) throws IOException, ParseException {
+	public ScriptAfterSTTResponseDto createScript(MultipartFile voiceFile , Long studyId , Long cardId) throws IOException, ParseException {
 		log.info("ScriptServiceImpl_createScript || 녹음 파일 s3저장 및 스크립트 생성");
-		Study study = studyRepository.findById(createScriptRequestDto.getStudyId()).get();
-		Card card = cardRepository.findById(createScriptRequestDto.getCardId()).get();
-		String voiceFileUrl = amazon3SService.uploadVoiceFileToS3(createScriptRequestDto.getVoiceFile());
+		Study study = studyRepository.findById(studyId).get();
+		Card card = cardRepository.findById(cardId).get();
+		String voiceFileUrl = amazon3SService.uploadVoiceFileToS3(voiceFile);
 
 		List<SentenceResponseDto> sentenceResponseDtoList = voiceFileSTT(voiceFileUrl);
 		Long scriptId = scriptRepository.save(Script.createNewScript(study, card, voiceFileUrl)).getScriptId();

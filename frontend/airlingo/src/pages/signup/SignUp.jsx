@@ -105,13 +105,14 @@ function SignUp() {
 }
 
 const SignUpContainer = styled.div`
-    padding-top: 50px;
+    padding-top: 210px;
     padding-bottom: 50px;
     flex-direction: column;
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 30px;
+    font-family: Pretendard;
 `;
 
 const SignUpWrapper = styled.div`

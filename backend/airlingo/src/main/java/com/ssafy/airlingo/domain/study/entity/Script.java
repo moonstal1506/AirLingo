@@ -62,6 +62,7 @@ public class Script extends BaseTimeEntity {
 			.korCard(this.card.getCardKor())
 			.engCard(this.card.getCardEng())
 			.createdDate(this.getCreatedDate())
+			.modifiedDate(this.getModifiedDate())
 			.build();
 	}
 

@@ -1,7 +1,19 @@
 import instance from "./instance";
-import getLogout from "./auth";
+import { getLogout, loginUser } from "./auth";
 import getUserProfile from "./user";
 import getLanguage from "./language";
-import { getConcurrentUser, postMatching } from "./matching";
+import { getConcurrentUser, postMatching, postOpenviduToken } from "./matching";
+import { getCardCode, getCard } from "./card";
 
-export { instance, getLogout, getUserProfile, getLanguage, getConcurrentUser, postMatching };
+export {
+    instance,
+    loginUser,
+    getLogout,
+    getUserProfile,
+    getLanguage,
+    getConcurrentUser,
+    postMatching,
+    postOpenviduToken,
+    getCardCode,
+    getCard,
+};

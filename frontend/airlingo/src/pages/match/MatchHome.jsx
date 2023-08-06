@@ -1,7 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/features/User/UserSlice";
+import { formatLanguage } from "@/utils/format";
 import ticketBackground from "@/assets/imgs/ticket-background.svg";
 import { ReactComponent as RightArrowIcon } from "@/assets/imgs/icons/arrow-right-icon.svg";
 import { ReactComponent as koreaFlagIcon } from "@/assets/imgs/icons/korea-flag-icon.svg";
@@ -11,51 +13,71 @@ import { TextButton } from "@/components/common/button";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import Dropdown from "@/components/common/dropdown";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
-import useRouter from "@/hooks";
+import { useRouter } from "@/hooks";
 import { getConcurrentUser } from "@/api";
 import Modal from "../../components/modal";
 
-function WaitingReady() {
+function MatchHome() {
+    const { routeTo } = useRouter();
+    const { userNickname, userNativeLanguage, userLanguages } = useSelector(selectUser);
     const [modalOpen, setModalOpen] = useState(false);
-    const [studyLanguage, setStudyLanguage] = useState({});
-    const [skillLanguage, setSkillLanguage] = useState({});
     const [concurrentUser, setConcurrentUser] = useState({
         waitingUsersSize: 0,
         concurrentUsersSize: 0,
     });
 
-    const { userNickname, skillLanguageList, studyLanguageList } = useSelector(selectUser);
+    const skillLanguageList = useMemo(
+        () => [formatLanguage(userNativeLanguage)],
+        [userNativeLanguage],
+    );
+    const studyLanguageList = useMemo(
+        () => (userLanguages.length === 0 ? [{}] : userLanguages).map((cur) => formatLanguage(cur)),
+        [userLanguages],
+    );
+
+    const [skillLanguage, setSkillLanguage] = useState({ ...skillLanguageList[0] });
+    const [studyLanguage, setStudyLanguage] = useState({ ...studyLanguageList[0] });
+
+    const isUserInfoValid = () =>
+        userNickname &&
+        Object.keys(userNativeLanguage).length > 0 &&
+        userLanguages.length > 0 &&
+        skillLanguageList.length > 0 &&
+        studyLanguageList.length > 0;
+
+    const fetchConcurrentUser = async () => {
+        await getConcurrentUser({
+            responseFunc: {
+                200: (response) => setConcurrentUser({ ...response.data }),
+            },
+        });
+    };
 
     useEffect(() => {
-        async function fetchData() {
-            await getConcurrentUser({
-                responseFunc: {
-                    200: (response) => setConcurrentUser({ ...response.data }),
-                },
-            });
+        if (isUserInfoValid()) {
+            fetchConcurrentUser();
         }
-        fetchData();
-    }, []);
+        // else {
+        //     routeTo("/");
+        // }
+    }, [skillLanguageList, studyLanguage]);
 
-    const { routeTo } = useRouter();
-    const handleClickNormalMatching = () => {
-        routeTo("/waiting", {
-            state: { premium: false, studyLanguage, skillLanguage },
-        });
+    const handleMatching = (premium) => {
+        if (studyLanguage) {
+            routeTo("/matchqueue", {
+                state: { premium, studyLanguageId: studyLanguage.id },
+            });
+        } else {
+            alert("관심언어를 설정해주세요!");
+        }
     };
 
-    const handleClickPremiumMatching = () => {
-        setModalOpen(true);
-    };
-
-    const handleClickPremiumSelect = () => {
-        routeTo("/waiting", {
-            state: { premium: true, studyLanguage, skillLanguage },
-        });
-    };
+    const handleClickNormalMatching = () => handleMatching(false);
+    const handleClickPremiumMatching = () => setModalOpen(true);
+    const handleClickPremiumSelect = () => handleMatching(true);
 
     return (
-        <WaitingReadyContainer>
+        <MatchHomeContainer>
             {modalOpen && (
                 <Modal title="프리미엄 매칭" modalOpen={modalOpen} Icon={PremiumIcon}>
                     <ModalTextBox>
@@ -82,7 +104,7 @@ function WaitingReady() {
                     </ModalButtonBox>
                 </Modal>
             )}
-            <WaitingReadyTitle>자, 이제 떠나볼까요!</WaitingReadyTitle>
+            <MatchHomeTitle>자, 이제 떠나볼까요!</MatchHomeTitle>
             <TicketBackgroundBox>
                 <TicketContentBox>
                     <TicketContentUpperBox>
@@ -92,7 +114,7 @@ function WaitingReady() {
                             <Dropdown
                                 width="175px"
                                 shape="negative"
-                                data={[...skillLanguageList]}
+                                data={skillLanguageList}
                                 defaultOption={{ id: "135", label: "한국어", img: koreaFlagIcon }}
                                 selectedOption={skillLanguage}
                                 onChange={setSkillLanguage}
@@ -105,7 +127,7 @@ function WaitingReady() {
                             <Dropdown
                                 width="175px"
                                 shape="negative"
-                                data={[...studyLanguageList]}
+                                data={studyLanguageList}
                                 defaultOption={{ id: "242", label: "일본어", img: japanFlagIcon }}
                                 selectedOption={studyLanguage}
                                 onChange={setStudyLanguage}
@@ -156,7 +178,7 @@ function WaitingReady() {
                     </div>
                 </TicketSubContentBox>
             </TicketBackgroundBox>
-        </WaitingReadyContainer>
+        </MatchHomeContainer>
     );
 }
 
@@ -182,7 +204,7 @@ const ModalButtonBox = styled.div`
     gap: 50px;
 `;
 
-const WaitingReadyContainer = styled.div`
+const MatchHomeContainer = styled.div`
     position: relative;
     width: 100%;
     height: calc(100% - 120px);
@@ -193,7 +215,7 @@ const WaitingReadyContainer = styled.div`
     gap: 40px;
 `;
 
-const WaitingReadyTitle = styled.div`
+const MatchHomeTitle = styled.div`
     color: #000;
     text-align: center;
     font-size: 45px;
@@ -309,4 +331,4 @@ const TooltipBox = styled.div`
     position: relative;
     z-index: 100;
 `;
-export default WaitingReady;
+export default MatchHome;
