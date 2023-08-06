@@ -1,19 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 
-import { useSelector, useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { selectMeeting, AddOpenviduToken } from "../../features/Meeting/MeetingSlice";
+import { selectMeeting } from "../../features/Meeting/MeetingSlice";
 import receiptPaper from "@/assets/imgs/img/receipt-paper.jpg";
 import { formatTime } from "@/utils/format";
 import loginSuccessImage from "@/assets/imgs/img/Login-Success-Image.png";
 import { useRouter } from "@/hooks";
-import { postOpenviduToken } from "@/api";
 
 function MatchResult() {
-    const dispatch = useDispatch();
+    // eslint-disable-next-line no-unused-vars
     const { sessionId, otherUser } = useSelector(selectMeeting);
-    const [time, setTime] = useState(30);
+    const [time, setTime] = useState(10);
     const { routeTo } = useRouter();
 
     useEffect(() => {
@@ -23,18 +22,6 @@ function MatchResult() {
     }, [time, routeTo]);
 
     useEffect(() => {
-        async function fetchData() {
-            await postOpenviduToken({
-                responseFunc: {
-                    200: (response) => {
-                        dispatch(AddOpenviduToken({ openviduToken: response.data.data }));
-                    },
-                },
-                data: { sessionId },
-            });
-        }
-
-        fetchData();
         const interval = setInterval(() => {
             setTime((prev) => (prev > 0 ? prev - 1 : 0));
         }, 1000);

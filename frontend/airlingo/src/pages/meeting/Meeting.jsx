@@ -9,11 +9,16 @@ import { ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
 import { FabButton, TextButton } from "@/components/common/button";
 import * as Icons from "@/assets/imgs/icons";
-import { AddMeetingData, selectMeeting } from "@/features/Meeting/MeetingSlice";
+import { AddDidReport, AddMeetingData, selectMeeting } from "@/features/Meeting/MeetingSlice";
 import { getCard, getCardCode, postOpenviduToken } from "@/api";
 import Overlay from "@/components/common/overlay";
 import Modal from "@/components/modal";
 import { ReactComponent as DictionaryIcon } from "@/assets/imgs/icons/dictionary-icon.svg";
+import Dropdown from "@/components/common/dropdown";
+import { getReportItems, postReport } from "@/api/report";
+import { TextArea } from "@/components/common/input";
+import { selectUser } from "@/features/User/UserSlice";
+import { formatReportItem } from "@/utils/format";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -28,6 +33,11 @@ const contentGroupData = [
 
 function Meeting() {
     const dispatch = useDispatch();
+    const [reportList, setReportList] = useState([]);
+    const [cardCode, setCardCode] = useState([]);
+    const { sessionId, meetingData, didReport } = useSelector(selectMeeting);
+    const { userId } = useSelector(selectUser);
+
     const [session, setSession] = useState(null); // Initial value changed to null
     const [publisher, setPublisher] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
@@ -35,14 +45,16 @@ function Meeting() {
     const [isActiveVideo, setIsActiveVideo] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
     const [isActiveSlide, setIsActiveSlide] = useState(false);
-    const [cardCode, setCardCode] = useState([]);
-    const { sessionId, meetingData } = useSelector(selectMeeting);
     const [anotherConnection, setAnotherConnection] = useState({});
-    console.log(meetingData);
     const [openResponseWaitModal, setOpenResponseWaitModal] = useState(false);
     const [openCardModal, setOpenCardModal] = useState(false); // 카드 모달의 on/off
     const [openCardRequestModal, setOpenCardRequestModal] = useState(false); // 상대방이 선택한 대주제를 허용할지 묻는 모달 on/off
     const [requestCardCode, setRequestCardCode] = useState("");
+
+    const [openReportModal, setOpenReportModal] = useState(false); // 신고 모달의 on/off
+    const [reportState, setReportState] = useState({});
+    const [reportText, setReportText] = useState("");
+    const [openReportConfirmModal, setOpenReportConfirmModal] = useState(false);
 
     // 세션 연결 함수
     async function connectSession() {
@@ -69,6 +81,16 @@ function Meeting() {
                     setCardCode([...response.data.data]);
                 },
             },
+        });
+
+        await getReportItems({
+            responseFunc: {
+                200: (response) => {
+                    console.log("신고 목록 받기 성공!", response.data.data);
+                    setReportList([...response.data.data].map((cur) => formatReportItem(cur)));
+                },
+            },
+            data: { languageCode: "KOR" },
         });
 
         curSession.on("streamCreated", (event) => {
@@ -214,11 +236,15 @@ function Meeting() {
     };
 
     const handleReportClick = () => {
-        setActiveButton((prevButtonName) => {
-            if (prevButtonName === "Report") return null;
-            return "Report";
-        });
-        console.log("Report");
+        // 1. 현재 사용자가, 상대방을 이미 신고한 전적이 있는지 확인한다.
+        if (didReport) {
+            setActiveButton((prevButtonName) => {
+                if (prevButtonName === "Report") return null;
+                return "Report";
+            });
+        }
+
+        setOpenReportModal((prev) => !prev);
     };
 
     const handleExitClick = () => {
@@ -287,6 +313,25 @@ function Meeting() {
             },
         });
         setOpenCardRequestModal(false);
+    };
+
+    const handleClickReportUser = async () => {
+        await postReport({
+            responseFunc: {
+                200: () => {
+                    console.log("신고 성공!");
+                    // 2. 신고 모달의 상태를 변경한다.
+                    setOpenReportModal((prev) => !prev);
+                    setOpenReportConfirmModal(true);
+                },
+            },
+            data: {
+                reportItemId: reportState.id,
+                userId,
+                description: reportText,
+            },
+        });
+        dispatch(AddDidReport(true));
     };
 
     const buttonList = [
@@ -395,6 +440,71 @@ function Meeting() {
                     <ModalTextBox>
                         <ModalTextWrapper>상대방의 응답을 대기중입니다...</ModalTextWrapper>
                     </ModalTextBox>
+                </Modal>
+            )}
+            {openReportModal && (
+                <Modal
+                    zIdx={4}
+                    Icon={DictionaryIcon}
+                    title="신고하기"
+                    iconColor="red"
+                    titleColor="red"
+                >
+                    <ModalTextWrapper weight="400px">
+                        해당 랭커를 다음과 같은 사유로 신고하시겠습니까?
+                    </ModalTextWrapper>
+                    <ModalContentBox>
+                        <ModalTextWrapper weight="700px">신고 사유</ModalTextWrapper>
+                        <Dropdown
+                            width="400px"
+                            placeholder="신고 사유를 선택해주세요"
+                            onChange={setReportState}
+                            selectedOption={reportState}
+                            data={reportList}
+                        />
+                    </ModalContentBox>
+                    <ModalContentBox>
+                        <ModalTextWrapper weight="700px">상세 내용</ModalTextWrapper>
+                        <TextArea
+                            placeholder="상세 내용을 작성해주세요."
+                            radius="big"
+                            height="300px"
+                            value={reportText}
+                            onChange={setReportText}
+                        />
+                    </ModalContentBox>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="신고"
+                            onClick={handleClickReportUser}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setOpenReportModal(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
+            {openReportConfirmModal && (
+                <Modal
+                    zIdx={4}
+                    Icon={DictionaryIcon}
+                    title="신고하기"
+                    iconColor="red"
+                    titleColor="red"
+                >
+                    <ModalTextWrapper weight="400px">
+                        해당 랭커에 대한 신고가 정상적으로 접수되었습니다.
+                    </ModalTextWrapper>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => setOpenReportConfirmModal(false)}
+                        />
+                    </ModalButtonBox>
                 </Modal>
             )}
             <VideoContainer>
@@ -559,11 +669,19 @@ const ModalTextBox = styled.div`
     flex-direction: column;
 `;
 
+const ModalContentBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: row;
+    gap: 50px;
+`;
+
 const ModalTextWrapper = styled.span`
     color: ${({ color }) => color};
     text-align: center;
     font-size: 25px;
-    font-weight: 400;
+    font-weight: ${({ weight }) => weight};
     line-height: 44px;
 `;
 
