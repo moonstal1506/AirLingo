@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import successImage from "@/assets/imgs/img/Login-Success-Image.png";
-import useRouter from "@/hooks";
+import { useRouter } from "@/hooks";
 import { TextButton } from "@/components/common/button";
 
 function SignUpResult() {

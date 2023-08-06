@@ -151,7 +151,7 @@ SignUpTerms.propTypes = {
         nickname: PropTypes.string,
         email: PropTypes.string,
         primaryLang: PropTypes.number,
-        learningLang: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number, PropTypes.string)),
+        learningLangs: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number, PropTypes.string)),
     }).isRequired,
     onHandleNextStep: PropTypes.func.isRequired,
 };

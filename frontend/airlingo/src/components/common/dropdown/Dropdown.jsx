@@ -1,6 +1,4 @@
-/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
-
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
@@ -21,7 +19,7 @@ const shapeStyle = {
         color: #FFFFFF;
     `,
     negative: `
-        background-color: #FFFFFF;
+        background-color: ${primary1};
         border: 3px solid ${primary4};
         color: ${primary4};
     `,
@@ -85,11 +83,12 @@ function Dropdown({
                 {selectedOption.id ? (
                     <>
                         <div>
-                            {typeof selectedOption.img === "string" ? (
-                                <DropdownItemImg src={selectedOption.img} alt="langIcon" />
-                            ) : (
-                                <selectedOption.img />
-                            )}
+                            {selectedOption.img !== null &&
+                                (typeof selectedOption.img === "string" ? (
+                                    <DropdownItemImg src={selectedOption.img} alt="dropdownIcon" />
+                                ) : (
+                                    <selectedOption.img />
+                                ))}
                         </div>
                         <div>{selectedOption.label}</div>
                     </>
@@ -104,11 +103,12 @@ function Dropdown({
                 {data.map((option) => (
                     <DropdownOption key={option.id} onClick={() => handleOptionClick(option.id)}>
                         <div>
-                            {typeof option.img === "string" ? (
-                                <DropdownItemImg src={option.img} alt="langIcon" />
-                            ) : (
-                                <option.img />
-                            )}
+                            {option.img !== null &&
+                                (typeof option.img === "string" ? (
+                                    <DropdownItemImg src={option.img} alt="dropdownIcon" />
+                                ) : (
+                                    <option.img />
+                                ))}
                         </div>
                         <div>{option.label}</div>
                     </DropdownOption>
@@ -117,6 +117,50 @@ function Dropdown({
         </DropdownWrapper>
     );
 }
+
+Dropdown.propTypes = {
+    width: PropTypes.string,
+    data: PropTypes.arrayOf(
+        PropTypes.shape({
+            id: PropTypes.string.isRequired,
+            label: PropTypes.string.isRequired,
+            img: PropTypes.oneOfType([
+                PropTypes.string,
+                PropTypes.elementType,
+                PropTypes.oneOf([null]),
+            ]).isRequired,
+        }),
+    ),
+    iconColor: PropTypes.string,
+    shape: PropTypes.oneOf(["positive", "negative"]),
+    selectedOption: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired,
+        img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType, PropTypes.oneOf([null])])
+            .isRequired,
+    }),
+    defaultOption: PropTypes.shape({
+        id: PropTypes.string.isRequired,
+        label: PropTypes.string.isRequired,
+        img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType, PropTypes.oneOf([null])])
+            .isRequired,
+    }),
+    placeholder: PropTypes.string,
+    onChange: PropTypes.func,
+};
+
+Dropdown.defaultProps = {
+    width: "200px",
+    data: [],
+    iconColor: "black",
+    shape: "positive",
+    selectedOption: { id: "", img: KoreaFlagIcon, label: "" },
+    defaultOption: null,
+    placeholder: "",
+    onChange: () => {},
+};
+
+// ----------------------------------------------------------------------------------------------------
 
 const DropdownWrapper = styled.div`
     display: flex;
@@ -189,44 +233,6 @@ const DropdownItemImg = styled.img`
     width: 25px;
     height: 25px;
 `;
-
-// ----------------------------------------------------------------------------------------------------
-
-Dropdown.propTypes = {
-    width: PropTypes.string,
-    data: PropTypes.arrayOf(
-        PropTypes.shape({
-            id: PropTypes.string.isRequired,
-            img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]).isRequired,
-            label: PropTypes.string.isRequired,
-        }),
-    ),
-    iconColor: PropTypes.string,
-    shape: PropTypes.oneOf(["positive", "negative"]),
-    selectedOption: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]).isRequired,
-        label: PropTypes.string.isRequired,
-    }),
-    defaultOption: PropTypes.shape({
-        id: PropTypes.string.isRequired,
-        img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]).isRequired,
-        label: PropTypes.string.isRequired,
-    }),
-    placeholder: PropTypes.string,
-    onChange: PropTypes.func,
-};
-
-Dropdown.defaultProps = {
-    width: "200px",
-    data: [],
-    iconColor: "black",
-    shape: "positive",
-    selectedOption: { id: "", img: KoreaFlagIcon, label: "" },
-    defaultOption: null,
-    placeholder: "",
-    onChange: () => {},
-};
 
 // ----------------------------------------------------------------------------------------------------
 

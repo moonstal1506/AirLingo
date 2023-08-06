@@ -6,20 +6,20 @@ function formatTime(time) {
     }${remainingSeconds}`;
 }
 
-function formatLanguage(Language) {
+function formatLanguage(language) {
     if (
-        !Language ||
-        !("languageId" in Language) ||
-        !("languageKorName" in Language) ||
-        !("imageUrl" in Language)
+        !language ||
+        !("languageId" in language) ||
+        !("languageKorName" in language) ||
+        !("imageUrl" in language)
     ) {
         return {
             id: "1",
             label: "한국어",
-            img: "public/favicon-192x192.png",
+            img: "https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg",
         };
     }
-    const { languageId, languageKorName, imageUrl } = Language;
+    const { languageId, languageKorName, imageUrl } = language;
     return {
         id: languageId,
         label: languageKorName,
@@ -27,4 +27,15 @@ function formatLanguage(Language) {
     };
 }
 
-export { formatTime, formatLanguage };
+function formatGrade(grade) {
+    const { gradeId, gradeName, gradeKorName } = grade;
+    return {
+        id: gradeId,
+        label: `${gradeKorName}(${gradeName})`,
+        img: null,
+    };
+}
+
+// ----------------------------------------------------------------------------------------------------
+
+export { formatTime, formatLanguage, formatGrade };

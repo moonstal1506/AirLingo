@@ -23,7 +23,7 @@ function SignUp() {
         nickname: "",
         email: "",
         primaryLang: null,
-        learningLang: [],
+        learningLangs: [],
     });
 
     const handleNextStep = (state) => {
