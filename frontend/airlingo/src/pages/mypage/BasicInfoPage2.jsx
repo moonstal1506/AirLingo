@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
+import Dropdown from "@/components/common/dropdown";
 import { IconButton, TextButton } from "@/components/common/button";
 import { TextInput } from "@/components/common/input";
 import Tooltip from "@/components/common/tooltip/Tooltip";
@@ -10,6 +11,11 @@ import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
 import { ReactComponent as ModifyIcon } from "@/assets/imgs/icons/modify-icon.svg";
 import { ReactComponent as KeyIcon } from "@/assets/imgs/icons/key-icon.svg";
 import { ReactComponent as AlertIcon } from "@/assets/imgs/icons/alert-icon.svg";
+import { ReactComponent as HeartIcon } from "@/assets/imgs/icons/heart-icon.svg";
+import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
+import { ReactComponent as BritainFlagIcon } from "@/assets/imgs/icons/flag-britain-icon.svg";
+import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-japan-icon.svg";
+import { ReactComponent as ChinaFlagIcon } from "@/assets/imgs/icons/flag-china-icon.svg";
 
 const { primary1 } = theme.colors;
 
@@ -52,6 +58,61 @@ function BasicInfoPage2() {
     const [quitModalOpen, setQuitModalOpen] = useState(false);
     const handleQuitModalOpen = () => {
         setQuitModalOpen(true);
+    };
+
+    // language modal
+    const [languageModalOpen, setLanguageModalOpen] = useState(false);
+    const handleLanguageModalOpen = () => {
+        setLanguageModalOpen(true);
+    };
+
+    const [totalLanguage, setTotalLanguage] = useState([
+        { id: "135", label: "한국어", img: KoreaFlagIcon },
+        { id: "136", label: "영어", img: BritainFlagIcon },
+        { id: "137", label: "일본어", img: JapanFlagIcon },
+        { id: "138", label: "중국어", img: ChinaFlagIcon },
+    ]);
+
+    const level = [
+        { id: "135", label: "A1", img: KoreaFlagIcon },
+        { id: "136", label: "A2", img: JapanFlagIcon },
+        { id: "137", label: "B1", img: JapanFlagIcon },
+        { id: "138", label: "B2", img: JapanFlagIcon },
+        { id: "139", label: "C1", img: JapanFlagIcon },
+        { id: "140", label: "C2", img: JapanFlagIcon },
+    ];
+
+    const [studyLanguage, setStudyLanguage] = useState([]);
+    const [selectedLevel, setSelectedLevel] = useState([]);
+    const [languageList, setLanguageList] = useState([]);
+
+    const handleClickLanguage = () => {
+        if (studyLanguage.label && selectedLevel.label) {
+            setLanguageList((prev) => [
+                ...prev,
+                {
+                    id: studyLanguage.id,
+                    img: studyLanguage.img,
+                    title: studyLanguage.label,
+                    level: selectedLevel.label,
+                },
+            ]);
+
+            // 필터링하여 선택된 관심언어를 드롭다운에서 제거
+            setTotalLanguage((prev) =>
+                prev.filter((language) => language.label !== studyLanguage.label),
+            );
+
+            // 기존 상태 삭제
+            setSelectedLevel({});
+            setStudyLanguage({});
+        }
+    };
+
+    const handleDeleteLanguage = (index) => {
+        const { id, title, img } = languageList.find((_, i) => i === index);
+        setTotalLanguage((prev) => [...prev, { id, label: title, img }]);
+        setLanguageList((prev) => prev.filter((_, i) => i !== index));
     };
 
     return (
@@ -98,6 +159,76 @@ function BasicInfoPage2() {
                             shape="positive-curved"
                             text="취소"
                             onClick={() => setPasswordModalOpen(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
+            {languageModalOpen && (
+                <Modal title="관심언어 추가" modalOpen={languageModalOpen} Icon={HeartIcon}>
+                    <SignupLanguageBox>
+                        <StyledSelectContainer>
+                            <StyledSelectLanguage>
+                                <Dropdown
+                                    width="180px"
+                                    shape="negative"
+                                    data={totalLanguage}
+                                    placeholder="관심 언어 설정"
+                                    selectedOption={studyLanguage}
+                                    onChange={setStudyLanguage}
+                                />
+                            </StyledSelectLanguage>
+                            <StyledSelectLevel>
+                                <Dropdown
+                                    width="160px"
+                                    shape="negative"
+                                    data={level}
+                                    placeholder="숙련도 설정"
+                                    selectedOption={selectedLevel}
+                                    onChange={setSelectedLevel}
+                                />
+                            </StyledSelectLevel>
+                            <TooltipBox>
+                                <Tooltip
+                                    position={{
+                                        horizontal: "right",
+                                        vertical: "bottom",
+                                        direction: "down",
+                                    }}
+                                >
+                                    <TooltipContentContainer />
+                                </Tooltip>
+                            </TooltipBox>
+                            <TextButton text="추가하기" onClick={handleClickLanguage} />
+                        </StyledSelectContainer>
+                    </SignupLanguageBox>
+                    {languageList.length > 0 && (
+                        <SelectedLanguagesContainer>
+                            {languageList.map((language) => (
+                                <SelectedLanguage key={language.id}>
+                                    <SelectedLanguageLabel>
+                                        <language.img />
+                                        <span>{language.title}</span>
+                                        <span>{language.level}</span>
+                                        <DeleteButton
+                                            onClick={() => handleDeleteLanguage(language.id)}
+                                        >
+                                            X
+                                        </DeleteButton>
+                                    </SelectedLanguageLabel>
+                                </SelectedLanguage>
+                            ))}
+                        </SelectedLanguagesContainer>
+                    )}
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => setLanguageModalOpen(false)}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setLanguageModalOpen(false)}
                         />
                     </ModalButtonBox>
                 </Modal>
@@ -149,7 +280,11 @@ function BasicInfoPage2() {
                             <TooltipContentContainer />
                         </Tooltip>
                     </TooltipBox>
-                    <IconButton shape="blacklined" icon={ModifyIcon} />
+                    <IconButton
+                        shape="blacklined"
+                        icon={ModifyIcon}
+                        onClick={handleLanguageModalOpen}
+                    />
                 </TitleContainer>
                 <LanguageContentBox>
                     <LanguageBox>
@@ -244,6 +379,121 @@ const ModalDescriptionTextBox = styled.div`
     padding: 20px 0px;
 `;
 
+// 언어 모달
+const SignupLanguageBox = styled.div`
+    width: 500px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: auto;
+    display: inline-flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    position: relative; /* position: relative 추가 */
+    z-index: 1;
+`;
+
+const StyledSelectContainer = styled.div`
+    display: flex;
+    width: 500px;
+    height: 68px;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 2;
+    align-items: center;
+`;
+
+const StyledSelectLanguage = styled.div`
+    color: rgba(0, 0, 0, 0.5);
+    font-family: Pretendard;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 44px;
+    display: flex;
+    width: 180px;
+    height: 50px;
+    padding: 10px 0px;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+`;
+
+const StyledSelectLevel = styled.div`
+    color: rgba(0, 0, 0, 0.5);
+    font-family: Pretendard;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 300;
+    line-height: 44px;
+    flex: 1;
+    display: flex;
+    width: 160px;
+    height: 50px;
+    padding: 5px 10px;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const SelectedLanguagesContainer = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    display: flex;
+`;
+
+const SelectedLanguage = styled.div`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: Pretendard;
+    font-size: 16px;
+`;
+
+const SelectedLanguageLabel = styled.div`
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-radius: 30px;
+    background: #efefef;
+    color: #000;
+    font-family: Pretendard;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    vertical-align: middle;
+    text-align: center;
+    width: 465px;
+    height: 45px;
+    padding: 10px 20px;
+
+    .language-img {
+        width: 24px;
+        height: 24px;
+        margin-right: 10px;
+    }
+
+    .language-title {
+        flex: 1;
+    }
+
+    .language-level {
+        margin-right: 10px;
+    }
+`;
+
+const DeleteButton = styled.button`
+    background: transparent;
+    border: none;
+    color: red;
+    cursor: pointer;
+    font-size: 24px;
+`;
+
+// 회원 탈퇴 모달
 const DescriptionTextWrapper = styled.div`
     font-weight: 400;
     line-height: 44px;
@@ -254,6 +504,7 @@ const WaitingTimeTextWrapper = styled.div`
     font-weight: 700;
 `;
 
+// 여권 오른쪽
 const LanguageContainer = styled.div`
     display: inline-flex;
     flex-direction: column;
