@@ -2,12 +2,18 @@ import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 import ProfileBar from "../profileBar";
 
-function ChatList({ data }) {
+function ChatList({ data, onClick }) {
+    const handleClickListItem = (e) => {
+        const currentList = e.target.closest("li");
+        if (!currentList || onClick === null) return;
+
+        onClick(currentList.key);
+    };
     return (
         <ChatListContainer>
-            <ChatListBox>
-                {data.map(({ imgSrc, nickname, text }) => (
-                    <ChatListItem>
+            <ChatListBox onClick={handleClickListItem}>
+                {data.map(({ id, imgSrc, nickname, text }) => (
+                    <ChatListItem key={`${id}_${nickname}`}>
                         <ProfileWrapper>
                             <ProfileBar imgSize="tiny" imgSrc={imgSrc} nickname={nickname} />
                         </ProfileWrapper>
@@ -27,6 +33,11 @@ ChatList.propTypes = {
             text: PropTypes.string.isRequired,
         }),
     ).isRequired,
+    onClick: PropTypes.func,
+};
+
+ChatList.defaultProps = {
+    onClick: null,
 };
 
 const ChatListContainer = styled.div`
