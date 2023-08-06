@@ -1,17 +1,67 @@
-import { useState } from "react";
+import PropTypes from "prop-types";
 import styled from "@emotion/styled";
-import { css } from "@emotion/react"; // emotion의 css 함수를 import
+import { css } from "@emotion/react";
 import theme from "@/assets/styles/Theme";
 import useRouter from "@/hooks";
 
 const { white, black, red, yellow, green, blue } = theme.colors;
+
+function TabBar({ activeTab }) {
+    const { routeTo } = useRouter();
+
+    return (
+        <TabBarContainer>
+            <TabButtonWrapper>
+                <TabButton
+                    color={red}
+                    textcolor={white}
+                    active={activeTab === "basicinfo"}
+                    onClick={() => routeTo("/basicinfo")}
+                >
+                    기본정보
+                </TabButton>
+            </TabButtonWrapper>
+            <TabButtonWrapper>
+                <TabButton
+                    color={yellow}
+                    textcolor={black}
+                    active={activeTab === "statistic"}
+                    onClick={() => routeTo("/statistic")}
+                >
+                    학습통계
+                </TabButton>
+            </TabButtonWrapper>
+            <TabButtonWrapper>
+                <TabButton
+                    color={green}
+                    textcolor={black}
+                    active={activeTab === "wordbook"}
+                    onClick={() => routeTo("/wordbook")}
+                >
+                    단어장
+                </TabButton>
+            </TabButtonWrapper>
+            <TabButtonWrapper>
+                <TabButton
+                    color={blue}
+                    textcolor={white}
+                    active={activeTab === "shop"}
+                    onClick={() => routeTo("/shop")}
+                >
+                    상점
+                </TabButton>
+            </TabButtonWrapper>
+        </TabBarContainer>
+    );
+}
 
 const TabBarContainer = styled.div`
     display: inline-flex;
     justify-content: center;
     align-items: center;
     gap: 3px;
-    padding-top: 200px;
+    margin-left: 21px;
+    position: absolute;
 `;
 
 const TabButtonWrapper = styled.div``;
@@ -51,59 +101,8 @@ const TabButton = styled.div`
     }
 `;
 
-function TabBar() {
-    const [activeTab, setActiveTab] = useState("basicinfo");
-    const { routeTo } = useRouter();
-
-    const handleTabClick = (tab) => {
-        setActiveTab(tab);
-        routeTo(tab);
-    };
-
-    return (
-        <TabBarContainer>
-            <TabButtonWrapper>
-                <TabButton
-                    color={red}
-                    textcolor={white}
-                    active={activeTab === "basicinfo"}
-                    onClick={() => handleTabClick("basicinfo")}
-                >
-                    기본정보
-                </TabButton>
-            </TabButtonWrapper>
-            <TabButtonWrapper>
-                <TabButton
-                    color={yellow}
-                    textcolor={black}
-                    active={activeTab === "statistic"}
-                    onClick={() => handleTabClick("statistic")}
-                >
-                    학습통계
-                </TabButton>
-            </TabButtonWrapper>
-            <TabButtonWrapper>
-                <TabButton
-                    color={green}
-                    textcolor={black}
-                    active={activeTab === "wordbook"}
-                    onClick={() => handleTabClick("wordbook")}
-                >
-                    단어장
-                </TabButton>
-            </TabButtonWrapper>
-            <TabButtonWrapper>
-                <TabButton
-                    color={blue}
-                    textcolor={white}
-                    active={activeTab === "shop"}
-                    onClick={() => handleTabClick("shop")}
-                >
-                    상점
-                </TabButton>
-            </TabButtonWrapper>
-        </TabBarContainer>
-    );
-}
+TabBar.propTypes = {
+    activeTab: PropTypes.string.isRequired,
+};
 
 export default TabBar;

@@ -1,11 +1,10 @@
-// import useRouter from "@/hooks";
 import styled from "@emotion/styled";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import recordLogo from "@/assets/imgs/profiles/record-logo.png";
 import { ReactComponent as TimeIcon } from "@/assets/imgs/icons/time-icon.svg";
 import { ReactComponent as ArchiveIcon } from "@/assets/imgs/icons/archive-icon.svg";
-import { TabBar } from "@/components/common/tab";
+import TabBar from "@/components/common/tab/TabBar.jsx";
 
 const StatisticHomeContainer = styled.div`
     width: 100%;
@@ -18,12 +17,14 @@ const StatisticHomeContainer = styled.div`
 `;
 
 function StatisticHome() {
+    const activeTab = "statistic";
+
     return (
         <StatisticHomeContainer id="SC">
             <PassportContainer id="PC">
                 <LeftPageBox>
                     <LeftPassportPages src={leftPassportPages} />
-                    <TabBar />
+                    <TabBar activeTab={activeTab} />
                     <LeftPassportPage>
                         <LogoPageContainer>
                             <LogoImage src={recordLogo} />

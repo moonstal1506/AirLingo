@@ -48,8 +48,8 @@ const routerData = [
     },
     {
         id: 4,
-        path: "/tabbar",
-        label: "tabbar",
+        path: "/shop",
+        label: "shop",
         element: <TabBar />,
         withAuth: false,
         headerExist: true,
