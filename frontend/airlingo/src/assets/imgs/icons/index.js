@@ -11,6 +11,8 @@ import { ReactComponent as ExitIcon } from "@/assets/imgs/icons/exit-icon.svg";
 import { ReactComponent as DictionaryIcon } from "@/assets/imgs/icons/dictionary-icon.svg";
 import { ReactComponent as TranslatorIcon } from "@/assets/imgs/icons/translator-icon.svg";
 import { ReactComponent as ScriptIcon } from "@/assets/imgs/icons/script-icon.svg";
+import { ReactComponent as TimeIcon } from "@/assets/imgs/icons/time-icon.svg";
+import { ReactComponent as ArchiveIcon } from "@/assets/imgs/icons/archive-icon.svg";
 
 export {
     MicOnIcon,
@@ -26,4 +28,6 @@ export {
     DictionaryIcon,
     TranslatorIcon,
     ScriptIcon,
+    TimeIcon,
+    ArchiveIcon,
 };

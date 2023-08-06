@@ -4,6 +4,8 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
+import StatisticHome from "./pages/statistic/StatisticHome";
+import TabBar from "./components/common/tab/TabBar";
 import WordBook from "./pages/mypage/wordBook";
 import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import Login from "./pages/login/Login";
@@ -113,6 +115,15 @@ const routerData = [
     },
     {
         id: 11,
+        path: "/statistic",
+        label: "statistic",
+        element: <StatisticHome />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 12,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
