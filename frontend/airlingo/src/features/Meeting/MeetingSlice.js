@@ -4,8 +4,8 @@ import { PURGE } from "redux-persist";
 const initialState = {
     sessionId: "",
     studyId: "",
-    openviduToken: "",
     otherUser: {},
+    meetingData: {},
 };
 
 export const MeetingSlice = createSlice({
@@ -15,27 +15,26 @@ export const MeetingSlice = createSlice({
         AddSessionId: (state, actions) => {
             state.sessionId = actions.payload.sessionId;
         },
-        AddOpenviduToken: (state, actions) => {
-            state.openviduToken = actions.payload.openviduToken;
-        },
         AddOtherUser: (state, actions) => {
             state.otherUser = actions.payload.otherUser;
         },
         AddStudyId: (state, actions) => {
             state.studyId = actions.payload.studyId;
         },
+        AddMeetingData: (state, actions) => {
+            state.meetingData = actions.payload.meetingData;
+        },
         AddInfo: (state, actions) => {
-            const { sessionId, openviduToken, otherUser, studyId } = actions.payload;
+            const { sessionId, otherUser, studyId } = actions.payload;
             state.sessionId = sessionId;
-            state.openviduToken = openviduToken;
             state.otherUser = otherUser;
             state.studyId = studyId;
         },
         removeInfo: (state) => {
             state.sessionId = "";
-            state.openviduToken = "";
             state.otherUser = {};
             state.studyId = "";
+            state.meetingData = {};
         },
         extraReducers: (builder) => {
             builder.addCase(PURGE, () => initialState);
@@ -43,7 +42,7 @@ export const MeetingSlice = createSlice({
     },
 });
 
-export const { AddSessionId, AddOpenviduToken, AddOtherUser, AddStudyId, AddInfo, removeInfo } =
+export const { AddSessionId, AddOtherUser, AddStudyId, AddMeetingData, AddInfo, removeInfo } =
     MeetingSlice.actions;
 export const selectMeeting = (state) => state.Meeting;
 export default MeetingSlice.reducer;
