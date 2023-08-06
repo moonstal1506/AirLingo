@@ -175,7 +175,7 @@ public class User extends BaseTimeEntity {
 	}
 
 	public void useMileage(int premiumMileage) {
-		userMileage -= premiumMileage;
+		this.userMileage -= premiumMileage;
 	}
 
 	public void updatePassword(String userPassword) {
@@ -199,4 +199,8 @@ public class User extends BaseTimeEntity {
 	public void suspendUser() {
 		this.userState = UserState.INACTIVE;
 	}
+
+    public void addMileage(int mileage) {
+		this.userMileage += mileage;
+    }
 }
