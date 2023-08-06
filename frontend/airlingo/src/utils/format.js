@@ -1,3 +1,5 @@
+import isKeyInObj from "./common";
+
 function formatTime(time) {
     const minutes = Math.floor(time / 60);
     const remainingSeconds = time % 60;
@@ -9,9 +11,9 @@ function formatTime(time) {
 function formatLanguage(Language) {
     if (
         !Language ||
-        !("languageId" in Language) ||
-        !("languageKorName" in Language) ||
-        !("imageUrl" in Language)
+        !isKeyInObj(Language, "languageId") ||
+        !isKeyInObj(Language, "languageKorName") ||
+        !isKeyInObj(Language, "imageUrl")
     ) {
         return {
             id: "1",
@@ -27,4 +29,17 @@ function formatLanguage(Language) {
     };
 }
 
-export { formatTime, formatLanguage };
+function formatReportItem(item) {
+    if (!item || !isKeyInObj(item, "reportItemId") || !isKeyInObj(item, "reportItem")) {
+        return {
+            id: "0",
+            label: "잘못된 신고 사유",
+        };
+    }
+    const { reportItemId, reportItem } = item;
+    return {
+        id: reportItemId,
+        label: reportItem,
+    };
+}
+export { formatTime, formatLanguage, formatReportItem };
