@@ -1,3 +1,5 @@
+import isKeyInObj from "./common";
+
 function formatTime(time) {
     const minutes = Math.floor(time / 60);
     const remainingSeconds = time % 60;
@@ -9,14 +11,14 @@ function formatTime(time) {
 function formatLanguage(language) {
     if (
         !language ||
-        !("languageId" in language) ||
-        !("languageKorName" in language) ||
-        !("imageUrl" in language)
+        !isKeyInObj(language, "languageId") ||
+        !isKeyInObj(language, "languageKorName") ||
+        !isKeyInObj(language, "imageUrl")
     ) {
         return {
-            id: "1",
-            label: "한국어",
-            img: "https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg",
+            id: 0,
+            label: "",
+            img: "",
         };
     }
     const { languageId, languageKorName, imageUrl } = language;
@@ -27,7 +29,35 @@ function formatLanguage(language) {
     };
 }
 
+function formatReportItem(item) {
+    if (!item || !isKeyInObj(item, "reportItemId") || !isKeyInObj(item, "reportItem")) {
+        return {
+            id: "0",
+            label: "잘못된 신고 사유",
+            img: "",
+        };
+    }
+    const { reportItemId, reportItem } = item;
+    return {
+        id: reportItemId,
+        label: reportItem,
+        img: "",
+    };
+}
+
 function formatGrade(grade) {
+    if (
+        !grade ||
+        !isKeyInObj(grade, "gradeId") ||
+        !isKeyInObj(grade, "gradeName") ||
+        !isKeyInObj(grade, "gradeKorName")
+    ) {
+        return {
+            id: 0,
+            label: "실력을 알 수 없음",
+            img: "",
+        };
+    }
     const { gradeId, gradeName, gradeKorName } = grade;
     return {
         id: gradeId,
@@ -38,4 +68,4 @@ function formatGrade(grade) {
 
 // ----------------------------------------------------------------------------------------------------
 
-export { formatTime, formatLanguage, formatGrade };
+export { formatTime, formatLanguage, formatReportItem, formatGrade };

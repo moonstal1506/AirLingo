@@ -36,4 +36,8 @@ public class ScriptResponseDto {
 
 	@Schema(description = "스크립트 생성 시각", example = "2023-07-31 16:19:27.689513")
 	private LocalDateTime createdDate;
+
+	@Schema(description = "스크립트 수정 시각", example = "2023-07-31 16:19:27.689513")
+	private LocalDateTime modifiedDate;
+
 }

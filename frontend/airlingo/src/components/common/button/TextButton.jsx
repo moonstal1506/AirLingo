@@ -80,6 +80,10 @@ const shapeStyle = {
         font-size: 30px;
         font-weight: 700;
     `,
+    quit: `
+        min-width : 120px;
+        border-radius:10px;
+    `,
     login: `
     background-color:#FFF;
     align-items: center;

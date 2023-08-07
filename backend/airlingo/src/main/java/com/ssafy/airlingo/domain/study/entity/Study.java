@@ -3,6 +3,7 @@ package com.ssafy.airlingo.domain.study.entity;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.study.dto.response.ScriptResponseDto;
 import com.ssafy.airlingo.domain.study.dto.response.StudyResponseDto;
@@ -47,11 +48,13 @@ public class Study extends BaseTimeEntity {
 	@Column(nullable = false)
 	private List<UserStudy> userStudies;
 
-	public StudyResponseDto toDto(String userNickname, Language language) {
+	public StudyResponseDto toDto(LanguageDto nativeLanguageDto, String userNickname, Language language) {
 		return StudyResponseDto.builder()
 			.studyId(this.getStudyId())
 			.studyTime(this.getStudyTime())
 			.createdDate(this.getCreatedDate())
+			.modifiedDate(this.getModifiedDate())
+			.nativeLanguageDto(nativeLanguageDto)
 			.imageUrl(language.getImageUrl())
 			.languageKorName(language.getLanguageKorName())
 			.languageEngName(language.getLanguageEngName())
@@ -60,10 +63,15 @@ public class Study extends BaseTimeEntity {
 				.scriptContent(script.getScriptContent())
 				.scriptUrl(script.getScriptUrl())
 				.createdDate(script.getCreatedDate())
+				.modifiedDate(script.getModifiedDate())
 				.korCard(script.getCard().getCardKor())
 				.engCard(script.getCard().getCardEng())
 				.build()).collect(Collectors.toList()))
 			.partnerNickName(userNickname)
 			.build();
+	}
+
+	public void updateStudyTime(int studyTime) {
+		this.studyTime = studyTime;
 	}
 }

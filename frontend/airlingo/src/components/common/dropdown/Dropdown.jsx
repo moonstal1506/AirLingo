@@ -40,7 +40,7 @@ function Dropdown({ width, data, iconColor, shape, selectedOption, placeholder, 
     const [isOpen, setIsOpen] = useState(false);
     const [iconRotation, setIconRotation] = useState(0);
     const dropdownRef = useRef();
-
+    console.log(data);
     useEffect(() => {
         const handleOutsideClick = (event) => {
             if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {

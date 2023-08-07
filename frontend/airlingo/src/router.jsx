@@ -8,8 +8,9 @@ import SignUp from "./pages/signup";
 import Meeting from "./pages/meeting";
 import WordBook from "./pages/mypage/wordBook";
 import Login from "./pages/login/Login";
-import Script from "./pages/mypage/script";
+import Script from "./pages/mypage/Script";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
+import { MyPageHome, StatisticHome } from "./pages/mypage";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -27,8 +28,8 @@ const routerData = [
         path: "/test",
         label: "Test",
         element: <Home />,
-        withAuth: true,
-        headerExist: false,
+        withAuth: false,
+        headerExist: true,
         mustNotAuth: false,
     },
     {
@@ -88,7 +89,7 @@ const routerData = [
     {
         id: 8,
         path: "/word",
-        label: "word",
+        label: "Word",
         element: <WordBook />,
         withAuth: true,
         headerExist: false,
@@ -113,6 +114,24 @@ const routerData = [
     },
     {
         id: 11,
+        path: "/mypage",
+        label: "MyPage",
+        element: <MyPageHome />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 12,
+        path: "/statistic",
+        label: "Statistic",
+        element: <StatisticHome />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 13,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
