@@ -40,7 +40,7 @@ function Login() {
     };
 
     return (
-        <PageLayout>
+        <PageLayout id="PL">
             <LoginContainer>
                 <LoginBox>
                     <LoginTitle>로그인</LoginTitle>
@@ -64,7 +64,8 @@ function Login() {
                             marginBottom: "30px",
                         }}
                     >
-                        <a href="/signup">아이디 또는 비밀번호를 잊으셨나요?</a>
+                        <a href="/">아이디 또는 비밀번호를 잊으셨나요?</a>
+                        {/* fix me! 아이디 또는 비밀번호 API 존재X */}
                     </div>
                 </LoginBox>
                 <DivisionLineBox>
@@ -74,6 +75,7 @@ function Login() {
                 </DivisionLineBox>
                 <SocialLoginBox>
                     <TextButton shape="googleLogin" text="Google 계정으로 로그인" />
+                    {/* fix me! 구글로그인 API 존재X */}
                     {/* <GoogleLoginButton type="button">
                         <GoogleLoginDiv>
                             <GoogleImage
@@ -109,9 +111,7 @@ const PageLayout = styled.div`
     flex-direction: column;
     align-items: center;
     width: 100%;
-    height: calc(100% - 120px);
-    padding-top: 140px;
-    padding-bottom: 50px;
+    padding-top: 180px;
 `;
 
 const LoginContainer = styled.div`

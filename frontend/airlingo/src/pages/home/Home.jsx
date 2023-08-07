@@ -118,7 +118,7 @@ function Home() {
                 <TextButton
                     shape="positive-home"
                     text="세계 여행 시작하기"
-                    onClick={() => routeTo("login")}
+                    onClick={() => routeTo("/login")}
                 />
             </JoinContainer>
 

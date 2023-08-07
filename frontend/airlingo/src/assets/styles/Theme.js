@@ -23,6 +23,8 @@ const theme = {
         purple: "#B06DAD",
         faintgray: "#DDDFE0",
         distinctgray: "#333333",
+        white: "#FFFFFF",
+        black: "#000000",
     },
     fonts: {
         body: "Pretendard",
