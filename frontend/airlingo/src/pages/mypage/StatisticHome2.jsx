@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
-import { ReactComponent as TimeIcon } from "@/assets/imgs/icons/time-icon.svg";
-import { ReactComponent as ArchiveIcon } from "@/assets/imgs/icons/archive-icon.svg";
+import { ReactComponent as TimeIcon } from "@/assets/icons/time-icon.svg";
+import { ReactComponent as ArchiveIcon } from "@/assets/icons/archive-icon.svg";
 
 function StatisticHome2() {
     return (
