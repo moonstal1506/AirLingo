@@ -1,16 +1,23 @@
 import styled from "@emotion/styled";
+import { useRouter } from "@/hooks";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import { ReactComponent as TimeIcon } from "@/assets/icons/time-icon.svg";
 import { ReactComponent as ArchiveIcon } from "@/assets/icons/archive-icon.svg";
 
 function StatisticHome2() {
+    const { routeTo } = useRouter();
+
     return (
         <StaticticPageContainer>
             <RightPageBox>
                 <LeftPassportPages src={rightPassportPages} />
                 <RightPassportPage>
                     <ButtonContainer>
-                        <TotalStatisticsButtonContainer>
+                        {/* fix me! routeTo 도넛그래프 URL */}
+                        <TotalStatisticsButtonContainer
+                            id="TotalSBC"
+                            onClick={() => routeTo("/doughnut")}
+                        >
                             <TimeIcon />
                             <TitleText>전체 통계</TitleText>
                             <DescriptionText>
@@ -18,7 +25,11 @@ function StatisticHome2() {
                                 <br /> 함께 했는지 알아볼까요?
                             </DescriptionText>
                         </TotalStatisticsButtonContainer>
-                        <TotalStatisticsButtonContainer>
+                        {/* fix me! routeTo 스트릭/스크립트 조회 URL */}
+                        <TotalStatisticsButtonContainer
+                            id="TotalSBC"
+                            onClick={() => routeTo("/script")}
+                        >
                             <ArchiveIcon />
                             <TitleText>학습 아카이브</TitleText>
                             <DescriptionText>
@@ -82,6 +93,7 @@ const TotalStatisticsButtonContainer = styled.div`
     flex-shrink: 0;
     border-radius: 20px;
     border: 5px solid #000;
+    cursor: pointer;
 `;
 
 const TitleText = styled.div`
