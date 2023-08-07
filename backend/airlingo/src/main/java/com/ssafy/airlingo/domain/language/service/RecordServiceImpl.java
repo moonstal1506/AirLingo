@@ -1,5 +1,7 @@
 package com.ssafy.airlingo.domain.language.service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
@@ -27,7 +29,6 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class RecordServiceImpl implements RecordService {
 	private final LanguageRepository languageRepository;
 	private final GradeRepository gradeRepository;
 	private final StudyRepository studyRepository;
-	
+
 	@Transactional
 	@Override
 	public boolean evaluateUser(EvaluateUserRequestDto evaluateUserRequestDto) {
@@ -51,6 +52,7 @@ public class RecordServiceImpl implements RecordService {
 		Study study = studyRepository.findById(evaluateUserRequestDto.getStudyId()).get();
 		recordRepository.save(createNewRecordAndRenewUserRating(evaluatedUser, language, grade, study,
 			evaluateUserRequestDto.getRating()));
+		updateStudyTime(study);
 		updateUserLanguage(evaluatedUser, language);
 		return true;
 	}
@@ -61,6 +63,12 @@ public class RecordServiceImpl implements RecordService {
 		log.info("RecordServiceImpl_createNewRecordAndRenewUserRating || 평가 기록 생성 및 평가 기록 유저에 반영");
 		user.renewRatingAndStudyCount(rating);
 		return Record.createNewRecord(user, language, grade, study);
+	}
+
+	private void updateStudyTime(Study study) {
+		Duration duration = Duration.between(study.getCreatedDate(), LocalDateTime.now());
+		int studyTime = (int)duration.toMinutes();
+		study.updateStudyTime(studyTime);
 	}
 
 	private void updateUserLanguage(User user, Language language) {
