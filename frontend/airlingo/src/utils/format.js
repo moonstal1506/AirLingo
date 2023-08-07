@@ -8,20 +8,20 @@ function formatTime(time) {
     }${remainingSeconds}`;
 }
 
-function formatLanguage(Language) {
+function formatLanguage(language) {
     if (
-        !Language ||
-        !isKeyInObj(Language, "languageId") ||
-        !isKeyInObj(Language, "languageKorName") ||
-        !isKeyInObj(Language, "imageUrl")
+        !language ||
+        !isKeyInObj(language, "languageId") ||
+        !isKeyInObj(language, "languageKorName") ||
+        !isKeyInObj(language, "imageUrl")
     ) {
         return {
-            id: "1",
-            label: "한국어",
-            img: "public/favicon-192x192.png",
+            id: 0,
+            label: "",
+            img: "",
         };
     }
-    const { languageId, languageKorName, imageUrl } = Language;
+    const { languageId, languageKorName, imageUrl } = language;
     return {
         id: languageId,
         label: languageKorName,
@@ -34,12 +34,14 @@ function formatReportItem(item) {
         return {
             id: "0",
             label: "잘못된 신고 사유",
+            img: "",
         };
     }
     const { reportItemId, reportItem } = item;
     return {
         id: reportItemId,
         label: reportItem,
+        img: "",
     };
 }
 
@@ -51,15 +53,19 @@ function formatGrade(grade) {
         !isKeyInObj(grade, "gradeKorName")
     ) {
         return {
-            id: "0",
+            id: 0,
             label: "실력을 알 수 없음",
+            img: "",
         };
     }
     const { gradeId, gradeName, gradeKorName } = grade;
     return {
         id: gradeId,
         label: `${gradeKorName}(${gradeName})`,
+        img: "",
     };
 }
+
+// ----------------------------------------------------------------------------------------------------
 
 export { formatTime, formatLanguage, formatReportItem, formatGrade };

@@ -2,7 +2,7 @@ import theme from "@/assets/styles/Theme";
 
 // ----------------------------------------------------------------------------------------------------
 
-const { primary4, warning } = theme.colors;
+const { primary4, warning, faintgray } = theme.colors;
 const iconConfig = {
     size: {
         small: "25px",
@@ -13,6 +13,7 @@ const iconConfig = {
         white: "#ffffff",
         primary: `${primary4}`,
         red: `${warning}`,
+        gray: `${faintgray}`,
     },
 };
 
