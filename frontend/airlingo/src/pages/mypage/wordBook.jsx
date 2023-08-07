@@ -2,9 +2,9 @@ import styled from "@emotion/styled";
 import { useState } from "react";
 import { TextButton } from "@/components/common/button";
 import { CheckBox, TextInput } from "@/components/common/input";
-import { ReactComponent as LeftArrow } from "@/assets/imgs/icons/arrow-left-icon.svg";
-import { ReactComponent as DeleteIcon } from "@/assets/imgs/icons/delete-icon.svg";
-import { ReactComponent as Unprogressed } from "@/assets/imgs/icons/Unprogressed.svg";
+import { ReactComponent as LeftArrow } from "@/assets/icons/arrow-left-icon.svg";
+import { ReactComponent as DeleteIcon } from "@/assets/icons/delete-icon.svg";
+import { ReactComponent as Unprogressed } from "@/assets/icons/Unprogressed.svg";
 import Modal from "@/components/modal";
 
 function WordBook() {

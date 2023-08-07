@@ -4,12 +4,12 @@ import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import TabBar from "@/components/common/tab/TabBar.jsx";
 import { TextButton } from "@/components/common/button";
-import { ReactComponent as RightArrow } from "@/assets/imgs/icons/right-arrow-mini-Icon.svg";
-import { ReactComponent as LeftIcon } from "@/assets/imgs/icons/left-icon.svg";
-import { ReactComponent as RightIcon } from "@/assets/imgs/icons/right-icon.svg";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-japan-icon.svg";
-import { ReactComponent as NoscriptBackground } from "@/assets/imgs/icons/no-data-icon.svg";
+import { ReactComponent as RightArrow } from "@/assets/icons/right-arrow-mini-Icon.svg";
+import { ReactComponent as LeftIcon } from "@/assets/icons/left-icon.svg";
+import { ReactComponent as RightIcon } from "@/assets/icons/right-icon.svg";
+import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.svg";
+import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
+import { ReactComponent as NoscriptBackground } from "@/assets/icons/no-data-icon.svg";
 import scriptBackground from "@/assets/imgs/script-background.png";
 
 const ScriptHomeContainer = styled.div`

@@ -10,7 +10,7 @@ import SockJS from "sockjs-client";
 import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
 import { FabButton, TextButton } from "@/components/common/button";
-import * as Icons from "@/assets/imgs/icons";
+import * as Icons from "@/assets/icons";
 import { AddDidReport, AddMeetingData, selectMeeting } from "@/features/Meeting/MeetingSlice";
 import {
     getCard,
