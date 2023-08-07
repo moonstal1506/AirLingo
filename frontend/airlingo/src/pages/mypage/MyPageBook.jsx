@@ -13,23 +13,29 @@ function MyPageBook() {
     };
 
     return (
-        <BookContainer>
-            <HTMLFlipBook ref={pageFlipRef} width={505} height={705}>
-                <div style={{ width: "100%", height: "100%" }} />
-                <PageCover onClick={handlePageTurn} />
-                <Page1 />
-                <Page2 />
-            </HTMLFlipBook>
-        </BookContainer>
+        <MyPageContainer>
+            <BookContainer>
+                <HTMLFlipBook ref={pageFlipRef} width={505} height={705}>
+                    <div style={{ width: "100%", height: "100%" }} />
+                    <PageCover onClick={handlePageTurn} />
+                    <Page1 />
+                    <Page2 />
+                </HTMLFlipBook>
+            </BookContainer>
+        </MyPageContainer>
     );
 }
 
+const MyPageContainer = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+`;
 const BookContainer = styled.div`
     width: 1015px;
     height: 755px;
     flex-shrink: 0;
-    margin-top: 235px;
-    margin-left: 18%;
+    margin-top: 200px;
     cursor: pointer;
 `;
 
