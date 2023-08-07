@@ -4,14 +4,13 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
-import StatisticHome from "./pages/statistic/StatisticHome";
 import WordBook from "./pages/mypage/WordBook";
-import SignupLanguage from "./pages/SignUp/SignupLanguage";
+import SignupLanguage from "./pages/signup/SignUpLanguage";
 import Login from "./pages/login/Login";
 import Script from "./pages/mypage/Script";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 import Meeting from "./pages/meeting";
-import { MyPageHome, StatisticHome } from "./pages/mypage";
+import { MyPageBook } from "./pages/mypage";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -117,16 +116,7 @@ const routerData = [
         id: 11,
         path: "/mypage",
         label: "mypage",
-        element: <MyPageHome />,
-        withAuth: false,
-        headerExist: true,
-        mustNotAuth: false,
-    },
-    {
-        id: 12,
-        path: "/statistic",
-        label: "statistic",
-        element: <StatisticHome />,
+        element: <MyPageBook />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
