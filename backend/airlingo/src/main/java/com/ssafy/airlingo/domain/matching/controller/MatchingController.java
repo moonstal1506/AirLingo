@@ -57,7 +57,7 @@ public class MatchingController {
 	@PostMapping("/result")
 	public void matchingResult(@RequestBody @Valid MatchingResponseDto matchingResponseDto) throws
 		OpenViduJavaClientException, OpenViduHttpException {
-		matchingService.useMileage(matchingResponseDto);
+		matchingService.updateMileage(matchingResponseDto);
 		log.info("matchingResult : {}", matchingResponseDto.toString());
 
 		// 매칭에 성공한 사용자들을 대상으로 스터디 생성 및 오픈비두 세션 생성
