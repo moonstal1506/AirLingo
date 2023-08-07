@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import TabBar from "@/components/common/tab/TabBar.jsx";
@@ -11,6 +12,8 @@ import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.
 import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
 import { ReactComponent as NoscriptBackground } from "@/assets/icons/no-data-icon.svg";
 import scriptBackground from "@/assets/imgs/script-background.png";
+import getScriptList from "@/api/script";
+import { selectUser } from "@/features/User/UserSlice.js";
 
 const ScriptHomeContainer = styled.div`
     width: 100%;
@@ -21,61 +24,102 @@ const ScriptHomeContainer = styled.div`
     flex-direction: column;
     align-items: center;
 `;
-
 function Script() {
-    const arr = [
-        {
-            studyId: 1,
-            studyTime: 8,
-            partnerNickName: "user2",
-            nativeLanguageDto: {
-                languageId: 1,
-                languageKorName: "일본어",
-                languageEngName: "Korean",
-                gradeName: null,
-                gradeKorName: null,
-                imageUrl:
-                    "https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg",
-            },
-            imageUrl: "https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg",
-            languageKorName: "한국어",
-            languageEngName: "Korean",
-            createdDate: "2023-08-07T11:00:08.198523",
-            modifiedDate: "2023-08-07T11:09:02.639054",
-            scripts: [
-                {
-                    scriptId: 1,
-                    scriptContent: "내용입니당",
-                    scriptUrl: "djfkjdkl",
-                    korCard: "좋아하는 요리가 있니?",
-                    engCard: "eng",
-                    createdDate: "2023-08-07T00:00:00",
-                    modifiedDate: "2023-08-07T00:00:00",
-                },
-                {
-                    scriptId: 2,
-                    scriptContent: "내용입니당",
-                    scriptUrl: "djfkjdkl",
-                    korCard: "영화",
-                    engCard: "eng",
-                    createdDate: "2023-08-07T00:00:00",
-                    modifiedDate: "2023-08-07T00:00:00",
-                },
-            ],
-        },
-    ]; // 서버에서 받아온 거라고 가정함.
+    const storeUser = useSelector(selectUser);
+    const { userId } = storeUser;
 
-    // 페이지 번호를 관리할 상태 추가
+    const desiredDate = "2023-08-07"; // 원하는 날짜
+
+    const [AllScript, setScriptList] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            await getScriptList({
+                responseFunc: {
+                    200: (response) => {
+                        console.log("data", response.data.data);
+                        setScriptList(response.data.data);
+                    },
+                },
+                data: { userId, date: desiredDate },
+            });
+        }
+        fetchData();
+    }, [userId, desiredDate]);
+
+    // 페이지 번호와 현재 arr 인덱스를 관리하는 상태 추가
     const [currentPage, setCurrentPage] = useState(0);
+    const [currentArrIndex, setCurrentArrIndex] = useState(0);
+    const defaultDate = new Date().toLocaleDateString("ko-KR", {
+        month: "long",
+        day: "numeric",
+    });
 
+    // 다음 페이지로 이동하는 함수
     const nextPage = () => {
-        setCurrentPage((prevPage) => Math.min(prevPage + 1, arr[0].scripts.length - 1));
+        if (currentPage === AllScript[currentArrIndex].scripts.length - 1) {
+            if (currentArrIndex === AllScript.length - 1) {
+                setCurrentArrIndex(0);
+                setCurrentPage(0);
+            } else {
+                setCurrentArrIndex((prevIndex) => prevIndex + 1);
+                setCurrentPage(0);
+            }
+        } else {
+            setCurrentPage((prevPage) => prevPage + 1);
+        }
     };
+    // Add error handling for empty AllScript
+    if (AllScript.length === 0) {
+        return (
+            <ScriptHomeContainer id="SC">
+                <PassportContainer id="PC">
+                    <LeftPageBox>
+                        <LeftPassportPages src={leftPassportPages} />
+                        <TabBar activeTab="statistic" />
+                        <LeftPassportPage>
+                            <div>왼쪽페이지</div>
+                        </LeftPassportPage>
+                    </LeftPageBox>
+                    <RightPageBox>
+                        <LeftPassportPages src={rightPassportPages} />
+                        <RightPassportPage>
+                            <ScriptBox>
+                                <ScriptTextBox>
+                                    <ScriptText>대화기록</ScriptText>
+                                    <ScriptDate>{defaultDate}</ScriptDate>
+                                </ScriptTextBox>
+                                <NoScriptContentBox>
+                                    <NoscriptBackground />
+                                </NoScriptContentBox>
+                            </ScriptBox>
+                        </RightPassportPage>
+                    </RightPageBox>
+                </PassportContainer>
+            </ScriptHomeContainer>
+        );
+    }
 
+    // 이전 페이지로 이동하는 함수
     const prevPage = () => {
-        setCurrentPage((prevPageNum) => Math.max(prevPageNum - 1, 0));
+        if (currentPage === 0) {
+            if (currentArrIndex === 0) {
+                setCurrentArrIndex(AllScript.length - 1);
+                setCurrentPage(AllScript[AllScript.length - 1].scripts.length - 1);
+            } else {
+                setCurrentArrIndex((prevIndex) => prevIndex - 1);
+                setCurrentPage(AllScript[currentArrIndex - 1].scripts.length - 1);
+            }
+        } else {
+            setCurrentPage((prevPageNum) => prevPageNum - 1);
+        }
     };
     const activeTab = "statistic";
+    const { scripts } = AllScript[currentArrIndex];
+    const script = scripts[currentPage];
+    const totalScriptCount = AllScript.reduce((total, obj) => total + obj.scripts.length, 0);
+    const scriptList = AllScript.reduce((prev, acc) => [...prev, ...acc.scripts], []);
+    const scriptIdx = scriptList.findIndex((Allscript) => script === Allscript) + 1;
 
     return (
         <ScriptHomeContainer id="SC">
@@ -93,9 +137,17 @@ function Script() {
                         <ScriptBox>
                             <ScriptTextBox>
                                 <ScriptText>대화기록</ScriptText>
-                                <ScriptDate>7월 30일</ScriptDate>
+                                <ScriptDate>
+                                    {new Date(AllScript[0].createdDate).toLocaleDateString(
+                                        "ko-KR",
+                                        {
+                                            month: "long",
+                                            day: "numeric",
+                                        },
+                                    )}
+                                </ScriptDate>
                             </ScriptTextBox>{" "}
-                            {arr.length === 0 ? (
+                            {totalScriptCount === 0 ? (
                                 <NoScriptContentBox>
                                     <NoscriptBackground />
                                 </NoScriptContentBox>
@@ -105,7 +157,7 @@ function Script() {
                                     <ScriptContentBox>
                                         <ScriptDetailText>
                                             <ScriptOrder>
-                                                {arr[0].scripts.length}개 중 {currentPage + 1}번째
+                                                {totalScriptCount}개 중 {scriptIdx}번째
                                             </ScriptOrder>
                                         </ScriptDetailText>
                                         <ScirptDetailContent>
@@ -113,13 +165,22 @@ function Script() {
                                                 <ScriptLanguage>
                                                     <SkillLanguage>
                                                         <KoreaFlagIcon />
-                                                        <LanguageName>한국어</LanguageName>
+                                                        <LanguageName>
+                                                            {
+                                                                AllScript[currentArrIndex]
+                                                                    .nativeLanguageDto
+                                                                    .languageKorName
+                                                            }
+                                                        </LanguageName>
                                                     </SkillLanguage>
                                                     <RightArrow />
                                                     <StudyLanguage>
                                                         <JapanFlagIcon />
                                                         <LanguageName>
-                                                            {arr[0].languageKorName}
+                                                            {
+                                                                AllScript[currentArrIndex]
+                                                                    .languageKorName
+                                                            }
                                                         </LanguageName>
                                                     </StudyLanguage>
                                                 </ScriptLanguage>
@@ -127,26 +188,34 @@ function Script() {
                                             <ScriptDetail>
                                                 <ScriptDetailItem>
                                                     <ScriptLabel>대화 주제</ScriptLabel>
-                                                    <ScriptValue>
-                                                        {arr[0].scripts[currentPage].korCard}
-                                                    </ScriptValue>
+                                                    <ScriptValue>{script.korCard}</ScriptValue>
                                                 </ScriptDetailItem>
                                                 <ScriptDetailItem>
                                                     <ScriptLabel>상대 랭커</ScriptLabel>
                                                     <ScriptValue>
-                                                        {arr[0].partnerNickName}
+                                                        {AllScript[currentArrIndex].partnerNickName}
                                                     </ScriptValue>
                                                 </ScriptDetailItem>
                                                 <ScriptDetailItem>
                                                     <ScriptLabel>시작 시간</ScriptLabel>
                                                     <ScriptValue>
-                                                        {arr[0].scripts[currentPage].createdDate}
+                                                        {new Date(
+                                                            script.createdDate,
+                                                        ).toLocaleTimeString("ko-KR", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        })}
                                                     </ScriptValue>
                                                 </ScriptDetailItem>
                                                 <ScriptDetailItem>
                                                     <ScriptLabel>종료 시간</ScriptLabel>
                                                     <ScriptValue>
-                                                        {arr[0].scripts[currentPage].modifiedDate}
+                                                        {new Date(
+                                                            script.modifiedDate,
+                                                        ).toLocaleTimeString("ko-KR", {
+                                                            hour: "2-digit",
+                                                            minute: "2-digit",
+                                                        })}
                                                     </ScriptValue>
                                                 </ScriptDetailItem>
                                             </ScriptDetail>
