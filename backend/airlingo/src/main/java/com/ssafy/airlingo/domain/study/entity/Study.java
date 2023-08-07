@@ -68,4 +68,8 @@ public class Study extends BaseTimeEntity {
 			.partnerNickName(userNickname)
 			.build();
 	}
+
+	public void updateStudyTime(int studyTime) {
+		this.studyTime = studyTime;
+	}
 }
