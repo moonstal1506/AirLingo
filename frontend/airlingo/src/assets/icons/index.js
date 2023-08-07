@@ -14,6 +14,13 @@ import { ReactComponent as ScriptIcon } from "@/assets/icons/script-icon.svg";
 import { ReactComponent as ValidationCleanIcon } from "@/assets/icons/validation-clean-icon.svg";
 import { ReactComponent as ValidationValidIcon } from "@/assets/icons/validation-valid-icon.svg";
 import { ReactComponent as ValidationInvalidIcon } from "@/assets/icons/validation-invalid-icon.svg";
+import { ReactComponent as TimeIcon } from "@/assets/icons/time-icon.svg";
+import { ReactComponent as ArchiveIcon } from "@/assets/icons/archive-icon.svg";
+import { ReactComponent as StarFilledIcon } from "@/assets/icons/star-filled-icon.svg";
+import { ReactComponent as StartNotFilledIcon } from "@/assets/icons/star-not-filled-icon.svg";
+import { ReactComponent as PassportTextIcon } from "@/assets/icons/passport-text-icon.svg";
+import { ReactComponent as ServiceLogoIcon } from "@/assets/icons/service-logo-icon.svg";
+import { ReactComponent as BiometricIcon } from "@/assets/icons/biometric-icon.svg";
 
 export {
     MicOnIcon,
@@ -32,4 +39,11 @@ export {
     ValidationCleanIcon,
     ValidationValidIcon,
     ValidationInvalidIcon,
+    TimeIcon,
+    ArchiveIcon,
+    StarFilledIcon,
+    StartNotFilledIcon,
+    PassportTextIcon,
+    ServiceLogoIcon,
+    BiometricIcon,
 };
