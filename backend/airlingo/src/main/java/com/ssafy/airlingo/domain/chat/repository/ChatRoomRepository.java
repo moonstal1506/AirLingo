@@ -4,6 +4,8 @@ import com.ssafy.airlingo.domain.chat.entity.ChatRoom;
 import com.ssafy.airlingo.domain.chat.service.RedisSubscriber;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
@@ -14,6 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @RequiredArgsConstructor
 @Repository
 public class ChatRoomRepository {
@@ -46,6 +49,7 @@ public class ChatRoomRepository {
      * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다. -> 우리 서비스는 필요 없음
      */
     public ChatRoom createChatRoom(String name) {
+        log.info("createChatRoom");
         ChatRoom chatRoom = ChatRoom.create(name);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getRoomId(), chatRoom);
         return chatRoom;

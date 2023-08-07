@@ -63,8 +63,8 @@ function Meeting() {
     const { userNickname, userImgUrl } = useSelector(selectUser);
     const [message, setMessage] = useState("");
     const [chatMessage, setChatMessages] = useState([]);
-    const [roomId, setRoomId] = useState("test");
     const stompCilent = useRef({});
+    const { VITE_CHAT_SOCKET_URL } = import.meta.env;
 
     // 세션 연결 함수
     async function connectSession() {
@@ -166,7 +166,7 @@ function Meeting() {
 
         curSession
             .connect(response.data.data, {
-                clientData: "Crassula",
+                clientData: userNickname,
             })
             .then(() => {
                 const publisher = OV.initPublisher(undefined, {
@@ -188,9 +188,9 @@ function Meeting() {
     }
 
     function onConnected() {
-        console.log(`개인 구독 !!${roomId}`);
+        console.log(`개인 구독 !!${sessionId}`);
         // user 개인 구독
-        stompCilent.current.subscribe(`/sub/chat/room/${roomId}`, function (message) {
+        stompCilent.current.subscribe(`/sub/chat/room/${sessionId}`, function (message) {
             setChatMessages((messages) => [...messages, JSON.parse(message.body)]);
 
             console.log(message.body);
@@ -198,7 +198,7 @@ function Meeting() {
     }
 
     function connect() {
-        const socket = new SockJS("http://localhost:8081/chat");
+        const socket = new SockJS(VITE_CHAT_SOCKET_URL);
         stompCilent.current = stomp.over(socket);
         console.log(stompCilent);
         console.log(stompCilent.current);
@@ -216,7 +216,7 @@ function Meeting() {
             "/pub/chat/message",
             {},
             JSON.stringify({
-                roomId,
+                roomId: sessionId,
                 userNickname,
                 content: message,
                 userImgUrl,
@@ -233,13 +233,12 @@ function Meeting() {
                 200: (response) => {
                     console.log("채팅방 생성 성공!");
                     console.log(response.data);
-                    setRoomId(response.data.roomId);
                 },
                 400: () => {
                     console.log("실패!");
                 },
             },
-            data: roomId,
+            data: sessionId,
         });
 
         connect();
@@ -633,9 +632,6 @@ function Meeting() {
                         placeholder="대화 상대방에게 채팅을 보내보세요!"
                     />
                 </ChatInputWrapper>
-                {/* <form onSubmit={sendMessage}>
-                    <input value={message} onChange={ChangeMessages} placeholder="메시지 입력" />
-                </form> */}
             </ChatSlideMenu>
         </MeetingContainer>
     );
