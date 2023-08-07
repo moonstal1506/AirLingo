@@ -27,7 +27,7 @@ import { getReportItems, postReport } from "@/api/report";
 import { TextArea } from "@/components/common/input";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatGrade, formatReportItem } from "@/utils/format";
-import { ExitIcon, DictionaryIcon } from "@/assets/imgs/icons";
+import { ExitIcon, DictionaryIcon } from "@/assets/icons";
 import StarRate from "@/components/starRate";
 import { useRouter } from "@/hooks";
 import ChatList from "@/components/chatList/ChatList";

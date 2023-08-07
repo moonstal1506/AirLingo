@@ -1,8 +1,8 @@
 import styled from "@emotion/styled";
 import { useRouter } from "@/hooks";
-import { ReactComponent as PassportTextIcon } from "@/assets/imgs/icons/passport-text-icon.svg";
-import { ReactComponent as ServiceLogoIcon } from "@/assets/imgs/icons/service-logo-icon.svg";
-import { ReactComponent as BiometricIcon } from "@/assets/imgs/icons/biometric-icon.svg";
+import { ReactComponent as PassportTextIcon } from "@/assets/icons/passport-text-icon.svg";
+import { ReactComponent as ServiceLogoIcon } from "@/assets/icons/service-logo-icon.svg";
+import { ReactComponent as BiometricIcon } from "@/assets/icons/biometric-icon.svg";
 
 function MyPageHome() {
     const { routeTo } = useRouter();

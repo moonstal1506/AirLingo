@@ -2,8 +2,8 @@ import styled from "@emotion/styled";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import recordLogo from "@/assets/imgs/profiles/record-logo.png";
-import { ReactComponent as TimeIcon } from "@/assets/imgs/icons/time-icon.svg";
-import { ReactComponent as ArchiveIcon } from "@/assets/imgs/icons/archive-icon.svg";
+import { ReactComponent as TimeIcon } from "@/assets/icons/time-icon.svg";
+import { ReactComponent as ArchiveIcon } from "@/assets/icons/archive-icon.svg";
 import TabBar from "@/components/common/tab/TabBar.jsx";
 
 const StatisticHomeContainer = styled.div`
