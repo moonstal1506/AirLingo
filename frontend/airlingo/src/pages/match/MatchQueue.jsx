@@ -50,7 +50,7 @@ function MatchQueue() {
                         otherUser:
                             matchingResponseDto[
                                 Object.keys(matchingResponseDto).filter(
-                                    (key) => key !== userNickname,
+                                    (key) => matchingResponseDto[key].userNickname !== userNickname,
                                 )
                             ],
                     }),
