@@ -2,11 +2,8 @@
 /* eslint-disable no-shadow */
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
-import { useEffect, useMemo, useState, useRef } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useSelector } from "react-redux";
-/** 채팅 */
-import stomp from "stompjs";
-import SockJS from "sockjs-client";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatLanguage } from "@/utils/format";
 import ticketBackground from "@/assets/imgs/ticket-background.svg";
@@ -19,13 +16,12 @@ import Tooltip from "@/components/common/tooltip/Tooltip";
 import Dropdown from "@/components/common/dropdown";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
 import { useRouter } from "@/hooks";
-import { getConcurrentUser, postCreateChatRoom } from "@/api";
+import { getConcurrentUser } from "@/api";
 import Modal from "../../components/modal";
-import ChatList from "@/components/chatList/ChatList";
 
 function MatchHome() {
     const { routeTo } = useRouter();
-    const { userNickname, userNativeLanguage, userLanguages, userImgUrl } = useSelector(selectUser);
+    const { userNickname, userNativeLanguage, userLanguages } = useSelector(selectUser);
     const [modalOpen, setModalOpen] = useState(false);
     const [concurrentUser, setConcurrentUser] = useState({
         waitingUsersSize: 0,
@@ -59,13 +55,6 @@ function MatchHome() {
         });
     };
 
-    const stompCilent = useRef({});
-
-    /** 채팅 임시 */
-    useEffect(() => {
-        createChatRoom();
-    }, []);
-
     useEffect(() => {
         if (isUserInfoValid()) {
             fetchConcurrentUser();
@@ -88,72 +77,6 @@ function MatchHome() {
     const handleClickNormalMatching = () => handleMatching(false);
     const handleClickPremiumMatching = () => setModalOpen(true);
     const handleClickPremiumSelect = () => handleMatching(true);
-
-    /** 채팅 임시 */
-    const [message, setMessage] = useState("");
-    const [chatMessage, setChatMessages] = useState([]);
-    const [roomId, setRoomId] = useState("1");
-
-    function onConnected() {
-        console.log(`개인 구독 !!${roomId}`);
-        // user 개인 구독
-        stompCilent.current.subscribe(`/sub/chat/room/${roomId}`, function (message) {
-            setChatMessages((messages) => [...messages, JSON.parse(message.body)]);
-
-            console.log(message.body);
-        });
-    }
-
-    function connect() {
-        const socket = new SockJS("http://localhost:8081/chat");
-        stompCilent.current = stomp.over(socket);
-        console.log(stompCilent);
-        console.log(stompCilent.current);
-        stompCilent.current.connect({}, () => {
-            setTimeout(function () {
-                onConnected();
-            }, 500);
-        });
-        console.log(stompCilent.current.connected);
-    }
-
-    const ChangeMessages = (event) => {
-        setMessage(event.target.value);
-    };
-
-    const sendMessage = async (e) => {
-        e.preventDefault();
-        await stompCilent.current.send(
-            "/pub/chat/message",
-            {},
-            JSON.stringify({
-                roomId,
-                userNickname,
-                content: message,
-                userImgUrl,
-            }),
-        );
-    };
-
-    const createChatRoom = async () => {
-        console.log("채팅방 생성1");
-
-        await postCreateChatRoom({
-            responseFunc: {
-                200: (response) => {
-                    console.log("채팅방 생성 성공!");
-                    console.log(response.data);
-                    setRoomId(response.data.roomId);
-                },
-                400: () => {
-                    console.log("실패!");
-                },
-            },
-            data: roomId,
-        });
-
-        connect();
-    };
 
     return (
         <MatchHomeContainer>
@@ -257,12 +180,6 @@ function MatchHome() {
                     </div>
                 </TicketSubContentBox>
             </TicketBackgroundBox>
-            <div>
-                <ChatList data={chatMessage} />
-                <form onSubmit={sendMessage}>
-                    <input onChange={ChangeMessages} placeholder="메시지 입력" />
-                </form>
-            </div>
         </MatchHomeContainer>
     );
 }
