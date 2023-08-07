@@ -4,13 +4,13 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
-import SignUp from "./pages/signup";
-import Meeting from "./pages/meeting";
-import WordBook from "./pages/mypage/wordBook";
+import SignUp from "./pages/Signup";
+import Meeting from "./pages/Meeting";
+import WordBook from "./pages/mypage/WordBook";
 import Login from "./pages/login/Login";
 import Script from "./pages/mypage/Script";
-import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
-import { MyPageHome, StatisticHome } from "./pages/mypage";
+import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/Match";
+import { MyPageHome, StatisticHome } from "./pages/Mypage";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
