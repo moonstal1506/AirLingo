@@ -7,7 +7,7 @@ import NotAuthLayout from "./Layout/NotAuthLayout";
 import WordBook from "./pages/mypage/wordBook";
 import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import Login from "./pages/login/Login";
-import Script from "./pages/mypage/Script";
+import Script from "./pages/mypage/script";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 import Meeting from "./pages/meeting";
 import { MyPageHome, StatisticHome } from "./pages/mypage";
