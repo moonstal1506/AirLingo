@@ -3,6 +3,7 @@ package com.ssafy.airlingo.domain.study.dto.response;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -29,6 +30,9 @@ public class StudyResponseDto {
 
 	@Schema(description = "파트너 이름", example = "에어")
 	private String partnerNickName;
+
+	@Schema(description = "모국어")
+	private LanguageDto nativeLanguageDto;
 
 	@Schema(description = "공부한 언어 이미지 URL", example = "https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-britain-icon.svg")
 	private String imageUrl;
