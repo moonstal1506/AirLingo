@@ -12,15 +12,24 @@ import theme from "@/assets/styles/Theme";
 import { FabButton, TextButton } from "@/components/common/button";
 import * as Icons from "@/assets/imgs/icons";
 import { AddDidReport, AddMeetingData, selectMeeting } from "@/features/Meeting/MeetingSlice";
-import { getCard, getCardCode, postOpenviduToken, postCreateChatRoom } from "@/api";
+import {
+    getCard,
+    getCardCode,
+    getGrade,
+    postOpenviduToken,
+    postEvaluate,
+    postCreateChatRoom,
+} from "@/api";
 import Overlay from "@/components/common/overlay";
 import Modal from "@/components/modal";
-import { ReactComponent as DictionaryIcon } from "@/assets/imgs/icons/dictionary-icon.svg";
 import Dropdown from "@/components/common/dropdown";
 import { getReportItems, postReport } from "@/api/report";
 import { TextArea } from "@/components/common/input";
 import { selectUser } from "@/features/User/UserSlice";
-import { formatReportItem } from "@/utils/format";
+import { formatGrade, formatReportItem } from "@/utils/format";
+import { ExitIcon, DictionaryIcon } from "@/assets/imgs/icons";
+import StarRate from "@/components/starRate";
+import { useRouter } from "@/hooks";
 import ChatList from "@/components/chatList/ChatList";
 
 // ----------------------------------------------------------------------------------------------------
@@ -38,8 +47,9 @@ function Meeting() {
     const dispatch = useDispatch();
     const [reportList, setReportList] = useState([]);
     const [cardCode, setCardCode] = useState([]);
-    const { sessionId, meetingData, didReport } = useSelector(selectMeeting);
-    const { userId } = useSelector(selectUser);
+    const { sessionId, meetingData, didReport, otherUser, studyId } = useSelector(selectMeeting);
+    const { userId, userNickname, userImgUrl } = useSelector(selectUser);
+    const { routeTo } = useRouter();
 
     const [session, setSession] = useState(null); // Initial value changed to null
     const [publisher, setPublisher] = useState(null);
@@ -60,7 +70,11 @@ function Meeting() {
     const [reportText, setReportText] = useState("");
     const [openReportConfirmModal, setOpenReportConfirmModal] = useState(false);
 
-    const { userNickname, userImgUrl } = useSelector(selectUser);
+    const [openEvaluateModal, setOpenEvaluateModal] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [grade, setGrade] = useState([]);
+    const [selectedGrade, setSelectedGrade] = useState({});
+
     const [message, setMessage] = useState("");
     const [chatMessage, setChatMessages] = useState([]);
     const [roomId, setRoomId] = useState("test");
@@ -83,6 +97,7 @@ function Meeting() {
             },
             data: { sessionId },
         });
+        console.log(response.data.data);
 
         await getCardCode({
             responseFunc: {
@@ -101,6 +116,15 @@ function Meeting() {
                 },
             },
             data: { languageCode: "KOR" },
+        });
+
+        await getGrade({
+            responseFunc: {
+                200: (response) => {
+                    console.log("등급 받기 성공", response.data.data);
+                    setGrade([...response.data.data]);
+                },
+            },
         });
 
         curSession.on("streamCreated", (event) => {
@@ -327,6 +351,9 @@ function Meeting() {
             if (prevButtonName === "Exit") return null;
             return "Exit";
         });
+
+        // 평가하기 모달을 띄워줘야 한다.
+        setOpenEvaluateModal(true);
         console.log("Exit");
     };
 
@@ -353,6 +380,7 @@ function Meeting() {
         // 4. 또한, 상대방의 응답을 받을 때까지 대기하는 모달 창을 띄워줘야 한다.
         setOpenResponseWaitModal(true);
     };
+    console.log(otherUser);
 
     const handleClickCardRequestAgree = async () => {
         // 상대방이 정한 대화 대주제에 동의할 때 발생되는 이벤트
@@ -407,6 +435,28 @@ function Meeting() {
             },
         });
         dispatch(AddDidReport(true));
+    };
+
+    const handleClickEvaluateUser = async () => {
+        // gradeId : 실력점수, rating : 매너점수
+
+        const response = await postEvaluate({
+            responseFunc: {
+                200: () => {
+                    session.disconnect();
+                    routeTo("/matchhome", { replace: false });
+                },
+            },
+            data: {
+                userId: otherUser.userId,
+                gradeId: selectedGrade.greadeId,
+                languageId: otherUser.userStudyLanguageId,
+                studyId,
+                rating,
+            },
+        });
+
+        console.log(response);
     };
 
     const buttonList = [
@@ -472,13 +522,15 @@ function Meeting() {
         <MeetingContainer>
             {openCardModal && (
                 <Overlay zIdx={2}>
-                    <CardModalContainer onClick={handleClickTopicCard}>
-                        {cardCode.map((cur) => (
-                            <TopicCard id={cur.code}>
-                                <TopicCardTitle>{cur.korSubject}</TopicCardTitle>
-                                <TopicCardSubTitle>{cur.engSubject}</TopicCardSubTitle>
-                            </TopicCard>
-                        ))}
+                    <CardModalContainer>
+                        <TopicCardBox onClick={handleClickTopicCard}>
+                            {cardCode.map((cur) => (
+                                <TopicCard id={cur.code}>
+                                    <TopicCardTitle>{cur.korSubject}</TopicCardTitle>
+                                    <TopicCardSubTitle>{cur.engSubject}</TopicCardSubTitle>
+                                </TopicCard>
+                            ))}
+                        </TopicCardBox>
                     </CardModalContainer>
                 </Overlay>
             )}
@@ -578,6 +630,39 @@ function Meeting() {
                             shape="positive-curved"
                             text="확인"
                             onClick={() => setOpenReportConfirmModal(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
+            {openEvaluateModal && (
+                <Modal zIdx={4} Icon={ExitIcon} title="상대 랭커 평가하기">
+                    <ModalTextWrapper weight="400px">
+                        상대 랭커의 매너와 언어 실력에 대해서 평가를 남겨주세요!
+                    </ModalTextWrapper>
+                    <ModalContentBox>
+                        <ModalTextWrapper weight="700px">매너 점수</ModalTextWrapper>
+                        <StarRate rating={rating} setRating={setRating} />
+                    </ModalContentBox>
+                    <ModalContentBox>
+                        <ModalTextWrapper weight="700px">실력 점수</ModalTextWrapper>
+                        <Dropdown
+                            width="400px"
+                            placeholder="실력 점수를 선택해주세요"
+                            onChange={setSelectedGrade}
+                            selectedOption={selectedGrade}
+                            data={grade.map((cur) => formatGrade(cur))}
+                        />
+                    </ModalContentBox>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="나가기"
+                            onClick={handleClickEvaluateUser}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setOpenEvaluateModal(false)}
                         />
                     </ModalButtonBox>
                 </Modal>
@@ -711,20 +796,33 @@ const ButtonMenu = styled.div`
     margin-bottom: 20px;
     gap: 20px;
     z-index: 3;
+    transform: translate(-50%, 0);
 `;
 
-const CardModalContainer = styled.div`
-    padding: 10%;
+const TopicCardBox = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 20px; // 각 카드 사이의 간격을 조절하려면 여기 값을 변경하세요
+    align-items: center;
+    align-content: center;
+    width: 80%;
+    height: 70%;
+    justify-content: center;
+`;
+
+const CardModalContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
 `;
 
 const TopicCard = styled.button`
     display: flex;
-    max-width: 400px;
-    max-height: 150px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -733,6 +831,8 @@ const TopicCard = styled.button`
     background: #d9d9d9;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
     cursor: pointer;
+    width: 100%;
+    height: 100%;
 `;
 
 const TopicCardTitle = styled.span`

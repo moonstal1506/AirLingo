@@ -42,4 +42,24 @@ function formatReportItem(item) {
         label: reportItem,
     };
 }
-export { formatTime, formatLanguage, formatReportItem };
+
+function formatGrade(grade) {
+    if (
+        !grade ||
+        !isKeyInObj(grade, "gradeId") ||
+        !isKeyInObj(grade, "gradeName") ||
+        !isKeyInObj(grade, "gradeKorName")
+    ) {
+        return {
+            id: "0",
+            label: "실력을 알 수 없음",
+        };
+    }
+    const { gradeId, gradeName, gradeKorName } = grade;
+    return {
+        id: gradeId,
+        label: `${gradeKorName}(${gradeName})`,
+    };
+}
+
+export { formatTime, formatLanguage, formatReportItem, formatGrade };
