@@ -74,6 +74,10 @@ const shapeStyle = {
         font-weight: 700;
         line-height: normal;
     `,
+    quit: `
+        min-width : 120px;
+        border-radius:10px;
+    `,
     login: `
     background-color:#FFF;
     align-items: center;

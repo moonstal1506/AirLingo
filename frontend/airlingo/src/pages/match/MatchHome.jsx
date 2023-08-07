@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-shadow */
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import { useEffect, useMemo, useState } from "react";

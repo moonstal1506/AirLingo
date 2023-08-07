@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.airlingo.domain.language.dto.request.EvaluateUserRequestDto;
 import com.ssafy.airlingo.domain.language.service.RecordService;
+import com.ssafy.airlingo.domain.study.service.StudyService;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
@@ -34,13 +35,16 @@ import lombok.extern.slf4j.Slf4j;
 public class RecordController {
 
 	private final RecordService recordService;
+	private final StudyService studyService;
 
 	@Operation(summary = "Evaluate User", description = "대화 상대방 실력,매너 평가")
 	@PostMapping("/record")
 	public ResponseResult evaluateUser(@Valid @RequestBody EvaluateUserRequestDto evaluateUserRequestDto) {
 		log.info("RecordController_evaluateUser");
-		if (recordService.evaluateUser(evaluateUserRequestDto))
+		if (recordService.evaluateUser(evaluateUserRequestDto)){
+			studyService.finishStudy(evaluateUserRequestDto);
 			return ResponseResult.successResponse;
+		}
 		return ResponseResult.failResponse;
 	}
 

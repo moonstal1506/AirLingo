@@ -2,24 +2,36 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-case-declarations */
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
 import { useDispatch, useSelector } from "react-redux";
-import { ScriptSlideMenu } from "@/components/common/slideMenu";
+import stomp from "stompjs";
+import SockJS from "sockjs-client";
+import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
 import { FabButton, TextButton } from "@/components/common/button";
 import * as Icons from "@/assets/imgs/icons";
 import { AddDidReport, AddMeetingData, selectMeeting } from "@/features/Meeting/MeetingSlice";
-import { getCard, getCardCode, postOpenviduToken } from "@/api";
+import {
+    getCard,
+    getCardCode,
+    getGrade,
+    postOpenviduToken,
+    postEvaluate,
+    postCreateChatRoom,
+} from "@/api";
 import Overlay from "@/components/common/overlay";
 import Modal from "@/components/modal";
-import { ReactComponent as DictionaryIcon } from "@/assets/imgs/icons/dictionary-icon.svg";
 import Dropdown from "@/components/common/dropdown";
 import { getReportItems, postReport } from "@/api/report";
 import { TextArea } from "@/components/common/input";
 import { selectUser } from "@/features/User/UserSlice";
-import { formatReportItem } from "@/utils/format";
 import { postScript } from "@/api/record";
+import { formatGrade, formatReportItem } from "@/utils/format";
+import { ExitIcon, DictionaryIcon } from "@/assets/imgs/icons";
+import StarRate from "@/components/starRate";
+import { useRouter } from "@/hooks";
+import ChatList from "@/components/chatList/ChatList";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -37,15 +49,10 @@ function Meeting() {
     const [localRecorder, setLocalRecorder] = useState(null);
     const [reportList, setReportList] = useState([]);
     const [cardCode, setCardCode] = useState([]);
-    const { sessionId, meetingData, didReport } = useSelector(selectMeeting);
-    const { userId, userNickname } = useSelector(selectUser);
     console.log("맨 첫화면에서 찍는 로컬리코더!!!", localRecorder);
-
-    /*
-     내 connection id 를 알아서 한번 찍어봐야 알 듯 한데...
-     보기에는  보내는 another connection id가 더 이상 상대방 거랑 달라서 저러는 느낌
-    */
-
+    const { sessionId, meetingData, didReport, otherUser, studyId } = useSelector(selectMeeting);
+    const { userId, userNickname, userImgUrl } = useSelector(selectUser);
+    const { routeTo } = useRouter();
     const [session, setSession] = useState(null); // Initial value changed to null
     const [publisher, setPublisher] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
@@ -53,6 +60,7 @@ function Meeting() {
     const [isActiveVideo, setIsActiveVideo] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
     const [isActiveSlide, setIsActiveSlide] = useState(false);
+    const [isActiveChatSlide, setIsActiveChatSlide] = useState(false);
     const [anotherConnection, setAnotherConnection] = useState({});
     const [openResponseWaitModal, setOpenResponseWaitModal] = useState(false);
     const [openCardModal, setOpenCardModal] = useState(false); // 카드 모달의 on/off
@@ -67,6 +75,16 @@ function Meeting() {
     const [openFeedbackStartModal, setOpenFeedbackStartModal] = useState(false);
     const [openFeedbackRequestModal, setOpenFeedbackRequestModal] = useState(false);
     const [isRecordingUser, setIsRecordingUser] = useState(false);
+
+    const [openEvaluateModal, setOpenEvaluateModal] = useState(false);
+    const [rating, setRating] = useState(0);
+    const [grade, setGrade] = useState([]);
+    const [selectedGrade, setSelectedGrade] = useState({});
+
+    const [message, setMessage] = useState("");
+    const [chatMessage, setChatMessages] = useState([]);
+    const [roomId, setRoomId] = useState("test");
+    const stompCilent = useRef({});
 
     // 세션 연결 함수
     async function connectSession() {
@@ -85,6 +103,7 @@ function Meeting() {
             },
             data: { sessionId },
         });
+        console.log(response.data.data);
 
         await getCardCode({
             responseFunc: {
@@ -103,6 +122,15 @@ function Meeting() {
                 },
             },
             data: { languageCode: "KOR" },
+        });
+
+        await getGrade({
+            responseFunc: {
+                200: (response) => {
+                    console.log("등급 받기 성공", response.data.data);
+                    setGrade([...response.data.data]);
+                },
+            },
         });
 
         curSession.on("streamCreated", (event) => {
@@ -240,8 +268,67 @@ function Meeting() {
         });
     }
 
+    function onConnected() {
+        console.log(`개인 구독 !!${roomId}`);
+        // user 개인 구독
+        stompCilent.current.subscribe(`/sub/chat/room/${roomId}`, function (message) {
+            setChatMessages((messages) => [...messages, JSON.parse(message.body)]);
+
+            console.log(message.body);
+        });
+    }
+
+    function connect() {
+        const socket = new SockJS("http://localhost:8081/chat");
+        stompCilent.current = stomp.over(socket);
+        console.log(stompCilent);
+        console.log(stompCilent.current);
+        stompCilent.current.connect({}, () => {
+            setTimeout(function () {
+                onConnected();
+            }, 500);
+        });
+        console.log(stompCilent.current.connected);
+    }
+
+    const sendMessage = async (e) => {
+        e.preventDefault();
+        await stompCilent.current.send(
+            "/pub/chat/message",
+            {},
+            JSON.stringify({
+                roomId,
+                userNickname,
+                content: message,
+                userImgUrl,
+            }),
+        );
+        setMessage("");
+    };
+
+    const createChatRoom = async () => {
+        console.log("채팅방 생성1");
+
+        await postCreateChatRoom({
+            responseFunc: {
+                200: (response) => {
+                    console.log("채팅방 생성 성공!");
+                    console.log(response.data);
+                    setRoomId(response.data.roomId);
+                },
+                400: () => {
+                    console.log("실패!");
+                },
+            },
+            data: roomId,
+        });
+
+        connect();
+    };
+
     useEffect(() => {
         connectSession();
+        createChatRoom();
 
         return () => {
             if (session) session.disconnect();
@@ -254,6 +341,10 @@ function Meeting() {
         }
     }, [publisher, session]);
 
+    const ChangeMessages = (event) => {
+        setMessage(event.target.value);
+    };
+
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
         console.log("Microphone");
@@ -265,11 +356,13 @@ function Meeting() {
     };
 
     const handleChatClick = () => {
+        setIsActiveChatSlide((prev) => !prev);
+        console.log("hi");
         setActiveButton((prevButtonName) => {
             if (prevButtonName === "Chat") return null;
             return "Chat";
         });
-        console.log("Chat");
+        console.log("ChatSlide");
     };
 
     const handleBoardClick = () => {
@@ -315,6 +408,9 @@ function Meeting() {
             if (prevButtonName === "Exit") return null;
             return "Exit";
         });
+
+        // 평가하기 모달을 띄워줘야 한다.
+        setOpenEvaluateModal(true);
         console.log("Exit");
     };
 
@@ -342,6 +438,7 @@ function Meeting() {
         // 4. 또한, 상대방의 응답을 받을 때까지 대기하는 모달 창을 띄워줘야 한다.
         setOpenResponseWaitModal(true);
     };
+    console.log(otherUser);
 
     const handleClickCardRequestAgree = async () => {
         // 상대방이 정한 대화 대주제에 동의할 때 발생되는 이벤트
@@ -422,6 +519,28 @@ function Meeting() {
         openFeedbackRequestModal(false);
     };
 
+    const handleClickEvaluateUser = async () => {
+        // gradeId : 실력점수, rating : 매너점수
+
+        const response = await postEvaluate({
+            responseFunc: {
+                200: () => {
+                    session.disconnect();
+                    routeTo("/matchhome", { replace: false });
+                },
+            },
+            data: {
+                userId: otherUser.userId,
+                gradeId: selectedGrade.greadeId,
+                languageId: otherUser.userStudyLanguageId,
+                studyId,
+                rating,
+            },
+        });
+
+        console.log(response);
+    };
+
     const buttonList = [
         {
             buttonName: "Microphone",
@@ -485,13 +604,15 @@ function Meeting() {
         <MeetingContainer>
             {openCardModal && (
                 <Overlay zIdx={2}>
-                    <CardModalContainer onClick={handleClickTopicCard}>
-                        {cardCode.map((cur) => (
-                            <TopicCard id={cur.code}>
-                                <TopicCardTitle>{cur.korSubject}</TopicCardTitle>
-                                <TopicCardSubTitle>{cur.engSubject}</TopicCardSubTitle>
-                            </TopicCard>
-                        ))}
+                    <CardModalContainer>
+                        <TopicCardBox onClick={handleClickTopicCard}>
+                            {cardCode.map((cur) => (
+                                <TopicCard id={cur.code}>
+                                    <TopicCardTitle>{cur.korSubject}</TopicCardTitle>
+                                    <TopicCardSubTitle>{cur.engSubject}</TopicCardSubTitle>
+                                </TopicCard>
+                            ))}
+                        </TopicCardBox>
                     </CardModalContainer>
                 </Overlay>
             )}
@@ -626,6 +747,40 @@ function Meeting() {
                     </ModalButtonBox>
                 </Modal>
             )}
+
+            {openEvaluateModal && (
+                <Modal zIdx={4} Icon={ExitIcon} title="상대 랭커 평가하기">
+                    <ModalTextWrapper weight="400px">
+                        상대 랭커의 매너와 언어 실력에 대해서 평가를 남겨주세요!
+                    </ModalTextWrapper>
+                    <ModalContentBox>
+                        <ModalTextWrapper weight="700px">매너 점수</ModalTextWrapper>
+                        <StarRate rating={rating} setRating={setRating} />
+                    </ModalContentBox>
+                    <ModalContentBox>
+                        <ModalTextWrapper weight="700px">실력 점수</ModalTextWrapper>
+                        <Dropdown
+                            width="400px"
+                            placeholder="실력 점수를 선택해주세요"
+                            onChange={setSelectedGrade}
+                            selectedOption={selectedGrade}
+                            data={grade.map((cur) => formatGrade(cur))}
+                        />
+                    </ModalContentBox>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="나가기"
+                            onClick={handleClickEvaluateUser}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setOpenEvaluateModal(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
             <VideoContainer>
                 <VideoFrame>
                     {publisher ? (
@@ -658,7 +813,7 @@ function Meeting() {
                     text="스크립트 피드백"
                 />
             </TopicContainer>
-            <ButtonMenu isActiveSlide={isActiveSlide}>
+            <ButtonMenu isActiveSlide={isActiveSlide} isActiveChatSlide={isActiveChatSlide}>
                 {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
                     <FabButton
                         key={buttonName}
@@ -674,6 +829,19 @@ function Meeting() {
                 onClick={handleClickSlideButton}
                 slideOpen={isActiveSlide}
             />
+            <ChatSlideMenu isOpen={isActiveChatSlide}>
+                <ChatList data={chatMessage} />
+                <ChatInputWrapper onSubmit={sendMessage}>
+                    <ChatInput
+                        value={message}
+                        onChange={ChangeMessages}
+                        placeholder="대화 상대방에게 채팅을 보내보세요!"
+                    />
+                </ChatInputWrapper>
+                {/* <form onSubmit={sendMessage}>
+                    <input value={message} onChange={ChangeMessages} placeholder="메시지 입력" />
+                </form> */}
+            </ChatSlideMenu>
         </MeetingContainer>
     );
 }
@@ -738,30 +906,43 @@ const TopicContent = styled.div`
 `;
 
 const ButtonMenu = styled.div`
-    height: fit-content;
     position: fixed;
-    bottom: 0;
-    right: ${({ isActiveSlide }) => (isActiveSlide ? "500px" : "300px")};
-    transition: right 0.3s ease-in-out;
-    margin-bottom: 20px;
     display: flex;
+    height: fit-content;
     flex-shrink: 0;
+    right: ${({ isActiveSlide }) => (isActiveSlide ? "500px" : "300px")};
+    bottom: ${({ isActiveChatSlide }) => (isActiveChatSlide ? "460px" : "0px")};
+    transition: 0.3s ease-in-out;
+    margin-bottom: 20px;
     gap: 20px;
     z-index: 3;
+    transform: translate(-50%, 0);
 `;
 
-const CardModalContainer = styled.div`
-    padding: 10%;
+const TopicCardBox = styled.div`
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-template-rows: repeat(4, 1fr);
     gap: 20px; // 각 카드 사이의 간격을 조절하려면 여기 값을 변경하세요
+    align-items: center;
+    align-content: center;
+    width: 80%;
+    height: 70%;
+    justify-content: center;
+`;
+
+const CardModalContainer = styled.div`
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: start;
+    align-items: center;
+    flex-direction: column;
+    margin-top: 30px;
 `;
 
 const TopicCard = styled.button`
     display: flex;
-    max-width: 400px;
-    max-height: 150px;
     flex-direction: column;
     justify-content: center;
     align-items: center;
@@ -770,6 +951,8 @@ const TopicCard = styled.button`
     background: #d9d9d9;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.75);
     cursor: pointer;
+    width: 100%;
+    height: 100%;
 `;
 
 const TopicCardTitle = styled.span`
@@ -815,6 +998,27 @@ const ModalButtonBox = styled.div`
     justify-content: center;
     align-items: center;
     gap: 50px;
+`;
+
+const ChatInputWrapper = styled.form`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid #000;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: normal;
+`;
+
+const ChatInput = styled.input`
+    width: 900%;
+    border: none;
+    font-size: 25px;
+    line-height: normal;
 `;
 
 // ----------------------------------------------------------------------------------------------------
