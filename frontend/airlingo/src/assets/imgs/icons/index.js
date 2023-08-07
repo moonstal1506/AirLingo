@@ -13,6 +13,8 @@ import { ReactComponent as TranslatorIcon } from "@/assets/imgs/icons/translator
 import { ReactComponent as ScriptIcon } from "@/assets/imgs/icons/script-icon.svg";
 import { ReactComponent as TimeIcon } from "@/assets/imgs/icons/time-icon.svg";
 import { ReactComponent as ArchiveIcon } from "@/assets/imgs/icons/archive-icon.svg";
+import { ReactComponent as StarFilledIcon } from "@/assets/imgs/icons/star-filled-icon.svg";
+import { ReactComponent as StartNotFilledIcon } from "@/assets/imgs/icons/star-not-filled-icon.svg";
 
 export {
     MicOnIcon,
@@ -30,4 +32,6 @@ export {
     ScriptIcon,
     TimeIcon,
     ArchiveIcon,
+    StarFilledIcon,
+    StartNotFilledIcon,
 };
