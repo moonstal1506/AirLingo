@@ -122,8 +122,20 @@ SignUpInfo.propTypes = {
         password: PropTypes.string,
         nickname: PropTypes.string,
         email: PropTypes.string,
-        primaryLang: PropTypes.number,
-        learningLangs: PropTypes.arrayOf(PropTypes.arrayOf(PropTypes.number, PropTypes.string)),
+        primaryLang: PropTypes.shape({
+            id: PropTypes.number.isRequired,
+            label: PropTypes.string.isRequired,
+            img: PropTypes.string.isRequired,
+        }),
+        learningLangs: PropTypes.arrayOf(
+            PropTypes.shape({
+                langId: PropTypes.number.isRequired,
+                langLabel: PropTypes.string.isRequired,
+                langImg: PropTypes.string.isRequired,
+                gradeId: PropTypes.number.isRequired,
+                gradeLabel: PropTypes.string.isRequired,
+            }),
+        ),
     }).isRequired,
     onHandlePrevStep: PropTypes.func.isRequired,
     onHandleNextStep: PropTypes.func.isRequired,

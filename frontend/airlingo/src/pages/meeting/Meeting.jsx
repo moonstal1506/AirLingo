@@ -6,7 +6,7 @@ import { useSelector } from "react-redux";
 import { ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
 import { FabButton } from "@/components/common/button";
-import * as Icons from "@/assets/imgs/icons";
+import * as Icons from "@/assets/icons";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import { useRouter } from "@/hooks";
 

@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as TitleLogoIcon } from "@/assets/imgs/icons/title-logo-icon.svg";
+import { ReactComponent as TitleLogoIcon } from "@/assets/icons/title-logo-icon.svg";
 import { logoutUser, selectUser } from "@/features/User/UserSlice";
 import ProfileBar from "../profileBar";
 import { TextButton } from "../common/button";

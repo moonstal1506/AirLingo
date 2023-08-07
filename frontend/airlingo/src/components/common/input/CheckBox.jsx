@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
-import { ReactComponent as CheckIcon } from "@/assets/imgs/icons/check-icon.svg";
+import { ReactComponent as CheckIcon } from "@/assets/icons/check-icon.svg";
 import theme from "@/assets/styles/Theme";
 
 // ----------------------------------------------------------------------------------------------------

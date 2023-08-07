@@ -4,9 +4,9 @@ import { useSelector, useDispatch } from "react-redux";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { selectMeeting, AddOpenviduToken } from "../../features/Meeting/MeetingSlice";
-import receiptPaper from "@/assets/imgs/img/receipt-paper.jpg";
+import receiptPaper from "@/assets/imgs/receipt-paper.jpg";
 import { formatTime } from "@/utils/format";
-import loginSuccessImage from "@/assets/imgs/img/Login-Success-Image.png";
+import loginSuccessImage from "@/assets/imgs/Login-Success-Image.png";
 import { useRouter } from "@/hooks";
 import { postOpenviduToken } from "@/api";
 

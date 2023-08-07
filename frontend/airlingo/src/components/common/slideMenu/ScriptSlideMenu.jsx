@@ -1,7 +1,7 @@
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { useState } from "react";
-import { ReactComponent as ScriptIcon } from "@/assets/imgs/icons/script-icon.svg";
+import { ReactComponent as ScriptIcon } from "@/assets/icons/script-icon.svg";
 
 function ScriptSliderMenu({ contentGroup, onClick, slideOpen }) {
     const [slideIdx, setSlideIdx] = useState(0);

@@ -22,7 +22,7 @@ function SignUp() {
         password: "",
         nickname: "",
         email: "",
-        primaryLang: null,
+        primaryLang: { id: 0, label: "", img: "" },
         learningLangs: [],
     });
 
@@ -77,33 +77,7 @@ function SignUp() {
                     onHandleNextStep={handleNextStep}
                 />
             )}
-            {curStep === 5 && <SignUpResult onTotalChage={setTotalState} />}
-            {/* <ButtonWrapper>
-                {curStep > 1 && curStep < 5 && (
-                    <TextButton
-                        shape="negative-normal"
-                        text="이전 단계"
-                        width="200px"
-                        onClick={handlePrevStep}
-                    />
-                )}
-                {curStep < 5 && (
-                    <TextButton
-                        shape="positive-normal"
-                        text="다음 단계"
-                        width="200px"
-                        onClick={handleNextStep}
-                    />
-                )}
-                {curStep === 5 && (
-                    <TextButton
-                        shape="positive-normal"
-                        text="로그인 하러 가기"
-                        width="300px"
-                        onClick={() => routeTo("/login")}
-                    />
-                )}
-            </ButtonWrapper> */}
+            {curStep === 5 && <SignUpResult totalState={totalState} />}
         </SignUpContainer>
     );
 }

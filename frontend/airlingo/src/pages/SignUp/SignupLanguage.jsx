@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
+import LanguageRankBox from "@/assets/imgs/language-rank-box.png";
 import Dropdown from "@/components/common/dropdown";
 import { TextButton } from "@/components/common/button";
-import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
+import * as Icons from "@/assets/icons";
 import { getLanguage, getGrade } from "@/api/language";
 import { formatLanguage, formatGrade } from "@/utils/format";
 import Tooltip from "@/components/common/tooltip/Tooltip";
@@ -12,7 +13,7 @@ import theme from "@/assets/styles/Theme";
 
 // ----------------------------------------------------------------------------------------------------
 
-const { primary4 } = theme.colors;
+const { faintgray, primary4, warning } = theme.colors;
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -21,19 +22,16 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
     const [grades, setGrades] = useState([]);
     const [primaryLang, setPrimaryLang] = useState({
         value: totalState.primaryLang,
-        valid: !!totalState.primaryLang,
-        dirty: !!totalState.primaryLang,
+        valid: !!totalState.primaryLang.label,
+        dirty: !!totalState.primaryLang.label,
     });
     const [learningLangs, setLearningLangs] = useState({
         value: totalState.learningLangs,
-        valid: false,
-        dirty: false,
+        valid: totalState.learningLangs.length > 0,
+        dirty: totalState.learningLangs.length > 0,
     });
-    const [selectedLang, setSelectedLang] = useState({});
-    const [selectedGrade, setSelectedGrade] = useState({});
-
-    // // 관심 언어가 한 개 이상 선택되었는지 확인하는 변수
-    // const isInterestLanguageSelected = languageList.length > 0;
+    const [selectedLang, setSelectedLang] = useState({ id: 0, label: "", img: "" });
+    const [selectedGrade, setSelectedGrade] = useState({ id: 0, label: "", img: "" });
 
     useEffect(() => {
         async function fetchData() {
@@ -46,7 +44,6 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     400: (response) => console.log(response),
                 },
             });
-            console.log(setGrades);
             await getGrade({
                 responseFunc: {
                     200: (response) =>
@@ -71,22 +68,25 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                 gradeId: selectedGrade.id,
                 gradeLabel: selectedGrade.label,
             };
-            setLearningLangs((prev) => ({ ...prev, value: [...prev.value, newLanguage] }));
+            setLearningLangs((prev) => ({
+                ...prev,
+                value: [...prev.value, newLanguage],
+                valid: true,
+                dirty: true,
+            }));
 
-            // 필터링하여 선택된 관심언어를 드롭다운에서 제거
-            setLanguages((prev) =>
-                prev.filter((language) => language.label !== selectedLang.label),
-            );
-
-            setSelectedLang({});
-            setSelectedGrade({});
+            // 선택된 값을 초기화
+            setSelectedLang({ id: 0, label: "", img: "" });
+            setSelectedGrade({ id: 0, label: "", img: "" });
         }
     };
 
-    const deleteSelectedLanguage = (index) => {
-        const { langId, langLabel, langImg } = learningLangs.value.find((_, i) => i === index);
-        setLanguages((prev) => [...prev, { id: langId, label: langLabel, img: langImg }]);
-        setLearningLangs((prev) => ({ ...prev, value: prev.filter((_, i) => i !== index) }));
+    const deleteSelectedLanguage = (language) => {
+        setLearningLangs((prev) => ({
+            ...prev,
+            value: prev.value.filter((lang) => lang.langId !== language.langId),
+            valid: learningLangs.value.length > 1,
+        }));
     };
 
     return (
@@ -96,7 +96,7 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                 <PrimaryLangWrapper>
                     <Dropdown
                         width="500px"
-                        data={languages}
+                        data={languages.filter((language) => language.id !== primaryLang.value.id)}
                         iconColor="primary"
                         shape="negative"
                         selectedOption={primaryLang.value}
@@ -107,7 +107,13 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                 <LearningLangBox>
                     <Dropdown
                         width="180px"
-                        data={languages}
+                        data={languages.filter(
+                            (language) =>
+                                ![
+                                    primaryLang.value.id,
+                                    ...learningLangs.value.map((lang) => lang.langId),
+                                ].includes(language.id),
+                        )}
                         iconColor="primary"
                         shape="negative"
                         selectedOption={selectedLang}
@@ -130,7 +136,7 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                             direction: "down",
                         }}
                     >
-                        <TooltipContentContainer />
+                        <TooltipContent />
                     </Tooltip>
                     <TextButton text="추가하기" onClick={addSelectedLanguage} />
                 </LearningLangBox>
@@ -139,16 +145,14 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                 <LearningLangList>
                     {learningLangs.value.map((language, index) => (
                         // eslint-disable-next-line react/no-array-index-key
-                        <SelectedLanguage key={index}>
-                            <SelectedLanguageLabel>
-                                <language.img />
-                                <span>{language.langLabel}</span>
-                                <span>{language.gradeLabel}</span>
-                                <DeleteButton onClick={() => deleteSelectedLanguage(index)}>
-                                    X
-                                </DeleteButton>
-                            </SelectedLanguageLabel>
-                        </SelectedLanguage>
+                        <LearningLanguageItem key={index}>
+                            <LanguageImg src={language.langImg} alt="languageIcon" />
+                            <LanguageNameWrapper>{language.langLabel}</LanguageNameWrapper>
+                            <LanguageGradeWrapper>{language.gradeLabel}</LanguageGradeWrapper>
+                            <DeleteButton onClick={() => deleteSelectedLanguage(language)}>
+                                <Icons.ValidationInvalidIcon />
+                            </DeleteButton>
+                        </LearningLanguageItem>
                     ))}
                 </LearningLangList>
             )}
@@ -172,7 +176,7 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     onClick={() =>
                         onHandlePrevStep({
                             primaryLang: primaryLang.value,
-                            learningLang: learningLangs.value,
+                            learningLangs: learningLangs.value,
                         })
                     }
                 />
@@ -183,7 +187,7 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     onClick={() =>
                         onHandleNextStep({
                             primaryLang: primaryLang.value,
-                            learningLang: learningLangs.value,
+                            learningLangs: learningLangs.value,
                         })
                     }
                     disabled={!primaryLang.valid || !learningLangs.valid}
@@ -210,7 +214,7 @@ SignUpLanguage.propTypes = {
                 langId: PropTypes.number.isRequired,
                 langLabel: PropTypes.string.isRequired,
                 langImg: PropTypes.string.isRequired,
-                gradeId: PropTypes.string.isRequired,
+                gradeId: PropTypes.number.isRequired,
                 gradeLabel: PropTypes.string.isRequired,
             }),
         ),
@@ -254,67 +258,13 @@ const LearningLangBox = styled.div`
     justify-content: space-between;
 `;
 
-// const StyledMainLanguage = styled.div`
-//     display: flex;
-//     width: 500px;
-//     height: 50px;
-//     padding: 10px 10px;
-//     justify-content: space-between;
-//     align-items: center;
-//     flex-shrink: 0;
-//     cursor: pointer;
-//     position: relative;
-//     z-index: 3;
-// `;
-
-// const StyledSelectContainer = styled.div`
-//     display: flex;
-//     width: 500px;
-//     height: 68px;
-//     flex-shrink: 0;
-//     position: relative;
-//     z-index: 2;
-//     align-items: center;
-// `;
-
-// const StyledSelectLanguage = styled.div`
-//     color: rgba(0, 0, 0, 0.5);
-//     font-family: Pretendard;
-//     font-size: 20px;
-//     font-style: normal;
-//     font-weight: 300;
-//     line-height: 44px;
-//     display: flex;
-//     width: 180px;
-//     height: 50px;
-//     padding: 10px 0px;
-//     justify-content: space-between;
-//     align-items: center;
-//     flex-shrink: 0;
-// `;
-
-// const StyledSelectLevel = styled.div`
-//     color: rgba(0, 0, 0, 0.5);
-//     font-family: Pretendard;
-//     font-size: 18px;
-//     font-style: normal;
-//     font-weight: 300;
-//     line-height: 44px;
-//     flex: 1;
-//     display: flex;
-//     width: 160px;
-//     height: 50px;
-//     padding: 5px 10px;
-//     justify-content: space-between;
-//     align-items: center;
-// `;
-
-const TooltipContentContainer = styled.div`
+const TooltipContent = styled.div`
     position: relative;
     z-index: 999;
-    width: 398px;
-    height: 396px;
+    width: 400px;
+    height: 400px;
     background-image: url(${LanguageRankBox});
+    background-size: cover;
     border-radius: 20px;
     background-color: transparent;
     border: 0.5px solid rgba(0, 0, 0, 0.2);
@@ -325,56 +275,46 @@ const LearningLangList = styled.div`
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    display: flex;
+    margin-top: 25px;
 `;
 
-const SelectedLanguage = styled.div`
+const LearningLanguageItem = styled.div`
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-family: Pretendard;
-    font-size: 16px;
-`;
-
-const SelectedLanguageLabel = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 30px;
-    background: #efefef;
-    color: #000;
-    font-family: Pretendard;
+    justify-content: space-around;
+    background-color: ${faintgray};
+    border-radius: 25px;
+    width: 500px;
+    height: 50px;
+    color: black;
     font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    vertical-align: middle;
-    text-align: center;
-    width: 465px;
-    height: 45px;
-    padding: 10px 20px;
-
-    .language-img {
-        width: 24px;
-        height: 24px;
-        margin-right: 10px;
-    }
-
-    .language-title {
-        flex: 1;
-    }
-
-    .language-level {
-        margin-right: 10px;
-    }
 `;
 
-const DeleteButton = styled.button`
-    background: transparent;
-    border: none;
-    color: red;
+const LanguageImg = styled.img`
+    width: 25px;
+    height: 25px;
+`;
+
+const LanguageNameWrapper = styled.div`
+    width: 100px;
+    text-align: center;
+    font-weight: 700;
+`;
+
+const LanguageGradeWrapper = styled.div`
+    width: 120px;
+    text-align: center;
+    color: ${primary4};
+    font-weight: 500;
+`;
+
+const DeleteButton = styled.div`
+    width: 25px;
+    height: 25px;
     cursor: pointer;
-    font-size: 24px;
+    svg path {
+        fill: ${warning};
+    }
 `;
 
 const ValidationList = styled.div`

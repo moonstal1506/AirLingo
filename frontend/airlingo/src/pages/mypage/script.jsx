@@ -1,13 +1,13 @@
 import { useState } from "react";
 import styled from "@emotion/styled";
 import scriptBackground from "@/assets/imgs/script-background.png";
-import { ReactComponent as RightArrow } from "@/assets/imgs/icons/right-arrow-mini-Icon.svg";
-import { ReactComponent as LeftIcon } from "@/assets/imgs/icons/left-icon.svg";
-import { ReactComponent as RightIcon } from "@/assets/imgs/icons/right-icon.svg";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-japan-icon.svg";
+import { ReactComponent as RightArrow } from "@/assets/icons/right-arrow-mini-Icon.svg";
+import { ReactComponent as LeftIcon } from "@/assets/icons/left-icon.svg";
+import { ReactComponent as RightIcon } from "@/assets/icons/right-icon.svg";
+import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.svg";
+import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
 import { TextButton } from "@/components/common/button";
-import { ReactComponent as NoscriptBackground } from "@/assets/imgs/icons/no-data-icon.svg";
+import { ReactComponent as NoscriptBackground } from "@/assets/icons/no-data-icon.svg";
 
 function Script() {
     const arr = [

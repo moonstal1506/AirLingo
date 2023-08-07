@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
-import * as Icons from "@/assets/imgs/icons";
+import * as Icons from "@/assets/icons";
 import theme from "@/assets/styles/Theme";
 
 // ----------------------------------------------------------------------------------------------------

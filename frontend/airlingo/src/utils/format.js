@@ -32,7 +32,7 @@ function formatGrade(grade) {
     return {
         id: gradeId,
         label: `${gradeKorName}(${gradeName})`,
-        img: null,
+        img: "",
     };
 }
 
