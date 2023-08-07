@@ -4,7 +4,7 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
-import SignUp from "./pages/Signup";
+import SignUp from "./pages/SignUp";
 import Meeting from "./pages/Meeting";
 import WordBook from "./pages/mypage/WordBook";
 import Login from "./pages/login/Login";
