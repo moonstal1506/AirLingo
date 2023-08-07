@@ -9,7 +9,7 @@ function Modal({ Icon, title, titleColor, iconColor, children }) {
         <Overlay>
             <ModalContainer>
                 <ModalBox iconColor={iconColor}>
-                    <Icon />
+                    <Icon id="modalIcon" />
                     <ModalTitle titleColor={titleColor}>{title}</ModalTitle>
                     {children}
                 </ModalBox>
@@ -53,7 +53,7 @@ const ModalBox = styled.div`
     align-items: center;
     gap: 15px;
 
-    svg path {
+    #modalIcon path {
         fill: ${({ iconColor }) => iconConfig.color[iconColor]};
     }
 `;
