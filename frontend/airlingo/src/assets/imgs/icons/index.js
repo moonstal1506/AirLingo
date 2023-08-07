@@ -15,6 +15,9 @@ import { ReactComponent as TimeIcon } from "@/assets/imgs/icons/time-icon.svg";
 import { ReactComponent as ArchiveIcon } from "@/assets/imgs/icons/archive-icon.svg";
 import { ReactComponent as StarFilledIcon } from "@/assets/imgs/icons/star-filled-icon.svg";
 import { ReactComponent as StartNotFilledIcon } from "@/assets/imgs/icons/star-not-filled-icon.svg";
+import { ReactComponent as PassportTextIcon } from "@/assets/imgs/icons/passport-text-icon.svg";
+import { ReactComponent as ServiceLogoIcon } from "@/assets/imgs/icons/service-logo-icon.svg";
+import { ReactComponent as BiometricIcon } from "@/assets/imgs/icons/biometric-icon.svg";
 
 export {
     MicOnIcon,
@@ -34,4 +37,7 @@ export {
     ArchiveIcon,
     StarFilledIcon,
     StartNotFilledIcon,
+    PassportTextIcon,
+    ServiceLogoIcon,
+    BiometricIcon,
 };

@@ -2,15 +2,24 @@
 /* eslint-disable no-shadow */
 /* eslint-disable no-case-declarations */
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
 import { useDispatch, useSelector } from "react-redux";
-import { ScriptSlideMenu } from "@/components/common/slideMenu";
+import stomp from "stompjs";
+import SockJS from "sockjs-client";
+import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
 import { FabButton, TextButton } from "@/components/common/button";
 import * as Icons from "@/assets/imgs/icons";
 import { AddDidReport, AddMeetingData, selectMeeting } from "@/features/Meeting/MeetingSlice";
-import { getCard, getCardCode, getGrade, postOpenviduToken, postEvaluate } from "@/api";
+import {
+    getCard,
+    getCardCode,
+    getGrade,
+    postOpenviduToken,
+    postEvaluate,
+    postCreateChatRoom,
+} from "@/api";
 import Overlay from "@/components/common/overlay";
 import Modal from "@/components/modal";
 import Dropdown from "@/components/common/dropdown";
@@ -21,6 +30,7 @@ import { formatGrade, formatReportItem } from "@/utils/format";
 import { ExitIcon, DictionaryIcon } from "@/assets/imgs/icons";
 import StarRate from "@/components/starRate";
 import { useRouter } from "@/hooks";
+import ChatList from "@/components/chatList/ChatList";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -38,7 +48,7 @@ function Meeting() {
     const [reportList, setReportList] = useState([]);
     const [cardCode, setCardCode] = useState([]);
     const { sessionId, meetingData, didReport, otherUser, studyId } = useSelector(selectMeeting);
-    const { userId } = useSelector(selectUser);
+    const { userId, userNickname, userImgUrl } = useSelector(selectUser);
     const { routeTo } = useRouter();
 
     const [session, setSession] = useState(null); // Initial value changed to null
@@ -48,6 +58,7 @@ function Meeting() {
     const [isActiveVideo, setIsActiveVideo] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
     const [isActiveSlide, setIsActiveSlide] = useState(false);
+    const [isActiveChatSlide, setIsActiveChatSlide] = useState(false);
     const [anotherConnection, setAnotherConnection] = useState({});
     const [openResponseWaitModal, setOpenResponseWaitModal] = useState(false);
     const [openCardModal, setOpenCardModal] = useState(false); // 카드 모달의 on/off
@@ -64,28 +75,10 @@ function Meeting() {
     const [grade, setGrade] = useState([]);
     const [selectedGrade, setSelectedGrade] = useState({});
 
-    /*
-
-    mileageGrade: "카고"
-    premium: false
-    userId: 2
-    userInterestLanguages: [{…}]
-    userNativeLanguage: {languageId: 2, languageKorName: '영어', languageEngName: 'English', imageUrl: 'https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-britain-icon.svg'}
-    userNickname: "user2"
-    userRating: 4
-    userStudyLanguage: "한국어"
-    userStudyLanguageGradeName: "B1"
-    userStudyLanguageGradeScore: 3
-    userStudyLanguageId: 1
-
-
-    "userId": 1, => otheruser.userId
-    "gradeId": 2, => 현재 페이지에서 선택한거 
-    "languageId": 1, => otheruser.userStudyLanguageId
-    "studyId": 1, => studyId
-    "rating": 4.37 => 이 페이지에서 한거
-
-    */
+    const [message, setMessage] = useState("");
+    const [chatMessage, setChatMessages] = useState([]);
+    const [roomId, setRoomId] = useState("test");
+    const stompCilent = useRef({});
 
     // 세션 연결 함수
     async function connectSession() {
@@ -218,8 +211,67 @@ function Meeting() {
             });
     }
 
+    function onConnected() {
+        console.log(`개인 구독 !!${roomId}`);
+        // user 개인 구독
+        stompCilent.current.subscribe(`/sub/chat/room/${roomId}`, function (message) {
+            setChatMessages((messages) => [...messages, JSON.parse(message.body)]);
+
+            console.log(message.body);
+        });
+    }
+
+    function connect() {
+        const socket = new SockJS("http://localhost:8081/chat");
+        stompCilent.current = stomp.over(socket);
+        console.log(stompCilent);
+        console.log(stompCilent.current);
+        stompCilent.current.connect({}, () => {
+            setTimeout(function () {
+                onConnected();
+            }, 500);
+        });
+        console.log(stompCilent.current.connected);
+    }
+
+    const sendMessage = async (e) => {
+        e.preventDefault();
+        await stompCilent.current.send(
+            "/pub/chat/message",
+            {},
+            JSON.stringify({
+                roomId,
+                userNickname,
+                content: message,
+                userImgUrl,
+            }),
+        );
+        setMessage("");
+    };
+
+    const createChatRoom = async () => {
+        console.log("채팅방 생성1");
+
+        await postCreateChatRoom({
+            responseFunc: {
+                200: (response) => {
+                    console.log("채팅방 생성 성공!");
+                    console.log(response.data);
+                    setRoomId(response.data.roomId);
+                },
+                400: () => {
+                    console.log("실패!");
+                },
+            },
+            data: roomId,
+        });
+
+        connect();
+    };
+
     useEffect(() => {
         connectSession();
+        createChatRoom();
 
         return () => {
             if (session) session.disconnect();
@@ -232,6 +284,10 @@ function Meeting() {
         }
     }, [publisher, session]);
 
+    const ChangeMessages = (event) => {
+        setMessage(event.target.value);
+    };
+
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
         console.log("Microphone");
@@ -243,11 +299,13 @@ function Meeting() {
     };
 
     const handleChatClick = () => {
+        setIsActiveChatSlide((prev) => !prev);
+        console.log("hi");
         setActiveButton((prevButtonName) => {
             if (prevButtonName === "Chat") return null;
             return "Chat";
         });
-        console.log("Chat");
+        console.log("ChatSlide");
     };
 
     const handleBoardClick = () => {
@@ -635,7 +693,7 @@ function Meeting() {
                 <TopicHeader>현재 대화 주제</TopicHeader>
                 <TopicContent>{meetingData ? meetingData.currentCard : "없음"}</TopicContent>
             </TopicContainer>
-            <ButtonMenu isActiveSlide={isActiveSlide}>
+            <ButtonMenu isActiveSlide={isActiveSlide} isActiveChatSlide={isActiveChatSlide}>
                 {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
                     <FabButton
                         key={buttonName}
@@ -651,6 +709,19 @@ function Meeting() {
                 onClick={handleClickSlideButton}
                 slideOpen={isActiveSlide}
             />
+            <ChatSlideMenu isOpen={isActiveChatSlide}>
+                <ChatList data={chatMessage} />
+                <ChatInputWrapper onSubmit={sendMessage}>
+                    <ChatInput
+                        value={message}
+                        onChange={ChangeMessages}
+                        placeholder="대화 상대방에게 채팅을 보내보세요!"
+                    />
+                </ChatInputWrapper>
+                {/* <form onSubmit={sendMessage}>
+                    <input value={message} onChange={ChangeMessages} placeholder="메시지 입력" />
+                </form> */}
+            </ChatSlideMenu>
         </MeetingContainer>
     );
 }
@@ -715,15 +786,14 @@ const TopicContent = styled.div`
 `;
 
 const ButtonMenu = styled.div`
-    height: fit-content;
     position: fixed;
-    bottom: 0;
-    //right: ${({ isActiveSlide }) => (isActiveSlide ? "500px" : "300px")};
-    left: 50%;
-    transition: right 0.3s ease-in-out;
-    margin-bottom: 20px;
     display: flex;
+    height: fit-content;
     flex-shrink: 0;
+    right: ${({ isActiveSlide }) => (isActiveSlide ? "500px" : "300px")};
+    bottom: ${({ isActiveChatSlide }) => (isActiveChatSlide ? "460px" : "0px")};
+    transition: 0.3s ease-in-out;
+    margin-bottom: 20px;
     gap: 20px;
     z-index: 3;
     transform: translate(-50%, 0);
@@ -808,6 +878,27 @@ const ModalButtonBox = styled.div`
     justify-content: center;
     align-items: center;
     gap: 50px;
+`;
+
+const ChatInputWrapper = styled.form`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    border-radius: 10px;
+    border: 1px solid #000;
+    padding: 10px 20px;
+    box-sizing: border-box;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: normal;
+`;
+
+const ChatInput = styled.input`
+    width: 900%;
+    border: none;
+    font-size: 25px;
+    line-height: normal;
 `;
 
 // ----------------------------------------------------------------------------------------------------

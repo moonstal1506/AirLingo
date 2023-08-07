@@ -5,6 +5,7 @@ import { getLanguage, getGrade } from "./language";
 import { getConcurrentUser, postMatching, postOpenviduToken } from "./matching";
 import { getCardCode, getCard } from "./card";
 import { postEvaluate, getRecordStatistic } from "./record";
+import postCreateChatRoom from "./chat";
 
 export {
     instance,
@@ -20,4 +21,5 @@ export {
     getCard,
     postEvaluate,
     getRecordStatistic,
+    postCreateChatRoom,
 };

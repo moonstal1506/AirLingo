@@ -1,8 +1,9 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
-import ProfileBar from "../profileBar";
+import Profile from "../common/profile";
 
 function ChatList({ data, onClick }) {
+    const defaultImageUrl = `https://airlingobucket.s3.ap-northeast-2.amazonaws.com/%EC%82%AC%EC%9A%A9%EC%9E%90.png`;
     const handleClickListItem = (e) => {
         const currentList = e.target.closest("li");
         if (!currentList || onClick === null) return;
@@ -12,12 +13,15 @@ function ChatList({ data, onClick }) {
     return (
         <ChatListContainer>
             <ChatListBox onClick={handleClickListItem}>
-                {data.map(({ id, imgSrc, nickname, text }) => (
-                    <ChatListItem key={`${id}_${nickname}`}>
+                {data.map(({ roomId, userImgUrl, userNickname, content }) => (
+                    <ChatListItem key={`${roomId}_${userNickname}`}>
                         <ProfileWrapper>
-                            <ProfileBar imgSize="tiny" imgSrc={imgSrc} nickname={nickname} />
+                            <ProfileBarCustom>
+                                <Profile size="tiny" src={userImgUrl || defaultImageUrl} />
+                                {userNickname}
+                            </ProfileBarCustom>
                         </ProfileWrapper>
-                        <ChatTextWrapper>{text}</ChatTextWrapper>
+                        <ChatTextWrapper>{content}</ChatTextWrapper>
                     </ChatListItem>
                 ))}
             </ChatListBox>
@@ -41,7 +45,7 @@ ChatList.defaultProps = {
 };
 
 const ChatListContainer = styled.div`
-    width: 80%;
+    width: 90%;
     height: 320px;
     padding: 15px;
     border-radius: 20px;
@@ -90,10 +94,22 @@ const ChatTextWrapper = styled.div`
     padding: 10px 20px;
     align-items: center;
     box-sizing: border-box;
-
     color: #000;
     font-size: 25px;
     font-weight: 400;
+    line-height: normal;
+`;
+
+const ProfileBarCustom = styled.div`
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    align-items: center;
+    color: #000;
+    font-family: Pretendard;
+    font-size: 25px;
+    font-style: normal;
+    font-weight: 700;
     line-height: normal;
 `;
 
