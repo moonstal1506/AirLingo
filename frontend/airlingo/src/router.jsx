@@ -5,10 +5,10 @@ import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
 import StatisticHome from "./pages/statistic/StatisticHome";
-import WordBook from "./pages/mypage/wordBook";
+import WordBook from "./pages/mypage/WordBook";
 import SignupLanguage from "./pages/SignUp/SignupLanguage";
 import Login from "./pages/login/Login";
-import Script from "./pages/mypage/script";
+import Script from "./pages/mypage/Script";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 import Meeting from "./pages/meeting";
 
