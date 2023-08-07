@@ -1,9 +1,10 @@
 import instance from "./instance";
 import { getLogout, loginUser } from "./auth";
 import getUserProfile from "./user";
-import getLanguage from "./language";
+import { getLanguage, getGrade } from "./language";
 import { getConcurrentUser, postMatching, postOpenviduToken } from "./matching";
 import { getCardCode, getCard } from "./card";
+import { postEvaluate, getRecordStatistic } from "./record";
 
 export {
     instance,
@@ -11,9 +12,12 @@ export {
     getLogout,
     getUserProfile,
     getLanguage,
+    getGrade,
     getConcurrentUser,
     postMatching,
     postOpenviduToken,
     getCardCode,
     getCard,
+    postEvaluate,
+    getRecordStatistic,
 };

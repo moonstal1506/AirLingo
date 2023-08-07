@@ -1,9 +1,22 @@
 import instance from "./instance";
 import processApiResponse from "@/utils/api";
 
-const getLanguage = async ({ responseFunc }) => {
+/*
+
+{
+  "userId": 1,
+  "gradeId": 2,
+  "languageId": 1,
+  "studyId": 1,
+  "rating": 4.37
+}
+
+*/
+
+const postEvaluate = async ({ responseFunc, data }) => {
+    const { userLoginId } = data;
     try {
-        const response = await instance.get(`/api/language`);
+        const response = await instance.get(`/api/user/logout/${userLoginId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
@@ -12,9 +25,10 @@ const getLanguage = async ({ responseFunc }) => {
     }
 };
 
-const getGrade = async ({ responseFunc }) => {
+const getRecordStatistic = async ({ responseFunc, data }) => {
+    const { userLoginId } = data;
     try {
-        const response = await instance.get(`/api/grade`);
+        const response = await instance.get(`/api/user/logout/${userLoginId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
@@ -22,4 +36,5 @@ const getGrade = async ({ responseFunc }) => {
         return e.response;
     }
 };
-export { getLanguage, getGrade };
+
+export { postEvaluate, getRecordStatistic };
