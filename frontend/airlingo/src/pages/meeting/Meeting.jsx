@@ -438,8 +438,7 @@ function Meeting() {
 
     const handleClickEvaluateUser = async () => {
         // gradeId : 실력점수, rating : 매너점수
-
-        const response = await postEvaluate({
+        await postEvaluate({
             responseFunc: {
                 200: () => {
                     session.disconnect();
@@ -448,14 +447,12 @@ function Meeting() {
             },
             data: {
                 userId: otherUser.userId,
-                gradeId: selectedGrade.greadeId,
+                gradeId: selectedGrade.gradeId,
                 languageId: otherUser.userStudyLanguageId,
                 studyId,
                 rating,
             },
         });
-
-        console.log(response);
     };
 
     const buttonList = [
