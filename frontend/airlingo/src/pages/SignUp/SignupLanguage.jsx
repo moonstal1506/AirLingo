@@ -96,7 +96,13 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                 <PrimaryLangWrapper>
                     <Dropdown
                         width="500px"
-                        data={languages.filter((language) => language.id !== primaryLang.value.id)}
+                        data={languages.filter(
+                            (language) =>
+                                ![
+                                    primaryLang.value.id,
+                                    ...learningLangs.value.map((lang) => lang.langId),
+                                ].includes(language.id),
+                        )}
                         iconColor="primary"
                         shape="negative"
                         selectedOption={primaryLang.value}
