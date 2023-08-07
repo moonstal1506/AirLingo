@@ -3,12 +3,7 @@ package com.ssafy.airlingo.domain.matching.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.airlingo.domain.matching.request.MatchingRequestDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingResponseDto;
@@ -40,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 @Tag(name = "Matching Controller", description = "매칭 관련 컨트롤러")
 @RequiredArgsConstructor
 @RestController
+@CrossOrigin(origins = "http://localhost:5173")
 @RequestMapping("/api/matching")
 public class MatchingController {
 
@@ -61,7 +57,7 @@ public class MatchingController {
 	@PostMapping("/result")
 	public void matchingResult(@RequestBody @Valid MatchingResponseDto matchingResponseDto) throws
 		OpenViduJavaClientException, OpenViduHttpException {
-		matchingService.useMileage(matchingResponseDto);
+		matchingService.updateMileage(matchingResponseDto);
 		log.info("matchingResult : {}", matchingResponseDto.toString());
 
 		// 매칭에 성공한 사용자들을 대상으로 스터디 생성 및 오픈비두 세션 생성

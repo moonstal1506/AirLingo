@@ -9,7 +9,7 @@ public interface MatchingService {
 
 	MatchingUserDto findMatchingUser(MatchingRequestDto matchingRequestDto);
 
-	void useMileage(MatchingResponseDto matchingResponseDto);
+	void updateMileage(MatchingResponseDto matchingResponseDto);
 
 	ConcurrentUsersResponseDto getConcurrentUsersSize();
 

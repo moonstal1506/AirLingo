@@ -42,6 +42,16 @@ const shapeStyle = {
     min-width : 200px;
     border-radius:10px;
     `,
+    word: `
+    min-width : 120px;
+    border-radius:10px;
+    `,
+
+    prev: `
+    width: 25px;
+    height: 25px;
+    border-radius:10px;
+    `,
     normal: `
         min-width: 150px;
         border-radius: 10px;
@@ -67,6 +77,23 @@ const shapeStyle = {
     quit: `
         min-width : 120px;
         border-radius:10px;
+    `,
+    login: `
+    background-color:#FFF;
+    align-items: center;
+    width: 300px;
+    height: 50px;
+    border: 1px solid #000;
+    border-radius: 10px;
+    margin-top: 15px; 
+    `,
+    googleLogin: `
+    background-color:#FFF;
+    align-items: center;
+    width: 450px;
+    height: 50px;
+    border: 1px solid #000;
+    border-radius: 10px;
     `,
 };
 

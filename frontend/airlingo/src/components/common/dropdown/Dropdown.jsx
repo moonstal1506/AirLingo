@@ -1,13 +1,17 @@
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
+
 import { useEffect, useRef, useState } from "react";
 import styled from "@emotion/styled";
 import { keyframes } from "@emotion/react";
 import PropTypes from "prop-types";
 import theme from "@/assets/styles/Theme";
-import { ReactComponent as DropdownIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
+import { ReactComponent as DropdownIcon } from "@/assets/imgs/icons/right-full-arrow-icon.svg";
 import iconConfig from "@/config";
 import combineShape from "@/utils/style";
 import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/korea-flag-icon.svg";
+import isKeyInObj from "@/utils/common";
+
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1, primary4 } = theme.colors;
@@ -49,7 +53,7 @@ function Dropdown({
     const [isOpen, setIsOpen] = useState(false);
     const [iconRotation, setIconRotation] = useState(0);
     const dropdownRef = useRef();
-
+    console.log(data);
     useEffect(() => {
         if (defaultOption) onChange(defaultOption);
         const handleOutsideClick = (event) => {
@@ -81,9 +85,15 @@ function Dropdown({
             <DropdownButton onClick={toggleDropdown} shape={shape}>
                 {selectedOption.id ? (
                     <>
-                        <div>
-                            <selectedOption.img />
-                        </div>
+                        {isKeyInObj(selectedOption, "img") && (
+                            <div>
+                                {typeof selectedOption.img === "string" ? (
+                                    <DropdownItemImg src={selectedOption.img} alt="langIcon" />
+                                ) : (
+                                    <selectedOption.img />
+                                )}
+                            </div>
+                        )}
                         <div>{selectedOption.label}</div>
                     </>
                 ) : (
@@ -96,9 +106,15 @@ function Dropdown({
             <DropdownContent open={isOpen} width={width}>
                 {data.map((option) => (
                     <DropdownOption key={option.id} onClick={() => handleOptionClick(option.id)}>
-                        <div>
-                            <option.img />
-                        </div>
+                        {isKeyInObj(selectedOption, "img") && (
+                            <div>
+                                {typeof option.img === "string" ? (
+                                    <DropdownItemImg src={option.img} alt="langIcon" />
+                                ) : (
+                                    <option.img />
+                                )}
+                            </div>
+                        )}
                         <div>{option.label}</div>
                     </DropdownOption>
                 ))}
@@ -174,6 +190,11 @@ const DropdownIconWrapper = styled.div`
     }
 `;
 
+const DropdownItemImg = styled.img`
+    width: 25px;
+    height: 25px;
+`;
+
 // ----------------------------------------------------------------------------------------------------
 
 Dropdown.propTypes = {
@@ -181,7 +202,7 @@ Dropdown.propTypes = {
     data: PropTypes.arrayOf(
         PropTypes.shape({
             id: PropTypes.string.isRequired,
-            img: PropTypes.elementType.isRequired,
+            img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
             label: PropTypes.string.isRequired,
         }),
     ),
@@ -189,12 +210,12 @@ Dropdown.propTypes = {
     shape: PropTypes.oneOf(["positive", "negative"]),
     selectedOption: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        img: PropTypes.elementType.isRequired,
+        img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
         label: PropTypes.string.isRequired,
     }),
     defaultOption: PropTypes.shape({
         id: PropTypes.string.isRequired,
-        img: PropTypes.elementType.isRequired,
+        img: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
         label: PropTypes.string.isRequired,
     }),
     placeholder: PropTypes.string,

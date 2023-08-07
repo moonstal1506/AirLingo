@@ -4,9 +4,9 @@ import styled from "@emotion/styled";
 import Overlay from "../common/overlay";
 import iconConfig from "@/config";
 
-function Modal({ Icon, title, titleColor, iconColor, children }) {
+function Modal({ zIdx, Icon, title, titleColor, iconColor, children }) {
     return createPortal(
-        <Overlay>
+        <Overlay zIdx={zIdx}>
             <ModalContainer>
                 <ModalBox iconColor={iconColor}>
                     <Icon id="modalIcon" />
@@ -28,6 +28,7 @@ Modal.propTypes = {
 };
 
 Modal.defaultProps = {
+    zIdx: 1000,
     iconColor: "black",
     titleColor: "black",
 };

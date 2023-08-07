@@ -4,7 +4,7 @@ const useRouter = () => {
     const router = useNavigate();
 
     return {
-        routeTo: (path) => router(path),
+        routeTo: (path, state = {}) => router(path, state),
     };
 };
 

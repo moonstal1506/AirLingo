@@ -54,6 +54,7 @@ TextInput.defaultProps = {
 };
 
 const TextInputWrapper = styled.input`
+    font-size: 20px;
     box-sizing: border-box;
     border-radius: ${({ radius }) => radiusObj[radius]};
     ${({ width, height }) => `

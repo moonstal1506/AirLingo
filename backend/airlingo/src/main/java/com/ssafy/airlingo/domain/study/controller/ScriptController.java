@@ -3,15 +3,7 @@ package com.ssafy.airlingo.domain.study.controller;
 import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import com.ssafy.airlingo.domain.study.dto.request.CreateScriptRequestDto;
 import com.ssafy.airlingo.domain.study.dto.request.ModifyScriptContentRequestDto;
@@ -29,6 +21,7 @@ import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.web.multipart.MultipartFile;
 
 @ApiResponses({
 	@ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
@@ -69,11 +62,14 @@ public class ScriptController {
 
 	@Operation(summary = "Save script Entity before feedback", description = "스크립트 생성")
 	@PostMapping
-	public ResponseResult CreateScript(@RequestBody CreateScriptRequestDto createScriptRequestDto) throws
+	public ResponseResult CreateScript(@RequestParam MultipartFile voiceFile,
+									   @RequestParam Long studyId,
+									   @RequestParam Long cardId) throws
+
 		IOException,
 		ParseException {
 		log.info("ScriptController_CreateScript");
-		return new SingleResponseResult<>(scriptService.createScript(createScriptRequestDto));
+		return new SingleResponseResult<>(scriptService.createScript(voiceFile,studyId,cardId));
 	}
 	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")
 	@PutMapping
