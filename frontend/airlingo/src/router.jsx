@@ -11,6 +11,7 @@ import Login from "./pages/login/Login";
 import Script from "./pages/mypage/Script";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 import Meeting from "./pages/meeting";
+import { MyPageHome, StatisticHome } from "./pages/mypage";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -28,8 +29,8 @@ const routerData = [
         path: "/test",
         label: "Test",
         element: <Home />,
-        withAuth: true,
-        headerExist: false,
+        withAuth: false,
+        headerExist: true,
         mustNotAuth: false,
     },
     {
@@ -114,6 +115,15 @@ const routerData = [
     },
     {
         id: 11,
+        path: "/mypage",
+        label: "mypage",
+        element: <MyPageHome />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 12,
         path: "/statistic",
         label: "statistic",
         element: <StatisticHome />,
@@ -122,7 +132,7 @@ const routerData = [
         mustNotAuth: false,
     },
     {
-        id: 12,
+        id: 13,
         path: "*",
         label: "NotFound",
         element: <Notfound />,
