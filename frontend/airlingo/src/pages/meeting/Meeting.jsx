@@ -566,7 +566,7 @@ function Meeting() {
     return (
         <MeetingContainer>
             {openCardModal && (
-                <Overlay zIdx={2}>
+                <Overlay zIdx={501}>
                     <CardModalContainer>
                         <TopicCardBox onClick={handleClickTopicCard}>
                             {cardCode.map((cur) => (
@@ -773,12 +773,14 @@ function Meeting() {
                         ? meetingData.currentCard.subject
                         : "없음"}
                 </TopicContent>
-                <TextButton
-                    shape="positive-curved-large"
-                    type="button"
-                    onClick={handleClickOpenFeedback}
-                    text="스크립트 피드백"
-                />
+                {meetingData && isKeyInObj(meetingData, "currentCard") && (
+                    <TextButton
+                        shape="positive-curved-large"
+                        type="button"
+                        onClick={handleClickOpenFeedback}
+                        text="스크립트 피드백"
+                    />
+                )}
             </TopicContainer>
             <ButtonMenu isActiveSlide={isActiveSlide} isActiveChatSlide={isActiveChatSlide}>
                 {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
@@ -797,14 +799,22 @@ function Meeting() {
                 slideOpen={isActiveSlide}
             />
             <ChatSlideMenu isOpen={isActiveChatSlide}>
-                <ChatList data={chatMessage} />
-                <ChatInputWrapper onSubmit={sendMessage}>
-                    <ChatInput
-                        value={message}
-                        onChange={ChangeMessages}
-                        placeholder="대화 상대방에게 채팅을 보내보세요!"
-                    />
-                </ChatInputWrapper>
+                <ChatBox>
+                    <ChatList data={chatMessage} />
+                    <ChatInputWrapper onSubmit={sendMessage}>
+                        <ChatInput
+                            value={message}
+                            onChange={ChangeMessages}
+                            placeholder="대화 상대방에게 채팅을 보내보세요!"
+                        />
+                        <TextButton
+                            type="submit"
+                            value="보내기"
+                            shape="positive-chat"
+                            text="보내기"
+                        />
+                    </ChatInputWrapper>
+                </ChatBox>
             </ChatSlideMenu>
         </MeetingContainer>
     );
@@ -857,6 +867,8 @@ const TopicContainer = styled.div`
     background-color: #ffffff;
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
     gap: 5px;
+    position: relative;
+    z-index: 500;
 `;
 
 const TopicHeader = styled.div`
@@ -875,11 +887,11 @@ const ButtonMenu = styled.div`
     height: fit-content;
     flex-shrink: 0;
     left: 50%;
-    bottom: 0;
+    bottom: ${({ isActiveChatSlide }) => (isActiveChatSlide ? "460px" : "0px")};
     transition: 0.3s ease-in-out;
     margin-bottom: 20px;
     gap: 20px;
-    z-index: 3;
+    z-index: 501;
     transform: translate(-50%, 0);
 `;
 
@@ -964,24 +976,35 @@ const ModalButtonBox = styled.div`
     gap: 50px;
 `;
 
+const ChatBox = styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 25px;
+`;
+
 const ChatInputWrapper = styled.form`
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    width: 90%;
+`;
+
+const ChatInput = styled.input`
+    width: 90%;
+    border: none;
+    font-size: 25px;
+    line-height: normal;
     border-radius: 10px;
     border: 1px solid #000;
     padding: 10px 20px;
     box-sizing: border-box;
     font-size: 25px;
     font-weight: 400;
-    line-height: normal;
-`;
-
-const ChatInput = styled.input`
-    width: 900%;
-    border: none;
-    font-size: 25px;
     line-height: normal;
 `;
 
