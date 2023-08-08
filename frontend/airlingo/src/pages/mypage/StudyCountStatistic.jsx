@@ -14,9 +14,9 @@ import { ReactComponent as YelloW } from "@/assets/icons/language-yellow-icon.sv
 import { getRecordStatistic } from "@/api";
 import { selectUser } from "@/features/User/UserSlice";
 
-function StudyTimeStatistic() {
+function StudyCountStatistic() {
     const [data, setData] = useState(null);
-    const [totalStudyTime, setTotalStudyTime] = useState(0);
+    const [totalStudyNumber, setTotalStudyNumber] = useState(0);
     const { userId } = useSelector(selectUser);
     const colors = {
         한국어: "#E96060",
@@ -42,7 +42,7 @@ function StudyTimeStatistic() {
             ctx.textBaseline = "middle";
             ctx.font = "600 45px Pretendard";
             ctx.fillStyle = "#000";
-            ctx.fillText(`${totalStudyTime}시간`, center.x, center.y);
+            ctx.fillText(`${totalStudyNumber}회`, center.x, center.y);
         },
     };
 
@@ -91,15 +91,15 @@ function StudyTimeStatistic() {
             responseFunc: {
                 200: (response) => {
                     console.log("통계 데이터 가져오기 성공");
-                    console.log(response.data.data.timeResponse);
-                    const { learningLanguageResponseList } = response.data.data.timeResponse;
-                    console.log(learningLanguageResponseList);
+                    console.log(response.data.data.numberResponse);
+                    const { languageNumberResponseDtoList } = response.data.data.numberResponse;
+                    console.log(languageNumberResponseDtoList);
                     const chartData = {
-                        labels: learningLanguageResponseList.map((item) => item.languageName),
+                        labels: languageNumberResponseDtoList.map((item) => item.languageName),
                         datasets: [
                             {
-                                data: learningLanguageResponseList.map((item) => item.percent),
-                                backgroundColor: learningLanguageResponseList.map(
+                                data: languageNumberResponseDtoList.map((item) => item.percent),
+                                backgroundColor: languageNumberResponseDtoList.map(
                                     (item) => colors[item.languageName],
                                 ),
                             },
@@ -108,8 +108,8 @@ function StudyTimeStatistic() {
 
                     setData(chartData);
                     console.log(chartData);
-                    setTotalStudyTime(response.data.data.timeResponse.totalStudyTime);
-                    console.log(totalStudyTime);
+                    setTotalStudyNumber(response.data.data.numberResponse.totalStudyNumber);
+                    console.log(totalStudyNumber);
                 },
                 400: () => {
                     console.log("통계 데이터 가져오기 실패");
@@ -125,8 +125,8 @@ function StudyTimeStatistic() {
 
     return (
         <PageLayout>
-            <Title>학습 시간 분석</Title>
-            <SubTitle>랭커들과 대화한 시간은 총 몇 시간일까요?</SubTitle>
+            <Title>대화 횟수 분석</Title>
+            <SubTitle>랭커들과 대화한 횟수는 총 몇 번일까요?</SubTitle>
             <ChartContainer>
                 {data ? (
                     <Doughnut
@@ -281,4 +281,4 @@ const OrangeIcon = styled(Orange)`
     height: 15px;
 `;
 
-export default StudyTimeStatistic;
+export default StudyCountStatistic;
