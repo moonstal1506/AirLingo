@@ -93,7 +93,8 @@ const routerData = [
         label: "WordBook",
         element: <WordBook />,
         withAuth: true,
-        headerExist: false,
+        headerExist: true,
+        mustNotAuth: false,
     },
     {
         id: 9,
