@@ -88,8 +88,8 @@ const routerData = [
     },
     {
         id: 8,
-        path: "/word",
-        label: "Word",
+        path: "/wordbook",
+        label: "WordBook",
         element: <WordBook />,
         withAuth: true,
         headerExist: false,
