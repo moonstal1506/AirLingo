@@ -28,9 +28,8 @@ const postEvaluate = async ({ responseFunc, data }) => {
 };
 
 const getRecordStatistic = async ({ responseFunc, data }) => {
-    const { userId } = data;
     try {
-        const response = await instance.get(`/api/record/statistic/${userId}`);
+        const response = await instance.get(`/api/record/statistic/${data}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

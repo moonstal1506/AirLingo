@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import com.ssafy.airlingo.domain.language.dto.response.LearningLanguageNumberResponseDto;
@@ -26,7 +27,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 		"JOIN r.language l " +
 		"WHERE r.user= :user " +
 		"GROUP BY l.languageId")
-	List<LearningLanguageTimeResponseDto> getLearningLanguageTimeStatistics(User user);
+	List<LearningLanguageTimeResponseDto> getLearningLanguageTimeStatistics(@Param("user")User user);
 
 	@Query("SELECT new com.ssafy.airlingo.domain.language.dto.response.LearningLanguageNumberResponseDto(" +
 		"l.languageId, " +
@@ -38,7 +39,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 		"JOIN r.language l " +
 		"WHERE r.user = :user " +
 		"GROUP BY l.languageId ")
-	List<LearningLanguageNumberResponseDto> getLearningLanguageNumberStatistics(User user);
+	List<LearningLanguageNumberResponseDto> getLearningLanguageNumberStatistics(@Param("user")User user);
 
 	@Query(value = "SELECT grade_id " +
 		"FROM ( " +
@@ -51,7 +52,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 		"GROUP BY grade_id " +
 		"ORDER BY COUNT(grade_id) DESC, grade_id DESC " +
 		"LIMIT 1", nativeQuery = true)
-	Long getMostFrequentGradeIdForLanguage(Long languageId);
+	Long getMostFrequentGradeIdForLanguage(@Param("language_id")Long languageId);
 
 	@EntityGraph(attributePaths = {"user", "language", "grade", "study"})
 	List<Record> findRecordByUser(User user);

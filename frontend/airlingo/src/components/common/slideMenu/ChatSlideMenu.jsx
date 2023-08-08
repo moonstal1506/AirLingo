@@ -3,7 +3,7 @@ import styled from "@emotion/styled";
 
 function ChatSlideMenu({ isOpen, children }) {
     return (
-        <SlideMenuContainer>
+        <SlideMenuContainer isOpen={isOpen}>
             <MenuContainer isOpen={isOpen}>{children}</MenuContainer>
         </SlideMenuContainer>
     );
@@ -20,6 +20,7 @@ const SlideMenuContainer = styled.div`
     position: absolute;
     bottom: 0;
     left: 0;
+    z-index: ${({ isOpen }) => (isOpen ? 1000 : 1)};
     overflow: hidden;
 `;
 

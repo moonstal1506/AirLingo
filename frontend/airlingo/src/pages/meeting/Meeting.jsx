@@ -26,12 +26,12 @@ import Dropdown from "@/components/common/dropdown";
 import { getReportItems, postReport } from "@/api/report";
 import { TextArea } from "@/components/common/input";
 import { selectUser } from "@/features/User/UserSlice";
-import { postScript } from "@/api/record";
 import { formatGrade, formatReportItem } from "@/utils/format";
 import { ExitIcon, DictionaryIcon } from "@/assets/icons";
 import StarRate from "@/components/starRate";
 import { useRouter } from "@/hooks";
 import ChatList from "@/components/chatList/ChatList";
+import isKeyInObj from "@/utils/common";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -46,22 +46,21 @@ const contentGroupData = [
 
 function Meeting() {
     const dispatch = useDispatch();
-    const [localRecorder, setLocalRecorder] = useState(null);
-    const [reportList, setReportList] = useState([]);
-    const [cardCode, setCardCode] = useState([]);
-    console.log("맨 첫화면에서 찍는 로컬리코더!!!", localRecorder);
+    const { routeTo } = useRouter();
     const { sessionId, meetingData, didReport, otherUser, studyId } = useSelector(selectMeeting);
     const { userId, userNickname, userImgUrl } = useSelector(selectUser);
-    const { routeTo } = useRouter();
+
+    const [reportList, setReportList] = useState([]);
+    const [cardCode, setCardCode] = useState([]);
     const [session, setSession] = useState(null); // Initial value changed to null
     const [publisher, setPublisher] = useState(null);
+
     const [subscribers, setSubscribers] = useState([]);
     const [isActiveMic, setIsActiveMic] = useState(false);
     const [isActiveVideo, setIsActiveVideo] = useState(false);
     const [activeButton, setActiveButton] = useState(null);
     const [isActiveSlide, setIsActiveSlide] = useState(false);
     const [isActiveChatSlide, setIsActiveChatSlide] = useState(false);
-    const [anotherConnection, setAnotherConnection] = useState({});
     const [openResponseWaitModal, setOpenResponseWaitModal] = useState(false);
     const [openCardModal, setOpenCardModal] = useState(false); // 카드 모달의 on/off
     const [openCardRequestModal, setOpenCardRequestModal] = useState(false); // 상대방이 선택한 대주제를 허용할지 묻는 모달 on/off
@@ -74,7 +73,6 @@ function Meeting() {
 
     const [openFeedbackStartModal, setOpenFeedbackStartModal] = useState(false);
     const [openFeedbackRequestModal, setOpenFeedbackRequestModal] = useState(false);
-    const [isRecordingUser, setIsRecordingUser] = useState(false);
 
     const [openEvaluateModal, setOpenEvaluateModal] = useState(false);
     const [rating, setRating] = useState(0);
@@ -86,29 +84,13 @@ function Meeting() {
     const stompCilent = useRef({});
     const { VITE_CHAT_SOCKET_URL } = import.meta.env;
 
-    // 세션 연결 함수
-    async function connectSession() {
-        const OV = new OpenVidu();
-        const curSession = OV.initSession();
-        setSession(curSession);
+    const OV = useRef(new OpenVidu());
 
-        const response = await postOpenviduToken({
-            responseFunc: {
-                200: () => {
-                    console.log("get Token Success");
-                },
-                400: () => {
-                    console.log("get Token Fail");
-                },
-            },
-            data: { sessionId },
-        });
-        console.log(response.data.data);
-
+    // 필요 데이터를 불러오는 함수
+    async function fetchData() {
         await getCardCode({
             responseFunc: {
                 200: (response) => {
-                    console.log("카드 코드 받기 성공!", response.data);
                     setCardCode([...response.data.data]);
                 },
             },
@@ -117,7 +99,6 @@ function Meeting() {
         await getReportItems({
             responseFunc: {
                 200: (response) => {
-                    console.log("신고 목록 받기 성공!", response.data.data);
                     setReportList([...response.data.data].map((cur) => formatReportItem(cur)));
                 },
             },
@@ -127,11 +108,14 @@ function Meeting() {
         await getGrade({
             responseFunc: {
                 200: (response) => {
-                    console.log("등급 받기 성공", response.data.data);
                     setGrade([...response.data.data]);
                 },
             },
         });
+    }
+
+    async function joinSession() {
+        const curSession = OV.current.initSession();
 
         curSession.on("streamCreated", (event) => {
             const subscriber = curSession.subscribe(event.stream, undefined);
@@ -139,6 +123,8 @@ function Meeting() {
         });
 
         curSession.on("streamDestroyed", (event) => {
+            console.log("스트림 삭제 이벤트", subscribers, event.stream.streamId);
+
             setSubscribers((prevSubscribers) =>
                 prevSubscribers.filter((sub) => sub.stream.streamId !== event.stream.streamId),
             );
@@ -147,16 +133,27 @@ function Meeting() {
         curSession.on("exception", (exception) => {
             console.warn(exception);
         });
-        curSession.on("connectionCreated", (event) => {
-            setAnotherConnection(event.connection);
+
+        setSession(curSession);
+    }
+
+    // 세션 연결 함수
+    async function connectSession() {
+        if (!session) return;
+        const response = await postOpenviduToken({
+            responseFunc: {
+                200: () => console.log("get Token Success"),
+                400: () => console.log("get Token Fail"),
+            },
+            data: { sessionId },
         });
 
-        curSession
+        session
             .connect(response.data.data, {
                 clientData: userNickname,
             })
-            .then(() => {
-                return OV.initPublisherAsync(undefined, {
+            .then(async () => {
+                const publisher = await OV.current.initPublisherAsync(undefined, {
                     audioSource: undefined,
                     videoSource: undefined,
                     publishAudio: true,
@@ -166,108 +163,76 @@ function Meeting() {
                     insertMode: "APPEND",
                     mirror: "false",
                 });
-            })
-            .then((publisher) => {
-                console.log(publisher);
-                const value = OV.initLocalRecorder(publisher.stream);
-                console.log(value);
-                setLocalRecorder(value);
+                session.publish(publisher);
                 setPublisher(publisher);
-                curSession.publish(publisher);
+
+                if (session) {
+                    session.on("signal", (event) => {
+                        const { data, type } = event;
+                        const typeArr = type.split(":");
+                        const processSignal = async () => {
+                            switch (typeArr[1]) {
+                                case "cardcode-select-request":
+                                    setOpenCardRequestModal(true);
+                                    setRequestCardCode(data);
+                                    break;
+
+                                case "cardcode-select-response":
+                                    console.log("카드 선택에 대한 답을 받았다!", publisher);
+
+                                    const jsonData = JSON.parse(data);
+                                    if (jsonData.agree && publisher) {
+                                        dispatch(
+                                            AddMeetingData({
+                                                meetingData: {
+                                                    ...meetingData,
+                                                    currentCardCode: jsonData.currentCardCode,
+                                                    currentCard: jsonData.currentCard,
+                                                },
+                                            }),
+                                        );
+
+                                        console.log("OpenResponseWaitModal 닫기!!!", publisher);
+                                        setOpenResponseWaitModal(false);
+                                    } else {
+                                        console.log(
+                                            "상대가 내 카드 코드 선택에 동의하지 않았습니다",
+                                        );
+                                    }
+                                    // }
+                                    break;
+
+                                case "feedback-start-request":
+                                    // 1. 응답 모달창을 열어준다.
+                                    setOpenFeedbackRequestModal(true);
+                                    break;
+
+                                case "feedback-start-response":
+                                    console.log("여기까지 오긴 왔긴 했어", meetingData);
+                                    setOpenFeedbackStartModal(false);
+                                    const curJsonData = JSON.parse(data);
+                                    if (curJsonData.agree) {
+                                        console.log("스크립트 받아오기!");
+                                    } else {
+                                        console.log("거절 또는 당신은 요청을 보낸 사람입니다.");
+                                    }
+
+                                    break;
+
+                                default:
+                                    console.log("없는 이벤트타입입니다.");
+                            }
+                        };
+                        processSignal();
+                    });
+                }
             })
             .catch((error) => {
                 console.error("Error Connecting to OpenVidu", error);
             });
-
-        curSession.on("signal", (event) => {
-            const { data, type } = event;
-            const typeArr = type.split(":");
-            async function processSignal() {
-                switch (typeArr[1]) {
-                    case "cardcode-select-request":
-                        (() => {
-                            console.log(
-                                "상대방에게서 특정 카드 코드로 대주제를 선택하자고 요청이 왔습니다.",
-                                data,
-                            );
-                            setOpenCardRequestModal(true);
-                            setRequestCardCode(data);
-                        })();
-                        break;
-                    case "cardcode-select-response":
-                        await (async () => {
-                            const jsonData = JSON.parse(data);
-                            console.log(
-                                "상대방에게서, 카드 코드를 선택 또는 비선택의 응답을 받았습니다.",
-                            );
-                            if (jsonData.agree) {
-                                console.log(
-                                    "상대가 내 카드 코드 선택에 동의했고, 랜덤된 세부주제를 받았습니다.",
-                                );
-                                console.log({
-                                    ...meetingData,
-                                    currentCardCode: jsonData.currentCardCode,
-                                    currentCard: jsonData.currentCard,
-                                });
-                                dispatch(
-                                    AddMeetingData({
-                                        meetingData: {
-                                            ...meetingData,
-                                            currentCardCode: jsonData.currentCardCode,
-                                            currentCard: jsonData.currentCard,
-                                        },
-                                    }),
-                                );
-                                setIsRecordingUser(true);
-                                setOpenResponseWaitModal(false);
-                                console.log(localRecorder);
-                                await localRecorder.record({
-                                    mimeType: "video/webm;codecs=vp8",
-                                    audioBitsPerSecond: 128000,
-                                    videoBitsPerSecond: 2500000,
-                                });
-                            } else {
-                                console.log("상대가 내 카드 코드 선택에 동의하지 않았습니다");
-                            }
-                        })();
-                        break;
-                    case "feedback-start-request":
-                        (() => {
-                            // 1. 응답 모달창을 열어준다.
-                            setOpenFeedbackRequestModal(true);
-                        })();
-                        break;
-                    case "feedback-start-response":
-                        await (async () => {
-                            const jsonData = JSON.parse(data);
-                            if (jsonData.agree && isRecordingUser) {
-                                await localRecorder.stop(); // 현재 녹음하던 것을 끝낸다.
-                                const recordedBlob = localRecorder.getBlob();
-
-                                const formData = new FormData();
-                                formData.append("studyId", "135");
-                                formData.append("cardId", meetingData.currentCardCode);
-                                formData.append("voiceFile", recordedBlob);
-
-                                const response = await postScript({
-                                    responseFunc: {},
-                                    data: formData,
-                                });
-                                console.log(response.data.data);
-                            } else {
-                                console.log("거절 또는 당신은 요청을 보낸 사람입니다.");
-                            }
-                        })();
-                        break;
-                    default:
-                        console.log("없는 이벤트타입입니다.");
-                }
-            }
-
-            processSignal();
-        });
     }
 
+    /* ------------------ chat ------------------ */
     function onConnected() {
         console.log(`개인 구독 !!${sessionId}`);
         // user 개인 구독
@@ -291,6 +256,10 @@ function Meeting() {
         console.log(stompCilent.current.connected);
     }
 
+    const ChangeMessages = (event) => {
+        setMessage(event.target.value);
+    };
+
     const sendMessage = async (e) => {
         e.preventDefault();
         await stompCilent.current.send(
@@ -307,8 +276,6 @@ function Meeting() {
     };
 
     const createChatRoom = async () => {
-        console.log("채팅방 생성1");
-
         await postCreateChatRoom({
             responseFunc: {
                 200: (response) => {
@@ -325,33 +292,34 @@ function Meeting() {
         connect();
     };
 
+    /* ------------------ useEffect Area ------------------ */
     useEffect(() => {
-        connectSession();
+        fetchData();
+        joinSession();
         createChatRoom();
-
         return () => {
             if (session) session.disconnect();
         };
     }, []);
 
     useEffect(() => {
-        if (publisher && session) {
-            session.publish(publisher);
+        if (session) {
+            connectSession();
         }
-    }, [publisher, session]);
+    }, [session]);
 
-    const ChangeMessages = (event) => {
-        setMessage(event.target.value);
-    };
-
+    // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
-        console.log("Microphone");
+        console.log(`Microphone : ${isActiveMic}`);
+        publisher.publishAudio(isActiveMic);
     };
 
+    // 비디오 ON/OFF 메서드
     const handleVideoClick = () => {
         setIsActiveVideo((prevState) => !prevState);
-        console.log("Video");
+        console.log(`Video : ${isActiveVideo}`);
+        publisher.publishVideo(isActiveVideo);
     };
 
     const handleChatClick = () => {
@@ -419,16 +387,14 @@ function Meeting() {
 
     const handleClickTopicCard = (e) => {
         const closestCard = e.target.closest("button");
-        console.log(closestCard);
         if (!closestCard) return;
 
         // 1. 현재 카드를 인지했고, 해당 카드에서 정보를 가져온다.
         const cardCode = closestCard.id;
         // 2. 가져온 정보를 통해서 상대방에게 현재 대주제로 할 것인지 고르라고 한다.
-        console.log("카드 선택해줘!!!", anotherConnection);
         session.signal({
             data: cardCode,
-            to: [anotherConnection],
+            to: [subscribers[0].stream.connection],
             type: "cardcode-select-request",
         });
         // 3. 일단 현재 카드 선택 창은 닫는다.
@@ -437,7 +403,6 @@ function Meeting() {
         // 4. 또한, 상대방의 응답을 받을 때까지 대기하는 모달 창을 띄워줘야 한다.
         setOpenResponseWaitModal(true);
     };
-    console.log(otherUser);
 
     const handleClickCardRequestAgree = async () => {
         // 상대방이 정한 대화 대주제에 동의할 때 발생되는 이벤트
@@ -451,18 +416,19 @@ function Meeting() {
                             meetingData: {
                                 ...meetingData,
                                 currentCardCode: requestCardCode,
-                                currentCard: response.data.data.subject,
+                                currentCard: response.data.data,
                             },
                         }),
                     );
                     // 상대방도 저장할 수 있도록, 내가 스토어에 저장한 것과 동일한 데이터를 보내준다.
+                    console.log(subscribers);
                     session.signal({
                         data: JSON.stringify({
                             agree: true,
                             currentCardCode: requestCardCode,
-                            currentCard: response.data.data.subject,
+                            currentCard: response.data.data,
                         }),
-                        to: [anotherConnection],
+                        to: [subscribers[0].stream.connection],
                         type: "cardcode-select-response",
                     });
                 },
@@ -501,7 +467,7 @@ function Meeting() {
         // 상대방에게 피드백 시작을 요청한다.
         session.signal({
             data: "",
-            to: [anotherConnection],
+            to: [subscribers[0].stream.connection],
             type: "feedback-start-request",
         });
     };
@@ -510,16 +476,17 @@ function Meeting() {
         // 상대방에게 피드백 시착에 따른 동의/거절 여부를 보내준다.
         session.signal({
             data: JSON.stringify({ agree }),
-            to: [anotherConnection],
+            to: [],
             type: "feedback-start-response",
         });
 
         // 피드백 요청 확인 창을 닫는다.
-        openFeedbackRequestModal(false);
+        setOpenFeedbackRequestModal(false);
     };
 
     const handleClickEvaluateUser = async () => {
         // gradeId : 실력점수, rating : 매너점수
+        console.log(selectedGrade);
         await postEvaluate({
             responseFunc: {
                 200: () => {
@@ -529,14 +496,14 @@ function Meeting() {
             },
             data: {
                 userId: otherUser.userId,
-                gradeId: selectedGrade.gradeId,
+                gradeId: selectedGrade.id,
                 languageId: otherUser.userStudyLanguageId,
                 studyId,
                 rating,
             },
         });
     };
-
+    console.log(subscribers);
     const buttonList = [
         {
             buttonName: "Microphone",
@@ -599,7 +566,7 @@ function Meeting() {
     return (
         <MeetingContainer>
             {openCardModal && (
-                <Overlay zIdx={2}>
+                <Overlay zIdx={501}>
                     <CardModalContainer>
                         <TopicCardBox onClick={handleClickTopicCard}>
                             {cardCode.map((cur) => (
@@ -733,7 +700,7 @@ function Meeting() {
                         <TextButton
                             shape="positive-curved"
                             text="수락"
-                            onClick={() => handleClickOpenFeedbackConfirm(false)}
+                            onClick={() => handleClickOpenFeedbackConfirm(true)}
                         />
                         <TextButton
                             shape="positive-curved"
@@ -801,13 +768,19 @@ function Meeting() {
             </VideoContainer>
             <TopicContainer>
                 <TopicHeader>현재 대화 주제</TopicHeader>
-                <TopicContent>{meetingData ? meetingData.currentCard : "없음"}</TopicContent>
-                <TextButton
-                    shape="positive-curved-large"
-                    type="button"
-                    onClick={handleClickOpenFeedback}
-                    text="스크립트 피드백"
-                />
+                <TopicContent>
+                    {meetingData && isKeyInObj(meetingData, "currentCard")
+                        ? meetingData.currentCard.subject
+                        : "없음"}
+                </TopicContent>
+                {meetingData && isKeyInObj(meetingData, "currentCard") && (
+                    <TextButton
+                        shape="positive-curved-large"
+                        type="button"
+                        onClick={handleClickOpenFeedback}
+                        text="스크립트 피드백"
+                    />
+                )}
             </TopicContainer>
             <ButtonMenu isActiveSlide={isActiveSlide} isActiveChatSlide={isActiveChatSlide}>
                 {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
@@ -826,14 +799,22 @@ function Meeting() {
                 slideOpen={isActiveSlide}
             />
             <ChatSlideMenu isOpen={isActiveChatSlide}>
-                <ChatList data={chatMessage} />
-                <ChatInputWrapper onSubmit={sendMessage}>
-                    <ChatInput
-                        value={message}
-                        onChange={ChangeMessages}
-                        placeholder="대화 상대방에게 채팅을 보내보세요!"
-                    />
-                </ChatInputWrapper>
+                <ChatBox>
+                    <ChatList data={chatMessage} />
+                    <ChatInputWrapper onSubmit={sendMessage}>
+                        <ChatInput
+                            value={message}
+                            onChange={ChangeMessages}
+                            placeholder="대화 상대방에게 채팅을 보내보세요!"
+                        />
+                        <TextButton
+                            type="submit"
+                            value="보내기"
+                            shape="positive-chat"
+                            text="보내기"
+                        />
+                    </ChatInputWrapper>
+                </ChatBox>
             </ChatSlideMenu>
         </MeetingContainer>
     );
@@ -886,6 +867,8 @@ const TopicContainer = styled.div`
     background-color: #ffffff;
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
     gap: 5px;
+    position: relative;
+    z-index: 500;
 `;
 
 const TopicHeader = styled.div`
@@ -903,12 +886,12 @@ const ButtonMenu = styled.div`
     display: flex;
     height: fit-content;
     flex-shrink: 0;
-    right: ${({ isActiveSlide }) => (isActiveSlide ? "500px" : "300px")};
+    left: 50%;
     bottom: ${({ isActiveChatSlide }) => (isActiveChatSlide ? "460px" : "0px")};
     transition: 0.3s ease-in-out;
     margin-bottom: 20px;
     gap: 20px;
-    z-index: 3;
+    z-index: 501;
     transform: translate(-50%, 0);
 `;
 
@@ -993,24 +976,35 @@ const ModalButtonBox = styled.div`
     gap: 50px;
 `;
 
+const ChatBox = styled.div`
+    display: flex;
+    width: 100%;
+    height: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 25px;
+`;
+
 const ChatInputWrapper = styled.form`
     display: flex;
     justify-content: center;
     align-items: center;
     gap: 10px;
+    width: 90%;
+`;
+
+const ChatInput = styled.input`
+    width: 90%;
+    border: none;
+    font-size: 25px;
+    line-height: normal;
     border-radius: 10px;
     border: 1px solid #000;
     padding: 10px 20px;
     box-sizing: border-box;
     font-size: 25px;
     font-weight: 400;
-    line-height: normal;
-`;
-
-const ChatInput = styled.input`
-    width: 900%;
-    border: none;
-    font-size: 25px;
     line-height: normal;
 `;
 

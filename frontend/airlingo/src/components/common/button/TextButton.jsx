@@ -49,11 +49,19 @@ const shapeStyle = {
         min-width : 200px;
         border-radius:10px;
     `,
+    chat: `
+        min-width : 200px;
+        border-radius:10px;
+        border: 1px solid #000;
+    `,
     word: `
     min-width : 120px;
     border-radius:10px;
     `,
-
+    script: `
+    min-width : 160px;
+    border-radius:10px;
+    `,
     prev: `
     width: 25px;
     height: 25px;
