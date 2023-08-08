@@ -1,7 +1,7 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 import { useEffect } from "react";
-import { postSignUp } from "@/api/user";
+import { postSignUp } from "@/api";
 import successImage from "@/assets/imgs/signup-success.gif";
 import { useRouter } from "@/hooks";
 import { TextButton } from "@/components/common/button";
