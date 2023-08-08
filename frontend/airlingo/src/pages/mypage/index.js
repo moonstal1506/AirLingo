@@ -8,7 +8,6 @@ import Script from "./Script";
 import StudyTimeStatistic from "./StudyTimeStatistic";
 import WordBook from "./WordBook";
 
-
 export {
     MyPageBook,
     MyPageHome,
