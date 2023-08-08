@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
-import { StarFilledIcon, StartNotFilledIcon } from "@/assets/imgs/icons";
+import { StarFilledIcon, StartNotFilledIcon } from "@/assets/icons";
 
 function StarRate({ rating, setRating }) {
     return (

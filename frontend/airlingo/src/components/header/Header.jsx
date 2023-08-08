@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "@emotion/styled";
 import { useDispatch, useSelector } from "react-redux";
-import { ReactComponent as TitleLogoIcon } from "@/assets/imgs/icons/title-logo-icon.svg";
+import { ReactComponent as TitleLogoIcon } from "@/assets/icons/title-logo-icon.svg";
 import { logoutUser, selectUser } from "@/features/User/UserSlice";
 import ProfileBar from "../profileBar";
 import { TextButton } from "../common/button";
@@ -54,12 +54,12 @@ const Header = React.memo(() => {
                             <TextButton
                                 shape="positive-normal"
                                 text="로그인"
-                                onClick={() => routeTo("login")}
+                                onClick={() => routeTo("/login")}
                             />
                             <TextButton
                                 shape="positive-normal"
                                 text="회원가입"
-                                onClick={() => routeTo("signup")}
+                                onClick={() => routeTo("/signup")}
                             />
                             <Dropdown />
                         </>

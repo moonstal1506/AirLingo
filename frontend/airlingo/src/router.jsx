@@ -4,13 +4,13 @@ import Notfound from "./pages/Notfound";
 import AuthLayout from "./Layout/AuthLayout";
 import Header from "./components/header";
 import NotAuthLayout from "./Layout/NotAuthLayout";
-import WordBook from "./pages/mypage/wordBook";
-import SignupLanguage from "./pages/SignUp/SignupLanguage";
+import WordBook from "./pages/mypage/WordBook";
 import Login from "./pages/login/Login";
 import Script from "./pages/mypage/Script";
-import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
+import SignUp from "./pages/signup";
 import Meeting from "./pages/meeting";
-import { MyPageHome, StatisticHome } from "./pages/mypage";
+import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
+import { MyPageBook } from "./pages/mypage";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -35,8 +35,8 @@ const routerData = [
     {
         id: 2,
         path: "/signup",
-        label: "signup",
-        element: <SignupLanguage />,
+        label: "SignUp",
+        element: <SignUp />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,
@@ -82,14 +82,14 @@ const routerData = [
         path: "/meeting",
         label: "Meeting",
         element: <Meeting />,
-        withAuth: false,
+        withAuth: true,
         headerExist: false,
         mustNotAuth: false,
     },
     {
         id: 8,
         path: "/word",
-        label: "word",
+        label: "Word",
         element: <WordBook />,
         withAuth: true,
         headerExist: false,
@@ -116,16 +116,7 @@ const routerData = [
         id: 11,
         path: "/mypage",
         label: "mypage",
-        element: <MyPageHome />,
-        withAuth: false,
-        headerExist: true,
-        mustNotAuth: false,
-    },
-    {
-        id: 12,
-        path: "/statistic",
-        label: "statistic",
-        element: <StatisticHome />,
+        element: <MyPageBook />,
         withAuth: false,
         headerExist: true,
         mustNotAuth: false,

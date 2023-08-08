@@ -7,15 +7,15 @@ import Tooltip from "@/components/common/tooltip/Tooltip";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
 import Validation from "@/components/validationList";
-import LanguageRankBox from "@/assets/imgs/language-rank-box.jpg";
-import { ReactComponent as ModifyIcon } from "@/assets/imgs/icons/modify-icon.svg";
-import { ReactComponent as KeyIcon } from "@/assets/imgs/icons/key-icon.svg";
-import { ReactComponent as AlertIcon } from "@/assets/imgs/icons/alert-icon.svg";
-import { ReactComponent as HeartIcon } from "@/assets/imgs/icons/heart-icon.svg";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/imgs/icons/flag-korea-icon.svg";
-import { ReactComponent as BritainFlagIcon } from "@/assets/imgs/icons/flag-britain-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/imgs/icons/flag-japan-icon.svg";
-import { ReactComponent as ChinaFlagIcon } from "@/assets/imgs/icons/flag-china-icon.svg";
+import LanguageRankBox from "@/assets/imgs/language-rank-box.png";
+import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
+import { ReactComponent as KeyIcon } from "@/assets/icons/key-icon.svg";
+import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
+import { ReactComponent as HeartIcon } from "@/assets/icons/heart-icon.svg";
+import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.svg";
+import { ReactComponent as BritainFlagIcon } from "@/assets/icons/flag-britain-icon.svg";
+import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
+import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.svg";
 
 const { primary1 } = theme.colors;
 

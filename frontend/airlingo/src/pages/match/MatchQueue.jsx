@@ -8,15 +8,15 @@ import { useDispatch, useSelector } from "react-redux";
 import { AddSessionId, AddOtherUser, AddStudyId } from "@/features/Meeting/MeetingSlice";
 import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
-import { ReactComponent as RightArrowIcon } from "@/assets/imgs/icons/right-arrow-icon.svg";
-import { ReactComponent as LeftArrowIcon } from "@/assets/imgs/icons/left-arrow-icon.svg";
+import { ReactComponent as RightArrowIcon } from "@/assets/icons/right-arrow-icon.svg";
+import { ReactComponent as LeftArrowIcon } from "@/assets/icons/left-arrow-icon.svg";
 import { postMatching } from "@/api";
 import { useRouter } from "@/hooks";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatTime } from "@/utils/format";
 
 function MatchQueue() {
-    // const { VITE_SOCKET_URL } = import.meta.env;
+    const { VITE_SOCKET_URL } = import.meta.env;
     const dispatch = useDispatch();
     const { routeTo } = useRouter();
     const location = useLocation();
@@ -50,7 +50,7 @@ function MatchQueue() {
                         otherUser:
                             matchingResponseDto[
                                 Object.keys(matchingResponseDto).filter(
-                                    (key) => key !== userNickname,
+                                    (key) => matchingResponseDto[key].userNickname !== userNickname,
                                 )
                             ],
                     }),
@@ -74,7 +74,7 @@ function MatchQueue() {
         }
 
         // 소켓 설정
-        const socket = new SockJS("http://localhost:8081/ws");
+        const socket = new SockJS(VITE_SOCKET_URL);
         const stompClient = stomp.over(socket);
 
         // 타이머 설정

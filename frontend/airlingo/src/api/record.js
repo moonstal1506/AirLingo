@@ -3,7 +3,7 @@ import processApiResponse from "@/utils/api";
 
 const postScript = async ({ responseFunc, data }) => {
     try {
-        const response = await instance.get(`/api/record`, data, {
+        const response = await instance.post(`/api/script`, data, {
             headers: {
                 "Content-Type": "multipart/form-data",
             },
@@ -17,9 +17,8 @@ const postScript = async ({ responseFunc, data }) => {
 };
 
 const postEvaluate = async ({ responseFunc, data }) => {
-    const { userLoginId } = data;
     try {
-        const response = await instance.get(`/api/user/logout/${userLoginId}`);
+        const response = await instance.post(`/api/record`, data);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
@@ -27,13 +26,11 @@ const postEvaluate = async ({ responseFunc, data }) => {
         return e.response;
     }
 };
-
-const putScript = async () => {};
 
 const getRecordStatistic = async ({ responseFunc, data }) => {
-    const { userLoginId } = data;
+    const { userId } = data;
     try {
-        const response = await instance.get(`/api/user/logout/${userLoginId}`);
+        const response = await instance.get(`/api/record/statistic/${userId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
@@ -42,4 +39,4 @@ const getRecordStatistic = async ({ responseFunc, data }) => {
     }
 };
 
-export { postScript, putScript, postEvaluate, getRecordStatistic };
+export { postScript, postEvaluate, getRecordStatistic };

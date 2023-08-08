@@ -60,8 +60,9 @@ const TabBarContainer = styled.div`
     justify-content: center;
     align-items: center;
     gap: 3px;
-    margin-left: 21px;
     position: absolute;
+    top: -50px;
+    left: 20px;
 `;
 
 const TabButtonWrapper = styled.div``;

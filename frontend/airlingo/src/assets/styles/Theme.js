@@ -21,8 +21,10 @@ const theme = {
         green: "#BADF55",
         blue: "#35B1C9",
         purple: "#B06DAD",
-        gray: "#DDDFE0",
+        faintgray: "#DDDFE0",
+        distinctgray: "#333333",
         white: "#FFFFFF",
+        black: "#000000",
     },
     fonts: {
         body: "Pretendard",

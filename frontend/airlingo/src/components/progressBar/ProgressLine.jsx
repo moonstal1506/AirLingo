@@ -4,7 +4,7 @@ import theme from "@/assets/styles/Theme";
 
 // ----------------------------------------------------------------------------------------------------
 
-const { gray } = theme.colors;
+const { faintgray, distinctgray } = theme.colors;
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -16,11 +16,14 @@ ProgressLine.propTypes = {
     isProceeding: PropTypes.bool.isRequired,
 };
 
+// ----------------------------------------------------------------------------------------------------
+
 const StepLine = styled.div`
-    width: 125px;
-    height: 1px;
+    width: 100px;
+    height: ${(props) => (props.isProceeding ? "2px" : "1px")};
+    border-radius: 2px;
     flex-shrink: 0;
-    background: ${(props) => (props.isProceeding ? "#333" : gray)};
+    background-color: ${(props) => (props.isProceeding ? distinctgray : faintgray)};
 `;
 
 // ----------------------------------------------------------------------------------------------------

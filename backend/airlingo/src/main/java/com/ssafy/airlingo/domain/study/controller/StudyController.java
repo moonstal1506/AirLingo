@@ -43,7 +43,7 @@ public class StudyController {
 	})
 	@GetMapping("/user/{userId}/date")
 	public ResponseResult getStudyListByUserIdAndDate(@PathVariable Long userId,
-		@RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+		@RequestParam(name = "date") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
 		log.info("StudyController_GetAllStudysByUserIdAndDate");
 		return new ListResponseResult<>(studyService.findStudyByUserIdAndDate(userId, date));
 	}

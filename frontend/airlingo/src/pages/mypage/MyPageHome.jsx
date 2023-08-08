@@ -1,14 +1,11 @@
 import styled from "@emotion/styled";
-import { useRouter } from "@/hooks";
-import { ReactComponent as PassportTextIcon } from "@/assets/imgs/icons/passport-text-icon.svg";
-import { ReactComponent as ServiceLogoIcon } from "@/assets/imgs/icons/service-logo-icon.svg";
-import { ReactComponent as BiometricIcon } from "@/assets/imgs/icons/biometric-icon.svg";
+import { ReactComponent as PassportTextIcon } from "@/assets/icons/passport-text-icon.svg";
+import { ReactComponent as ServiceLogoIcon } from "@/assets/icons/service-logo-icon.svg";
+import { ReactComponent as BiometricIcon } from "@/assets/icons/biometric-icon.svg";
 
 function MyPageHome() {
-    const { routeTo } = useRouter();
-
     return (
-        <PassportContainer onClick={() => routeTo("/basicinfo")}>
+        <PassportContainer>
             <PassportCover>
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -40,8 +37,8 @@ const PassportContainer = styled.div`
     width: 505px;
     height: 705px;
     flex-shrink: 0;
-    margin-top: 235px;
-    margin-left: 717px;
+    /* margin-top: 235px;
+    margin-left: 717px; */
     cursor: pointer;
 `;
 

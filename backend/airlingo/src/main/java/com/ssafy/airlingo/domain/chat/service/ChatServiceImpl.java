@@ -17,11 +17,14 @@ public class ChatServiceImpl implements ChatService{
     public void createRoomAndEnterRoom(String roomId) {
         log.info("ChatServiceImpl_createRoomAndEnterRoom");
         ChatRoom chatRoom = null;
+        System.out.println(chatRoomRepository.getTopic(roomId));
         if(chatRoomRepository.getTopic(roomId) == null) {
             log.info("createChatRoom");
             chatRoom = chatRoomRepository.createChatRoom(roomId);
+            chatRoomRepository.enterChatRoom(chatRoom.getRoomId());
+            return;
         }
-        chatRoomRepository.enterChatRoom(chatRoom.getRoomId());
+        chatRoomRepository.enterChatRoom(chatRoomRepository.findRoomById(roomId).getRoomId());
     }
 
 
