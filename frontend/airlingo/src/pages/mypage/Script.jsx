@@ -15,45 +15,42 @@ import scriptBackground from "@/assets/imgs/script-background.png";
 import getScriptList from "@/api/script";
 import { selectUser } from "@/features/User/UserSlice.js";
 
-const ScriptHomeContainer = styled.div`
-    width: 100%;
-    height: calc(100% - 120px);
-    position: relative;
-    font-family: Pretendard;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-`;
 function Script() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
-
-    const desiredDate = "2023-08-07"; // 원하는 날짜
-
+    const today = new Date().toISOString().split("T")[0];
+    const [desiredDate, setDesiredDate] = useState(today); // 오늘 날짜를 초기값으로 선택
     const [AllScript, setScriptList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(0);
+    const [currentArrIndex, setCurrentArrIndex] = useState(0);
+    const { scripts } = AllScript[currentArrIndex] || {};
+    const script = scripts ? scripts[currentPage] : null;
+    const activeTab = "statistic";
+    const totalScriptCount = AllScript.reduce((total, obj) => total + obj.scripts.length, 0);
+    const scriptList = AllScript.reduce((prev, acc) => [...prev, ...acc.scripts], []);
+    const scriptIdx = scriptList.findIndex((Allscript) => script === Allscript) + 1;
+    const handleDateChange = async (newDate) => {
+        setDesiredDate(newDate); // 선택한 날짜를 변경
+        setCurrentPage(0); // 페이지를 초기화
+        setCurrentArrIndex(0);
+    };
 
     useEffect(() => {
         async function fetchData() {
             await getScriptList({
                 responseFunc: {
                     200: (response) => {
-                        console.log("data", response.data.data);
                         setScriptList(response.data.data);
                     },
+                    492: () => {
+                        setScriptList([]);
+                    }, // 스크립트가 없는 경우
                 },
                 data: { userId, date: desiredDate },
             });
         }
         fetchData();
     }, [userId, desiredDate]);
-
-    // 페이지 번호와 현재 arr 인덱스를 관리하는 상태 추가
-    const [currentPage, setCurrentPage] = useState(0);
-    const [currentArrIndex, setCurrentArrIndex] = useState(0);
-    const defaultDate = new Date().toLocaleDateString("ko-KR", {
-        month: "long",
-        day: "numeric",
-    });
 
     // 다음 페이지로 이동하는 함수
     const nextPage = () => {
@@ -69,36 +66,6 @@ function Script() {
             setCurrentPage((prevPage) => prevPage + 1);
         }
     };
-    // Add error handling for empty AllScript
-    if (AllScript.length === 0) {
-        return (
-            <ScriptHomeContainer id="SC">
-                <PassportContainer id="PC">
-                    <LeftPageBox>
-                        <LeftPassportPages src={leftPassportPages} />
-                        <TabBar activeTab="statistic" />
-                        <LeftPassportPage>
-                            <div>왼쪽페이지</div>
-                        </LeftPassportPage>
-                    </LeftPageBox>
-                    <RightPageBox>
-                        <LeftPassportPages src={rightPassportPages} />
-                        <RightPassportPage>
-                            <ScriptBox>
-                                <ScriptTextBox>
-                                    <ScriptText>대화기록</ScriptText>
-                                    <ScriptDate>{defaultDate}</ScriptDate>
-                                </ScriptTextBox>
-                                <NoScriptContentBox>
-                                    <NoscriptBackground />
-                                </NoScriptContentBox>
-                            </ScriptBox>
-                        </RightPassportPage>
-                    </RightPageBox>
-                </PassportContainer>
-            </ScriptHomeContainer>
-        );
-    }
 
     // 이전 페이지로 이동하는 함수
     const prevPage = () => {
@@ -114,12 +81,6 @@ function Script() {
             setCurrentPage((prevPageNum) => prevPageNum - 1);
         }
     };
-    const activeTab = "statistic";
-    const { scripts } = AllScript[currentArrIndex];
-    const script = scripts[currentPage];
-    const totalScriptCount = AllScript.reduce((total, obj) => total + obj.scripts.length, 0);
-    const scriptList = AllScript.reduce((prev, acc) => [...prev, ...acc.scripts], []);
-    const scriptIdx = scriptList.findIndex((Allscript) => script === Allscript) + 1;
 
     return (
         <ScriptHomeContainer id="SC">
@@ -128,7 +89,15 @@ function Script() {
                     <LeftPassportPages src={leftPassportPages} />
                     <TabBar activeTab={activeTab} />
                     <LeftPassportPage>
-                        <div>왼쪽페이지</div>
+                        <TextButton onClick={() => handleDateChange("2023-08-07")}>
+                            2023-08-07
+                        </TextButton>
+                        <TextButton onClick={() => handleDateChange("2023-08-08")}>
+                            2023-08-08
+                        </TextButton>
+                        <TextButton onClick={() => handleDateChange("2023-08-09")}>
+                            2023-08-09
+                        </TextButton>
                     </LeftPassportPage>
                 </LeftPageBox>
                 <RightPageBox>
@@ -138,15 +107,13 @@ function Script() {
                             <ScriptTextBox>
                                 <ScriptText>대화기록</ScriptText>
                                 <ScriptDate>
-                                    {new Date(AllScript[0].createdDate).toLocaleDateString(
-                                        "ko-KR",
-                                        {
+                                    {desiredDate &&
+                                        new Date(desiredDate).toLocaleDateString("ko-KR", {
                                             month: "long",
                                             day: "numeric",
-                                        },
-                                    )}
+                                        })}
                                 </ScriptDate>
-                            </ScriptTextBox>{" "}
+                            </ScriptTextBox>
                             {totalScriptCount === 0 ? (
                                 <NoScriptContentBox>
                                     <NoscriptBackground />
@@ -166,11 +133,12 @@ function Script() {
                                                     <SkillLanguage>
                                                         <KoreaFlagIcon />
                                                         <LanguageName>
-                                                            {
-                                                                AllScript[currentArrIndex]
-                                                                    .nativeLanguageDto
-                                                                    .languageKorName
-                                                            }
+                                                            {AllScript[currentArrIndex]
+                                                                .nativeLanguageDto
+                                                                ? AllScript[currentArrIndex]
+                                                                      .nativeLanguageDto
+                                                                      .languageKorName
+                                                                : " "}
                                                         </LanguageName>
                                                     </SkillLanguage>
                                                     <RightArrow />
@@ -220,10 +188,7 @@ function Script() {
                                                 </ScriptDetailItem>
                                             </ScriptDetail>
                                             <ScriptButton>
-                                                <TextButton
-                                                    shape="word-curved"
-                                                    text="스크립트 조회"
-                                                />
+                                                <TextButton shape="script" text="스크립트 조회" />
                                             </ScriptButton>
                                         </ScirptDetailContent>
                                     </ScriptContentBox>
@@ -237,6 +202,16 @@ function Script() {
         </ScriptHomeContainer>
     );
 }
+
+const ScriptHomeContainer = styled.div`
+    width: 100%;
+    height: calc(100% - 120px);
+    position: relative;
+    font-family: Pretendard;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+`;
 
 const PassportContainer = styled.div`
     display: flex;
@@ -291,7 +266,6 @@ const RightPassportPage = styled.div`
     justify-content: center;
 `;
 
-// 스크립트 리스트
 const ScriptBox = styled.div`
     display: flex;
     flex-direction: column;
@@ -304,7 +278,6 @@ const ScriptBox = styled.div`
     gap: 30px;
 `;
 
-// 대화기록 + 날짜 감싸는거
 const ScriptTextBox = styled.div`
     display: flex;
     flex-direction: column;
@@ -475,7 +448,8 @@ const ScriptTextAndIcons = styled.div`
     align-items: center;
     gap: 10px;
 `;
-// 스크립트 X
+
+// 스크립트X
 const NoScriptContentBox = styled.div`
     position: relative;
     height: 414px;
