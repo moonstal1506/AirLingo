@@ -138,9 +138,6 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public List<S3FileDto> uploadFiles(List<MultipartFile> multipartFiles, Long userId) {
 		List<S3FileDto> s3files = new ArrayList<>();
-		if (s3files.isEmpty()) {
-			throw new EmptyImageException();
-		}
 		String originalFileName = multipartFiles.get(0).getOriginalFilename();
 		String uploadFileName = getUuidFileName(originalFileName);
 		String uploadFileUrl = "";

@@ -17,7 +17,7 @@ import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
 import { selectUser } from "@/features/User/UserSlice.js";
-import { getUserProfile, updateUserNickname, updateUserBio } from "@/api/user.js";
+import { getUserProfile, updateUserNickname, updateUserBio, updateUserImage } from "@/api/user.js";
 
 const { primary4 } = theme.colors;
 
@@ -30,6 +30,11 @@ function BasicInfoPage2() {
     const bioInputRef = useRef(null);
     const nicknameInputRef = useRef(null);
     const [imageModalOpen, setImageModalOpen] = useState(false);
+    const [file, setFile] = useState(null);
+    const [image, setImage] = useState(null);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const fileInputRef = useRef(null);
+
     const totalLanguage = [
         { id: 1, label: "한국어", img: KoreaFlagIcon },
         { id: 2, label: "영어", img: BritainFlagIcon },
@@ -50,6 +55,13 @@ function BasicInfoPage2() {
         }
         fetchData();
     }, []);
+
+    useEffect(() => {
+        setNickname(userProfile.userNickname);
+        setBio(userProfile.userBio);
+        setImage(userProfile.userImgUrl);
+        setSelectedImage(userProfile.userImgUrl);
+    }, [userProfile]);
 
     const handleUserNicknameSubmit = async (e) => {
         e.preventDefault();
@@ -81,10 +93,35 @@ function BasicInfoPage2() {
         });
     };
 
-    useEffect(() => {
-        setNickname(userProfile.userNickname);
-        setBio(userProfile.userBio);
-    }, [userProfile]);
+    const handleImageUpload = async (files) => {
+        if (files && files.length > 0) {
+            const selectedFile = files[0];
+            const formData = new FormData();
+            formData.append("files", selectedFile);
+            setFile(formData);
+            setSelectedImage(URL.createObjectURL(selectedFile));
+        }
+    };
+
+    const updateImage = async () => {
+        try {
+            await updateUserImage({
+                responseFunc: {
+                    200: (response) => {
+                        setSelectedImage(response.data.data.uploadFileUrl);
+                        setImage(response.data.data.uploadFileUrl);
+                        console.log("수정 성공!");
+                    },
+                    400: () => {
+                        console.log("수정 실패!");
+                    },
+                },
+                data: { files: file, userId },
+            });
+        } catch (error) {
+            console.error("Error updating user image:", error);
+        }
+    };
 
     const handleImageModalOpen = () => {
         setImageModalOpen(true);
@@ -110,18 +147,25 @@ function BasicInfoPage2() {
         <LeftPassportPage>
             {imageModalOpen && (
                 <Modal title="프로필 이미지 편집" modalOpen={imageModalOpen} Icon={CameraIcon}>
-                    <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
-                        <CloseIcon />
-                    </CloseIconWrapper>
                     <ProfileImageBox>
-                        <ProfileImage src={catchphraseBackground} />
+                        <ProfileImage src={selectedImage || catchphraseBackground} />
+                        <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
+                            <CloseIcon />
+                        </CloseIconWrapper>
                     </ProfileImageBox>
 
                     <ModalButtonBox>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e.target.files)}
+                            style={{ display: "none" }}
+                            ref={fileInputRef}
+                        />
                         <TextButton
                             shape="positive-curved"
                             text="변경"
-                            onClick={() => setImageModalOpen(false)}
+                            onClick={() => fileInputRef.current.click()}
                         />
                         <TextButton
                             shape="positive-curved"
@@ -131,7 +175,7 @@ function BasicInfoPage2() {
                         <TextButton
                             shape="positive-curved"
                             text="확인"
-                            onClick={() => setImageModalOpen(false)}
+                            onClick={() => updateImage()}
                         />
                     </ModalButtonBox>
                 </Modal>
@@ -145,7 +189,7 @@ function BasicInfoPage2() {
                         <GradeFlagIcon />
                     </GradeFlagIconWrapper>
                     <GradeTextWrapper>1</GradeTextWrapper>
-                    <ProfileImage src={catchphraseBackground} />
+                    <ProfileImage src={image} />
                     <SettingIconWrapper>
                         <SettingIcon onClick={handleImageModalOpen} />
                     </SettingIconWrapper>
@@ -249,8 +293,8 @@ function BasicInfoPage2() {
 
 const CloseIconWrapper = styled.div`
     position: absolute;
-    top: 150px;
-    right: 550px;
+    top: -120px;
+    right: -180px;
     cursor: pointer;
 `;
 
