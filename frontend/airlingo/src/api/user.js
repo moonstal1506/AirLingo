@@ -2,9 +2,9 @@ import instance from "./instance";
 import processApiResponse from "@/utils/api";
 
 const getUserProfile = async ({ responseFunc, data }) => {
-    const { userLoginId } = data;
+    const { userId } = data;
     try {
-        const response = await instance.get(`/api/user/${userLoginId}`);
+        const response = await instance.get(`/api/user/${userId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
@@ -25,4 +25,28 @@ const postSignUp = async ({ responseFunc, data }) => {
     }
 };
 
-export { getUserProfile, postSignUp };
+const updateUserNickname = async ({ responseFunc, data }) => {
+    try {
+        console.log(data);
+        const response = await instance.patch(`/api/user/nickname`, data);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        return e.response;
+    }
+};
+
+const updateUserBio = async ({ responseFunc, data }) => {
+    try {
+        console.log(data);
+        const response = await instance.patch(`/api/user/bio`, data);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        return e.response;
+    }
+};
+
+export { getUserProfile, postSignUp, updateUserNickname, updateUserBio };
