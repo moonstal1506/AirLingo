@@ -289,7 +289,12 @@ public class InitDb {
 				.studyTime(15)
 				.build();
 
-			// em.persist(s1);
+			Study s2 = Study.builder()
+				.studyTime(20)
+				.build();
+
+			em.persist(s1);
+			em.persist(s2);
 
 			UserStudy us1 = UserStudy.builder()
 				.study(s1)
@@ -303,8 +308,22 @@ public class InitDb {
 				.language(l1)
 				.build();
 
-			// em.persist(us1);
-			// em.persist(us2);
+			UserStudy us3 = UserStudy.builder()
+				.study(s2)
+				.user(u1)
+				.language(l3)
+				.build();
+
+			UserStudy us4 = UserStudy.builder()
+				.study(s2)
+				.user(u2)
+				.language(l2)
+				.build();
+
+			em.persist(us1);
+			em.persist(us2);
+			em.persist(us3);
+			em.persist(us4);
 		}
 
 		public void sentenceInit() {
