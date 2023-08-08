@@ -184,6 +184,10 @@ public class User extends BaseTimeEntity {
 		this.userPassword = userPassword;
 	}
 
+	public void updateNickname(String userNickname) {
+		this.userNickname = userNickname;
+	}
+
 	public void updateBio(String userBio) {
 		this.userBio = userBio;
 	}
@@ -202,7 +206,7 @@ public class User extends BaseTimeEntity {
 		this.userState = UserState.INACTIVE;
 	}
 
-    public void addMileage(int mileage) {
+	public void addMileage(int mileage) {
 		this.userMileage += mileage;
-    }
+	}
 }

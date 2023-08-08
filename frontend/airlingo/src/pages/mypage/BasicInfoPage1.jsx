@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
 import catchphraseBackground from "@/assets/imgs/catchphrase-background.png";
 import { ReactComponent as SettingIcon } from "@/assets/icons/setting-icon.svg";
 import { ReactComponent as GradeBackgroundIcon } from "@/assets/icons/grade-background-icon.svg";
@@ -13,54 +15,87 @@ import { ReactComponent as CloseIcon } from "@/assets/icons/close-icon.svg";
 import { ReactComponent as CameraIcon } from "@/assets/icons/camera-icon.svg";
 import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
-import Dropdown from "@/components/common/dropdown";
 import Modal from "@/components/modal";
+import { selectUser } from "@/features/User/UserSlice.js";
+import { getUserProfile, updateUserNickname } from "@/api/user.js";
 
 const { primary4 } = theme.colors;
 
 function BasicInfoPage2() {
-    const [imageModalOpen, setImageModalOpen] = useState(false);
-    const handleImageModalOpen = () => {
-        setImageModalOpen(true);
-    };
-
-    const totalLanguage = [
-        { id: "135", label: "한국어", img: KoreaFlagIcon },
-        { id: "136", label: "영어", img: BritainFlagIcon },
-        { id: "137", label: "일본어", img: JapanFlagIcon },
-        { id: "138", label: "중국어", img: ChinaFlagIcon },
-    ];
-    const [nativeLanguage, setNativeStudyLanguage] = useState({
-        id: "136",
-        label: "영어",
-        img: BritainFlagIcon,
-    });
-
-    const [nickname, setNickname] = useState("suhwan2004");
-    const handleNicknameChange = (event) => {
-        const newNickname = event.target.value.trim();
-        setNickname(newNickname);
-    };
-
+    const storeUser = useSelector(selectUser);
+    const { userId } = storeUser;
+    const [userProfile, setUserProfile] = useState({});
+    const [nickname, setNickname] = useState("에어링고");
     const [bio, setBio] = useState("안녕하세요. 만나서 반갑습니다.");
-    const handleBioChange = (event) => {
-        const newBio = event.target.value;
-        setBio(newBio);
+    const bioInputRef = useRef(null);
+    const nicknameInputRef = useRef(null);
+    const [imageModalOpen, setImageModalOpen] = useState(false);
+    const totalLanguage = [
+        { id: 1, label: "한국어", img: KoreaFlagIcon },
+        { id: 2, label: "영어", img: BritainFlagIcon },
+        { id: 3, label: "일본어", img: JapanFlagIcon },
+        { id: 4, label: "중국어", img: ChinaFlagIcon },
+    ];
+
+    useEffect(() => {
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        setUserProfile({ ...response.data.data });
+                    },
+                },
+                data: { userId },
+            });
+        }
+        fetchData();
+    }, []);
+
+    const handleUserNicknameSubmit = async (e) => {
+        e.preventDefault();
+        await updateUserNickname({
+            responseFunc: {
+                200: () => {
+                    console.log("수정 성공!");
+                },
+                400: () => {
+                    console.log("수정 실패!");
+                },
+            },
+            data: { userNickname: nickname, userId },
+        });
     };
 
-    const bioInputRef = useRef(null);
     const handleBioIModifyIconClick = () => {
         if (bioInputRef.current) {
             bioInputRef.current.focus();
         }
     };
 
-    const nicknameInputRef = useRef(null);
-    const handleNicknameIModifyIconClick = () => {
-        if (nicknameInputRef.current) {
-            nicknameInputRef.current.focus();
-        }
+    useEffect(() => {
+        setNickname(userProfile.userNickname);
+        setBio(userProfile.userBio);
+    }, [userProfile]);
+
+    const handleImageModalOpen = () => {
+        setImageModalOpen(true);
     };
+
+    const handleNicknameChange = (event) => {
+        const newNickname = event.target.value.trim();
+        setNickname(newNickname);
+    };
+
+    const handleBioChange = (event) => {
+        const newBio = event.target.value;
+        setBio(newBio);
+    };
+
+    const LanguageImg = totalLanguage.find(
+        (language) =>
+            language.id ===
+            (userProfile.userNativeLanguage ? userProfile.userNativeLanguage.languageId : 1),
+    ).img;
 
     return (
         <LeftPassportPage>
@@ -100,7 +135,7 @@ function BasicInfoPage2() {
                     <GradeFlagIconWrapper>
                         <GradeFlagIcon />
                     </GradeFlagIconWrapper>
-                    <GradeTextWrapper>3</GradeTextWrapper>
+                    <GradeTextWrapper>1</GradeTextWrapper>
                     <ProfileImage src={catchphraseBackground} />
                     <SettingIconWrapper>
                         <SettingIcon onClick={handleImageModalOpen} />
@@ -118,8 +153,15 @@ function BasicInfoPage2() {
                                 ref={nicknameInputRef}
                                 value={nickname}
                                 onChange={handleNicknameChange}
+                                onKeyDown={(event) => {
+                                    if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        handleUserNicknameSubmit(event);
+                                        nicknameInputRef.current.blur();
+                                    }
+                                }}
                             />
-                            <ModifyIcon onClick={handleNicknameIModifyIconClick} />
+                            <ModifyIcon onClick={handleUserNicknameSubmit} />
                         </NicknameInputBox>
                     </TitleRowBox>
                     <TitleRowContainer>
@@ -129,7 +171,7 @@ function BasicInfoPage2() {
                                 <SubTitleWrapper>RATING</SubTitleWrapper>
                             </TitleBox>
                             <ContentBox>
-                                <ContentWrapper>4.36</ContentWrapper>
+                                <ContentWrapper>{userProfile.userRating}</ContentWrapper>
                             </ContentBox>
                         </TitleRowBox>
                         <TitleRowBox>
@@ -138,7 +180,7 @@ function BasicInfoPage2() {
                                 <SubTitleWrapper>CLASS</SubTitleWrapper>
                             </TitleBox>
                             <ContentBox>
-                                <ContentWrapper>이코노미</ContentWrapper>
+                                <ContentWrapper>{userProfile.userMileageGrade}</ContentWrapper>
                             </ContentBox>
                         </TitleRowBox>
                     </TitleRowContainer>
@@ -149,14 +191,15 @@ function BasicInfoPage2() {
                                 <TitleWrapper>대표 언어</TitleWrapper>
                                 <SubTitleWrapper>NATIVE LANGUAGE</SubTitleWrapper>
                             </TitleBox>
-                            <Dropdown
-                                width="195px"
-                                shape="negative"
-                                height="50px"
-                                data={totalLanguage}
-                                selectedOption={nativeLanguage}
-                                onChange={setNativeStudyLanguage}
-                            />
+                            <ContentBox>
+                                <LanguageImg />
+
+                                <ContentWrapper>
+                                    {userProfile.userNativeLanguage
+                                        ? userProfile.userNativeLanguage.languageKorName
+                                        : "에어"}
+                                </ContentWrapper>
+                            </ContentBox>
                         </TitleRowBox>
                         <TitleRowBox>
                             <TitleBox>
@@ -164,7 +207,7 @@ function BasicInfoPage2() {
                                 <SubTitleWrapper>TOTAL MILEAGE</SubTitleWrapper>
                             </TitleBox>
                             <ContentBox>
-                                <ContentWrapper>13,156</ContentWrapper>
+                                <ContentWrapper>{userProfile.userTotalMileage}</ContentWrapper>
                             </ContentBox>
                         </TitleRowBox>
                     </TitleRowContainer>
@@ -333,6 +376,9 @@ const ContentWrapper = styled.div`
     color: #000;
     font-size: 20px;
     font-weight: 700;
+    padding: 0px 20px;
+    justify-content: center;
+    align-items: center;
 `;
 
 const NicknameInputBox = styled.div`
