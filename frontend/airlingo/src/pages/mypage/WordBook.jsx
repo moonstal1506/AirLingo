@@ -1,24 +1,66 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import TabBar from "@/components/common/tab/TabBar.jsx";
 import { TextButton } from "@/components/common/button";
 import { CheckBox, TextInput } from "@/components/common/input";
-import { ReactComponent as LeftArrow } from "@/assets/icons/arrow-left-icon.svg";
+import { ReactComponent as BackButton } from "@/assets/icons/back-button.svg";
+import { ReactComponent as NextButton } from "@/assets/icons/next-button.svg";
 import { ReactComponent as DeleteIcon } from "@/assets/icons/delete-icon.svg";
 import { ReactComponent as Unprogressed } from "@/assets/icons/Unprogressed.svg";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 
 import Modal from "@/components/modal";
+import { selectUser } from "@/features/User/UserSlice.js";
+import getWordList from "@/api/word";
 
 function WordBook() {
+    const storeUser = useSelector(selectUser);
+    const { userId } = storeUser;
     const [isCheckedList, setIsCheckedList] = useState([false, false, false, false, false]);
     const [modalOpenAllDelete, setModalOpenAllDelete] = useState(false);
     const [modalOpenSelectDelete, setModalOpenSelectDelete] = useState(false);
     const [modalOpenWordTest, setModalOpenWordTest] = useState(false);
     const [modalOpenWordTestProgress, setModalOpenWordTestProgress] = useState(false);
     const [modalOpenWordTestEnd, setModalOpenWordTestEnd] = useState(false);
+    const [AllWordList, setWordList] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const wordsPerPage = 5;
 
+    const leftPageWordList = AllWordList.slice(
+        (currentPage - 1) * wordsPerPage,
+        currentPage * wordsPerPage,
+    );
+    const rightPageWordList = AllWordList.slice(
+        currentPage * wordsPerPage,
+        (currentPage + 1) * wordsPerPage,
+    );
+
+    const handleBackButtonClick = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    useEffect(() => {
+        async function fetchData() {
+            await getWordList({
+                responseFunc: {
+                    200: (response) => {
+                        setWordList(response.data.data);
+                    },
+                    473: () => {
+                        setWordList([]);
+                    }, // 단어가 없는 경우
+                },
+                data: { userId },
+            });
+        }
+        fetchData();
+    }, [userId]);
+
+    console.log(AllWordList);
     // 전체 삭제
     const handleClickAllDelete = () => {
         setModalOpenAllDelete(true);
@@ -261,8 +303,7 @@ function WordBook() {
                         <ButtonBox>
                             <WordBookButtonBox>
                                 <ButtonRow1>
-                                    <LeftArrowIcon />
-                                    {/* <TextButton text="모든 언어" shape="negative-signup" /> */}
+                                    <BackButtonIcon onClick={handleBackButtonClick} />
                                 </ButtonRow1>
                             </WordBookButtonBox>
                             <WordBookButtonBox2>
@@ -286,82 +327,57 @@ function WordBook() {
                             </WordBookButtonBox2>
                         </ButtonBox>
                         <WordBox>
-                            <WordItem>
-                                <WordTop>
-                                    <CheckBox
-                                        checked={isCheckedList[0]}
-                                        onChange={() => handleCheckBoxChange(0)}
-                                    />
-                                    <WordText>untouchable</WordText>
-                                </WordTop>
-                                <WordDown>
-                                    <WordExplain>
-                                        건드릴 수 없는, 손댈 수 없는, 불가촉천민{" "}
-                                    </WordExplain>
-                                </WordDown>
-                            </WordItem>
-                            <WordItem>
-                                <WordTop>
-                                    <CheckBox
-                                        checked={isCheckedList[1]}
-                                        onChange={() => handleCheckBoxChange(1)}
-                                    />
-                                    <WordText>untouchable</WordText>
-                                </WordTop>
-                                <WordDown>
-                                    <WordExplain>
-                                        건드릴 수 없는, 손댈 수 없는, 불가촉천민{" "}
-                                    </WordExplain>
-                                </WordDown>
-                            </WordItem>
-                            <WordItem>
-                                <WordTop>
-                                    <CheckBox
-                                        checked={isCheckedList[2]}
-                                        onChange={() => handleCheckBoxChange(2)}
-                                    />
-                                    <WordText>untouchable</WordText>
-                                </WordTop>
-                                <WordDown>
-                                    <WordExplain>
-                                        건드릴 수 없는, 손댈 수 없는, 불가촉천민{" "}
-                                    </WordExplain>
-                                </WordDown>
-                            </WordItem>
-                            <WordItem>
-                                <WordTop>
-                                    <CheckBox
-                                        checked={isCheckedList[3]}
-                                        onChange={() => handleCheckBoxChange(3)}
-                                    />
-                                    <WordText>untouchable</WordText>
-                                </WordTop>
-                                <WordDown>
-                                    <WordExplain>
-                                        건드릴 수 없는, 손댈 수 없는, 불가촉천민{" "}
-                                    </WordExplain>
-                                </WordDown>
-                            </WordItem>
-                            <WordItem>
-                                <WordTop>
-                                    <CheckBox
-                                        checked={isCheckedList[4]}
-                                        onChange={() => handleCheckBoxChange(4)}
-                                    />
-                                    <WordText>untouchable</WordText>
-                                </WordTop>
-                                <WordDown>
-                                    <WordExplain>
-                                        건드릴 수 없는, 손댈 수 없는, 불가촉천민{" "}
-                                    </WordExplain>
-                                </WordDown>
-                            </WordItem>
+                            {leftPageWordList.map((word, index) => (
+                                <WordItem key={word.wordId}>
+                                    <WordTop>
+                                        <CheckBox
+                                            checked={isCheckedList[index]}
+                                            onChange={() => handleCheckBoxChange(index)}
+                                        />
+                                        <WordText>{word.wordDescription}</WordText>
+                                    </WordTop>
+                                    <WordDown>
+                                        <WordExplain>{word.wordName}</WordExplain>
+                                    </WordDown>
+                                </WordItem>
+                            ))}
                         </WordBox>
                     </LeftPassportPage>
                 </LeftPageBox>
                 <RightPageBox>
                     <LeftPassportPages src={rightPassportPages} />
-                    <RightPassportPage />
+                    <RightPassportPage>
+                        <ButtonBox>
+                            <WordBookButtonBox>
+                                <RightButtonRow1>
+                                    {currentPage * wordsPerPage < AllWordList.length && (
+                                        <NextButtonIcon
+                                            onClick={() => setCurrentPage(currentPage + 1)}
+                                        />
+                                    )}
+                                </RightButtonRow1>
+                            </WordBookButtonBox>
+                            <WordBookButtonBox2>
+                                <ButtonRow2 />
+                            </WordBookButtonBox2>
+                        </ButtonBox>
+                        <WordBox>
+                            {rightPageWordList.map((word, index) => (
+                                <WordItem key={word.wordId}>
+                                    <WordTop>
+                                        <CheckBox
+                                            checked={isCheckedList[index]}
+                                            onChange={() => handleCheckBoxChange(index)}
+                                        />
+                                        <WordText>{word.wordDescription}</WordText>
+                                    </WordTop>
+                                    <WordDown>
+                                        <WordExplain>{word.wordName}</WordExplain>
+                                    </WordDown>
+                                </WordItem>
+                            ))}
+                        </WordBox>
+                    </RightPassportPage>
                 </RightPageBox>
             </BookContainer>
         </WordBigContainer>
@@ -383,6 +399,8 @@ const BookContainer = styled.div`
     padding-top: 151px;
     width: 1015px;
     height: 755px;
+
+    justify-content: flex-end; /* 추가 */
 `;
 
 const LeftPageBox = styled.div`
@@ -418,7 +436,7 @@ const RightPassportPage = styled.div`
     background: #fff;
     display: flex;
     align-items: center;
-    justify-content: center;
+    flex-direction: column;
 `;
 
 const ButtonBox = styled.div`
@@ -446,10 +464,20 @@ const ButtonRow1 = styled.div`
     width: 460px;
     gap: 10px;
 `;
-const LeftArrowIcon = styled(LeftArrow)`
-    width: 20px;
-    height: 20px;
-    fill: black;
+const RightButtonRow1 = styled.div`
+    display: flex;
+    justify-content: flex-end;
+    text-align: right;
+    width: 460px;
+    gap: 10px;
+`;
+
+const BackButtonIcon = styled(BackButton)`
+    cursor: pointer;
+`;
+
+const NextButtonIcon = styled(NextButton)`
+    cursor: pointer;
 `;
 
 const WordBookButtonBox2 = styled.div`
@@ -473,6 +501,7 @@ const WordBox = styled.div`
     align-items: center;
     gap: 10px;
     display: flex;
+    border: 1px red;
 `;
 
 const WordItem = styled.div`
@@ -505,6 +534,9 @@ const WordText = styled.div`
     font-weight: 700;
     line-height: normal;
     margin-left: 10px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 `;
 const WordDown = styled.div`
     border: black;
@@ -523,6 +555,9 @@ const WordExplain = styled.div`
     font-style: normal;
     font-weight: 400;
     line-height: normal;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
 `;
 
 // 모달
