@@ -201,7 +201,7 @@ function Meeting() {
                     resolution: "1280x720",
                     frameRate: 60,
                     insertMode: "APPEND",
-                    mirror: "false",
+                    mirror: false,
                 });
                 setPublisher(publisher);
                 curSession.publish(publisher);
@@ -287,14 +287,18 @@ function Meeting() {
         setMessage(event.target.value);
     };
 
+    // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
-        console.log("Microphone");
+        console.log(`Microphone : ${isActiveMic}`);
+        publisher.publishAudio(isActiveMic);
     };
 
+    // 비디오 ON/OFF 메서드
     const handleVideoClick = () => {
         setIsActiveVideo((prevState) => !prevState);
-        console.log("Video");
+        console.log(`Video : ${isActiveVideo}`);
+        publisher.publishVideo(isActiveVideo);
     };
 
     const handleChatClick = () => {

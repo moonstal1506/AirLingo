@@ -1,6 +1,6 @@
 import instance from "./instance";
 import { getLogout, loginUser } from "./auth";
-import { getUserProfile } from "./user";
+import { getUserProfile, postSignUp } from "./user";
 import { getLanguage, getGrade } from "./language";
 
 import { getConcurrentUser, postMatching, postOpenviduToken } from "./matching";
@@ -13,6 +13,7 @@ export {
     loginUser,
     getLogout,
     getUserProfile,
+    postSignUp,
     getLanguage,
     getGrade,
     getConcurrentUser,
