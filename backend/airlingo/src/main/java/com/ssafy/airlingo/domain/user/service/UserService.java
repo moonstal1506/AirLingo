@@ -53,7 +53,7 @@ public interface UserService {
 	List<S3FileDto> uploadFiles(List<MultipartFile> multipartFiles, Long userId);
 
 	//프로필 사진 삭제
-	void deleteImage(Long userId);
+	String deleteImage(Long userId);
 
 	// 관심 언어 추가
 	void addInterestLanguage(AddInterestLanguageRequestDto addInterestLanguageRequestDto);

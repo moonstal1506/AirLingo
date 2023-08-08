@@ -37,7 +37,6 @@ import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
-import com.ssafy.airlingo.global.exception.EmptyImageException;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
 import com.ssafy.airlingo.global.util.JwtService;
 
@@ -50,7 +49,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class UserServiceImpl implements UserService {
 
-	private static final String DEFAULT_IMAGE = "프로필 기본 사진 링크 나중에 올리기";
+	private static final String DEFAULT_IMAGE = "https://airlingobucket.s3.ap-northeast-2.amazonaws.com/322cbe51-5407-44f4-aa9d-08676f3a4e5d.png";
 	@Value("${cloud.aws.s3.bucket}")
 	private String bucketName;
 
@@ -180,10 +179,11 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	@Transactional
-	public void deleteImage(Long userId) {
+	public String deleteImage(Long userId) {
 		log.info("UserServiceImpl_deleteImage");
 		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		user.updateImage(DEFAULT_IMAGE);
+		return user.getUserImgUrl();
 	}
 
 	@Override

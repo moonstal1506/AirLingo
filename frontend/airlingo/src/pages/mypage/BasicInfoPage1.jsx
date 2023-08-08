@@ -2,7 +2,7 @@
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
 import { useSelector } from "react-redux";
-import catchphraseBackground from "@/assets/imgs/catchphrase-background.png";
+import defaultProfileImage from "@/assets/imgs/profiles/default-profile.png";
 import { ReactComponent as SettingIcon } from "@/assets/icons/setting-icon.svg";
 import { ReactComponent as GradeBackgroundIcon } from "@/assets/icons/grade-background-icon.svg";
 import { ReactComponent as GradeFlagIcon } from "@/assets/icons/grade-flag-icon.svg";
@@ -17,7 +17,13 @@ import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
 import { selectUser } from "@/features/User/UserSlice.js";
-import { getUserProfile, updateUserNickname, updateUserBio, updateUserImage } from "@/api/user.js";
+import {
+    getUserProfile,
+    updateUserNickname,
+    updateUserBio,
+    updateUserImage,
+    deleteUserImage,
+} from "@/api/user.js";
 
 const { primary4 } = theme.colors;
 
@@ -32,6 +38,7 @@ function BasicInfoPage2() {
     const [imageModalOpen, setImageModalOpen] = useState(false);
     const [file, setFile] = useState(null);
     const [image, setImage] = useState(null);
+    const [uplodeImage, setUplodeImage] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
     const fileInputRef = useRef(null);
 
@@ -63,8 +70,7 @@ function BasicInfoPage2() {
         setSelectedImage(userProfile.userImgUrl);
     }, [userProfile]);
 
-    const handleUserNicknameSubmit = async (e) => {
-        e.preventDefault();
+    const handleUserNicknameSubmit = async () => {
         await updateUserNickname({
             responseFunc: {
                 200: () => {
@@ -78,8 +84,7 @@ function BasicInfoPage2() {
         });
     };
 
-    const handleUserBioSubmit = async (e) => {
-        e.preventDefault();
+    const handleUserBioSubmit = async () => {
         await updateUserBio({
             responseFunc: {
                 200: () => {
@@ -93,35 +98,70 @@ function BasicInfoPage2() {
         });
     };
 
-    const handleImageUpload = async (files) => {
+    const handleImageUpload = (files) => {
         if (files && files.length > 0) {
             const selectedFile = files[0];
             const formData = new FormData();
             formData.append("files", selectedFile);
             setFile(formData);
             setSelectedImage(URL.createObjectURL(selectedFile));
+            setUplodeImage(true);
         }
+    };
+
+    const handleImageDelete = () => {
+        setUplodeImage(false);
+        setSelectedImage(defaultProfileImage);
     };
 
     const updateImage = async () => {
         try {
-            await updateUserImage({
+            // 이미지 수정
+            if (uplodeImage) {
+                await updateUserImage({
+                    responseFunc: {
+                        200: (response) => {
+                            console.log(response.data.data.uploadFileUrl);
+                            setSelectedImage(response.data.data.uploadFileUrl);
+                            setImage(response.data.data.uploadFileUrl);
+                            setImageModalOpen(false);
+                            console.log("수정 성공!");
+                        },
+                        400: () => {
+                            console.log("수정 실패!");
+                        },
+                    },
+                    data: { files: file, userId },
+                });
+                return;
+            }
+
+            // 이미지 삭제
+            await deleteUserImage({
                 responseFunc: {
-                    200: (response) => {
-                        setSelectedImage(response.data.data.uploadFileUrl);
-                        setImage(response.data.data.uploadFileUrl);
-                        console.log("수정 성공!");
+                    200: () => {
+                        setSelectedImage(defaultProfileImage);
+                        setImage(defaultProfileImage);
+                        setImageModalOpen(false);
+                        console.log("삭제 성공!");
                     },
                     400: () => {
-                        console.log("수정 실패!");
+                        console.log("삭제 실패!");
                     },
                 },
-                data: { files: file, userId },
+                data: { userId },
             });
         } catch (error) {
             console.error("Error updating user image:", error);
         }
     };
+
+    useEffect(() => {
+        setNickname(userProfile.userNickname);
+        setBio(userProfile.userBio);
+        setImage(userProfile.userImgUrl);
+        setSelectedImage(userProfile.userImgUrl);
+    }, [userProfile]);
 
     const handleImageModalOpen = () => {
         setImageModalOpen(true);
@@ -148,7 +188,7 @@ function BasicInfoPage2() {
             {imageModalOpen && (
                 <Modal title="프로필 이미지 편집" modalOpen={imageModalOpen} Icon={CameraIcon}>
                     <ProfileImageBox>
-                        <ProfileImage src={selectedImage || catchphraseBackground} />
+                        <ProfileImage src={selectedImage || defaultProfileImage} />
                         <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
                             <CloseIcon />
                         </CloseIconWrapper>
@@ -170,7 +210,7 @@ function BasicInfoPage2() {
                         <TextButton
                             shape="positive-curved"
                             text="삭제"
-                            onClick={() => setImageModalOpen(false)}
+                            onClick={() => handleImageDelete()}
                         />
                         <TextButton
                             shape="positive-curved"

@@ -165,8 +165,7 @@ public class UserController {
 	@DeleteMapping("/deleteImage")
 	public ResponseResult DeleteImage(Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 삭제");
-		userService.deleteImage(userId);
-		return ResponseResult.successResponse;
+		return new SingleResponseResult<>(userService.deleteImage(userId));
 	}
 
 	@Operation(summary = "Add Interest Language", description = "사용자가 관심언어를 추가합니다.")
