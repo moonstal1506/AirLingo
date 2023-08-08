@@ -5,9 +5,23 @@ import styled from "@emotion/styled";
 function MeetingDictionary() {
     return (
         <DictionaryContainer>
-            <SubTitleWrapper>사전 언어 설정</SubTitleWrapper>
-            <SubTitleWrapper>검색어</SubTitleWrapper>
-            <SubTitleWrapper>검색 결과</SubTitleWrapper>
+            <ItemBox>
+                <SubTitleWrapper>사전 언어 설정</SubTitleWrapper>
+                <Dropdown
+                    width="175px"
+                    data={skillLanguageList}
+                    iconColor="primary"
+                    shape="negative"
+                    selectedOption={skillLanguage}
+                    onChange={setSkillLanguage}
+                />
+            </ItemBox>
+            <ItemBox>
+                <SubTitleWrapper>검색어</SubTitleWrapper>
+            </ItemBox>
+            <ItemBox>
+                <SubTitleWrapper>검색 결과</SubTitleWrapper>
+            </ItemBox>
         </DictionaryContainer>
     );
 }
@@ -20,6 +34,12 @@ const DictionaryContainer = styled.div`
     justify-content: space-around;
     width: 100%;
     height: 100%;
+`;
+
+const ItemBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 `;
 
 const SubTitleWrapper = styled.div`
