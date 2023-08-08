@@ -1,5 +1,7 @@
 package com.ssafy.airlingo.global.openvidu;
 
+import io.openvidu.java.client.Recording;
+import io.openvidu.java.client.RecordingProperties;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -49,5 +51,21 @@ public class OpenViduManager {
 		ConnectionProperties properties = new ConnectionProperties.Builder().build();
 		Connection connection = session.createConnection(properties);
 		return connection.getToken();
+	}
+
+	public Recording startRecording(String sessionId) throws OpenViduJavaClientException, OpenViduHttpException {
+		RecordingProperties properties = new RecordingProperties.Builder()
+			.hasAudio(true)
+			.hasVideo(false)
+			.build();
+		Recording recording = openVidu.startRecording(sessionId, properties);
+		log.info(recording.toString());
+		return recording;
+	}
+
+	public Recording stopRecording(String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
+		Recording recording = openVidu.stopRecording(recordingId);
+		log.info(recording.toString());
+		return recording;
 	}
 }
