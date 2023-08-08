@@ -447,7 +447,7 @@ function Meeting() {
             },
             data: {
                 userId: otherUser.userId,
-                gradeId: selectedGrade.gradeId,
+                gradeId: selectedGrade.id,
                 languageId: otherUser.userStudyLanguageId,
                 studyId,
                 rating,
