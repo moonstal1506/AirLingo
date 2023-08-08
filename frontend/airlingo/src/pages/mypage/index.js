@@ -6,8 +6,8 @@ import StatisticHome1 from "./StatisticHome1";
 import StatisticHome2 from "./StatisticHome2";
 import Script from "./Script";
 import StudyTimeStatistic from "./StudyTimeStatistic";
+import StudyCountStatistic from "./StudyCountStatistic";
 import WordBook from "./WordBook";
-
 
 export {
     MyPageBook,
@@ -19,4 +19,5 @@ export {
     Script,
     StudyTimeStatistic,
     WordBook,
+    StudyCountStatistic,
 };
