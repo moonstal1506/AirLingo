@@ -53,7 +53,10 @@ const shapeStyle = {
     min-width : 120px;
     border-radius:10px;
     `,
-
+    script: `
+    min-width : 160px;
+    border-radius:10px;
+    `,
     prev: `
     width: 25px;
     height: 25px;
