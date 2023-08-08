@@ -135,7 +135,7 @@ public class UserController {
 		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
 		@ApiResponse(responseCode = "400", description = "자기소개 변경 실패")
 	})
-	@PostMapping("/bio")
+	@PatchMapping("/bio")
 	public ResponseResult updateBio(@RequestBody UpdateBioRequestDto updateBioRequestDto) {
 		log.info("UserController_updateBio -> 자기소개 변경");
 		userService.updateBio(updateBioRequestDto);

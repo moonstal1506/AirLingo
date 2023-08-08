@@ -17,7 +17,7 @@ import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
 import { selectUser } from "@/features/User/UserSlice.js";
-import { getUserProfile, updateUserNickname } from "@/api/user.js";
+import { getUserProfile, updateUserNickname, updateUserBio } from "@/api/user.js";
 
 const { primary4 } = theme.colors;
 
@@ -66,10 +66,19 @@ function BasicInfoPage2() {
         });
     };
 
-    const handleBioIModifyIconClick = () => {
-        if (bioInputRef.current) {
-            bioInputRef.current.focus();
-        }
+    const handleUserBioSubmit = async (e) => {
+        e.preventDefault();
+        await updateUserBio({
+            responseFunc: {
+                200: () => {
+                    console.log("수정 성공!");
+                },
+                400: () => {
+                    console.log("수정 실패!");
+                },
+            },
+            data: { userBio: bio, userId },
+        });
     };
 
     useEffect(() => {
@@ -221,8 +230,15 @@ function BasicInfoPage2() {
                                 ref={bioInputRef}
                                 value={bio}
                                 onChange={handleBioChange}
+                                onKeyDown={(event) => {
+                                    if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        handleUserBioSubmit(event);
+                                        bioInputRef.current.blur();
+                                    }
+                                }}
                             />
-                            <ModifyIcon onClick={handleBioIModifyIconClick} />
+                            <ModifyIcon onClick={handleUserBioSubmit} />
                         </BioAreaBox>
                     </TitleRowBox>
                 </ProfileContentContainer>
