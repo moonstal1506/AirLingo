@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
+import com.ssafy.airlingo.domain.language.dto.response.MileageGrade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
@@ -132,6 +133,7 @@ public class User extends BaseTimeEntity {
 			.userNativeLanguage(userNativeLanguage)
 			.userMileage(userMileage)
 			.userTotalMileage(userTotalMileage)
+			.userMileageGrade(MileageGrade.getMileageGrade(userTotalMileage))
 			.userRating(userRating)
 			.userTotalRating(userTotalRating)
 			.userStudyCount(userStudyCount)
