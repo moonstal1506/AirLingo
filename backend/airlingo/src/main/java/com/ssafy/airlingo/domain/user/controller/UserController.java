@@ -2,6 +2,7 @@ package com.ssafy.airlingo.domain.user.controller;
 
 import java.util.List;
 
+import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -149,11 +150,10 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "프로필사진 변경 실패"),
 		@ApiResponse(responseCode = "491", description = "사진 파일이 비어 있습니다.")
 	})
-	@PostMapping("/updateImage")
+	@PatchMapping("/updateImage")
 	public ResponseResult updateImage(@RequestPart(value = "files") List<MultipartFile> multipartFiles, Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 변경");
-		userService.uploadFiles(multipartFiles, userId);
-		return ResponseResult.successResponse;
+		return new SingleResponseResult<>(userService.uploadFiles(multipartFiles, userId).get(0));
 	}
 
 	@Operation(summary = "Delete Image", description = "사용자가 프로필 사진을 삭제 합니다.")
@@ -165,8 +165,7 @@ public class UserController {
 	@DeleteMapping("/deleteImage")
 	public ResponseResult DeleteImage(Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 삭제");
-		userService.deleteImage(userId);
-		return ResponseResult.successResponse;
+		return new SingleResponseResult<>(userService.deleteImage(userId));
 	}
 
 	@Operation(summary = "Add Interest Language", description = "사용자가 관심언어를 추가합니다.")
