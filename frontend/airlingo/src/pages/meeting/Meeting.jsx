@@ -32,13 +32,14 @@ import StarRate from "@/components/starRate";
 import { useRouter } from "@/hooks";
 import ChatList from "@/components/chatList/ChatList";
 import isKeyInObj from "@/utils/common";
+import MeetingDictionary from "./MeetingDictionary";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1 } = theme.colors;
 const contentGroupData = [
     { Content: () => <div>Content1</div>, Icon: Icons.ScriptIcon },
-    { Content: () => <div>Content2</div>, Icon: Icons.DictionaryIcon },
+    { Content: () => <MeetingDictionary />, Icon: Icons.DictionaryIcon },
     { Content: () => <div>Content3</div>, Icon: Icons.TranslatorIcon },
 ];
 
