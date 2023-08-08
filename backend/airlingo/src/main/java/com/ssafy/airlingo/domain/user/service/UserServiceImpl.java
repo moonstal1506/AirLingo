@@ -27,6 +27,7 @@ import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateNicknameRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
@@ -115,6 +116,14 @@ public class UserServiceImpl implements UserService {
 		User user = userRepository.findById(updatePasswordRequestDto.getUserId())
 			.orElseThrow(NotExistAccountException::new);
 		user.updatePassword(updatePasswordRequestDto.getUserPassword());
+	}
+
+	@Override
+	@Transactional
+	public void updateNickname(UpdateNicknameRequestDto updateNicknameRequestDto) {
+		log.info("UserServiceImpl_updateNickname");
+		User user = userRepository.findById(updateNicknameRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		user.updateNickname(updateNicknameRequestDto.getUserNickname());
 	}
 
 	@Override

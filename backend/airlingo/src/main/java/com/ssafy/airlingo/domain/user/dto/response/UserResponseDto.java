@@ -28,6 +28,7 @@ public class UserResponseDto {
 	private String userBio;
 	private int userMileage;
 	private int userTotalMileage;
+	private String userMileageGrade;
 	private double userRating;
 	private double userTotalRating;
 	private int userStudyCount;
