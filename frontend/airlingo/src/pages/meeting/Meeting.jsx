@@ -11,7 +11,14 @@ import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
 import { FabButton, TextButton } from "@/components/common/button";
 import * as Icons from "@/assets/icons";
-import { AddDidReport, AddMeetingData, selectMeeting } from "@/features/Meeting/MeetingSlice";
+import {
+    AddDidReport,
+    AddMeetingData,
+    selectMeeting,
+    AddRecordingId,
+    AddScriptData,
+    removeRecordingId,
+} from "@/features/Meeting/MeetingSlice";
 import {
     getCard,
     getCardCode,
@@ -19,6 +26,8 @@ import {
     postOpenviduToken,
     postEvaluate,
     postCreateChatRoom,
+    postStartRecording,
+    postStopRecording,
 } from "@/api";
 import Overlay from "@/components/common/overlay";
 import Modal from "@/components/modal";
@@ -47,7 +56,8 @@ const contentGroupData = [
 function Meeting() {
     const dispatch = useDispatch();
     const { routeTo } = useRouter();
-    const { sessionId, meetingData, didReport, otherUser, studyId } = useSelector(selectMeeting);
+    const { sessionId, meetingData, didReport, otherUser, studyId, recordingId, scriptData } =
+        useSelector(selectMeeting);
     const { userId, userNickname, userImgUrl } = useSelector(selectUser);
 
     const [reportList, setReportList] = useState([]);
@@ -85,6 +95,7 @@ function Meeting() {
     const { VITE_CHAT_SOCKET_URL } = import.meta.env;
 
     const OV = useRef(new OpenVidu());
+    console.log(scriptData);
 
     // 필요 데이터를 불러오는 함수
     async function fetchData() {
@@ -194,6 +205,25 @@ function Meeting() {
 
                                         console.log("OpenResponseWaitModal 닫기!!!", publisher);
                                         setOpenResponseWaitModal(false);
+
+                                        const res = await postStartRecording({
+                                            responseFunc: {
+                                                200: (response) => {
+                                                    console.log(response.data.data);
+                                                    dispatch(
+                                                        AddRecordingId({
+                                                            recordingId: response.data.data.id,
+                                                        }),
+                                                    );
+                                                },
+                                            },
+                                            data: { sessionId },
+                                        });
+                                        console.log(
+                                            res,
+                                            recordingId,
+                                            "서버에서 레코딩 아이디 받아왔는데??",
+                                        );
                                     } else {
                                         console.log(
                                             "상대가 내 카드 코드 선택에 동의하지 않았습니다",
@@ -211,8 +241,29 @@ function Meeting() {
                                     console.log("여기까지 오긴 왔긴 했어", meetingData);
                                     setOpenFeedbackStartModal(false);
                                     const curJsonData = JSON.parse(data);
+                                    console.log(
+                                        curJsonData,
+                                        recordingId,
+                                        "이제 보낼건데, 한번 보낼 수 있는지 확인!",
+                                    );
                                     if (curJsonData.agree) {
-                                        console.log("스크립트 받아오기!");
+                                        console.log("레코딩 ID를 통해 녹음본 받기");
+                                        const res = await postStopRecording({
+                                            responseFunc: {
+                                                200: (response) => {
+                                                    dispatch(
+                                                        AddScriptData({
+                                                            scriptData: response.data.data,
+                                                        }),
+                                                    );
+                                                },
+                                            },
+                                            data: {
+                                                recordingId: sessionId,
+                                            },
+                                        });
+                                        console.log(res.data.data);
+                                        dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
                                     } else {
                                         console.log("거절 또는 당신은 요청을 보낸 사람입니다.");
                                     }
@@ -868,7 +919,7 @@ const TopicContainer = styled.div`
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
     gap: 5px;
     position: relative;
-    z-index: 500;
+    z-index: 2;
 `;
 
 const TopicHeader = styled.div`
