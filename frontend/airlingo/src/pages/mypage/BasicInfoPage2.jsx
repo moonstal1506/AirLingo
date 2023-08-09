@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "@/components/common/dropdown";
 import { IconButton, TextButton } from "@/components/common/button";
 import { TextInput } from "@/components/common/input";
@@ -16,6 +17,9 @@ import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.
 import { ReactComponent as BritainFlagIcon } from "@/assets/icons/flag-britain-icon.svg";
 import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
 import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.svg";
+import { logoutUser, selectUser } from "@/features/User/UserSlice";
+import { deleteUser } from "@/api/user.js";
+import { useRouter } from "@/hooks";
 
 const { primary1 } = theme.colors;
 
@@ -29,6 +33,11 @@ function checkConfirmPassword(password, confirmPassword) {
 }
 
 function BasicInfoPage2() {
+    const dispatch = useDispatch();
+    const { routeTo } = useRouter();
+    const storeUser = useSelector(selectUser);
+    const { userId } = storeUser;
+
     // password modal
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const handlePasswordModalOpen = () => {
@@ -58,6 +67,23 @@ function BasicInfoPage2() {
     const [quitModalOpen, setQuitModalOpen] = useState(false);
     const handleQuitModalOpen = () => {
         setQuitModalOpen(true);
+    };
+
+    const handleDeleteUser = async () => {
+        await deleteUser({
+            responseFunc: {
+                200: () => {
+                    dispatch(logoutUser());
+                    setQuitModalOpen(false);
+                    console.log("회원 탈퇴 성공!");
+                    routeTo("/");
+                },
+                400: () => {
+                    console.log("회원 탈퇴 실패!");
+                },
+            },
+            data: { userId },
+        });
     };
 
     // language modal
@@ -253,7 +279,7 @@ function BasicInfoPage2() {
                         <TextButton
                             shape="warning-curved"
                             text="회원 탈퇴"
-                            onClick={() => setQuitModalOpen(false)}
+                            onClick={() => handleDeleteUser()}
                         />
                         <TextButton
                             shape="positive-curved"

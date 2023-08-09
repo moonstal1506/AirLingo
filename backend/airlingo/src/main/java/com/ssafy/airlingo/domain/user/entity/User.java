@@ -1,5 +1,6 @@
 package com.ssafy.airlingo.domain.user.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,6 +9,7 @@ import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import com.ssafy.airlingo.domain.language.dto.response.MileageGrade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
+import com.ssafy.airlingo.domain.study.entity.UserStudy;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
@@ -97,6 +99,9 @@ public class User extends BaseTimeEntity {
 
 	@OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	private List<UserLanguage> userLanguages;
+
+	@OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<UserStudy> userStudies = new ArrayList<>();
 
 	public LoginResponseDto toLoginResponseDto() {
 		return LoginResponseDto.builder()
