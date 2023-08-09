@@ -12,7 +12,7 @@ import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.
 import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
 import { ReactComponent as NoscriptBackground } from "@/assets/icons/no-data-icon.svg";
 import scriptBackground from "@/assets/imgs/script-background.png";
-import getScriptList from "@/api/script";
+import { getScriptList } from "@/api/script";
 import { selectUser } from "@/features/User/UserSlice.js";
 
 function Script() {
