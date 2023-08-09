@@ -14,9 +14,17 @@ export default defineConfig({
         }),
     ],
     server: {
-        open: false,
-        port: 5173,
-        host: "0.0.0.0",
+        // host: true,
+        proxy: {
+            "/api": "https://glosbe.com",
+            // "/api": {
+            //     target: "https://glosbe.com",
+            //     changeOrigin: true,
+            //     secure: false,
+            //     rewrite: (path) => path.replace(/^\/api/, ""),
+            // }
+        },
+
     },
     resolve: {
         alias: {
