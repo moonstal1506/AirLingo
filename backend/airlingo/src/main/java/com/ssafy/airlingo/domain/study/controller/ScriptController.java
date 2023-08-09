@@ -72,13 +72,14 @@ public class ScriptController {
 
 	@Operation(summary = "Save script Entity before feedback", description = "스크립트 생성")
 	@PostMapping
-	public ResponseResult createScript(@RequestParam MultipartFile voiceFile,
-		@RequestParam Long studyId,
-		@RequestParam Long cardId) throws
+	public ResponseResult createScript(@RequestParam String sessionId,
+									   @RequestParam Long studyId,
+									   @RequestParam Long cardId) throws
+
 		IOException,
 		ParseException {
 		log.info("ScriptController_CreateScript");
-		return new SingleResponseResult<>(scriptService.createScript(voiceFile, studyId, cardId));
+		return new SingleResponseResult<>(scriptService.createScript(sessionId,studyId,cardId));
 	}
 
 	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")

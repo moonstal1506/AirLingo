@@ -14,7 +14,11 @@ const { primary1, primary4 } = theme.colors;
 // ----------------------------------------------------------------------------------------------------
 
 function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
-    const [id, setId] = useState({ value: totalState.id, valid: false, dirty: false });
+    const [id, setId] = useState({
+        value: totalState.id,
+        valid: checkId(totalState.id),
+        dirty: totalState.id.length > 0,
+    });
     const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
     const [confirmPassword, setConfirmPassword] = useState({
         value: "",

@@ -105,6 +105,7 @@ public class UserServiceImpl implements UserService {
 	public void deleteUserAccount(Long userId) {
 		log.info("UserServiceImpl_deleteUserAccount -> 회원탈퇴 중");
 		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+		refreshTokenRepository.deleteRefreshToken(user.getUserLoginId());
 		userRepository.delete(user);
 	}
 

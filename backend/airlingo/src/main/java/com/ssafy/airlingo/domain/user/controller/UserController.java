@@ -97,7 +97,7 @@ public class UserController {
 		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
 		@ApiResponse(responseCode = "400", description = "회원탈퇴 실패"),
 	})
-	@DeleteMapping("/delete/{userId}")
+	@DeleteMapping("/{userId}")
 	public ResponseResult deleteUserAccount(@PathVariable Long userId) {
 		log.info("UserController_deleteUserAccount -> 회원탈퇴 시도, userId: {}", userId);
 		userService.deleteUserAccount(userId);
@@ -110,7 +110,7 @@ public class UserController {
 		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
 		@ApiResponse(responseCode = "400", description = "비밀번호 변경 실패")
 	})
-	@PostMapping("/password")
+	@PatchMapping("/password")
 	public ResponseResult updatePassword(@RequestBody UpdatePasswordRequestDto updatePasswordRequestDto) {
 		log.info("UserController_updatePassword -> 비밀번호 변경");
 		userService.updatePassword(updatePasswordRequestDto);

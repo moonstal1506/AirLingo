@@ -1,12 +1,13 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "@/components/common/dropdown";
 import { IconButton, TextButton } from "@/components/common/button";
 import { TextInput } from "@/components/common/input";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
-import Validation from "@/components/validationList";
+import ValidationItem from "@/components/validationList";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.png";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import { ReactComponent as KeyIcon } from "@/assets/icons/key-icon.svg";
@@ -16,6 +17,9 @@ import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.
 import { ReactComponent as BritainFlagIcon } from "@/assets/icons/flag-britain-icon.svg";
 import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
 import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.svg";
+import { logoutUser, selectUser } from "@/features/User/UserSlice";
+import { deleteUser, updateUserPassword } from "@/api/user.js";
+import { useRouter } from "@/hooks";
 
 const { primary1 } = theme.colors;
 
@@ -29,35 +33,85 @@ function checkConfirmPassword(password, confirmPassword) {
 }
 
 function BasicInfoPage2() {
-    // password modal
+    const dispatch = useDispatch();
+    const { routeTo } = useRouter();
+    const storeUser = useSelector(selectUser);
+    const { userId } = storeUser;
+    const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
+    const [confirmPassword, setConfirmPassword] = useState({
+        value: "",
+        valid: false,
+        dirty: false,
+    });
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
+    const [quitModalOpen, setQuitModalOpen] = useState(false);
+
+    // password modal
     const handlePasswordModalOpen = () => {
         setPasswordModalOpen(true);
     };
 
-    const [password, setPassword] = useState("");
-    const [isValidPassword, setIsValidPassword] = useState(false);
-
-    const [confirmPassword, setConfirmPassword] = useState("");
-    const [isEqualPassword, setIsEqualPassword] = useState(false);
-
     const handlePasswordChange = (event) => {
         const newPassword = event.target.value.trim();
-        setPassword(newPassword);
-        setIsValidPassword(checkPassword(newPassword));
-        setIsEqualPassword(checkConfirmPassword(newPassword, confirmPassword));
+        setPassword((prev) => ({
+            ...prev,
+            value: newPassword,
+            valid: checkPassword(newPassword),
+            dirty: true,
+        }));
+        setConfirmPassword((prev) => ({
+            ...prev,
+            valid: checkConfirmPassword(newPassword, confirmPassword.value),
+        }));
     };
 
     const handleConfirmPasswordChange = (event) => {
         const newConfirmPassword = event.target.value.trim();
-        setConfirmPassword(newConfirmPassword);
-        setIsEqualPassword(checkConfirmPassword(password, newConfirmPassword));
+        setConfirmPassword((prev) => ({
+            ...prev,
+            value: newConfirmPassword,
+            valid: checkConfirmPassword(password.value, newConfirmPassword),
+            dirty: true,
+        }));
+    };
+
+    const handlePasswordSubmit = async () => {
+        await updateUserPassword({
+            responseFunc: {
+                200: () => {
+                    console.log("수정 성공!");
+                    setPasswordModalOpen(false);
+                    setPassword({ value: "", valid: false, dirty: false });
+                    setConfirmPassword({ value: "", valid: false, dirty: false });
+                },
+                400: () => {
+                    console.log("수정 실패!");
+                },
+            },
+            data: { userPassword: password.value, userId },
+        });
     };
 
     // quit modal
-    const [quitModalOpen, setQuitModalOpen] = useState(false);
     const handleQuitModalOpen = () => {
         setQuitModalOpen(true);
+    };
+
+    const handleDeleteUser = async () => {
+        await deleteUser({
+            responseFunc: {
+                200: () => {
+                    dispatch(logoutUser());
+                    setQuitModalOpen(false);
+                    console.log("회원 탈퇴 성공!");
+                    routeTo("/");
+                },
+                400: () => {
+                    console.log("회원 탈퇴 실패!");
+                },
+            },
+            data: { userId },
+        });
     };
 
     // language modal
@@ -122,38 +176,36 @@ function BasicInfoPage2() {
                     <TextInput
                         type="password"
                         placeholder="비밀번호"
-                        color={primary1}
                         width="500px"
-                        height="50px"
-                        value={password}
+                        value={password.value}
                         onChange={handlePasswordChange}
+                        color={primary1}
                     />
                     <TextInput
                         type="password"
                         placeholder="비밀번호 확인"
-                        color={primary1}
                         width="500px"
-                        height="50px"
-                        value={confirmPassword}
+                        value={confirmPassword.value}
                         onChange={handleConfirmPasswordChange}
+                        color={primary1}
                     />
-                    <ModalValidationContainer>
-                        <ModalValidationBox>
-                            <Validation
-                                isValid={isValidPassword}
-                                text="비밀번호는 8자 이상, 20자 이하의 영어 대·소문자, 숫자, 특수문자의 조합입니다."
-                            />
-                            <Validation
-                                isValid={isEqualPassword}
-                                text="비밀번호와 비밀번호 확인은 동일해야 합니다."
-                            />
-                        </ModalValidationBox>
-                    </ModalValidationContainer>
+                    <ValidationList>
+                        <ValidationItem
+                            isValid={password.valid}
+                            isDirty={password.dirty}
+                            text="비밀번호는 8 ~ 20자의 영어 대 · 소문자, 숫자, 특수문자의 조합입니다."
+                        />
+                        <ValidationItem
+                            isValid={confirmPassword.valid}
+                            isDirty={confirmPassword.dirty}
+                            text="비밀번호와 비밀번호 확인은 동일해야 합니다."
+                        />
+                    </ValidationList>
                     <ModalButtonBox>
                         <TextButton
                             shape="positive-curved"
                             text="확인"
-                            onClick={() => setPasswordModalOpen(false)}
+                            onClick={() => handlePasswordSubmit()}
                         />
                         <TextButton
                             shape="positive-curved"
@@ -253,7 +305,7 @@ function BasicInfoPage2() {
                         <TextButton
                             shape="warning-curved"
                             text="회원 탈퇴"
-                            onClick={() => setQuitModalOpen(false)}
+                            onClick={() => handleDeleteUser()}
                         />
                         <TextButton
                             shape="positive-curved"
@@ -317,11 +369,13 @@ function BasicInfoPage2() {
                 <ButtonBar>
                     <TextButton
                         text="비밀번호 변경"
+                        width="160px"
                         shape="negative-normal"
                         onClick={handlePasswordModalOpen}
                     />
                     <TextButton
                         text="회원탈퇴"
+                        width="120px"
                         shape="warning-quit"
                         onClick={handleQuitModalOpen}
                     />
@@ -343,22 +397,29 @@ const RightPassportPage = styled.div`
     justify-content: center;
 `;
 
-const ModalValidationContainer = styled.div`
+const ValidationList = styled.div`
     display: flex;
-    width: 650px;
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 24px;
+    width: 500px;
+    margin-top: 25px;
 `;
 
-const ModalValidationBox = styled.div`
-    display: flex;
-    height: 60px;
-    flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-`;
+// const ModalValidationContainer = styled.div`
+//     display: flex;
+//     width: 650px;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     gap: 24px;
+// `;
+
+// const ModalValidationBox = styled.div`
+//     display: flex;
+//     height: 60px;
+//     flex-direction: column;
+//     justify-content: space-between;
+//     align-items: flex-start;
+// `;
 
 const ModalButtonBox = styled.div`
     display: flex;

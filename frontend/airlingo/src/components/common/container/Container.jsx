@@ -16,11 +16,12 @@ Container.propTypes = {
 };
 
 const ContainerWrapper = styled.div`
+    box-sizing: border-box;
     display: flex;
     flex-direction: column;
     align-items: center;
-    width: ${({ width }) => width}px;
-    height: ${({ height }) => height}px;
+    width: ${({ width }) => width};
+    height: ${({ height }) => height};
     padding: 20px 20px;
     border-radius: 20px;
     border: 3px solid ${(props) => props.theme.colors.primary4};
