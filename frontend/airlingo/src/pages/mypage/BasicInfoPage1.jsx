@@ -156,13 +156,6 @@ function BasicInfoPage2() {
         }
     };
 
-    useEffect(() => {
-        setNickname(userProfile.userNickname);
-        setBio(userProfile.userBio);
-        setImage(userProfile.userImgUrl);
-        setSelectedImage(userProfile.userImgUrl);
-    }, [userProfile]);
-
     const handleImageModalOpen = () => {
         setImageModalOpen(true);
     };
@@ -229,7 +222,7 @@ function BasicInfoPage2() {
                         <GradeFlagIcon />
                     </GradeFlagIconWrapper>
                     <GradeTextWrapper>1</GradeTextWrapper>
-                    <ProfileImage src={image} />
+                    <ProfileImage src={image || defaultProfileImage} />
                     <SettingIconWrapper>
                         <SettingIcon onClick={handleImageModalOpen} />
                     </SettingIconWrapper>
