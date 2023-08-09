@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 public interface ScriptService {
 	ScriptResponseDto findScriptByScriptId(Long scriptId);
 	void deleteScriptById(Long scriptId);
-	ScriptAfterSTTResponseDto createScript(MultipartFile voiceFile , Long studyId , Long cardId) throws IOException, ParseException;
+	ScriptAfterSTTResponseDto createScript(String sessionId , Long studyId , Long cardId) throws IOException, ParseException;
 	void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto);
 	List<SentenceResponseDto> voiceFileSTT(String audioPath) throws ParseException;
 }
