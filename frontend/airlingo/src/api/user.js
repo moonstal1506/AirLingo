@@ -92,7 +92,6 @@ const deleteUserImage = async ({ responseFunc, data }) => {
     }
 };
 
-
 const getDailyGrid = async ({ responseFunc, data }) => {
     const { userId } = data;
     try {
