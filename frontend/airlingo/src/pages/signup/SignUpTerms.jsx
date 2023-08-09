@@ -14,7 +14,7 @@ const { primary1, primary4 } = theme.colors;
 
 function SignUpTerms({ totalState, onHandleNextStep }) {
     const [termsAgreed, setTermsAgreed] = useState(totalState.termsAgreed);
-    const [isTermsDirty, setIsTermsDirty] = useState(false);
+    const [isTermsDirty, setIsTermsDirty] = useState(totalState.termsAgreed);
 
     const handleCheckboxChange = () => {
         setTermsAgreed((prevTermsAgreed) => !prevTermsAgreed);
