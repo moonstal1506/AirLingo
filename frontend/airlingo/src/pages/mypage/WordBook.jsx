@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable no-unused-vars */
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
-import TabBar from "@/components/common/tab/TabBar.jsx";
 import { TextButton } from "@/components/common/button";
 import { CheckBox, TextInput } from "@/components/common/input";
 import { ReactComponent as BackButton } from "@/assets/icons/back-button.svg";
@@ -10,32 +10,31 @@ import { ReactComponent as NextButton } from "@/assets/icons/next-button.svg";
 import { ReactComponent as DeleteIcon } from "@/assets/icons/delete-icon.svg";
 import { ReactComponent as Unprogressed } from "@/assets/icons/Unprogressed.svg";
 import { ReactComponent as NoWordBackground } from "@/assets/icons/no-word-icon.svg";
+import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import Modal from "@/components/modal";
+import TabBar from "@/components/common/tab/TabBar.jsx";
 import { selectUser } from "@/features/User/UserSlice.js";
-import getWordList from "@/api/word";
+import { getWordList, deleteWords } from "@/api/word";
 
 function WordBook() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
-    const [isCheckedList, setIsCheckedList] = useState([false, false, false, false, false]);
-    const [modalOpenAllDelete, setModalOpenAllDelete] = useState(false);
-    const [modalOpenSelectDelete, setModalOpenSelectDelete] = useState(false);
+
+    const wordsPerPage = 5; // 한페이지에 단어 5개
     const [modalOpenWordTest, setModalOpenWordTest] = useState(false);
     const [modalOpenWordTestProgress, setModalOpenWordTestProgress] = useState(false);
+    const [modalOpenSelectDelete, setModalOpenSelectDelete] = useState(false);
+    const [modalOpenNoSelectedWords, setModalOpenNoSelectedWords] = useState(false);
     const [modalOpenWordTestEnd, setModalOpenWordTestEnd] = useState(false);
     const [AllWordList, setWordList] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const wordsPerPage = 5;
+    const [isAllSelected, setIsAllSelected] = useState(false);
 
-    const leftPageWordList = AllWordList.slice(
-        (currentPage - 1) * wordsPerPage,
-        currentPage * wordsPerPage,
-    );
-    const rightPageWordList = AllWordList.slice(
-        currentPage * wordsPerPage,
-        (currentPage + 1) * wordsPerPage,
-    );
+    const [leftPageWordList, setLeftPageWordList] = useState([]);
+    const [rightPageWordList, setRightPageWordList] = useState([]);
+    const [isCheckedListLeft, setIsCheckedListLeft] = useState([]);
+    const [isCheckedListRight, setIsCheckedListRight] = useState([]);
 
     const handleBackButtonClick = () => {
         if (currentPage > 1) {
@@ -43,6 +42,7 @@ function WordBook() {
         }
     };
 
+    // 단어 조회
     useEffect(() => {
         async function fetchData() {
             await getWordList({
@@ -60,39 +60,107 @@ function WordBook() {
         fetchData();
     }, [userId]);
 
-    console.log(AllWordList);
-    // 전체 삭제
-    const handleClickAllDelete = () => {
-        setModalOpenAllDelete(true);
-    };
+    useEffect(() => {
+        setLeftPageWordList([
+            ...AllWordList.slice((currentPage - 1) * wordsPerPage, currentPage * wordsPerPage),
+        ]);
+        setRightPageWordList([
+            ...AllWordList.slice(currentPage * wordsPerPage, (currentPage + 1) * wordsPerPage),
+        ]);
+    }, [AllWordList, currentPage]);
 
-    const handleWordAllDelete = () => {
-        setModalOpenAllDelete(false); // 모달 닫기
-    };
+    useEffect(() => {
+        setIsCheckedListLeft([...Array(leftPageWordList.length)].map(() => false));
+        setIsCheckedListRight([...Array(rightPageWordList.length)].map(() => false));
+    }, [leftPageWordList, rightPageWordList]);
 
     // 체크박스
-    const handleCheckBoxChange = (index) => {
-        const updatedList = [...isCheckedList];
+    const handleCheckBoxChangeLeft = (index) => {
+        const updatedList = [...isCheckedListLeft];
         updatedList[index] = !updatedList[index];
-        setIsCheckedList(updatedList);
+        console.log(updatedList);
+        setIsCheckedListLeft([...updatedList]);
+    };
+    const handleCheckBoxChangeRight = (index) => {
+        const updatedList = [...isCheckedListRight];
+        updatedList[index] = !updatedList[index];
+        setIsCheckedListRight([...updatedList]);
     };
 
     // 모달 안의 문구 선택 개수로 변경
     const getSelectedItemCount = () => {
-        const checkedItemCount = isCheckedList.filter((isChecked) => isChecked).length;
-        return checkedItemCount;
+        const leftCheckedItemCount = isCheckedListLeft.filter(
+            (value) => value !== undefined && value,
+        ).length;
+        const rightCheckedItemCount = isCheckedListRight.filter(
+            (value) => value !== undefined && value,
+        ).length;
+        return leftCheckedItemCount + rightCheckedItemCount;
+    };
+
+    // 전체 선택 <-> 전체 선택 해제
+    const handleSelectAll = () => {
+        const updatedListLeft = isCheckedListLeft.map(() => !isAllSelected);
+        const updatedListRight = isCheckedListRight.map(() => !isAllSelected);
+
+        setIsCheckedListLeft(updatedListLeft);
+        setIsCheckedListRight(updatedListRight);
+
+        setIsAllSelected(!isAllSelected);
+    };
+
+    const getSelectedWordIds = () => {
+        const selectedIdsLeft = isCheckedListLeft
+            .map((checked, index) => (checked ? leftPageWordList[index]?.wordId : null))
+            .filter((id) => id !== null && id !== undefined);
+
+        const selectedIdsRight = isCheckedListRight
+            .map((checked, index) => (checked ? rightPageWordList[index]?.wordId : null))
+            .filter((id) => id !== null && id !== undefined);
+
+        return [...selectedIdsLeft, ...selectedIdsRight];
     };
 
     // 선택한 개수
     const selectedCount = getSelectedItemCount();
 
-    // 선택 삭제
+    // 선택 삭제 확인
     const handleClickSelectDelete = () => {
-        setModalOpenSelectDelete(true);
+        const selectedIds = getSelectedWordIds();
+
+        if (selectedIds.length === 0) {
+            // 선택된 단어가 없을 경우에 다른 모달을 띄움
+            setModalOpenNoSelectedWords(true); // 새로운 상태 추가
+        } else {
+            setModalOpenSelectDelete(true);
+        }
     };
 
-    const handleWordSelectDelete = () => {
-        setModalOpenSelectDelete(false); // 모달 닫기
+    // 선택 삭제 취소
+    const handleCancelDelete = () => {
+        setModalOpenSelectDelete(false);
+    };
+
+    // 선택 삭제 확인
+    const handleConfirmDelete = async () => {
+        const selectedIds = getSelectedWordIds();
+        try {
+            await deleteWords({
+                responseFunc: {
+                    200: () => {
+                        console.log("삭제를 성공했습니다.");
+                        const updatedWordList = AllWordList.filter(
+                            (word) => !selectedIds.includes(word.wordId),
+                        );
+                        setWordList(updatedWordList);
+                        setModalOpenSelectDelete(false); // 모달 닫기
+                    },
+                },
+                data: { userId, selectedIds },
+            });
+        } catch (error) {
+            console.error("삭제 중 오류가 발생했습니다.", error);
+        }
     };
 
     // 단어 테스트 시작
@@ -102,8 +170,10 @@ function WordBook() {
 
     // 단어 테스트 진행
     const handleWordTestStart = () => {
-        setModalOpenWordTest(false); // 시작 모달 닫기
-        setModalOpenWordTestProgress(true); // 테스트 진행 모달 열기
+        if (modalOpenWordTest) {
+            setModalOpenWordTest(false); // 시작 모달 닫기
+            setModalOpenWordTestProgress(true); // 테스트 진행 모달 열기
+        }
     };
 
     // 단어 테스트 종료
@@ -132,32 +202,6 @@ function WordBook() {
                         </LeftPassportPage>
                     ) : (
                         <LeftPassportPage id="LPP">
-                            {/* 단어 전체 삭제 */}
-                            {modalOpenAllDelete && (
-                                <Modal
-                                    title="단어 삭제"
-                                    modalOpen={modalOpenAllDelete}
-                                    Icon={DeleteIcon}
-                                >
-                                    <ModalTextBox>
-                                        <ModalTextWrapper>
-                                            정말로 단어를 모두 삭제 하시겠습니까?
-                                        </ModalTextWrapper>
-                                    </ModalTextBox>
-                                    <ModalButtonBox>
-                                        <TextButton
-                                            shape="positive-curved"
-                                            text="확인"
-                                            onClick={handleWordAllDelete}
-                                        />
-                                        <TextButton
-                                            shape="positive-curved"
-                                            text="취소"
-                                            onClick={() => setModalOpenAllDelete(false)}
-                                        />
-                                    </ModalButtonBox>
-                                </Modal>
-                            )}
                             {/* 단어 선택 삭제 */}
                             {modalOpenSelectDelete && (
                                 <Modal
@@ -175,16 +219,39 @@ function WordBook() {
                                         <TextButton
                                             shape="positive-curved"
                                             text="확인"
-                                            onClick={handleWordSelectDelete}
+                                            onClick={handleConfirmDelete}
                                         />
                                         <TextButton
                                             shape="positive-curved"
                                             text="취소"
-                                            onClick={() => setModalOpenSelectDelete(false)}
+                                            onClick={handleCancelDelete}
                                         />
                                     </ModalButtonBox>
                                 </Modal>
                             )}
+                            {/* 선택한 단어가 없음 */}
+                            {modalOpenNoSelectedWords && (
+                                <Modal
+                                    title="알림"
+                                    modalOpen={modalOpenNoSelectedWords}
+                                    Icon={DeleteIcon}
+                                >
+                                    <ModalTextBox>
+                                        <ModalTextWrapper>선택된 단어가 없습니다.</ModalTextWrapper>
+                                        <ModalTextWrapper>
+                                            삭제 할 단어를 선택해주세요.
+                                        </ModalTextWrapper>
+                                    </ModalTextBox>
+                                    <ModalButtonBox>
+                                        <TextButton
+                                            shape="positive-curved"
+                                            text="확인"
+                                            onClick={() => setModalOpenNoSelectedWords(false)}
+                                        />
+                                    </ModalButtonBox>
+                                </Modal>
+                            )}
+
                             {/* 단어 테스트 시작 */}
                             {modalOpenWordTest && (
                                 <Modal
@@ -309,7 +376,6 @@ function WordBook() {
                                     </ModalButtonBox>
                                 </Modal>
                             )}
-
                             <ButtonBox>
                                 <WordBookButtonBox>
                                     <ButtonRow1>
@@ -319,9 +385,9 @@ function WordBook() {
                                 <WordBookButtonBox2>
                                     <ButtonRow2>
                                         <TextButton
-                                            text="전체 삭제"
+                                            text={isAllSelected ? "전체 선택" : "전체 선택"}
                                             shape="negative-word"
-                                            onClick={handleClickAllDelete}
+                                            onClick={handleSelectAll}
                                         />
                                         <TextButton
                                             text="선택 삭제"
@@ -341,8 +407,8 @@ function WordBook() {
                                     <WordItem key={word.wordId}>
                                         <WordTop>
                                             <CheckBox
-                                                checked={isCheckedList[index]}
-                                                onChange={() => handleCheckBoxChange(index)}
+                                                checked={isCheckedListLeft[index]}
+                                                onChange={() => handleCheckBoxChangeLeft(index)}
                                             />
                                             <WordText>{word.wordDescription}</WordText>
                                         </WordTop>
@@ -384,8 +450,8 @@ function WordBook() {
                                     <WordItem key={word.wordId}>
                                         <WordTop>
                                             <CheckBox
-                                                checked={isCheckedList[index]}
-                                                onChange={() => handleCheckBoxChange(index)}
+                                                checked={isCheckedListRight[index]}
+                                                onChange={() => handleCheckBoxChangeRight(index)}
                                             />
                                             <WordText>{word.wordDescription}</WordText>
                                         </WordTop>
@@ -418,8 +484,7 @@ const BookContainer = styled.div`
     padding-top: 151px;
     width: 1015px;
     height: 755px;
-
-    justify-content: flex-end; /* 추가 */
+    justify-content: flex-end;
 `;
 
 const LeftPageBox = styled.div`
@@ -641,7 +706,6 @@ const NoWordBackgroundBox = styled.div`
     justify-content: center;
     width: 100%;
     height: 100%;
-    /* background-color: white; */
 `;
 
 export default WordBook;
