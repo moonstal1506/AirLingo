@@ -16,7 +16,7 @@ function ScriptFeedback({ publisher, subscribers }) {
     };
 
     return (
-        <ExampleContainer>
+        <MeetingContainer>
             <HeaderContainer>
                 <VideoFrame>
                     {publisher ? (
@@ -57,7 +57,7 @@ function ScriptFeedback({ publisher, subscribers }) {
                     text="피드백 끝내기"
                 />
             </FeedbackContainer>
-        </ExampleContainer>
+        </MeetingContainer>
     );
 }
 
@@ -78,6 +78,15 @@ const VideoFrame = styled.div`
     font-size: 25px;
     font-weight: 700;
     line-height: normal;
+`;
+const MeetingContainer = styled.div`
+    width: 100vw;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: start;
+    align-items: center;
+    background-color: ${(props) => props.theme.colors.primary1};
 `;
 
 const HeaderContainer = styled.div`
@@ -117,13 +126,4 @@ const FeedbackContainer = styled.div`
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
 `;
 
-const ExampleContainer = styled.div`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    background-color: gray;
-`;
 export default ScriptFeedback;
