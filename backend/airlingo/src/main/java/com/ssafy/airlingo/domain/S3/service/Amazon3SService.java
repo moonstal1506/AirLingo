@@ -124,4 +124,12 @@ public class Amazon3SService {
 		String audioPath = amazonS3Client.getUrl(bucketName, originalName).toString(); // 접근가능한 URL 가져오기
 		return audioPath;
 	}
+
+	public String getVoiceFileUrl(String sessionId){
+		log.info("getVoiceFileUrl");
+		String key = sessionId + "/" + sessionId + ".mp3";
+		String voiceFileUrl = amazonS3Client.getUrl(bucketName, key).toString(); // 접근가능한 URL 가져오기
+		log.info(voiceFileUrl);
+		return voiceFileUrl;
+	}
 }
