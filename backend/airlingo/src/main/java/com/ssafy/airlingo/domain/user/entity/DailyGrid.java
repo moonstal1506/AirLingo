@@ -40,7 +40,9 @@ public class DailyGrid extends BaseTimeEntity {
 		return DailyGridResponseDto.builder()
 			.userId(this.getUser().getUserId())
 			.dailyGridId(this.getDailyGridId())
-			.dailyGridCount(this.getDailyGridCount()).build();
+			.dailyGridCount(this.getDailyGridCount())
+			.createdDate(this.getCreatedDate())
+			.build();
 	}
 
 
