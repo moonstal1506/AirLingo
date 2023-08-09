@@ -10,6 +10,7 @@ import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateNicknameRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
@@ -42,6 +43,9 @@ public interface UserService {
 	// 비밀번호 변경
 	void updatePassword(UpdatePasswordRequestDto updatePasswordRequestDto);
 
+	// 닉네임 변경
+	void updateNickname(UpdateNicknameRequestDto updateNicknameRequestDto);
+
 	// 자기소개 변경
 	void updateBio(UpdateBioRequestDto updateBioRequestDto);
 
@@ -49,11 +53,12 @@ public interface UserService {
 	List<S3FileDto> uploadFiles(List<MultipartFile> multipartFiles, Long userId);
 
 	//프로필 사진 삭제
-	void deleteImage(Long userId);
+	String deleteImage(Long userId);
 
 	// 관심 언어 추가
 	void addInterestLanguage(AddInterestLanguageRequestDto addInterestLanguageRequestDto);
 
 	// 관심 언어 삭제
 	void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto);
+
 }

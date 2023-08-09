@@ -2,8 +2,10 @@ package com.ssafy.airlingo.domain.user.controller;
 
 import java.util.List;
 
+import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +20,7 @@ import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateNicknameRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
@@ -114,13 +117,26 @@ public class UserController {
 		return ResponseResult.successResponse;
 	}
 
+	@Operation(summary = "Update Nickname", description = "사용자가 닉네임를 변경 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "닉네임 변경 성공"),
+		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
+		@ApiResponse(responseCode = "400", description = "닉네임 변경 실패")
+	})
+	@PatchMapping("/nickname")
+	public ResponseResult updateNickname(@RequestBody UpdateNicknameRequestDto updateNicknameRequestDto) {
+		log.info("UserController_updateNickname -> 닉네임 변경");
+		userService.updateNickname(updateNicknameRequestDto);
+		return ResponseResult.successResponse;
+	}
+
 	@Operation(summary = "Update Bio", description = "사용자가 자기소개를 변경 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "자기소개 변경 성공"),
 		@ApiResponse(responseCode = "470", description = "회원이 존재하지 않습니다."),
 		@ApiResponse(responseCode = "400", description = "자기소개 변경 실패")
 	})
-	@PostMapping("/bio")
+	@PatchMapping("/bio")
 	public ResponseResult updateBio(@RequestBody UpdateBioRequestDto updateBioRequestDto) {
 		log.info("UserController_updateBio -> 자기소개 변경");
 		userService.updateBio(updateBioRequestDto);
@@ -134,11 +150,10 @@ public class UserController {
 		@ApiResponse(responseCode = "400", description = "프로필사진 변경 실패"),
 		@ApiResponse(responseCode = "491", description = "사진 파일이 비어 있습니다.")
 	})
-	@PostMapping("/updateImage")
+	@PatchMapping("/updateImage")
 	public ResponseResult updateImage(@RequestPart(value = "files") List<MultipartFile> multipartFiles, Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 변경");
-		userService.uploadFiles(multipartFiles, userId);
-		return ResponseResult.successResponse;
+		return new SingleResponseResult<>(userService.uploadFiles(multipartFiles, userId).get(0));
 	}
 
 	@Operation(summary = "Delete Image", description = "사용자가 프로필 사진을 삭제 합니다.")
@@ -150,8 +165,7 @@ public class UserController {
 	@DeleteMapping("/deleteImage")
 	public ResponseResult DeleteImage(Long userId) {
 		log.info("UserController_UpdateImage -> 프로필 사진 삭제");
-		userService.deleteImage(userId);
-		return ResponseResult.successResponse;
+		return new SingleResponseResult<>(userService.deleteImage(userId));
 	}
 
 	@Operation(summary = "Add Interest Language", description = "사용자가 관심언어를 추가합니다.")

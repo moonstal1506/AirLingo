@@ -1,6 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
-import { useState, useRef } from "react";
-import catchphraseBackground from "@/assets/imgs/catchphrase-background.png";
+import { useState, useRef, useEffect } from "react";
+import { useSelector } from "react-redux";
+import defaultProfileImage from "@/assets/imgs/profiles/default-profile.png";
 import { ReactComponent as SettingIcon } from "@/assets/icons/setting-icon.svg";
 import { ReactComponent as GradeBackgroundIcon } from "@/assets/icons/grade-background-icon.svg";
 import { ReactComponent as GradeFlagIcon } from "@/assets/icons/grade-flag-icon.svg";
@@ -13,81 +15,207 @@ import { ReactComponent as CloseIcon } from "@/assets/icons/close-icon.svg";
 import { ReactComponent as CameraIcon } from "@/assets/icons/camera-icon.svg";
 import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
-import Dropdown from "@/components/common/dropdown";
 import Modal from "@/components/modal";
+import { selectUser } from "@/features/User/UserSlice.js";
+import {
+    getUserProfile,
+    updateUserNickname,
+    updateUserBio,
+    updateUserImage,
+    deleteUserImage,
+} from "@/api/user.js";
 
 const { primary4 } = theme.colors;
 
 function BasicInfoPage2() {
+    const storeUser = useSelector(selectUser);
+    const { userId } = storeUser;
+    const [userProfile, setUserProfile] = useState({});
+    const [nickname, setNickname] = useState("에어링고");
+    const [bio, setBio] = useState("안녕하세요. 만나서 반갑습니다.");
+    const bioInputRef = useRef(null);
+    const nicknameInputRef = useRef(null);
     const [imageModalOpen, setImageModalOpen] = useState(false);
+    const [file, setFile] = useState(null);
+    const [image, setImage] = useState(null);
+    const [uplodeImage, setUplodeImage] = useState(true);
+    const [selectedImage, setSelectedImage] = useState(null);
+    const fileInputRef = useRef(null);
+
+    const totalLanguage = [
+        { id: 1, label: "한국어", img: KoreaFlagIcon },
+        { id: 2, label: "영어", img: BritainFlagIcon },
+        { id: 3, label: "일본어", img: JapanFlagIcon },
+        { id: 4, label: "중국어", img: ChinaFlagIcon },
+    ];
+
+    useEffect(() => {
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        setUserProfile({ ...response.data.data });
+                    },
+                },
+                data: { userId },
+            });
+        }
+        fetchData();
+    }, []);
+
+    useEffect(() => {
+        setNickname(userProfile.userNickname);
+        setBio(userProfile.userBio);
+        setImage(userProfile.userImgUrl);
+        setSelectedImage(userProfile.userImgUrl);
+    }, [userProfile]);
+
+    const handleUserNicknameSubmit = async () => {
+        await updateUserNickname({
+            responseFunc: {
+                200: () => {
+                    console.log("수정 성공!");
+                },
+                400: () => {
+                    console.log("수정 실패!");
+                },
+            },
+            data: { userNickname: nickname, userId },
+        });
+    };
+
+    const handleUserBioSubmit = async () => {
+        await updateUserBio({
+            responseFunc: {
+                200: () => {
+                    console.log("수정 성공!");
+                },
+                400: () => {
+                    console.log("수정 실패!");
+                },
+            },
+            data: { userBio: bio, userId },
+        });
+    };
+
+    const handleImageUpload = (files) => {
+        if (files && files.length > 0) {
+            const selectedFile = files[0];
+            const formData = new FormData();
+            formData.append("files", selectedFile);
+            setFile(formData);
+            setSelectedImage(URL.createObjectURL(selectedFile));
+            setUplodeImage(true);
+        }
+    };
+
+    const handleImageDelete = () => {
+        setUplodeImage(false);
+        setSelectedImage(defaultProfileImage);
+    };
+
+    const updateImage = async () => {
+        try {
+            // 이미지 수정
+            if (uplodeImage) {
+                await updateUserImage({
+                    responseFunc: {
+                        200: (response) => {
+                            console.log(response.data.data.uploadFileUrl);
+                            setSelectedImage(response.data.data.uploadFileUrl);
+                            setImage(response.data.data.uploadFileUrl);
+                            setImageModalOpen(false);
+                            console.log("수정 성공!");
+                        },
+                        400: () => {
+                            console.log("수정 실패!");
+                        },
+                    },
+                    data: { files: file, userId },
+                });
+                return;
+            }
+
+            // 이미지 삭제
+            await deleteUserImage({
+                responseFunc: {
+                    200: () => {
+                        setSelectedImage(defaultProfileImage);
+                        setImage(defaultProfileImage);
+                        setImageModalOpen(false);
+                        console.log("삭제 성공!");
+                    },
+                    400: () => {
+                        console.log("삭제 실패!");
+                    },
+                },
+                data: { userId },
+            });
+        } catch (error) {
+            console.error("Error updating user image:", error);
+        }
+    };
+
+    useEffect(() => {
+        setNickname(userProfile.userNickname);
+        setBio(userProfile.userBio);
+        setImage(userProfile.userImgUrl);
+        setSelectedImage(userProfile.userImgUrl);
+    }, [userProfile]);
+
     const handleImageModalOpen = () => {
         setImageModalOpen(true);
     };
 
-    const totalLanguage = [
-        { id: "135", label: "한국어", img: KoreaFlagIcon },
-        { id: "136", label: "영어", img: BritainFlagIcon },
-        { id: "137", label: "일본어", img: JapanFlagIcon },
-        { id: "138", label: "중국어", img: ChinaFlagIcon },
-    ];
-    const [nativeLanguage, setNativeStudyLanguage] = useState({
-        id: "136",
-        label: "영어",
-        img: BritainFlagIcon,
-    });
-
-    const [nickname, setNickname] = useState("suhwan2004");
     const handleNicknameChange = (event) => {
         const newNickname = event.target.value.trim();
         setNickname(newNickname);
     };
 
-    const [bio, setBio] = useState("안녕하세요. 만나서 반갑습니다.");
     const handleBioChange = (event) => {
         const newBio = event.target.value;
         setBio(newBio);
     };
 
-    const bioInputRef = useRef(null);
-    const handleBioIModifyIconClick = () => {
-        if (bioInputRef.current) {
-            bioInputRef.current.focus();
-        }
-    };
-
-    const nicknameInputRef = useRef(null);
-    const handleNicknameIModifyIconClick = () => {
-        if (nicknameInputRef.current) {
-            nicknameInputRef.current.focus();
-        }
-    };
+    const LanguageImg = totalLanguage.find(
+        (language) =>
+            language.id ===
+            (userProfile.userNativeLanguage ? userProfile.userNativeLanguage.languageId : 1),
+    ).img;
 
     return (
         <LeftPassportPage>
             {imageModalOpen && (
                 <Modal title="프로필 이미지 편집" modalOpen={imageModalOpen} Icon={CameraIcon}>
-                    <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
-                        <CloseIcon />
-                    </CloseIconWrapper>
                     <ProfileImageBox>
-                        <ProfileImage src={catchphraseBackground} />
+                        <ProfileImage src={selectedImage || defaultProfileImage} />
+                        <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
+                            <CloseIcon />
+                        </CloseIconWrapper>
                     </ProfileImageBox>
 
                     <ModalButtonBox>
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleImageUpload(e.target.files)}
+                            style={{ display: "none" }}
+                            ref={fileInputRef}
+                        />
                         <TextButton
                             shape="positive-curved"
                             text="변경"
-                            onClick={() => setImageModalOpen(false)}
+                            onClick={() => fileInputRef.current.click()}
                         />
                         <TextButton
                             shape="positive-curved"
                             text="삭제"
-                            onClick={() => setImageModalOpen(false)}
+                            onClick={() => handleImageDelete()}
                         />
                         <TextButton
                             shape="positive-curved"
                             text="확인"
-                            onClick={() => setImageModalOpen(false)}
+                            onClick={() => updateImage()}
                         />
                     </ModalButtonBox>
                 </Modal>
@@ -100,8 +228,8 @@ function BasicInfoPage2() {
                     <GradeFlagIconWrapper>
                         <GradeFlagIcon />
                     </GradeFlagIconWrapper>
-                    <GradeTextWrapper>3</GradeTextWrapper>
-                    <ProfileImage src={catchphraseBackground} />
+                    <GradeTextWrapper>1</GradeTextWrapper>
+                    <ProfileImage src={image} />
                     <SettingIconWrapper>
                         <SettingIcon onClick={handleImageModalOpen} />
                     </SettingIconWrapper>
@@ -118,8 +246,15 @@ function BasicInfoPage2() {
                                 ref={nicknameInputRef}
                                 value={nickname}
                                 onChange={handleNicknameChange}
+                                onKeyDown={(event) => {
+                                    if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        handleUserNicknameSubmit(event);
+                                        nicknameInputRef.current.blur();
+                                    }
+                                }}
                             />
-                            <ModifyIcon onClick={handleNicknameIModifyIconClick} />
+                            <ModifyIcon onClick={handleUserNicknameSubmit} />
                         </NicknameInputBox>
                     </TitleRowBox>
                     <TitleRowContainer>
@@ -129,7 +264,7 @@ function BasicInfoPage2() {
                                 <SubTitleWrapper>RATING</SubTitleWrapper>
                             </TitleBox>
                             <ContentBox>
-                                <ContentWrapper>4.36</ContentWrapper>
+                                <ContentWrapper>{userProfile.userRating}</ContentWrapper>
                             </ContentBox>
                         </TitleRowBox>
                         <TitleRowBox>
@@ -138,7 +273,7 @@ function BasicInfoPage2() {
                                 <SubTitleWrapper>CLASS</SubTitleWrapper>
                             </TitleBox>
                             <ContentBox>
-                                <ContentWrapper>이코노미</ContentWrapper>
+                                <ContentWrapper>{userProfile.userMileageGrade}</ContentWrapper>
                             </ContentBox>
                         </TitleRowBox>
                     </TitleRowContainer>
@@ -149,14 +284,15 @@ function BasicInfoPage2() {
                                 <TitleWrapper>대표 언어</TitleWrapper>
                                 <SubTitleWrapper>NATIVE LANGUAGE</SubTitleWrapper>
                             </TitleBox>
-                            <Dropdown
-                                width="195px"
-                                shape="negative"
-                                height="50px"
-                                data={totalLanguage}
-                                selectedOption={nativeLanguage}
-                                onChange={setNativeStudyLanguage}
-                            />
+                            <ContentBox>
+                                <LanguageImg />
+
+                                <ContentWrapper>
+                                    {userProfile.userNativeLanguage
+                                        ? userProfile.userNativeLanguage.languageKorName
+                                        : "에어"}
+                                </ContentWrapper>
+                            </ContentBox>
                         </TitleRowBox>
                         <TitleRowBox>
                             <TitleBox>
@@ -164,7 +300,7 @@ function BasicInfoPage2() {
                                 <SubTitleWrapper>TOTAL MILEAGE</SubTitleWrapper>
                             </TitleBox>
                             <ContentBox>
-                                <ContentWrapper>13,156</ContentWrapper>
+                                <ContentWrapper>{userProfile.userTotalMileage}</ContentWrapper>
                             </ContentBox>
                         </TitleRowBox>
                     </TitleRowContainer>
@@ -178,8 +314,15 @@ function BasicInfoPage2() {
                                 ref={bioInputRef}
                                 value={bio}
                                 onChange={handleBioChange}
+                                onKeyDown={(event) => {
+                                    if (event.key === "Enter") {
+                                        event.preventDefault();
+                                        handleUserBioSubmit(event);
+                                        bioInputRef.current.blur();
+                                    }
+                                }}
                             />
-                            <ModifyIcon onClick={handleBioIModifyIconClick} />
+                            <ModifyIcon onClick={handleUserBioSubmit} />
                         </BioAreaBox>
                     </TitleRowBox>
                 </ProfileContentContainer>
@@ -190,8 +333,8 @@ function BasicInfoPage2() {
 
 const CloseIconWrapper = styled.div`
     position: absolute;
-    top: 150px;
-    right: 550px;
+    top: -120px;
+    right: -180px;
     cursor: pointer;
 `;
 
@@ -333,6 +476,9 @@ const ContentWrapper = styled.div`
     color: #000;
     font-size: 20px;
     font-weight: 700;
+    padding: 0px 20px;
+    justify-content: center;
+    align-items: center;
 `;
 
 const NicknameInputBox = styled.div`

@@ -3,7 +3,9 @@ import { PURGE } from "redux-persist";
 
 const initialState = {
     sessionId: "",
+    recordingId: "",
     studyId: "",
+    scriptData: [],
     otherUser: {},
     meetingData: {},
     didReport: false,
@@ -15,6 +17,9 @@ export const MeetingSlice = createSlice({
     reducers: {
         AddSessionId: (state, actions) => {
             state.sessionId = actions.payload.sessionId;
+        },
+        AddRecordingId: (state, actions) => {
+            state.recordingId = actions.payload.recordingId;
         },
         AddOtherUser: (state, actions) => {
             state.otherUser = actions.payload.otherUser;
@@ -34,11 +39,19 @@ export const MeetingSlice = createSlice({
         AddDidReport: (state, actions) => {
             state.didReport = actions.payload.didReport;
         },
+        AddScriptData: (state, actions) => {
+            state.scriptData = actions.payload.scriptData;
+        },
         removeInfo: (state) => {
             state.sessionId = "";
             state.otherUser = {};
             state.studyId = "";
             state.meetingData = {};
+            state.recordingId = "";
+            state.scriptData = [];
+        },
+        removeRecordingId: (state) => {
+            state.recordingId = "";
         },
         extraReducers: (builder) => {
             builder.addCase(PURGE, () => initialState);
@@ -48,11 +61,14 @@ export const MeetingSlice = createSlice({
 
 export const {
     AddSessionId,
+    AddRecordingId,
     AddOtherUser,
     AddStudyId,
     AddMeetingData,
     AddInfo,
     AddDidReport,
+    AddScriptData,
+    removeRecordingId,
     removeInfo,
 } = MeetingSlice.actions;
 export const selectMeeting = (state) => state.Meeting;

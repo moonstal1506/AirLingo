@@ -9,6 +9,7 @@ import Login from "./pages/login/Login";
 import Script from "./pages/mypage/Script";
 import SignUp from "./pages/signup";
 import Meeting from "./pages/meeting";
+import BasicInfoPage1 from "./pages/mypage/BasicInfoPage1";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 import { MyPageBook } from "./pages/mypage";
 
@@ -92,7 +93,8 @@ const routerData = [
         label: "WordBook",
         element: <WordBook />,
         withAuth: true,
-        headerExist: false,
+        headerExist: true,
+        mustNotAuth: false,
     },
     {
         id: 9,
@@ -119,6 +121,15 @@ const routerData = [
         element: <MyPageBook />,
         withAuth: false,
         headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 12,
+        path: "/profile",
+        label: "profile",
+        element: <BasicInfoPage1 />,
+        withAuth: false,
+        headerExist: false,
         mustNotAuth: false,
     },
     {

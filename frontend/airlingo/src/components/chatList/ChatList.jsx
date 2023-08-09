@@ -56,6 +56,7 @@ const ChatListContainer = styled.div`
     gap: 10px;
     flex-shrink: 0;
     overflow-y: auto;
+    box-sizing: border-box;
 `;
 const ChatListBox = styled.ul`
     display: flex;
@@ -70,9 +71,10 @@ const ChatListItem = styled.div`
     gap: 10px;
     display: flex;
     justify-content: center;
-    align-items: center;
+    align-items: start;
     flex-direction: row;
     box-sizing: border-box;
+    height: auto;
 `;
 const ProfileWrapper = styled.div`
     border-radius: 10px;
@@ -90,7 +92,7 @@ const ChatTextWrapper = styled.div`
     border-radius: 10px;
     border: 1px solid #000;
     width: 100%;
-    height: 65px;
+    min-height: 65px;
     padding: 10px 20px;
     align-items: center;
     box-sizing: border-box;
@@ -98,6 +100,9 @@ const ChatTextWrapper = styled.div`
     font-size: 25px;
     font-weight: 400;
     line-height: normal;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
 `;
 
 const ProfileBarCustom = styled.div`
