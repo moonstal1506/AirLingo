@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.airlingo.domain.study.dto.request.ModifyScriptContentRequestDto;
+import com.ssafy.airlingo.domain.study.service.LettuceLockOpenviduService;
 import com.ssafy.airlingo.domain.study.service.ScriptService;
 import com.ssafy.airlingo.global.openvidu.OpenViduManager;
 import com.ssafy.airlingo.global.response.ResponseResult;
@@ -44,7 +45,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ScriptController {
 
 	private final ScriptService scriptService;
-	private final OpenViduManager openViduManager;
+	private final LettuceLockOpenviduService lettuceLockOpenviduService;
 
 	@Operation(summary = "Get Script By Script Id", description = "스크립트 아이디로 스크립트 상세 정보 조회")
 	@ApiResponses(value = {
@@ -95,18 +96,18 @@ public class ScriptController {
 	@PostMapping("/recording/start")
 	public ResponseResult startRecording(@RequestParam String sessionId) throws
 		OpenViduJavaClientException,
-		OpenViduHttpException {
+		OpenViduHttpException, InterruptedException {
 		log.info("ScriptController_startRecording");
-		return new SingleResponseResult<>(openViduManager.startRecording(sessionId));
+		return new SingleResponseResult<>(lettuceLockOpenviduService.startRecording(sessionId));
 	}
 
 	@Operation(summary = "Stop Script Recording", description = "스크립트 녹음 중지")
 	@PostMapping("/recording/stop")
 	public ResponseResult stopRecording(@RequestParam String recordingId) throws
 		OpenViduJavaClientException,
-		OpenViduHttpException {
+		OpenViduHttpException, InterruptedException {
 		log.info("ScriptController_stopRecording");
-		return new SingleResponseResult<>(openViduManager.stopRecording(recordingId));
+		return new SingleResponseResult<>(lettuceLockOpenviduService.stopRecording(recordingId));
 	}
 
 }
