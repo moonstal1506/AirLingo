@@ -1,6 +1,7 @@
 import instance from "./instance";
 import processApiResponse from "@/utils/api";
 
+// 단어장 조회
 const getWordList = async ({ responseFunc, data }) => {
     const { userId } = data;
     try {
@@ -28,4 +29,16 @@ const deleteWords = async ({ responseFunc, data }) => {
     }
 };
 
-export { getWordList, deleteWords };
+// 단어테스트 조회
+const getWordTest = async ({ responseFunc, data }) => {
+    const { userId } = data;
+    try {
+        const response = await instance.get(`/api/word/test/${userId}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
+export { getWordList, deleteWords, getWordTest };
