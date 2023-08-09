@@ -135,6 +135,17 @@ function Meeting() {
         curSession.on("streamCreated", (event) => {
             const subscriber = curSession.subscribe(event.stream, undefined);
             setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+            curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+        });
+
+        curSession.on("speechToTextMessage", (event) => {
+            console.log(`STT ${event}`);
+            console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
+            if (event.reason === "recognizing") {
+                console.log(`User ${event.connection.connectionId} is speaking: ${event.text}`);
+            } else if (event.reason === "recognized") {
+                console.log(`User ${event.connection.connectionId} spoke: ${event.text}`);
+            }
         });
 
         curSession.on("streamDestroyed", (event) => {
