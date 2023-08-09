@@ -15,7 +15,7 @@ import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png"
 import Modal from "@/components/modal";
 import TabBar from "@/components/common/tab/TabBar.jsx";
 import { selectUser } from "@/features/User/UserSlice.js";
-import { getWordList, deleteWords } from "@/api/word";
+import { getWordList, deleteWords, getWordTest } from "@/api/word";
 
 function WordBook() {
     const storeUser = useSelector(selectUser);
@@ -36,6 +36,8 @@ function WordBook() {
     const [isCheckedListLeft, setIsCheckedListLeft] = useState([]);
     const [isCheckedListRight, setIsCheckedListRight] = useState([]);
 
+    const [WordTestList, setWordTestList] = useState([]);
+    const [currentWordIndex, setCurrentWordIndex] = useState(0);
     const handleBackButtonClick = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -169,10 +171,28 @@ function WordBook() {
     };
 
     // 단어 테스트 진행
-    const handleWordTestStart = () => {
+    const handleWordTestStart = async () => {
         if (modalOpenWordTest) {
             setModalOpenWordTest(false); // 시작 모달 닫기
-            setModalOpenWordTestProgress(true); // 테스트 진행 모달 열기
+            try {
+                await getWordTest({
+                    responseFunc: {
+                        200: (response) => {
+                            setWordTestList(response.data.data);
+                            console.log(response.data.data);
+                            console.log("성공!!");
+                            setModalOpenWordTestProgress(true); // 테스트 진행 모달 열기
+                            setCurrentWordIndex(0); // 첫 번째 단어부터 시작
+                        },
+                        473: () => {
+                            setWordTestList([]);
+                        }, // 단어테스트가 없는 경우
+                    },
+                    data: { userId },
+                });
+            } catch (error) {
+                console.error("삭제 중 오류가 발생했습니다.", error);
+            }
         }
     };
 
@@ -251,7 +271,6 @@ function WordBook() {
                                     </ModalButtonBox>
                                 </Modal>
                             )}
-
                             {/* 단어 테스트 시작 */}
                             {modalOpenWordTest && (
                                 <Modal
@@ -284,7 +303,7 @@ function WordBook() {
                                     </ModalButtonBox>
                                 </Modal>
                             )}
-                            {/* 단어 테스트 진행  */}
+                            {/* // 단어 테스트 진행 */}
                             {modalOpenWordTestProgress && (
                                 <Modal
                                     title="단어 테스트"
@@ -298,7 +317,7 @@ function WordBook() {
                                             작성해주세요.
                                         </ModalTestText>
                                         <ModalTextWord>
-                                            <b>건드릴 수 없는, 손 댈 수 없는, 불가촉천민</b>
+                                            <b>{WordTestList[currentWordIndex]?.wordDescription}</b>
                                         </ModalTextWord>
                                         <TextInput
                                             placeholder="정답을 작성해 주세요."
@@ -308,41 +327,69 @@ function WordBook() {
                                         />
                                     </ModalTestBox>
                                     <ModalButtonBox>
-                                        {/* 첫 단어 => 테스트 취소 / 다음 단어 버튼 
-                        마지막 단어 => 이전 단어 / 테스트 종료
-                        나머지 => 이전단어 / 다음 단어 */}
-                                        {/* <TextButton
-                            shape="positive-curved"
-                            text="테스트 취소"
-                            onClick={}
-                        />
-                        <TextButton
-                            shape="positive-curved"
-                            text="다음 단어"
-                            onClick={}
-                        /> */}
-
-                                        {/* <TextButton
-                            shape="positive-curved"
-                            text="이전 단어"
-                            onClick={}
-                        />
-                        <TextButton
-                            shape="positive-curved"
-                            text="다음 단어"
-                            onClick={}
-                        /> */}
-
-                                        <TextButton
-                                            shape="positive-curved"
-                                            text="이전 단어"
-                                            onClick={handleWordTestStart}
-                                        />
-                                        <TextButton
-                                            shape="positive-curved"
-                                            text="테스트 종료"
-                                            onClick={handleWordTestEnd}
-                                        />
+                                        <TestContent>
+                                            {currentWordIndex === 0 && (
+                                                <ModalButtonBox>
+                                                    <TextButton
+                                                        shape="positive-curved"
+                                                        text="테스트 취소"
+                                                        onClick={() =>
+                                                            setModalOpenWordTestProgress(false)
+                                                        }
+                                                    />
+                                                    <TextButton
+                                                        shape="positive-curved"
+                                                        text="다음 단어"
+                                                        onClick={() =>
+                                                            setCurrentWordIndex(
+                                                                currentWordIndex + 1,
+                                                            )
+                                                        }
+                                                    />
+                                                </ModalButtonBox>
+                                            )}
+                                            {currentWordIndex === WordTestList.length - 1 && (
+                                                <ModalButtonBox>
+                                                    <TextButton
+                                                        shape="positive-curved"
+                                                        text="이전 단어"
+                                                        onClick={() =>
+                                                            setCurrentWordIndex(
+                                                                currentWordIndex - 1,
+                                                            )
+                                                        }
+                                                    />
+                                                    <TextButton
+                                                        shape="positive-curved"
+                                                        text="테스트 종료"
+                                                        onClick={handleWordTestEnd}
+                                                    />
+                                                </ModalButtonBox>
+                                            )}
+                                            {currentWordIndex > 0 &&
+                                                currentWordIndex < WordTestList.length - 1 && (
+                                                    <ModalButtonBox>
+                                                        <TextButton
+                                                            shape="positive-curved"
+                                                            text="이전 단어"
+                                                            onClick={() =>
+                                                                setCurrentWordIndex(
+                                                                    currentWordIndex - 1,
+                                                                )
+                                                            }
+                                                        />
+                                                        <TextButton
+                                                            shape="positive-curved"
+                                                            text="다음 단어"
+                                                            onClick={() =>
+                                                                setCurrentWordIndex(
+                                                                    currentWordIndex + 1,
+                                                                )
+                                                            }
+                                                        />
+                                                    </ModalButtonBox>
+                                                )}
+                                        </TestContent>
                                     </ModalButtonBox>
                                 </Modal>
                             )}
@@ -365,7 +412,7 @@ function WordBook() {
                                     <ModalButtonBox>
                                         <TextButton
                                             shape="positive-curved"
-                                            text="테스트 다시보기"
+                                            text="재시험보기"
                                             onClick={handleClickWordTestRetry}
                                         />
                                         <TextButton
@@ -707,5 +754,7 @@ const NoWordBackgroundBox = styled.div`
     width: 100%;
     height: 100%;
 `;
+
+const TestContent = styled.div``;
 
 export default WordBook;
