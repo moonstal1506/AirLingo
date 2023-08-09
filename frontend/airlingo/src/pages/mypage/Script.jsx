@@ -531,7 +531,7 @@ const NoScriptContentBox = styled.div`
 // `;
 
 const CalendarContainer = styled.div`
-    margin-top: 110px;
+    margin-top: 40px;
     margin-left: 50px;
     /* margin-top: 200px; */
 
@@ -575,7 +575,7 @@ const CalendarContainer = styled.div`
     .react-calendar__navigation {
         display: flex;
         height: 150px;
-        margin-bottom: 0.5em;
+        margin-bottom: 30px;
     }
 
     .react-calendar__navigation button {
@@ -614,9 +614,30 @@ const CalendarContainer = styled.div`
         padding: 0.5em;
     }
 
-    .react-calendar__year-view__months__month {
-        flex: 0 0 33.3333% !important;
+    .react-calendar__year-view__months {
+        gap: 10px;
     }
+
+    .react-calendar__year-view__months__month {
+        flex: 0 0 calc(33.3333% - 10px) !important;
+    }
+
+    .react-calendar__decade-view__years {
+        gap: 10px;
+    }
+
+    .react-calendar__decade-view__years__year {
+        flex: 0 0 calc(50% - 10px) !important;
+    }
+
+    .react-calendar__century-view__decades {
+        gap: 10px;
+    }
+
+    .react-calendar__century-view__decades__decade {
+        flex: 0 0 calc(50% - 10px) !important;
+    }
+
     .react-calendar__month-view__weekNumbers .react-calendar__tile {
         display: flex;
         align-items: center;
@@ -646,6 +667,7 @@ const CalendarContainer = styled.div`
     .react-calendar__tile {
         width: 45px;
         height: 45px;
+        margin-top: 10px;
         background: none;
         text-align: center;
         line-height: 16px;
