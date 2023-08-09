@@ -16,13 +16,13 @@ const { primary1, primary4 } = theme.colors;
 function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
     const [nickname, setNickname] = useState({
         value: totalState.nickname,
-        valid: false,
-        dirty: false,
+        valid: checkNickname(totalState.nickname),
+        dirty: totalState.nickname.length > 0,
     });
     const [email, setEmail] = useState({
         value: totalState.email,
-        valid: false,
-        dirty: false,
+        valid: checkEmail(totalState.email),
+        dirty: totalState.email.length > 0,
     });
 
     const handleIdChange = (event) => {

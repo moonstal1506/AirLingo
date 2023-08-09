@@ -2,9 +2,12 @@ package com.ssafy.airlingo.global.openvidu;
 
 import io.openvidu.java.client.Recording;
 import io.openvidu.java.client.RecordingProperties;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import com.ssafy.airlingo.domain.study.repository.OpenviduSessionIdRepository;
 
 import io.openvidu.java.client.Connection;
 import io.openvidu.java.client.ConnectionProperties;
@@ -18,6 +21,7 @@ import jakarta.annotation.PostConstruct;
 
 @Slf4j
 @Service
+@RequiredArgsConstructor
 public class OpenViduManager {
 	@Value("${openviduUrl}")
 	private String OPENVIDU_URL;
@@ -26,6 +30,7 @@ public class OpenViduManager {
 	private String OPENVIDU_SECRET;
 
 	private OpenVidu openVidu;
+	private final OpenviduSessionIdRepository openviduSessionIdRepository;
 
 	@PostConstruct
 	public void init() {
@@ -58,14 +63,22 @@ public class OpenViduManager {
 			.hasAudio(true)
 			.hasVideo(false)
 			.build();
+		if(openviduSessionIdRepository.existsSessionId(sessionId))
+			return null;
 		Recording recording = openVidu.startRecording(sessionId, properties);
-		log.info(recording.toString());
+		openviduSessionIdRepository.saveSessionId(sessionId);
+		log.info(recording.getId());
+		log.info(recording.getSessionId());
 		return recording;
 	}
 
 	public Recording stopRecording(String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
+		if(!openviduSessionIdRepository.existsSessionId(recordingId))
+			return null;
+
 		Recording recording = openVidu.stopRecording(recordingId);
-		log.info(recording.toString());
+		openviduSessionIdRepository.deleteSessionId(recordingId);
+		log.info(recording.getId() + " " + recordingId);
 		return recording;
 	}
 }

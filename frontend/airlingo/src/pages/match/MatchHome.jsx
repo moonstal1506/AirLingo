@@ -321,9 +321,10 @@ const TextWrapper = styled.div`
 
 const TooltipContentContainer = styled.div`
     position: relative;
-    width: 398px;
-    height: 396px;
+    width: 400px;
+    height: 400px;
     background-image: url(${LanguageRankBox});
+    background-size: cover;
     border-radius: 20px;
     background-color: transparent;
     border: 0.5px solid rgba(0, 0, 0, 0.2);

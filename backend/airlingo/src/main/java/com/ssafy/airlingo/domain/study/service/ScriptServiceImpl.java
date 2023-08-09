@@ -52,12 +52,13 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	@Transactional
-	public ScriptAfterSTTResponseDto createScript(MultipartFile voiceFile , Long studyId , Long cardId) throws IOException, ParseException {
+	public ScriptAfterSTTResponseDto createScript(String sessionId , Long studyId , Long cardId) throws IOException, ParseException {
 		log.info("ScriptServiceImpl_createScript || 녹음 파일 s3저장 및 스크립트 생성");
 		Study study = studyRepository.findById(studyId).get();
 		Card card = cardRepository.findById(cardId).get();
-		String voiceFileUrl = amazon3SService.uploadVoiceFileToS3(voiceFile);
+		// String voiceFileUrl = amazon3SService.uploadVoiceFileToS3(voiceFile);
 
+		String voiceFileUrl = amazon3SService.getVoiceFileUrl(sessionId);
 		List<SentenceResponseDto> sentenceResponseDtoList = voiceFileSTT(voiceFileUrl);
 		Long scriptId = scriptRepository.save(Script.createNewScript(study, card, voiceFileUrl)).getScriptId();
 		return ScriptAfterSTTResponseDto.createScriptAfterSttResponseDto(scriptId,sentenceResponseDtoList);

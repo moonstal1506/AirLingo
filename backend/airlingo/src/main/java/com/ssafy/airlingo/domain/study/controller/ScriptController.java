@@ -3,10 +3,19 @@ package com.ssafy.airlingo.domain.study.controller;
 import java.io.IOException;
 
 import org.json.simple.parser.ParseException;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.airlingo.domain.study.dto.request.CreateScriptRequestDto;
 import com.ssafy.airlingo.domain.study.dto.request.ModifyScriptContentRequestDto;
+import com.ssafy.airlingo.domain.study.service.LettuceLockOpenviduService;
 import com.ssafy.airlingo.domain.study.service.ScriptService;
 import com.ssafy.airlingo.global.openvidu.OpenViduManager;
 import com.ssafy.airlingo.global.response.ResponseResult;
@@ -14,8 +23,6 @@ import com.ssafy.airlingo.global.response.SingleResponseResult;
 
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
-import io.openvidu.java.client.Recording;
-import io.openvidu.java.client.RecordingProperties;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -23,10 +30,8 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.multipart.MultipartFile;
 
 @ApiResponses({
 	@ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
@@ -40,7 +45,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ScriptController {
 
 	private final ScriptService scriptService;
-	private final OpenViduManager openViduManager;
+	private final LettuceLockOpenviduService lettuceLockOpenviduService;
 
 	@Operation(summary = "Get Script By Script Id", description = "스크립트 아이디로 스크립트 상세 정보 조회")
 	@ApiResponses(value = {
@@ -68,19 +73,20 @@ public class ScriptController {
 
 	@Operation(summary = "Save script Entity before feedback", description = "스크립트 생성")
 	@PostMapping
-	public ResponseResult createScript(@RequestParam MultipartFile voiceFile,
+	public ResponseResult createScript(@RequestParam String sessionId,
 									   @RequestParam Long studyId,
 									   @RequestParam Long cardId) throws
 
 		IOException,
 		ParseException {
 		log.info("ScriptController_CreateScript");
-		return new SingleResponseResult<>(scriptService.createScript(voiceFile,studyId,cardId));
+		return new SingleResponseResult<>(scriptService.createScript(sessionId,studyId,cardId));
 	}
 
 	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")
 	@PutMapping
-	public ResponseResult modifyScriptContent(@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto) {
+	public ResponseResult modifyScriptContent(
+		@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto) {
 		log.info("ScriptController_ModifyScriptContent");
 		scriptService.modifyScriptContent(modifyScriptRequestDto);
 		return ResponseResult.successResponse;
@@ -90,18 +96,18 @@ public class ScriptController {
 	@PostMapping("/recording/start")
 	public ResponseResult startRecording(@RequestParam String sessionId) throws
 		OpenViduJavaClientException,
-		OpenViduHttpException {
+		OpenViduHttpException, InterruptedException {
 		log.info("ScriptController_startRecording");
-		return new SingleResponseResult<>(openViduManager.startRecording(sessionId));
+		return new SingleResponseResult<>(lettuceLockOpenviduService.startRecording(sessionId));
 	}
 
 	@Operation(summary = "Stop Script Recording", description = "스크립트 녹음 중지")
 	@PostMapping("/recording/stop")
 	public ResponseResult stopRecording(@RequestParam String recordingId) throws
 		OpenViduJavaClientException,
-		OpenViduHttpException {
+		OpenViduHttpException, InterruptedException {
 		log.info("ScriptController_stopRecording");
-		return new SingleResponseResult<>(openViduManager.stopRecording(recordingId));
+		return new SingleResponseResult<>(lettuceLockOpenviduService.stopRecording(recordingId));
 	}
 
 }

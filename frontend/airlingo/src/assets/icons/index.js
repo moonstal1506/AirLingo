@@ -21,6 +21,7 @@ import { ReactComponent as StartNotFilledIcon } from "@/assets/icons/star-not-fi
 import { ReactComponent as PassportTextIcon } from "@/assets/icons/passport-text-icon.svg";
 import { ReactComponent as ServiceLogoIcon } from "@/assets/icons/service-logo-icon.svg";
 import { ReactComponent as BiometricIcon } from "@/assets/icons/biometric-icon.svg";
+import { ReactComponent as RightArrowIcon } from "@/assets/icons/arrow-right-icon.svg";
 
 export {
     MicOnIcon,
@@ -46,4 +47,5 @@ export {
     PassportTextIcon,
     ServiceLogoIcon,
     BiometricIcon,
+    RightArrowIcon,
 };

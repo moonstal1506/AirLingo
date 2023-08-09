@@ -1,11 +1,52 @@
-import { useState } from "react";
+/* eslint-disable react-hooks/exhaustive-deps */
+import { useState, useEffect } from "react";
+import { useSelector } from "react-redux";
 import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
 import styled from "@emotion/styled";
+import moment from "moment";
+import { selectUser } from "@/features/User/UserSlice.js";
+import { getDailyGrid } from "@/api/user.js";
 import theme from "@/assets/styles/Theme";
+import "react-calendar/dist/Calendar.css";
+
+const { primary2, primary3, primary4, primary6, selection, faintgray } = theme.colors;
 
 function CalendarPage() {
+    const storeUser = useSelector(selectUser);
+    const { userId } = storeUser;
+
     const [selectedDate, setSelectedDate] = useState(new Date());
+    const [dailyGridList, setDailyGridList] = useState({});
+    const [gridCountByDate, setGridCountByDate] = useState({});
+
+    useEffect(() => {
+        async function fetchData() {
+            await getDailyGrid({
+                responseFunc: {
+                    200: (response) => {
+                        setDailyGridList({ ...response.data.data });
+                        console.log("데일리 그리드 개수 조회 성공!");
+                    },
+                },
+                data: { userId },
+            });
+        }
+        fetchData();
+    }, [userId]);
+
+    useEffect(() => {
+        const emptyGridCountByDate = {};
+        Object.keys(dailyGridList).forEach((key) => {
+            const { createdDate, dailyGridCount } = dailyGridList[key];
+            const originalDate = createdDate.split("T")[0];
+            const parts = originalDate.split("-");
+            const formattedDate = `${parts[2]}-${parts[1]}-${parts[0]}`;
+
+            emptyGridCountByDate[formattedDate] = dailyGridCount;
+        });
+        setGridCountByDate({ ...emptyGridCountByDate });
+        console.log(gridCountByDate);
+    }, [dailyGridList]);
 
     // 날짜 포맷팅 함수
     const formatDate = (date) => {
@@ -15,16 +56,27 @@ function CalendarPage() {
 
     const handleDayClick = (value) => {
         console.log("Clicked day:", formatDate(value));
+        // console.log("Clicked day:", value);
     };
 
     return (
         <CalendarContainer>
             <Calendar
-                locale="en-US"
                 onChange={setSelectedDate}
                 value={selectedDate}
+                locale="en-US"
                 onClickDay={handleDayClick}
                 id="Calendar"
+                tileClassName={({ date }) => {
+                    const formattedDate = moment(date).format("DD-MM-YYYY");
+                    const gridCount = gridCountByDate[formattedDate];
+
+                    if (gridCount !== undefined) {
+                        const highlightClass = `count-${gridCount}`;
+                        return `highlight ${highlightClass}`;
+                    }
+                    return `highlight count-0`;
+                }}
             />
         </CalendarContainer>
     );
@@ -159,13 +211,11 @@ const CalendarContainer = styled.div`
     .react-calendar__tile:enabled:hover,
     .react-calendar__tile:enabled:focus {
         border-radius: 10px;
-        border: 5px solid ${theme.colors.selection};
-        background: ${theme.colors.faintgray};
+        border: 5px solid ${selection};
     }
 
     .react-calendar__tile--now {
         border-radius: 10px;
-        border: 5px solid ${theme.colors.primary1};
         background: white;
         text-align: center;
     }
@@ -173,22 +223,20 @@ const CalendarContainer = styled.div`
     .react-calendar__tile--now:enabled:hover,
     .react-calendar__tile--now:enabled:focus {
         border-radius: 10px;
-        border: 5px solid ${theme.colors.selection};
-        background: ${theme.colors.faintgray};
+        border: 5px solid ${selection};
     }
 
     .react-calendar__tile--hasActive {
-        background: ${theme.colors.faintgray};
     }
 
     .react-calendar__tile--hasActive:enabled:hover,
     .react-calendar__tile--hasActive:enabled:focus {
-        background: ${theme.colors.faintgray};
+        background: ${faintgray};
     }
 
     .react-calendar__tile--active {
         border-radius: 10px;
-        background: ${theme.colors.faintgray};
+        background: ${faintgray};
     }
 
     .react-calendar__tile--active:enabled:hover,
@@ -198,6 +246,30 @@ const CalendarContainer = styled.div`
 
     .react-calendar--selectRange .react-calendar__tile--hover {
         background-color: #e6e6e6;
+    }
+
+    .highlight {
+        border-radius: 10px;
+
+        &.count-0 {
+            background: ${faintgray};
+        }
+
+        &.count-1 {
+            background: ${primary2};
+        }
+
+        &.count-2 {
+            background: ${primary3};
+        }
+
+        &.count-3 {
+            background: ${primary4};
+        }
+
+        &.count-4 {
+            background: ${primary6};
+        }
     }
 `;
 
