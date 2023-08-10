@@ -650,7 +650,7 @@ function Meeting() {
                             <ModalTextWrapper color="black">
                                 상대방이
                                 <ModalTextWrapper color="red"> {requestCardCode} </ModalTextWrapper>
-                                를 대화 대주제로 선택했습니다.
+                                을(를) 대화 대주제로 선택했습니다.
                             </ModalTextWrapper>
                         </div>
                         <ModalTextWrapper>

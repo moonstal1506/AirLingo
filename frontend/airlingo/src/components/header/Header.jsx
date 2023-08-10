@@ -9,6 +9,8 @@ import Dropdown from "../common/dropdown";
 import { getLogout } from "@/api";
 import { useRouter } from "@/hooks";
 
+// ----------------------------------------------------------------------------------------------------
+
 const Header = React.memo(() => {
     const dispatch = useDispatch();
     const { isLogIn, userNickname, userLoginId, userImgUrl } = useSelector(selectUser);
@@ -70,6 +72,8 @@ const Header = React.memo(() => {
     );
 });
 
+// ----------------------------------------------------------------------------------------------------
+
 const HeaderContainer = styled.div`
     width: 100%;
     height: 120px;
@@ -83,11 +87,11 @@ const HeaderContainer = styled.div`
 `;
 
 const HeaderInnerContainer = styled.div`
-    width: 100%;
-    padding: 0 160px;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
+    padding: 0 160px;
 `;
 
 const HeaderRightBox = styled.div`
@@ -95,5 +99,7 @@ const HeaderRightBox = styled.div`
     gap: 16px;
     justify-content: space-between;
 `;
+
+// ----------------------------------------------------------------------------------------------------
 
 export default Header;
