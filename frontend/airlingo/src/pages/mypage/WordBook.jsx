@@ -240,12 +240,6 @@ function WordBook() {
         setModalOpenWordTestEnd(false);
         setModalOpenReviewNote(true);
     };
-    // 오답 노트 후 , 단어 테스트 재시작
-    const handleClickWordTestRetry2 = () => {
-        setModalOpenReviewNote(false);
-        setTestInputList(initialArray);
-        setModalOpenWordTest(true);
-    };
 
     // 오답 노트
     const handleClickReviewNote = () => {
@@ -953,7 +947,4 @@ const ReviewWord = styled.div`
     align-items: flex-start;
 `;
 
-const ReviewWord = styled.div`
-    align-items: flex-start;
-`;
 export default WordBook;
