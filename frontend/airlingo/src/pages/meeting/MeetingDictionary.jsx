@@ -7,12 +7,12 @@ import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
 import { TextButton } from "@/components/common/button";
 import Container from "@/components/common/container";
-import { getLanguage } from "@/api";
+import { getTranslateResult, getLanguage } from "@/api";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
-import getSearchResult from "@/api/dictionary";
-import dictConfig from "@/config/dictConfig";
+// import getSearchResult from "@/api/dictionary";
+// import { dictConfig } from "@/config";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -48,15 +48,15 @@ function MeetingDictionary() {
 
     const searchWord = () => {
         async function fetchSearchResult() {
-            await getSearchResult({
+            await getTranslateResult({
                 responseFunc: {
                     200: (response) => console.log(response),
                     400: (response) => console.log(response),
                 },
                 data: {
-                    from: dictConfig[sourceLang.id],
-                    dest: dictConfig[targetLang.id],
-                    phrase: word,
+                    source: "ko",
+                    target: "en",
+                    text: word,
                 },
             });
         }

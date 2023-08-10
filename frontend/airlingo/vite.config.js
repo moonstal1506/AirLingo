@@ -14,9 +14,16 @@ export default defineConfig({
         }),
     ],
     server: {
-        open: false,
-        port: 5173,
-        host: "0.0.0.0",
+        // host: true,
+        proxy: {
+            // "/api": "https://glosbe.com",
+            "/v1": {
+                target: "https://openapi.naver.com",
+                changeOrigin: true,
+                secure: false,
+            }
+        },
+
     },
     resolve: {
         alias: {

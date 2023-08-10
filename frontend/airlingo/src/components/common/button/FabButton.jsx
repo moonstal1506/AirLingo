@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import theme from "@/assets/styles/Theme";
 import combineShape from "@/utils/style";
-import iconConfig from "@/config";
+import { iconConfig } from "@/config";
 
 // ----------------------------------------------------------------------------------------------------
 
