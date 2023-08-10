@@ -1,12 +1,18 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
+import theme from "@/assets/styles/Theme";
 
+// ----------------------------------------------------------------------------------------------------
+
+const { primary1, primary4, secondary3 } = theme.colors;
 const radiusObj = {
     small: "10px",
     big: "20px",
 };
 
-function TextArea({ placeholder, radius, width, height, maxLength, value, onChange }) {
+// ----------------------------------------------------------------------------------------------------
+
+function TextArea({ placeholder, radius, width, height, maxLength, value, onChange, color }) {
     return (
         <TextAreaWrapper
             placeholder={placeholder}
@@ -18,6 +24,7 @@ function TextArea({ placeholder, radius, width, height, maxLength, value, onChan
             onChange={(e) => {
                 onChange(e.target.value);
             }}
+            color={color}
         />
     );
 }
@@ -30,6 +37,7 @@ TextArea.propTypes = {
     maxLength: PropTypes.number,
     value: PropTypes.string.isRequired,
     onChange: PropTypes.func.isRequired,
+    color: PropTypes.string,
 };
 
 TextArea.defaultProps = {
@@ -38,6 +46,7 @@ TextArea.defaultProps = {
     width: "400px",
     height: "350px",
     maxLength: 255,
+    color: "primary",
 };
 
 const TextAreaWrapper = styled.textarea`
@@ -47,18 +56,22 @@ const TextAreaWrapper = styled.textarea`
         width: ${width};
         height: ${height};
     `};
-    border: 1px solid ${({ theme }) => theme.colors.primary4};
-    background-color: ${({ theme }) => theme.colors.primary1};
+    border: 1px solid ${primary4};
+    background-color: ${({ color }) => (color === "white" ? "white" : primary1)};
     outline: none;
     padding: 10px 20px;
-    color: ${({ theme }) => theme.colors.secondary3};
+    color: ${secondary3};
+    font-size: 17px;
+    font-weight: 500;
     resize: none;
-
     &::placeholder {
-        color: ${({ theme }) => theme.colors.primary4};
+        color: ${primary4};
     }
     &:hover {
         cursor: pointer;
+    }
+    &:focus {
+        border: 3px solid ${primary4};
     }
 `;
 
