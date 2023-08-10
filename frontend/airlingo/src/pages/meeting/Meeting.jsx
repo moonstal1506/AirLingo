@@ -1,3 +1,4 @@
+/* eslint-disable no-promise-executor-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-shadow */
 /* eslint-disable no-case-declarations */
@@ -12,6 +13,7 @@ import {
     postStartRecording,
     postStopRecording,
     postReport,
+    postCreateScript,
 } from "@/api";
 import theme from "@/assets/styles/Theme";
 import * as Icons from "@/assets/icons";
@@ -35,12 +37,14 @@ import {
     AddRecordingId,
     AddScriptData,
     removeRecordingId,
+    AddScreenMode,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
 import FreeTalk from "./FreeTalk";
 import ScriptFeedback from "./ScriptFeedback";
 import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
 import MeetingDictionary from "./MeetingDictionary";
+import isKeyInObj from "@/utils/common";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -122,8 +126,8 @@ function Meeting() {
     }
 
     async function handleCardCodeSelectResponse(data) {
-        console.log("카드 선택에 대한 답을 받았다!", publisher);
         const jsonData = JSON.parse(data);
+        console.log("카드 선택에 대한 답을 받았다!", publisher, jsonData);
         if (!jsonData.agree || !publisher) {
             console.log(
                 "상대가 내 카드 코드 선택에 동의하지 않았거나, publisher가 존재하지 않습니다.",
@@ -157,7 +161,12 @@ function Meeting() {
         console.log(res, recordingId, "서버에서 레코딩 아이디 받아왔는데??");
     }
 
+    function sleep(ms) {
+        return new Promise((resolve) => setTimeout(resolve, ms));
+    }
+
     async function handleFeedbackStartResponse(data) {
+        if (!meetingData || !isKeyInObj(meetingData, "currentCard")) return;
         setOpenFeedbackStartModal(false);
         const JsonData = JSON.parse(data);
 
@@ -166,19 +175,26 @@ function Meeting() {
             return;
         }
 
-        await postStopRecording({
+        const response = await postStopRecording({
             responseFunc: {
-                200: (response) => {
-                    console.log(response.data.data);
-                    dispatch(
-                        AddScriptData({
-                            scriptData: response.data.data,
-                        }),
-                    );
-                },
+                200: () => {},
             },
             data: {
                 recordingId: sessionId,
+            },
+        });
+        await sleep(5000);
+        await postCreateScript({
+            responseFunc: {
+                200: (response) => {
+                    dispatch(AddScriptData(response.data.data));
+                    dispatch(AddScreenMode("ScriptFeedback"));
+                },
+            },
+            data: {
+                sessionId: response.data.data.sessionId,
+                cardId: meetingData.currentCard.cardId,
+                studyId,
             },
         });
         dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
@@ -218,7 +234,6 @@ function Meeting() {
                     const publisher = await initPublisher();
                     session.publish(publisher);
                     setPublisher(publisher);
-                    session.on("signal", handleSignal);
                 })
                 .catch((error) => {
                     console.error("Error Connecting to OpenVidu", error);
@@ -230,12 +245,22 @@ function Meeting() {
 
     useEffect(() => {
         if (session) {
-            console.log(session, "Success Connection start!");
+            console.log("세션 변경 성공!!!");
             connectSession();
         } else {
-            console.log("Session Connection Start Fail...");
+            console.log("세션 변경 실패!!!");
         }
     }, [session]);
+
+    useEffect(() => {
+        if (publisher) {
+            session.on("signal", handleSignal);
+        }
+
+        return () => {
+            session.off("signal", handleSignal);
+        };
+    }, [publisher, sessionId, meetingData, didReport, otherUser, studyId, recordingId, screenMode]);
 
     // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
@@ -533,7 +558,7 @@ function Meeting() {
                                 onClick={handleClickOpenFeedbackStart}
                             />
                         );
-                    case "Script":
+                    case "ScriptFeedback":
                         return <ScriptFeedback publisher={publisher} subscribers={subscribers} />;
                     default:
                         return null;

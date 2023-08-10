@@ -27,4 +27,18 @@ const postScriptList = async ({ responseFunc, data }) => {
     }
 };
 
-export { getScriptList, postScriptList };
+const postCreateScript = async ({ responseFunc, data }) => {
+    const { sessionId, cardId, studyId } = data;
+    console.log("스크립트 생성 api 안쪽임");
+    try {
+        const response = await instance.post(
+            `/api/script?sessionId=${sessionId}&cardId=${cardId}&studyId=${studyId}`,
+        );
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
+export { getScriptList, postScriptList, postCreateScript };
