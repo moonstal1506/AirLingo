@@ -22,15 +22,16 @@ function FreeTalk({ publisher, subscribers, onClick }) {
                         <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
                     )}
                 </VideoFrame>
-                {subscribers.map((subscriber) => (
-                    <VideoFrame key={subscriber.stream.streamId}>
+
+                {subscribers.length > 0 && (
+                    <VideoFrame key={subscribers[0].stream.streamId}>
                         <video
-                            ref={(node) => node && subscriber.addVideoElement(node)}
+                            ref={(node) => node && subscribers[0].addVideoElement(node)}
                             autoPlay
                             width="500px"
                         />
                     </VideoFrame>
-                ))}
+                )}
             </VideoContainer>
             <TopicContainer>
                 <TopicHeader>현재 대화 주제</TopicHeader>

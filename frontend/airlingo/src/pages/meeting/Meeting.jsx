@@ -61,8 +61,16 @@ const contentGroupData = [
 function Meeting() {
     // redux Area...
     const dispatch = useDispatch();
-    const { sessionId, meetingData, didReport, otherUser, studyId, recordingId, screenMode } =
-        useSelector(selectMeeting);
+    const {
+        sessionId,
+        meetingData,
+        didReport,
+        otherUser,
+        studyId,
+        recordingId,
+        screenMode,
+        scriptData,
+    } = useSelector(selectMeeting);
     const { userId, userNickname } = useSelector(selectUser);
 
     // hooks Area...
@@ -188,8 +196,15 @@ function Meeting() {
         await postCreateScript({
             responseFunc: {
                 200: (response) => {
-                    dispatch(AddScriptData(response.data.data));
-                    dispatch(AddScreenMode("ScriptFeedback"));
+                    console.log(response.data.data);
+                    dispatch(AddScriptData({ scriptData: response.data.data }));
+                    dispatch(AddScreenMode({ screenMode: "ScriptFeedback" }));
+
+                    session.signal({
+                        data: JSON.stringify(response),
+                        to: [subscribers[0].stream.connection],
+                        type: "screenmode-change-feedback",
+                    });
                 },
             },
             data: {
@@ -220,6 +235,15 @@ function Meeting() {
             case "feedback-start-response":
                 handleFeedbackStartResponse(data);
                 break;
+            case "screenmode-change-feedback":
+                const jsonData = JSON.parse(data);
+                console.log(jsonData, jsonData.statusCode === 200);
+                if (jsonData.data.statusCode !== 200) return;
+                setTimeout(() => {
+                    dispatch(AddScriptData({ scriptData: jsonData.data.data }));
+                    dispatch(AddScreenMode({ screenMode: "ScriptFeedback" }));
+                }, 100);
+                break;
             default:
                 console.log("없는 이벤트타입입니다.");
         }
@@ -243,7 +267,7 @@ function Meeting() {
             console.error("Error in connectSession", error);
         }
     }
-
+    console.log(subscribers);
     useEffect(() => {
         if (session) {
             console.log("세션 변경 성공!!!");
@@ -254,14 +278,27 @@ function Meeting() {
     }, [session]);
 
     useEffect(() => {
-        if (publisher) {
+        console.log(scriptData, screenMode);
+        if (publisher && session) {
             session.on("signal", handleSignal);
         }
 
         return () => {
-            session.off("signal", handleSignal);
+            if (session) {
+                session.off("signal", handleSignal);
+            }
         };
-    }, [publisher, sessionId, meetingData, didReport, otherUser, studyId, recordingId, screenMode]);
+    }, [
+        publisher,
+        sessionId,
+        meetingData,
+        didReport,
+        otherUser,
+        studyId,
+        recordingId,
+        screenMode,
+        scriptData,
+    ]);
 
     // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
@@ -412,7 +449,7 @@ function Meeting() {
                 description: reportText,
             },
         });
-        dispatch(AddDidReport(true));
+        dispatch(AddDidReport({ didReport: true }));
     };
 
     const handleClickOpenFeedbackConfirm = (agree) => {
@@ -560,7 +597,14 @@ function Meeting() {
                             />
                         );
                     case "ScriptFeedback":
-                        return <ScriptFeedback publisher={publisher} subscribers={subscribers} />;
+                        return (
+                            <ScriptFeedback
+                                sessionId={sessionId}
+                                publisher={publisher}
+                                subscribers={subscribers}
+                                scriptData={scriptData}
+                            />
+                        );
                     default:
                         return null;
                 }
