@@ -61,7 +61,7 @@ public class ScriptServiceImpl implements ScriptService {
 		String voiceFileUrl = amazon3SService.getVoiceFileUrl(sessionId);
 		List<SentenceResponseDto> sentenceResponseDtoList = voiceFileSTT(voiceFileUrl);
 		Long scriptId = scriptRepository.save(Script.createNewScript(study, card, voiceFileUrl)).getScriptId();
-		return ScriptAfterSTTResponseDto.createScriptAfterSttResponseDto(scriptId,sentenceResponseDtoList);
+		return ScriptAfterSTTResponseDto.createScriptAfterSttResponseDto(scriptId,voiceFileUrl,sentenceResponseDtoList);
 	}
 
 	@Override

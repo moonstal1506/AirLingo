@@ -11,6 +11,7 @@ import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
 import ValidationItem from "@/components/validationList";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.png";
+import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import { ReactComponent as KeyIcon } from "@/assets/icons/key-icon.svg";
 import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
@@ -224,35 +225,27 @@ function BasicInfoPage2() {
     };
 
     return (
-        <RightPassportPage>
-            {passwordModalOpen && (
-                <Modal title="비밀번호 변경" modalOpen={passwordModalOpen} Icon={KeyIcon}>
-                    <TextInput
-                        type="password"
-                        placeholder="비밀번호"
-                        width="500px"
-                        value={password.value}
-                        onChange={handlePasswordChange}
-                        color={primary1}
-                    />
-                    <TextInput
-                        type="password"
-                        placeholder="비밀번호 확인"
-                        width="500px"
-                        value={confirmPassword.value}
-                        onChange={handleConfirmPasswordChange}
-                        color={primary1}
-                    />
-                    <ValidationList>
-                        <ValidationItem
-                            isValid={password.valid}
-                            isDirty={password.dirty}
-                            text="비밀번호는 8 ~ 20자의 영어 대 · 소문자, 숫자, 특수문자의 조합입니다."
+        // <BasicInfoPageContainer>
+        <RightPageBox>
+            <LeftPassportPages src={rightPassportPages} />
+            <RightPassportPage>
+                {passwordModalOpen && (
+                    <Modal title="비밀번호 변경" modalOpen={passwordModalOpen} Icon={KeyIcon}>
+                        <TextInput
+                            type="password"
+                            placeholder="비밀번호"
+                            width="500px"
+                            value={password.value}
+                            onChange={handlePasswordChange}
+                            color={primary1}
                         />
-                        <ValidationItem
-                            isValid={confirmPassword.valid}
-                            isDirty={confirmPassword.dirty}
-                            text="비밀번호와 비밀번호 확인은 동일해야 합니다."
+                        <TextInput
+                            type="password"
+                            placeholder="비밀번호 확인"
+                            width="500px"
+                            value={confirmPassword.value}
+                            onChange={handleConfirmPasswordChange}
+                            color={primary1}
                         />
                     </ValidationList>
                     <ModalButtonBox>
@@ -340,30 +333,41 @@ function BasicInfoPage2() {
                             text="취소"
                             onClick={() => setLanguageModalOpen(false)}
                         />
-                    </ModalButtonBox>
-                </Modal>
-            )}
-            {quitModalOpen && (
-                <Modal
-                    title="회원 탈퇴"
-                    modalOpen={quitModalOpen}
-                    Icon={AlertIcon}
-                    iconColor="red"
-                    titleColor="red"
-                >
-                    <ModalDescriptionTextBox>
-                        <DescriptionTextWrapper>
-                            정말 회원 탈퇴를 진행하시겠습니까?
-                        </DescriptionTextWrapper>
-                        <WaitingTimeTextWrapper>
-                            계정이 삭제되며, 이 작업은 되돌릴 수 없습니다!
-                        </WaitingTimeTextWrapper>
-                    </ModalDescriptionTextBox>
-                    <ModalButtonBox>
+                    </TitleContainer>
+                    <LanguageContentBox>
+                        <LanguageBox>
+                            <LanguageFlag
+                                src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg"
+                                alt="Korean Flag"
+                            />
+                            <LanguageNameRankBox>
+                                <LanguageName>한국어</LanguageName>
+                                <LanguageRankContainer>
+                                    <LanguageRank>상급</LanguageRank>
+                                    <LanguageGrade>(C1)</LanguageGrade>
+                                </LanguageRankContainer>
+                            </LanguageNameRankBox>
+                        </LanguageBox>
+                        <LanguageBox>
+                            <LanguageFlag
+                                src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg"
+                                alt="Japanese Flag"
+                            />
+                            <LanguageNameRankBox>
+                                <LanguageName>일본어</LanguageName>
+                                <LanguageRankContainer>
+                                    <LanguageRank>상급</LanguageRank>
+                                    <LanguageGrade>(C1)</LanguageGrade>
+                                </LanguageRankContainer>
+                            </LanguageNameRankBox>
+                        </LanguageBox>
+                    </LanguageContentBox>
+                    <ButtonBar>
                         <TextButton
-                            shape="warning-curved"
-                            text="회원 탈퇴"
-                            onClick={() => handleDeleteUser()}
+                            text="비밀번호 변경"
+                            width="160px"
+                            shape="negative-normal"
+                            onClick={handlePasswordModalOpen}
                         />
                         <TextButton
                             shape="positive-curved"
@@ -430,6 +434,24 @@ function BasicInfoPage2() {
     );
 }
 
+// const BasicInfoPageContainer = styled.div`
+//     position: relative;
+//     width: 100%;
+//     height: 100%;
+// `;
+
+const RightPageBox = styled.div`
+    width: 507px;
+    height: 705px;
+`;
+
+const LeftPassportPages = styled.img`
+    margin-top: 55px;
+    margin-left: 5px;
+    position: absolute;
+    z-index: -1;
+`;
+
 const RightPassportPage = styled.div`
     width: 500px;
     height: 700px;
@@ -437,9 +459,9 @@ const RightPassportPage = styled.div`
     border: 1px solid #000;
     background: #fff;
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 50px;
 `;
 
 const ValidationList = styled.div`

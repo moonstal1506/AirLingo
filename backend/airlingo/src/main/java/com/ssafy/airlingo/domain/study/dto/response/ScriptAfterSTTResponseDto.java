@@ -20,13 +20,17 @@ public class ScriptAfterSTTResponseDto {
 	@Schema(description = "스크립트 ID", example = "1")
 	private Long scriptId;
 
+	@Schema(description = "음성파일 URL", example = "https://aws...")
+	private String voiceFileUrl;
+
 	@Schema(description = "스크립트 내용", example = "2")
 	private List<SentenceResponseDto> sentenceResponseDtoList;
 
-	public static ScriptAfterSTTResponseDto createScriptAfterSttResponseDto(Long scriptId,
+	public static ScriptAfterSTTResponseDto createScriptAfterSttResponseDto(Long scriptId,String voiceFileUrl,
 		List<SentenceResponseDto> sentenceResponseDtoList) {
 		return ScriptAfterSTTResponseDto.builder()
 			.scriptId(scriptId)
+			.voiceFileUrl(voiceFileUrl)
 			.sentenceResponseDtoList(sentenceResponseDtoList)
 			.build();
 	}

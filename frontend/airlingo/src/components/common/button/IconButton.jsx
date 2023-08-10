@@ -2,7 +2,7 @@ import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import theme from "@/assets/styles/Theme";
 import combineShape from "@/utils/style";
-import iconConfig from "@/config";
+import { iconConfig } from "@/config";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -27,6 +27,14 @@ const shapeStyle = {
     redlined: `
         background-color: #ffffff;
         border: 3px solid ${warning};
+        &:hover {
+            background-color: ${primary3};
+            transition: ease-out 0.35s;
+        }
+    `,
+    blacklinedlight: `
+        background-color: #ffffff;
+        border: 1px solid #000000;
         &:hover {
             background-color: ${primary3};
             transition: ease-out 0.35s;

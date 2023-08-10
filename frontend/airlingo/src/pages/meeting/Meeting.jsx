@@ -42,17 +42,15 @@ import { useRouter } from "@/hooks";
 import ChatList from "@/components/chatList/ChatList";
 import isKeyInObj from "@/utils/common";
 import MeetingDictionary from "./MeetingDictionary";
+import MeetingTranslator from "./MeetingTranslator";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1 } = theme.colors;
 const contentGroupData = [
     { Content: () => <div>Content1</div>, Icon: Icons.ScriptIcon },
-    {
-        Content: () => <MeetingDictionary sourceLanguage={selectUser.userNativeLanguage} />,
-        Icon: Icons.DictionaryIcon,
-    },
-    { Content: () => <div>Content3</div>, Icon: Icons.TranslatorIcon },
+    { Content: () => <MeetingDictionary />, Icon: Icons.DictionaryIcon },
+    { Content: () => <MeetingTranslator />, Icon: Icons.TranslatorIcon },
 ];
 
 // ----------------------------------------------------------------------------------------------------

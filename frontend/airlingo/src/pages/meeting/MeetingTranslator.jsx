@@ -1,35 +1,32 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import * as Icons from "@/assets/icons";
-import Dropdown from "@/components/common/dropdown";
 import theme from "@/assets/styles/Theme";
-import { TextInput } from "@/components/common/input";
-import { TextButton } from "@/components/common/button";
-import Container from "@/components/common/container";
-import { getTranslateResult, getLanguage } from "@/api";
+import Dropdown from "@/components/common/dropdown";
+import * as Icons from "@/assets/icons";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
-// import getSearchResult from "@/api/dictionary";
-// import { dictConfig } from "@/config";
+import { getLanguage, getTranslateResult } from "@/api";
+import Container from "@/components/common/container";
+import { TextArea } from "@/components/common/input";
+import { translatorConfig } from "@/config";
 
 // ----------------------------------------------------------------------------------------------------
 
-const { distinctgray } = theme.colors;
+const { distinctgray, primary4 } = theme.colors;
 
 // ----------------------------------------------------------------------------------------------------
 
-function MeetingDictionary() {
+function MeetingTranslator() {
     const { userNativeLanguage } = useSelector(selectUser);
     const { otherUser } = useSelector(selectMeeting);
     const [languageList, setLanguageList] = useState([]);
     const [sourceLang, setSourceLang] = useState(formatLanguage(userNativeLanguage));
     const [targetLang, setTargetLang] = useState(formatLanguage(otherUser.userNativeLanguage));
-    const [word, setWord] = useState("");
-    console.log("sourceLang:", sourceLang);
-    console.log(setLanguageList);
-    console.log("why?", otherUser);
+    const [text, setText] = useState("");
+    const [debouncedText, setDebouncedText] = useState(text);
+    const [translateResult, setTranslateResult] = useState("여기에 번역 결과가 표시됩니다.");
 
     useEffect(() => {
         async function fetchLanguageData() {
@@ -46,27 +43,36 @@ function MeetingDictionary() {
         fetchLanguageData();
     }, []);
 
-    const searchWord = () => {
-        async function fetchSearchResult() {
-            await getTranslateResult({
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setDebouncedText(text);
+        }, 2000);
+
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [text]);
+
+    useEffect(() => {
+        if (debouncedText) {
+            getTranslateResult({
                 responseFunc: {
-                    200: (response) => console.log(response),
+                    200: (response) => setTranslateResult(response.data.data),
                     400: (response) => console.log(response),
                 },
                 data: {
-                    source: "ko",
-                    target: "en",
-                    text: word,
+                    source: translatorConfig[sourceLang.id],
+                    target: translatorConfig[targetLang.id],
+                    text: debouncedText,
                 },
             });
         }
-        fetchSearchResult();
-    };
+    }, [debouncedText, sourceLang, targetLang]);
 
     return (
-        <DictionaryContainer>
+        <TranslatorContainer>
             <ItemBox>
-                <SubTitleWrapper>사전 언어 설정</SubTitleWrapper>
+                <SubTitleWrapper>번역기 언어 설정</SubTitleWrapper>
                 <SettingBox>
                     <Dropdown
                         width="175px"
@@ -88,32 +94,27 @@ function MeetingDictionary() {
                 </SettingBox>
             </ItemBox>
             <DivisionLine />
-            <ItemBox>
-                <SubTitleWrapper>검색어</SubTitleWrapper>
-                <SearchBox>
-                    <TextInput
-                        placeholder="찾아볼 단어를 입력하세요!"
-                        radius="big"
-                        width="70%"
-                        value={word.trim()}
-                        onChange={(event) => setWord(event.target.value)}
-                    />
-                    <TextButton text="찾기" width="20%" onClick={searchWord} />
-                </SearchBox>
-            </ItemBox>
-            <DivisionLine />
-            <ItemBox>
-                <SubTitleWrapper>검색 결과</SubTitleWrapper>
-                <Container width="100%" height="300px" />
-            </ItemBox>
-            <TextButton text="단어장 저장" width="40%" />
-        </DictionaryContainer>
+            <ResultBox>
+                <TextArea
+                    placeholder="번역할 문장을 여기에 입력하세요."
+                    radius="big"
+                    width="100%"
+                    height="275px"
+                    value={text}
+                    onChange={setText}
+                />
+                <Icons.DownArrowIcon width="25" height="25" />
+                <Container width="100%" height="275px">
+                    <ResultTextWrapper>{translateResult}</ResultTextWrapper>
+                </Container>
+            </ResultBox>
+        </TranslatorContainer>
     );
 }
 
 // ----------------------------------------------------------------------------------------------------
 
-const DictionaryContainer = styled.div`
+const TranslatorContainer = styled.div`
     display: flex;
     flex-direction: column;
     justify-content: space-evenly;
@@ -147,13 +148,6 @@ const SettingBox = styled.div`
     z-index: 1;
 `;
 
-const SearchBox = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-`;
-
 const DivisionLine = styled.div`
     width: 95%;
     height: 2px;
@@ -162,6 +156,21 @@ const DivisionLine = styled.div`
     opacity: 0.35;
 `;
 
+const ResultTextWrapper = styled.div`
+    color: ${primary4};
+    font-weight: 500;
+    font-size: 17px;
+`;
+
+const ResultBox = styled.div`
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    width: 95%;
+`;
+
 // ----------------------------------------------------------------------------------------------------
 
-export default MeetingDictionary;
+export default MeetingTranslator;

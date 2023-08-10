@@ -2,7 +2,7 @@ import { createPortal } from "react-dom";
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import Overlay from "../common/overlay";
-import iconConfig from "@/config";
+import { iconConfig } from "@/config";
 
 function Modal({ zIdx, Icon, title, titleColor, iconColor, children }) {
     return createPortal(
