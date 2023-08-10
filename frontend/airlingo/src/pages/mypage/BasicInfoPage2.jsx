@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "@/components/common/dropdown";
 import { IconButton, TextButton } from "@/components/common/button";
 import { TextInput } from "@/components/common/input";
+import Grade from "@/components/grade/Grade";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
@@ -18,7 +20,9 @@ import { ReactComponent as BritainFlagIcon } from "@/assets/icons/flag-britain-i
 import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
 import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.svg";
 import { logoutUser, selectUser } from "@/features/User/UserSlice";
-import { deleteUser, updateUserPassword } from "@/api/user.js";
+import { getUserProfile, deleteUser, updateUserPassword } from "@/api/user.js";
+import { getLanguage, getGrade } from "@/api/language";
+import { formatLanguage, formatGrade } from "@/utils/format";
 import { useRouter } from "@/hooks";
 
 const { primary1 } = theme.colors;
@@ -37,6 +41,7 @@ function BasicInfoPage2() {
     const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
+    const [userProfile, setUserProfile] = useState([]);
     const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
     const [confirmPassword, setConfirmPassword] = useState({
         value: "",
@@ -45,6 +50,42 @@ function BasicInfoPage2() {
     });
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const [quitModalOpen, setQuitModalOpen] = useState(false);
+    const [languages, setLanguages] = useState([]);
+    const [grades, setGrades] = useState([]);
+
+    useEffect(() => {
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        setUserProfile({ ...response.data.data });
+                        console.log(userProfile);
+                    },
+                },
+                data: { userId },
+            });
+            await getLanguage({
+                responseFunc: {
+                    200: (response) =>
+                        setLanguages(
+                            response.data.data.map((language) => formatLanguage(language)),
+                        ),
+                    400: (response) => console.log(response),
+                },
+            });
+            await getGrade({
+                responseFunc: {
+                    200: (response) =>
+                        setGrades(response.data.data.map((grade) => formatGrade(grade))),
+                    400: (response) => console.log(response),
+                },
+            });
+        }
+        fetchData();
+    }, []);
+
+    console.log(languages, grades);
+    // console.log(languages[0] ? languages[0].img : "");
 
     // password modal
     const handlePasswordModalOpen = () => {
@@ -258,7 +299,7 @@ function BasicInfoPage2() {
                             {languageList.map((language) => (
                                 <SelectedLanguage key={language.id}>
                                     <SelectedLanguageLabel>
-                                        <language.img />
+                                        {language.img && <language.img />}
                                         <span>{language.title}</span>
                                         <span>{language.level}</span>
                                         <DeleteButton
@@ -339,32 +380,19 @@ function BasicInfoPage2() {
                     />
                 </TitleContainer>
                 <LanguageContentBox>
-                    <LanguageBox>
-                        <LanguageFlag
-                            src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg"
-                            alt="Korean Flag"
-                        />
-                        <LanguageNameRankBox>
-                            <LanguageName>한국어</LanguageName>
-                            <LanguageRankContainer>
-                                <LanguageRank>상급</LanguageRank>
-                                <LanguageGrade>(C1)</LanguageGrade>
-                            </LanguageRankContainer>
-                        </LanguageNameRankBox>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <LanguageFlag
-                            src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg"
-                            alt="Japanese Flag"
-                        />
-                        <LanguageNameRankBox>
-                            <LanguageName>일본어</LanguageName>
-                            <LanguageRankContainer>
-                                <LanguageRank>상급</LanguageRank>
-                                <LanguageGrade>(C1)</LanguageGrade>
-                            </LanguageRankContainer>
-                        </LanguageNameRankBox>
-                    </LanguageBox>
+                    {userProfile.userLanguages &&
+                        userProfile.userLanguages.map((langueage) => (
+                            <LanguageBox>
+                                <LanguageFlag
+                                    src={languages[langueage.languageId - 1]?.img || ""}
+                                    alt="Korean Flag"
+                                />
+                                <LanguageNameRankBox>
+                                    <LanguageName>{langueage.languageKorName}</LanguageName>
+                                    <Grade gradeName={langueage?.gradeName || ""} />
+                                </LanguageNameRankBox>
+                            </LanguageBox>
+                        ))}
                 </LanguageContentBox>
                 <ButtonBar>
                     <TextButton
@@ -403,23 +431,6 @@ const ValidationList = styled.div`
     width: 500px;
     margin-top: 25px;
 `;
-
-// const ModalValidationContainer = styled.div`
-//     display: flex;
-//     width: 650px;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     gap: 24px;
-// `;
-
-// const ModalValidationBox = styled.div`
-//     display: flex;
-//     height: 60px;
-//     flex-direction: column;
-//     justify-content: space-between;
-//     align-items: flex-start;
-// `;
 
 const ModalButtonBox = styled.div`
     display: flex;
@@ -659,24 +670,6 @@ const LanguageName = styled.div`
     font-weight: 700;
     line-height: normal;
     padding-bottom: 10px;
-`;
-
-const LanguageRankContainer = styled.div`
-    display: flex;
-    color: var(--rainbow-blue, #35b1c9);
-    width: 90px;
-`;
-
-const LanguageRank = styled.div`
-    font-size: 20px;
-    font-weight: 700;
-`;
-
-const LanguageGrade = styled.div`
-    font-size: 15px;
-    font-weight: 400;
-    display: flex;
-    align-items: flex-end;
 `;
 
 const ButtonBar = styled.div`
