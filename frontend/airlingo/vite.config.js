@@ -16,13 +16,12 @@ export default defineConfig({
     server: {
         // host: true,
         proxy: {
-            "/api": "https://glosbe.com",
-            // "/api": {
-            //     target: "https://glosbe.com",
-            //     changeOrigin: true,
-            //     secure: false,
-            //     rewrite: (path) => path.replace(/^\/api/, ""),
-            // }
+            // "/api": "https://glosbe.com",
+            "/v1": {
+                target: "https://openapi.naver.com",
+                changeOrigin: true,
+                secure: false,
+            }
         },
 
     },

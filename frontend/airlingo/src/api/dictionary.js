@@ -16,7 +16,13 @@ const getSearchResult = async ({ responseFunc, data }) => {
             pretty: true,
             phrase,
         };
-        const response = await axios.get("/api/gapi/translate", { params: queryParams });
+        const customAxios = axios.create({
+            // baseURL: "/api",
+            baseURL: "https://glosbe.com",
+            timeout: 10000,
+            withCredentials: true,
+        });
+        const response = await customAxios.get("/gapi/translate", { params: queryParams });
         //     `${DICTIONARY_API}?from=${from}&dest=${dest}&format=json&pretty=true&phrase=${phrase}`,
         //     {
         //         headers: { "Access-Control-Allow-Origin": `https://glosbe.com` },

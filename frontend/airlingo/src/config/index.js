@@ -1,3 +1,4 @@
 import iconConfig from "./iconConfig";
+import dictConfig from "./dictConfig";
 
-export default iconConfig;
+export { iconConfig, dictConfig };
