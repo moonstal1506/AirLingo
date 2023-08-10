@@ -21,23 +21,38 @@ function WordBook() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
 
+    // 단어 조회 ,삭제 관련
+    const [AllWordList, setWordList] = useState([]); // 저장한 전체 단어
+    const [currentPage, setCurrentPage] = useState(1); // 현재 페이지
+    const [leftPageWordList, setLeftPageWordList] = useState([]); // 왼쪽 페이지
+    const [rightPageWordList, setRightPageWordList] = useState([]); // 오른쪽 페이지
+    const [isCheckedListLeft, setIsCheckedListLeft] = useState([]); // 왼쪽 페이지에서 선택된 단어 리스트
+    const [isCheckedListRight, setIsCheckedListRight] = useState([]); // 오른쪽 페이지에서 선택된 단어 리스트
     const wordsPerPage = 5; // 한페이지에 단어 5개
-    const [modalOpenWordTest, setModalOpenWordTest] = useState(false);
-    const [modalOpenWordTestProgress, setModalOpenWordTestProgress] = useState(false);
-    const [modalOpenSelectDelete, setModalOpenSelectDelete] = useState(false);
-    const [modalOpenNoSelectedWords, setModalOpenNoSelectedWords] = useState(false);
-    const [modalOpenWordTestEnd, setModalOpenWordTestEnd] = useState(false);
-    const [AllWordList, setWordList] = useState([]);
-    const [currentPage, setCurrentPage] = useState(1);
-    const [isAllSelected, setIsAllSelected] = useState(false);
+    const [isAllSelected, setIsAllSelected] = useState(false); // 전체 선택
+    const [modalOpenSelectDelete, setModalOpenSelectDelete] = useState(false); // 선택 삭제
+    const [modalOpenNoSelectedWords, setModalOpenNoSelectedWords] = useState(false); // 선택 단어 없음
 
-    const [leftPageWordList, setLeftPageWordList] = useState([]);
-    const [rightPageWordList, setRightPageWordList] = useState([]);
-    const [isCheckedListLeft, setIsCheckedListLeft] = useState([]);
-    const [isCheckedListRight, setIsCheckedListRight] = useState([]);
+    // 단어 테스트 관련
+    const [modalOpenWordTest, setModalOpenWordTest] = useState(false); // 단어 테스트 시작
+    const [modalOpenNoWordTest, setModalOpenNoWordTest] = useState(false); // 단어 10개 미만으로 테스트 시작 불가
+    const [WordTestList, setWordTestList] = useState([]); // 단어 테스트 10개 불러오기
+    const [modalOpenWordTestProgress, setModalOpenWordTestProgress] = useState(false); // 단어 테스트 진행 모달
+    const [modalOpenWordTestEnd, setModalOpenWordTestEnd] = useState(false); // 단어 테스트 종료 모달
+    const [modalOpenReviewNote, setModalOpenReviewNote] = useState(false); // 단어 테스트 종료 후 , 오답 확인
 
-    const [WordTestList, setWordTestList] = useState([]);
-    const [currentWordIndex, setCurrentWordIndex] = useState(0);
+    const initialArray = Array(10).fill(""); // 시험지 배열 "" 으로 기본 설정
+    const [TestInputList, setTestInputList] = useState(initialArray); // 단어 테스트 시험지
+    const [currentWordIndex, setCurrentWordIndex] = useState(0); // 테스트 보는 단어 번호
+    const [correctCount, setCorrectCount] = useState(0); // 테스트 맞은 개수
+
+    const setTestWordAtIndex = (index, value) => {
+        // 단어 테스트 진행
+        const updatedTestInputList = [...TestInputList];
+        updatedTestInputList[index] = value;
+        setTestInputList(updatedTestInputList);
+    };
+
     const handleBackButtonClick = () => {
         if (currentPage > 1) {
             setCurrentPage(currentPage - 1);
@@ -62,6 +77,7 @@ function WordBook() {
         fetchData();
     }, [userId]);
 
+    // 왼쪽 오른쪽 페이지 이동
     useEffect(() => {
         setLeftPageWordList([
             ...AllWordList.slice((currentPage - 1) * wordsPerPage, currentPage * wordsPerPage),
@@ -71,18 +87,19 @@ function WordBook() {
         ]);
     }, [AllWordList, currentPage]);
 
+    // 왼쪽 오른쪽 페이지 체크
     useEffect(() => {
         setIsCheckedListLeft([...Array(leftPageWordList.length)].map(() => false));
         setIsCheckedListRight([...Array(rightPageWordList.length)].map(() => false));
     }, [leftPageWordList, rightPageWordList]);
 
-    // 체크박스
+    // 체크박스 관련
     const handleCheckBoxChangeLeft = (index) => {
         const updatedList = [...isCheckedListLeft];
         updatedList[index] = !updatedList[index];
-        console.log(updatedList);
         setIsCheckedListLeft([...updatedList]);
     };
+
     const handleCheckBoxChangeRight = (index) => {
         const updatedList = [...isCheckedListRight];
         updatedList[index] = !updatedList[index];
@@ -111,6 +128,7 @@ function WordBook() {
         setIsAllSelected(!isAllSelected);
     };
 
+    // 선택 단어 관련
     const getSelectedWordIds = () => {
         const selectedIdsLeft = isCheckedListLeft
             .map((checked, index) => (checked ? leftPageWordList[index]?.wordId : null))
@@ -123,16 +141,15 @@ function WordBook() {
         return [...selectedIdsLeft, ...selectedIdsRight];
     };
 
-    // 선택한 개수
+    // 선택 개수
     const selectedCount = getSelectedItemCount();
 
-    // 선택 삭제 확인
+    // 선택 삭제 모달
     const handleClickSelectDelete = () => {
         const selectedIds = getSelectedWordIds();
 
         if (selectedIds.length === 0) {
-            // 선택된 단어가 없을 경우에 다른 모달을 띄움
-            setModalOpenNoSelectedWords(true); // 새로운 상태 추가
+            setModalOpenNoSelectedWords(true); // 선택 단어 없음
         } else {
             setModalOpenSelectDelete(true);
         }
@@ -155,7 +172,7 @@ function WordBook() {
                             (word) => !selectedIds.includes(word.wordId),
                         );
                         setWordList(updatedWordList);
-                        setModalOpenSelectDelete(false); // 모달 닫기
+                        setModalOpenSelectDelete(false);
                     },
                 },
                 data: { userId, selectedIds },
@@ -167,26 +184,32 @@ function WordBook() {
 
     // 단어 테스트 시작
     const handleClickWordTest = () => {
+        setTestInputList(initialArray);
         setModalOpenWordTest(true);
+    };
+
+    // 단어 테스트 시작 불가
+    const handleClickNoWordTest = () => {
+        setTestInputList(initialArray);
+        setModalOpenNoWordTest(true);
     };
 
     // 단어 테스트 진행
     const handleWordTestStart = async () => {
         if (modalOpenWordTest) {
-            setModalOpenWordTest(false); // 시작 모달 닫기
+            setModalOpenWordTest(false);
             try {
                 await getWordTest({
                     responseFunc: {
                         200: (response) => {
                             setWordTestList(response.data.data);
-                            console.log(response.data.data);
-                            console.log("성공!!");
-                            setModalOpenWordTestProgress(true); // 테스트 진행 모달 열기
+                            setModalOpenWordTestProgress(true);
                             setCurrentWordIndex(0); // 첫 번째 단어부터 시작
                         },
+                        // 단어테스트가 없는 경우
                         473: () => {
                             setWordTestList([]);
-                        }, // 단어테스트가 없는 경우
+                        },
                     },
                     data: { userId },
                 });
@@ -198,13 +221,35 @@ function WordBook() {
 
     // 단어 테스트 종료
     const handleWordTestEnd = () => {
-        setModalOpenWordTestProgress(false); // 테스트 진행 모달 닫기
-        setModalOpenWordTestEnd(true); // 테스트 결과 모달 열기
+        setModalOpenWordTestProgress(false);
+        let count = 0;
+        // 시험지 채점
+        for (let i = 0; i < WordTestList.length; i += 1) {
+            if (TestInputList[i] === WordTestList[i].wordDescription) {
+                count += 1;
+            }
+        }
+        setCorrectCount(count);
+        console.log(`맞은 단어 개수: ${count}`);
+        setModalOpenWordTestEnd(true);
     };
 
     // 단어 테스트 재시작
     const handleClickWordTestRetry = () => {
+        setTestInputList(initialArray);
         setModalOpenWordTestEnd(false);
+        setModalOpenWordTest(true);
+    };
+
+    // 오답 노트
+    const handleClickReviewNote = () => {
+        setModalOpenWordTestEnd(false);
+        setModalOpenReviewNote(true);
+    };
+    // 오답 노트 후 , 단어 테스트 재시작
+    const handleClickWordTestRetry2 = () => {
+        setModalOpenReviewNote(false);
+        setTestInputList(initialArray);
         setModalOpenWordTest(true);
     };
 
@@ -303,6 +348,35 @@ function WordBook() {
                                     </ModalButtonBox>
                                 </Modal>
                             )}
+
+                            {/* 단어 10개 미만으로 단어 테스트 시작 불가 */}
+                            {modalOpenNoWordTest && (
+                                <Modal
+                                    title="단어 테스트"
+                                    modalOpen={modalOpenNoWordTest}
+                                    Icon={DeleteIcon}
+                                >
+                                    <ModalTextBox>
+                                        <ModalTextWrapper>
+                                            단어 테스트는 단어장에 저장된 모든 단어 중
+                                        </ModalTextWrapper>
+                                        <ModalTextWrapper>
+                                            <b>무작위로 선정된 10개</b>단어를 대상으로 진행됩니다.
+                                        </ModalTextWrapper>
+                                        <ModalTextWrapper>
+                                            저장된 단어가 부족합니다.
+                                        </ModalTextWrapper>
+                                    </ModalTextBox>
+                                    <ModalButtonBox>
+                                        <TextButton
+                                            shape="positive-curved"
+                                            text="닫기"
+                                            onClick={() => setModalOpenNoWordTest(false)}
+                                        />
+                                    </ModalButtonBox>
+                                </Modal>
+                            )}
+
                             {/* // 단어 테스트 진행 */}
                             {modalOpenWordTestProgress && (
                                 <Modal
@@ -324,6 +398,13 @@ function WordBook() {
                                             color="white"
                                             width="500px"
                                             height="50px"
+                                            onChange={(event) =>
+                                                setTestWordAtIndex(
+                                                    currentWordIndex,
+                                                    event.target.value,
+                                                )
+                                            }
+                                            value={TestInputList[currentWordIndex]}
                                         />
                                     </ModalTestBox>
                                     <ModalButtonBox>
@@ -393,6 +474,7 @@ function WordBook() {
                                     </ModalButtonBox>
                                 </Modal>
                             )}
+
                             {/* 단어 테스트 종료 모달 */}
                             {modalOpenWordTestEnd && (
                                 <Modal
@@ -402,8 +484,8 @@ function WordBook() {
                                 >
                                     <ModalTextBox>
                                         <ModalTextWrapper>
-                                            단어 테스트 결과 10문제 중 <span>7문제</span>를
-                                            맞췄습니다!
+                                            단어 테스트 결과 10문제 중{" "}
+                                            <span>{correctCount}문제</span>를 맞췄습니다!
                                         </ModalTextWrapper>
                                         <ModalTextWrapper>
                                             단어 테스트를 다시 시작하시겠습니까?
@@ -415,10 +497,60 @@ function WordBook() {
                                             text="재시험보기"
                                             onClick={handleClickWordTestRetry}
                                         />
+                                        {correctCount === 10 ? (
+                                            // 틀린 문제 없음
+                                            " "
+                                        ) : (
+                                            <TextButton
+                                                shape="positive-curved"
+                                                text="틀린 문제"
+                                                onClick={handleClickReviewNote}
+                                            />
+                                        )}
+
                                         <TextButton
                                             shape="positive-curved"
                                             text="나가기"
                                             onClick={() => setModalOpenWordTestEnd(false)}
+                                        />
+                                    </ModalButtonBox>
+                                </Modal>
+                            )}
+
+                            {/* 오답 노트 */}
+                            {modalOpenReviewNote && (
+                                <Modal
+                                    title="틀린 문제"
+                                    modalOpen={modalOpenReviewNote}
+                                    Icon={DeleteIcon}
+                                >
+                                    <ModalReviewWordBox>
+                                        {WordTestList.map((word, index) => {
+                                            if (TestInputList[index] !== word.wordDescription) {
+                                                const displayIndex = WordTestList.length - index;
+                                                return (
+                                                    <ModalTextWrapper key={word.wordId}>
+                                                        <ReviewWord>
+                                                            {displayIndex}. {word.wordName} -{" "}
+                                                            {word.wordDescription}
+                                                        </ReviewWord>
+                                                    </ModalTextWrapper>
+                                                );
+                                            }
+                                            return null; // 맞은 문제는 제외
+                                        }).reverse()}{" "}
+                                    </ModalReviewWordBox>
+                                    <ModalButtonBox>
+                                        <TextButton
+                                            shape="positive-curved"
+                                            text="재시험보기"
+                                            onClick={handleClickWordTestRetry2}
+                                        />
+
+                                        <TextButton
+                                            shape="positive-curved"
+                                            text="나가기"
+                                            onClick={() => setModalOpenReviewNote(false)}
                                         />
                                     </ModalButtonBox>
                                 </Modal>
@@ -441,11 +573,20 @@ function WordBook() {
                                             shape="negative-word"
                                             onClick={handleClickSelectDelete}
                                         />
-                                        <TextButton
-                                            text="단어 테스트"
-                                            shape="negative-signup"
-                                            onClick={handleClickWordTest}
-                                        />
+                                        {AllWordList.length >= 10 ? (
+                                            <TextButton
+                                                text="단어 테스트"
+                                                shape="negative-signup"
+                                                onClick={handleClickWordTest}
+                                            />
+                                        ) : (
+                                            // 단어가 10개 미만으로 테스트 불가
+                                            <TextButton
+                                                text="단어 테스트"
+                                                shape="negative-signup"
+                                                onClick={handleClickNoWordTest}
+                                            />
+                                        )}
                                     </ButtonRow2>
                                 </WordBookButtonBox2>
                             </ButtonBox>
@@ -699,6 +840,13 @@ const ModalTextBox = styled.div`
     flex-direction: column;
 `;
 
+const ModalReviewWordBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    flex-direction: column;
+`;
+
 const ModalTextWrapper = styled.span`
     color: ${({ color }) => color};
     text-align: center;
@@ -757,4 +905,7 @@ const NoWordBackgroundBox = styled.div`
 
 const TestContent = styled.div``;
 
+const ReviewWord = styled.div`
+    align-items: flex-start;
+`;
 export default WordBook;
