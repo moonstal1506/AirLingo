@@ -37,8 +37,6 @@ const PassportContainer = styled.div`
     width: 505px;
     height: 705px;
     flex-shrink: 0;
-    /* margin-top: 235px;
-    margin-left: 717px; */
     cursor: pointer;
 `;
 

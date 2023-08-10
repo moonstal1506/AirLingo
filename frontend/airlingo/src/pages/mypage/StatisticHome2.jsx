@@ -16,7 +16,7 @@ function StatisticHome2() {
                         {/* fix me! routeTo 도넛그래프 URL */}
                         <TotalStatisticsButtonContainer
                             id="TotalSBC"
-                            onClick={() => routeTo("/doughnut")}
+                            onClick={() => routeTo("/graph")}
                         >
                             <TimeIcon />
                             <TitleText>전체 통계</TitleText>
@@ -71,6 +71,7 @@ const RightPassportPage = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
+    margin-top: 50px;
 `;
 
 const ButtonContainer = styled.div`

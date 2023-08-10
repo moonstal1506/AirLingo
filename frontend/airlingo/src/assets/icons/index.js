@@ -23,6 +23,7 @@ import { ReactComponent as ServiceLogoIcon } from "@/assets/icons/service-logo-i
 import { ReactComponent as BiometricIcon } from "@/assets/icons/biometric-icon.svg";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/arrow-right-icon.svg";
 import { ReactComponent as DownArrowIcon } from "@/assets/icons/arrow-down-icon.svg";
+import { ReactComponent as WordTestIcon } from "@/assets/icons/word-test-icon.svg";
 
 export {
     MicOnIcon,
@@ -50,4 +51,5 @@ export {
     BiometricIcon,
     RightArrowIcon,
     DownArrowIcon,
+    WordTestIcon,
 };

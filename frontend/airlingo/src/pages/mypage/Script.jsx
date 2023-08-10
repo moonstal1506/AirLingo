@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import Calendar from "react-calendar";
 import moment from "moment";
+import { useRouter } from "@/hooks";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
-// import recordLogo from "@/assets/imgs/profiles/record-logo.png";
 import TabBar from "@/components/common/tab/TabBar.jsx";
 import { TextButton } from "@/components/common/button";
 import { ReactComponent as RightArrow } from "@/assets/icons/right-arrow-mini-Icon.svg";
@@ -14,6 +14,7 @@ import { ReactComponent as RightIcon } from "@/assets/icons/right-icon.svg";
 import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.svg";
 import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
 import { ReactComponent as NoscriptBackground } from "@/assets/icons/no-data-icon.svg";
+import { ReactComponent as BackButton } from "@/assets/icons/back-button.svg";
 import scriptBackground from "@/assets/imgs/script-background.png";
 import getScriptList from "@/api/script";
 import { selectUser } from "@/features/User/UserSlice.js";
@@ -25,6 +26,7 @@ const { primary2, primary3, primary4, primary6, selection, faintgray } = theme.c
 
 function Script() {
     const storeUser = useSelector(selectUser);
+    const { routeTo } = useRouter();
     const { userId } = storeUser;
     const today = new Date().toISOString().split("T")[0];
     const [desiredDate, setDesiredDate] = useState(today); // 오늘 날짜를 초기값으로 선택
@@ -36,7 +38,6 @@ function Script() {
     const korCard = script ? script.korCard : "카드";
     const createdTime = script ? script.createdDate : "생성 시각";
     const modifiedDate = script ? script.modifiedDate : "종료 시각";
-    const activeTab = "statistic";
     const totalScriptCount = AllScript.reduce((total, obj) => total + obj.scripts.length, 0);
     const scriptList = AllScript.reduce((prev, acc) => [...prev, ...acc.scripts], []);
     const scriptIdx = scriptList.findIndex((Allscript) => script === Allscript) + 1;
@@ -140,9 +141,11 @@ function Script() {
             <PassportContainer id="PC">
                 <LeftPageBox>
                     <LeftPassportPages src={leftPassportPages} />
-                    <TabBar activeTab={activeTab} />
+                    <TabBarContainer>
+                        <TabBar activeTab="statistic" id="TabBar" />
+                    </TabBarContainer>
                     <LeftPassportPage>
-                        {/* <LogoImage src={recordLogo} /> */}
+                        <BackButtonIcon onClick={() => routeTo("/statistic")} />
                         <CalendarContainer>
                             <Calendar
                                 onChange={setSelectedDate}
@@ -331,6 +334,13 @@ const RightPassportPage = styled.div`
     align-items: center;
     justify-content: center;
 `;
+
+const TabBarContainer = styled.div`
+    position: relative;
+    top: 50px;
+`;
+
+// ----------------------------------------------------------------------------------------
 
 const ScriptBox = styled.div`
     display: flex;
@@ -741,6 +751,13 @@ const CalendarContainer = styled.div`
             background: ${primary6};
         }
     }
+`;
+
+const BackButtonIcon = styled(BackButton)`
+    cursor: pointer;
+    margin-top: 22px;
+    margin-left: 21px;
+    position: absolute;
 `;
 
 export default Script;
