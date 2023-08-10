@@ -8,7 +8,8 @@ import { CheckBox, TextInput } from "@/components/common/input";
 import { ReactComponent as BackButton } from "@/assets/icons/back-button.svg";
 import { ReactComponent as NextButton } from "@/assets/icons/next-button.svg";
 import { ReactComponent as DeleteIcon } from "@/assets/icons/delete-icon.svg";
-import { ReactComponent as Unprogressed } from "@/assets/icons/Unprogressed.svg";
+import { ReactComponent as WordIcon } from "@/assets/icons/word-test-icon.svg";
+import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
 import { ReactComponent as NoWordBackground } from "@/assets/icons/no-word-icon.svg";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
@@ -230,7 +231,6 @@ function WordBook() {
             }
         }
         setCorrectCount(count);
-        console.log(`맞은 단어 개수: ${count}`);
         setModalOpenWordTestEnd(true);
     };
 
@@ -273,6 +273,8 @@ function WordBook() {
                                     title="단어 삭제"
                                     modalOpen={modalOpenSelectDelete}
                                     Icon={DeleteIcon}
+                                    iconColor="white"
+                                    titleColor="red"
                                 >
                                     <ModalTextBox>
                                         <ModalTextWrapper>
@@ -299,7 +301,9 @@ function WordBook() {
                                 <Modal
                                     title="알림"
                                     modalOpen={modalOpenNoSelectedWords}
-                                    Icon={DeleteIcon}
+                                    Icon={AlertIcon}
+                                    iconColor="red"
+                                    titleColor="red"
                                 >
                                     <ModalTextBox>
                                         <ModalTextWrapper>선택된 단어가 없습니다.</ModalTextWrapper>
@@ -321,14 +325,14 @@ function WordBook() {
                                 <Modal
                                     title="단어 테스트"
                                     modalOpen={modalOpenWordTest}
-                                    Icon={DeleteIcon}
+                                    Icon={WordIcon}
                                 >
                                     <ModalTextBox>
                                         <ModalTextWrapper>
                                             단어 테스트는 단어장에 저장된 모든 단어 중
                                         </ModalTextWrapper>
                                         <ModalTextWrapper>
-                                            <b>무작위로 선정된 10개</b>단어를 대상으로 진행됩니다.
+                                            <b>무작위로 선정된 10개</b> 단어를 대상으로 진행됩니다.
                                         </ModalTextWrapper>
                                         <ModalTextWrapper>
                                             단어 테스트를 시작하시겠습니까?
@@ -352,19 +356,21 @@ function WordBook() {
                             {/* 단어 10개 미만으로 단어 테스트 시작 불가 */}
                             {modalOpenNoWordTest && (
                                 <Modal
-                                    title="단어 테스트"
+                                    title="알림"
                                     modalOpen={modalOpenNoWordTest}
-                                    Icon={DeleteIcon}
+                                    Icon={AlertIcon}
+                                    iconColor="red"
+                                    titleColor="red"
                                 >
                                     <ModalTextBox>
                                         <ModalTextWrapper>
-                                            단어 테스트는 단어장에 저장된 모든 단어 중
+                                            단어 테스트는 단어장에 저장된 모든 단어가
                                         </ModalTextWrapper>
                                         <ModalTextWrapper>
-                                            <b>무작위로 선정된 10개</b>단어를 대상으로 진행됩니다.
+                                            최소 <b>10개 이상</b>의 단어가 있을 때 진행됩니다.
                                         </ModalTextWrapper>
-                                        <ModalTextWrapper>
-                                            저장된 단어가 부족합니다.
+                                        <ModalTextWrapper color="red">
+                                            <b>단어 수가 부족합니다</b>.
                                         </ModalTextWrapper>
                                     </ModalTextBox>
                                     <ModalButtonBox>
@@ -382,10 +388,12 @@ function WordBook() {
                                 <Modal
                                     title="단어 테스트"
                                     modalOpen={modalOpenWordTestProgress}
-                                    Icon={DeleteIcon}
+                                    Icon={WordIcon}
                                 >
                                     <ModalTestBox>
-                                        <Unprogressed />
+                                        <ProgressBar>
+                                            <ProgressInnerBar currentWordIndex={currentWordIndex} />
+                                        </ProgressBar>
                                         <ModalTestText>
                                             다음의 의미를 지니는 <span>영어</span> 단어를
                                             작성해주세요.
@@ -480,7 +488,7 @@ function WordBook() {
                                 <Modal
                                     title="단어 테스트"
                                     modalOpen={modalOpenWordTest}
-                                    Icon={DeleteIcon}
+                                    Icon={WordIcon}
                                 >
                                     <ModalTextBox>
                                         <ModalTextWrapper>
@@ -522,12 +530,13 @@ function WordBook() {
                                 <Modal
                                     title="틀린 문제"
                                     modalOpen={modalOpenReviewNote}
-                                    Icon={DeleteIcon}
+                                    Icon={WordIcon}
                                 >
                                     <ModalReviewWordBox>
                                         {WordTestList.map((word, index) => {
-                                            if (TestInputList[index] !== word.wordDescription) {
-                                                const displayIndex = WordTestList.length - index;
+                                            const userAnswer = TestInputList[index];
+                                            if (userAnswer !== word.wordDescription) {
+                                                const displayIndex = index + 1;
                                                 return (
                                                     <ModalTextWrapper key={word.wordId}>
                                                         <ReviewWord>
@@ -537,8 +546,8 @@ function WordBook() {
                                                     </ModalTextWrapper>
                                                 );
                                             }
-                                            return null; // 맞은 문제는 제외
-                                        }).reverse()}{" "}
+                                            return null;
+                                        })}
                                     </ModalReviewWordBox>
                                     <ModalButtonBox>
                                         <TextButton
@@ -656,6 +665,18 @@ function WordBook() {
         </WordBigContainer>
     );
 }
+
+const ProgressBar = styled.div`
+    width: 500px;
+    height: 5px;
+    background-color: #e3e3e3;
+    position: relative;
+    display: flex;
+`;
+const ProgressInnerBar = styled.div`
+    width: ${({ currentWordIndex }) => 100 * ((currentWordIndex + 1) / 10)}%;
+    background-color: ${({ theme }) => theme.colors.primary4};
+`;
 
 const WordBigContainer = styled.div`
     width: 100%;
@@ -861,6 +882,7 @@ const ModalTextWrapper = styled.span`
     }
 `;
 const ModalTestBox = styled.div``;
+const TestContent = styled.div``;
 const ModalTestText = styled.div`
     color: #000;
     text-align: center;
@@ -902,8 +924,6 @@ const NoWordBackgroundBox = styled.div`
     width: 100%;
     height: 100%;
 `;
-
-const TestContent = styled.div``;
 
 const ReviewWord = styled.div`
     align-items: flex-start;
