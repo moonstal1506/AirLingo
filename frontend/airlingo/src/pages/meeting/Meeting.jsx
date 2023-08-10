@@ -9,7 +9,7 @@ import stomp from "stompjs";
 import SockJS from "sockjs-client";
 import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
 import theme from "@/assets/styles/Theme";
-import { FabButton, TextButton } from "@/components/common/button";
+import { TextButton, FabButton, SliderButton } from "@/components/common/button";
 import * as Icons from "@/assets/icons";
 import {
     AddDidReport,
@@ -41,14 +41,16 @@ import StarRate from "@/components/starRate";
 import { useRouter } from "@/hooks";
 import ChatList from "@/components/chatList/ChatList";
 import isKeyInObj from "@/utils/common";
+import MeetingDictionary from "./MeetingDictionary";
+import MeetingTranslator from "./MeetingTranslator";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1 } = theme.colors;
 const contentGroupData = [
     { Content: () => <div>Content1</div>, Icon: Icons.ScriptIcon },
-    { Content: () => <div>Content2</div>, Icon: Icons.DictionaryIcon },
-    { Content: () => <div>Content3</div>, Icon: Icons.TranslatorIcon },
+    { Content: () => <MeetingDictionary />, Icon: Icons.DictionaryIcon },
+    { Content: () => <MeetingTranslator />, Icon: Icons.TranslatorIcon },
 ];
 
 // ----------------------------------------------------------------------------------------------------
@@ -131,18 +133,18 @@ function Meeting() {
         curSession.on("streamCreated", (event) => {
             const subscriber = curSession.subscribe(event.stream, undefined);
             setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-            // curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+            curSession.subscribeToSpeechToText(event.stream, "ko-KR");
         });
 
-        // curSession.on("speechToTextMessage", (event) => {
-        //     console.log(`STT ${event}`);
-        //     console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
-        //     if (event.reason === "recognizing") {
-        //         console.log(`User ${event.connection.connectionId} is speaking: ${event.text}`);
-        //     } else if (event.reason === "recognized") {
-        //         console.log(`User ${event.connection.connectionId} spoke: ${event.text}`);
-        //     }
-        // });
+        curSession.on("speechToTextMessage", (event) => {
+            console.log(`STT ${event}`);
+            console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
+            if (event.reason === "recognizing") {
+                console.log(`User ${event.connection.connectionId} is speaking: ${event.text}`);
+            } else if (event.reason === "recognized") {
+                console.log(`User ${event.connection.connectionId} spoke: ${event.text}`);
+            }
+        });
 
         curSession.on("streamDestroyed", (event) => {
             console.log("스트림 삭제 이벤트", subscribers, event.stream.streamId);
@@ -806,6 +808,9 @@ function Meeting() {
                     </ModalButtonBox>
                 </Modal>
             )}
+            <SliderButtonWrapper isOpen={isActiveSlide}>
+                <SliderButton isOpen={isActiveSlide} onClick={handleClickSlideButton} />
+            </SliderButtonWrapper>
             <VideoContainer>
                 <VideoFrame>
                     {publisher ? (
@@ -844,7 +849,7 @@ function Meeting() {
                     />
                 )}
             </TopicContainer>
-            <ButtonMenu isActiveSlide={isActiveSlide} isActiveChatSlide={isActiveChatSlide}>
+            <ButtonMenu isActiveChatSlide={isActiveChatSlide}>
                 {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
                     <FabButton
                         key={buttonName}
@@ -855,11 +860,7 @@ function Meeting() {
                     />
                 ))}
             </ButtonMenu>
-            <ScriptSlideMenu
-                contentGroup={contentGroupData}
-                onClick={handleClickSlideButton}
-                slideOpen={isActiveSlide}
-            />
+            <ScriptSlideMenu contentGroup={contentGroupData} slideOpen={isActiveSlide} />
             <ChatSlideMenu isOpen={isActiveChatSlide}>
                 <ChatBox>
                     <ChatList data={chatMessage} />
@@ -892,7 +893,14 @@ const MeetingContainer = styled.div`
     justify-content: start;
     align-items: center;
     background-color: ${primary1};
-    font-family: "Pretendard";
+`;
+
+const SliderButtonWrapper = styled.div`
+    position: fixed;
+    top: -4%;
+    right: ${({ isOpen }) => (isOpen ? "28%" : "1%")};
+    transition: 0.3s ease-in-out;
+    z-index: 1500;
 `;
 
 const VideoContainer = styled.div`

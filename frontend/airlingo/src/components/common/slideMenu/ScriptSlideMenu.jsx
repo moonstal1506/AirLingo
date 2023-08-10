@@ -1,11 +1,12 @@
 import PropTypes from "prop-types";
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { css } from "@emotion/react";
 import theme from "@/assets/styles/Theme";
 
 // ----------------------------------------------------------------------------------------------------
 
-const { faintgray } = theme.colors;
+const { faintgray, distinctgray } = theme.colors;
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -24,7 +25,11 @@ function ScriptSliderMenu({ contentGroup, slideOpen }) {
             <MenuContainer slideOpen={slideOpen}>
                 <MenuHeaderButtonBox onClick={handleClickButton}>
                     {contentGroup.map((CurContent, idx) => (
-                        <MenuHeaderButtonWrapper key={CurContent.Icon.name} id={idx}>
+                        <MenuHeaderButtonWrapper
+                            key={CurContent.Icon.name}
+                            id={idx}
+                            isSelected={slideIdx === idx}
+                        >
                             <CurContent.Icon width="30px" height="30px" />
                         </MenuHeaderButtonWrapper>
                     ))}
@@ -66,8 +71,6 @@ const MenuContainer = styled.div`
     height: 100%;
     transition: transform 0.3s ease-in-out;
     transform: translate(${({ slideOpen }) => (slideOpen ? "calc(-420px)" : "0")}, 0%);
-    background-color: white;
-    border-left: 3px solid ${faintgray};
 `;
 
 const MenuHeaderButtonWrapper = styled.button`
@@ -75,13 +78,33 @@ const MenuHeaderButtonWrapper = styled.button`
     cursor: pointer;
     height: 60px;
     flex: 1;
-    border: black 1px solid;
+    border: none;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
     justify-content: center;
     align-items: center;
-    background-color: white;
+    background-color: ${faintgray};
+    &:hover {
+        background-color: ${distinctgray};
+        path {
+            fill: white;
+        }
+    }
+    ${(props) =>
+        props.isSelected &&
+        css`
+            background-color: white;
+            &:hover {
+                background-color: white;
+                path {
+                    fill: black;
+                }
+            }
+        `}
 `;
 
 const MenuHeaderButtonBox = styled.div`
+    margin-top: 10px;
     width: 420px;
     display: flex;
 `;
@@ -89,6 +112,8 @@ const MenuHeaderButtonBox = styled.div`
 const MenuContentBox = styled.div`
     flex: 1;
     width: 420px;
+    background-color: white;
+    border-left: 3px solid ${faintgray};
 `;
 
 export default ScriptSliderMenu;

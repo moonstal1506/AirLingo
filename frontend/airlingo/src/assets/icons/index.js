@@ -22,6 +22,7 @@ import { ReactComponent as PassportTextIcon } from "@/assets/icons/passport-text
 import { ReactComponent as ServiceLogoIcon } from "@/assets/icons/service-logo-icon.svg";
 import { ReactComponent as BiometricIcon } from "@/assets/icons/biometric-icon.svg";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/arrow-right-icon.svg";
+import { ReactComponent as DownArrowIcon } from "@/assets/icons/arrow-down-icon.svg";
 import { ReactComponent as WordTestIcon } from "@/assets/icons/word-test-icon.svg";
 
 export {
@@ -49,5 +50,6 @@ export {
     ServiceLogoIcon,
     BiometricIcon,
     RightArrowIcon,
+    DownArrowIcon,
     WordTestIcon,
 };
