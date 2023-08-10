@@ -5,7 +5,6 @@ import processApiResponse from "@/utils/api";
 
 const getTranslateResult = async ({ responseFunc, data }) => {
     try {
-        console.log("번역 수행");
         const { source, target, text } = data;
         const queryParams = {
             source,
