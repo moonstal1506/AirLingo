@@ -88,7 +88,7 @@ function Meeting() {
     // Data States...
     const [requestCardCode, setRequestCardCode] = useState("");
 
-    // // 세션 연결 함수
+    // 세션 연결 함수
 
     async function fetchToken() {
         try {
@@ -172,6 +172,7 @@ function Meeting() {
         await postStopRecording({
             responseFunc: {
                 200: (response) => {
+                    console.log(response.data.data);
                     dispatch(
                         AddScriptData({
                             scriptData: response.data.data,
@@ -395,7 +396,7 @@ function Meeting() {
         // 상대방에게 피드백 시착에 따른 동의/거절 여부를 보내준다.
         session.signal({
             data: JSON.stringify({ agree }),
-            to: [],
+            to: [subscribers[0].stream.connection],
             type: "feedback-start-response",
         });
 
