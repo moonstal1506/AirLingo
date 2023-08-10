@@ -2,9 +2,9 @@ import { PropTypes } from "prop-types";
 import styled from "@emotion/styled";
 import { FabButton } from "../common/button";
 
-function ButtonMenu({ buttonList }) {
+function ButtonMenu({ className, buttonList }) {
     return (
-        <ButtonMenuBox buttonList={buttonList}>
+        <ButtonMenuBox className={className} buttonList={buttonList}>
             {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
                 <FabButton
                     key={buttonName}
@@ -31,6 +31,7 @@ const ButtonMenuBox = styled.div`
 `;
 
 ButtonMenu.propTypes = {
+    className: PropTypes.string,
     buttonList: PropTypes.arrayOf(
         PropTypes.shape({
             buttonName: PropTypes.string.isRequired,
@@ -40,6 +41,10 @@ ButtonMenu.propTypes = {
             iconColor: PropTypes.string,
         }),
     ).isRequired,
+};
+
+ButtonMenu.defaultProps = {
+    className: "",
 };
 
 export default ButtonMenu;

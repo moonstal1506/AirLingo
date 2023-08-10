@@ -48,7 +48,7 @@ function SliderButton({ isOpen, onClick }) {
 }
 
 SliderButton.propTypes = {
-    isOpen: PropTypes.string.isRequired,
+    isOpen: PropTypes.bool.isRequired,
     onClick: PropTypes.func.isRequired,
 };
 
