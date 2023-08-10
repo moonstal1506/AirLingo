@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.ssafy.airlingo.domain.user.dto.request.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,13 +23,6 @@ import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
 import com.ssafy.airlingo.domain.language.repository.UserLanguageRepository;
-import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.UpdateNicknameRequestDto;
-import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
@@ -193,14 +187,17 @@ public class UserServiceImpl implements UserService {
 		log.info("UserServiceImpl_addInterestLanguage");
 		User user = userRepository.findById(addInterestLanguageRequestDto.getUserId())
 			.orElseThrow(NotExistAccountException::new);
-		Language language = languageRepository.findByLanguageId(addInterestLanguageRequestDto.getLanguageId());
-		Grade grade = gradeRepository.findByGradeId(addInterestLanguageRequestDto.getGradeId());
-		UserLanguage userLanguage = UserLanguage.builder()
-			.user(user)
-			.language(language)
-			.grade(grade)
-			.build();
-		userLanguageRepository.save(userLanguage);
+		List<LanguageWithGradeDto> userInterestLanguageList = addInterestLanguageRequestDto.getUserInterestLanguageList();
+		for (LanguageWithGradeDto languageWithGrade : userInterestLanguageList) {
+			Language language = languageRepository.findByLanguageId(languageWithGrade.getLanguageId());
+			Grade grade = gradeRepository.findByGradeId(languageWithGrade.getGradeId());
+			UserLanguage userLanguage = UserLanguage.builder()
+					.user(user)
+					.language(language)
+					.grade(grade)
+					.build();
+			userLanguageRepository.save(userLanguage);
+		}
 	}
 
 	@Override

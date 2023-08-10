@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "@/components/common/dropdown";
 import { IconButton, TextButton } from "@/components/common/button";
 import { TextInput } from "@/components/common/input";
+import Grade from "@/components/grade/Grade";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
@@ -14,15 +16,14 @@ import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import { ReactComponent as KeyIcon } from "@/assets/icons/key-icon.svg";
 import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
 import { ReactComponent as HeartIcon } from "@/assets/icons/heart-icon.svg";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.svg";
-import { ReactComponent as BritainFlagIcon } from "@/assets/icons/flag-britain-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
-import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.svg";
+import * as Icons from "@/assets/icons";
 import { logoutUser, selectUser } from "@/features/User/UserSlice";
-import { deleteUser, updateUserPassword } from "@/api/user.js";
+import { getUserProfile, deleteUser, updateUserPassword, updateLanguage } from "@/api/user.js";
+import { getLanguage, getGrade } from "@/api/language";
+import { formatLanguage, formatGrade } from "@/utils/format";
 import { useRouter } from "@/hooks";
 
-const { primary1 } = theme.colors;
+const { faintgray, primary4, primary1 } = theme.colors;
 
 function checkPassword(password) {
     const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,20}$/;
@@ -38,6 +39,7 @@ function BasicInfoPage2() {
     const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
+    const [userProfile, setUserProfile] = useState([]);
     const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
     const [confirmPassword, setConfirmPassword] = useState({
         value: "",
@@ -46,6 +48,113 @@ function BasicInfoPage2() {
     });
     const [passwordModalOpen, setPasswordModalOpen] = useState(false);
     const [quitModalOpen, setQuitModalOpen] = useState(false);
+    const [languageModalOpen, setLanguageModalOpen] = useState(false);
+    const [languages, setLanguages] = useState([]);
+    const [grades, setGrades] = useState([]);
+    const [learningLangs, setLearningLangs] = useState({
+        value: [],
+        valid: [].length > 0,
+        dirty: [].length > 0,
+    });
+    const [selectedLang, setSelectedLang] = useState({ id: 0, label: "", img: "" });
+    const [selectedGrade, setSelectedGrade] = useState({ id: 0, label: "", img: "" });
+
+    // 프로필 조회
+    useEffect(() => {
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        setUserProfile({ ...response.data.data });
+                        console.log(userProfile);
+                    },
+                },
+                data: { userId },
+            });
+            await getLanguage({
+                responseFunc: {
+                    200: (response) =>
+                        setLanguages(
+                            response.data.data.map((language) => formatLanguage(language)),
+                        ),
+                    400: (response) => console.log(response),
+                },
+            });
+            await getGrade({
+                responseFunc: {
+                    200: (response) =>
+                        setGrades(response.data.data.map((grade) => formatGrade(grade))),
+                    400: (response) => console.log(response),
+                },
+            });
+        }
+        fetchData();
+    }, []);
+
+    // 언어 모달
+    const handleLanguageModalOpen = () => {
+        setLanguageModalOpen(true);
+    };
+    const addSelectedLanguage = () => {
+        if (selectedLang.label && selectedGrade.label) {
+            const newLanguage = {
+                langId: selectedLang.id,
+                langLabel: selectedLang.label,
+                langImg: selectedLang.img,
+                gradeId: selectedGrade.id,
+                gradeLabel: selectedGrade.label,
+            };
+            setLearningLangs((prev) => ({
+                ...prev,
+                value: [...prev.value, newLanguage],
+                valid: true,
+                dirty: true,
+            }));
+
+            // 선택된 값을 초기화
+            setSelectedLang({ id: 0, label: "", img: "" });
+            setSelectedGrade({ id: 0, label: "", img: "" });
+        }
+    };
+
+    const deleteSelectedLanguage = (language) => {
+        setLearningLangs((prev) => ({
+            ...prev,
+            value: prev.value.filter((lang) => lang.langId !== language.langId),
+            valid: learningLangs.value.length > 1,
+        }));
+    };
+
+    // 관심 언어 추가
+    const handleLanguageSubmit = async () => {
+        await updateLanguage({
+            responseFunc: {
+                200: () => {
+                    console.log("관심 언어 수정 성공!");
+                    setLanguageModalOpen(false);
+                },
+                400: () => {
+                    console.log("관심 언어 수정 실패!");
+                },
+            },
+            data: {
+                userId,
+                userInterestLanguageList: learningLangs.value.map((language) => ({
+                    languageId: language.langId,
+                    gradeId: language.gradeId,
+                })),
+            },
+        });
+        await getUserProfile({
+            responseFunc: {
+                200: (response) => {
+                    setUserProfile({ ...response.data.data });
+                    console.log(userProfile);
+                },
+            },
+            data: { userId },
+        });
+    };
 
     // password modal
     const handlePasswordModalOpen = () => {
@@ -115,61 +224,6 @@ function BasicInfoPage2() {
         });
     };
 
-    // language modal
-    const [languageModalOpen, setLanguageModalOpen] = useState(false);
-    const handleLanguageModalOpen = () => {
-        setLanguageModalOpen(true);
-    };
-
-    const [totalLanguage, setTotalLanguage] = useState([
-        { id: "135", label: "한국어", img: KoreaFlagIcon },
-        { id: "136", label: "영어", img: BritainFlagIcon },
-        { id: "137", label: "일본어", img: JapanFlagIcon },
-        { id: "138", label: "중국어", img: ChinaFlagIcon },
-    ]);
-
-    const level = [
-        { id: "135", label: "A1", img: KoreaFlagIcon },
-        { id: "136", label: "A2", img: JapanFlagIcon },
-        { id: "137", label: "B1", img: JapanFlagIcon },
-        { id: "138", label: "B2", img: JapanFlagIcon },
-        { id: "139", label: "C1", img: JapanFlagIcon },
-        { id: "140", label: "C2", img: JapanFlagIcon },
-    ];
-
-    const [studyLanguage, setStudyLanguage] = useState([]);
-    const [selectedLevel, setSelectedLevel] = useState([]);
-    const [languageList, setLanguageList] = useState([]);
-
-    const handleClickLanguage = () => {
-        if (studyLanguage.label && selectedLevel.label) {
-            setLanguageList((prev) => [
-                ...prev,
-                {
-                    id: studyLanguage.id,
-                    img: studyLanguage.img,
-                    title: studyLanguage.label,
-                    level: selectedLevel.label,
-                },
-            ]);
-
-            // 필터링하여 선택된 관심언어를 드롭다운에서 제거
-            setTotalLanguage((prev) =>
-                prev.filter((language) => language.label !== studyLanguage.label),
-            );
-
-            // 기존 상태 삭제
-            setSelectedLevel({});
-            setStudyLanguage({});
-        }
-    };
-
-    const handleDeleteLanguage = (index) => {
-        const { id, title, img } = languageList.find((_, i) => i === index);
-        setTotalLanguage((prev) => [...prev, { id, label: title, img }]);
-        setLanguageList((prev) => prev.filter((_, i) => i !== index));
-    };
-
     return (
         // <BasicInfoPageContainer>
         <RightPageBox>
@@ -193,139 +247,52 @@ function BasicInfoPage2() {
                             onChange={handleConfirmPasswordChange}
                             color={primary1}
                         />
-                        <ValidationList>
-                            <ValidationItem
-                                isValid={password.valid}
-                                isDirty={password.dirty}
-                                text="비밀번호는 8 ~ 20자의 영어 대 · 소문자, 숫자, 특수문자의 조합입니다."
+                    </ValidationList>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => handlePasswordSubmit()}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setPasswordModalOpen(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
+            {languageModalOpen && (
+                <Modal title="관심언어 추가" modalOpen={languageModalOpen} Icon={HeartIcon}>
+                    <InputBox>
+                        <LearningLangBox>
+                            <Dropdown
+                                width="180px"
+                                data={languages.filter(
+                                    (language) =>
+                                        ![
+                                            userProfile.userNativeLanguage.languageId,
+                                            ...userProfile.userLanguages.map(
+                                                (lang) => lang.languageId,
+                                            ),
+                                            ...learningLangs.value.map((lang) => lang.langId),
+                                        ].includes(language.id),
+                                )}
+                                iconColor="primary"
+                                shape="negative"
+                                selectedOption={selectedLang}
+                                placeholder="관심 언어 설정"
+                                onChange={setSelectedLang}
                             />
-                            <ValidationItem
-                                isValid={confirmPassword.valid}
-                                isDirty={confirmPassword.dirty}
-                                text="비밀번호와 비밀번호 확인은 동일해야 합니다."
+                            <Dropdown
+                                width="160px"
+                                data={grades}
+                                iconColor="primary"
+                                shape="negative"
+                                selectedOption={selectedGrade}
+                                placeholder="숙련도 설정"
+                                onChange={setSelectedGrade}
                             />
-                        </ValidationList>
-                        <ModalButtonBox>
-                            <TextButton
-                                shape="positive-curved"
-                                text="확인"
-                                onClick={() => handlePasswordSubmit()}
-                            />
-                            <TextButton
-                                shape="positive-curved"
-                                text="취소"
-                                onClick={() => setPasswordModalOpen(false)}
-                            />
-                        </ModalButtonBox>
-                    </Modal>
-                )}
-                {languageModalOpen && (
-                    <Modal title="관심언어 추가" modalOpen={languageModalOpen} Icon={HeartIcon}>
-                        <SignupLanguageBox>
-                            <StyledSelectContainer>
-                                <StyledSelectLanguage>
-                                    <Dropdown
-                                        width="180px"
-                                        shape="negative"
-                                        data={totalLanguage}
-                                        placeholder="관심 언어 설정"
-                                        selectedOption={studyLanguage}
-                                        onChange={setStudyLanguage}
-                                    />
-                                </StyledSelectLanguage>
-                                <StyledSelectLevel>
-                                    <Dropdown
-                                        width="160px"
-                                        shape="negative"
-                                        data={level}
-                                        placeholder="숙련도 설정"
-                                        selectedOption={selectedLevel}
-                                        onChange={setSelectedLevel}
-                                    />
-                                </StyledSelectLevel>
-                                <TooltipBox>
-                                    <Tooltip
-                                        position={{
-                                            horizontal: "right",
-                                            vertical: "bottom",
-                                            direction: "down",
-                                        }}
-                                    >
-                                        <TooltipContentContainer />
-                                    </Tooltip>
-                                </TooltipBox>
-                                <TextButton text="추가하기" onClick={handleClickLanguage} />
-                            </StyledSelectContainer>
-                        </SignupLanguageBox>
-                        {languageList.length > 0 && (
-                            <SelectedLanguagesContainer>
-                                {languageList.map((language) => (
-                                    <SelectedLanguage key={language.id}>
-                                        <SelectedLanguageLabel>
-                                            <language.img />
-                                            <span>{language.title}</span>
-                                            <span>{language.level}</span>
-                                            <DeleteButton
-                                                onClick={() => handleDeleteLanguage(language.id)}
-                                            >
-                                                X
-                                            </DeleteButton>
-                                        </SelectedLanguageLabel>
-                                    </SelectedLanguage>
-                                ))}
-                            </SelectedLanguagesContainer>
-                        )}
-                        <ModalButtonBox>
-                            <TextButton
-                                shape="positive-curved"
-                                text="확인"
-                                onClick={() => setLanguageModalOpen(false)}
-                            />
-                            <TextButton
-                                shape="positive-curved"
-                                text="취소"
-                                onClick={() => setLanguageModalOpen(false)}
-                            />
-                        </ModalButtonBox>
-                    </Modal>
-                )}
-                {quitModalOpen && (
-                    <Modal
-                        title="회원 탈퇴"
-                        modalOpen={quitModalOpen}
-                        Icon={AlertIcon}
-                        iconColor="red"
-                        titleColor="red"
-                    >
-                        <ModalDescriptionTextBox>
-                            <DescriptionTextWrapper>
-                                정말 회원 탈퇴를 진행하시겠습니까?
-                            </DescriptionTextWrapper>
-                            <WaitingTimeTextWrapper>
-                                계정이 삭제되며, 이 작업은 되돌릴 수 없습니다!
-                            </WaitingTimeTextWrapper>
-                        </ModalDescriptionTextBox>
-                        <ModalButtonBox>
-                            <TextButton
-                                shape="warning-curved"
-                                text="회원 탈퇴"
-                                onClick={() => handleDeleteUser()}
-                            />
-                            <TextButton
-                                shape="positive-curved"
-                                text="취소"
-                                onClick={() => setQuitModalOpen(false)}
-                            />
-                        </ModalButtonBox>
-                    </Modal>
-                )}
-                <LanguageContainer>
-                    <TitleContainer>
-                        <TitleBox>
-                            <TitleWrapper>관심 언어</TitleWrapper>
-                            <SubTitleWrapper>LANGUAGE WANTING TO LEARN</SubTitleWrapper>
-                        </TitleBox>
-                        <TooltipBox>
                             <Tooltip
                                 position={{
                                     horizontal: "right",
@@ -333,13 +300,38 @@ function BasicInfoPage2() {
                                     direction: "down",
                                 }}
                             >
-                                <TooltipContentContainer />
+                                <TooltipContent />
                             </Tooltip>
-                        </TooltipBox>
-                        <IconButton
-                            shape="blacklinedlight"
-                            icon={ModifyIcon}
-                            onClick={handleLanguageModalOpen}
+                            <TextButton text="추가하기" onClick={addSelectedLanguage} />
+                        </LearningLangBox>
+                    </InputBox>
+                    {learningLangs.value.length > 0 && (
+                        <LearningLangList>
+                            {learningLangs.value.map((language, index) => (
+                                // eslint-disable-next-line react/no-array-index-key
+                                <LearningLanguageItem key={index}>
+                                    <LanguageImg src={language.langImg} alt="languageIcon" />
+                                    <LanguageNameWrapper>{language.langLabel}</LanguageNameWrapper>
+                                    <LanguageGradeWrapper>
+                                        {language.gradeLabel}
+                                    </LanguageGradeWrapper>
+                                    <DeleteButton onClick={() => deleteSelectedLanguage(language)}>
+                                        <Icons.ValidationInvalidIcon />
+                                    </DeleteButton>
+                                </LearningLanguageItem>
+                            ))}
+                        </LearningLangList>
+                    )}
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => handleLanguageSubmit()}
+                        />
+                        <TextButton
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setLanguageModalOpen(false)}
                         />
                     </TitleContainer>
                     <LanguageContentBox>
@@ -378,16 +370,67 @@ function BasicInfoPage2() {
                             onClick={handlePasswordModalOpen}
                         />
                         <TextButton
-                            text="회원탈퇴"
-                            width="120px"
-                            shape="warning-quit"
-                            onClick={handleQuitModalOpen}
+                            shape="positive-curved"
+                            text="취소"
+                            onClick={() => setQuitModalOpen(false)}
                         />
-                    </ButtonBar>
-                </LanguageContainer>
-            </RightPassportPage>
-        </RightPageBox>
-        // </BasicInfoPageContainer>
+                    </ModalButtonBox>
+                </Modal>
+            )}
+            <LanguageContainer>
+                <TitleContainer>
+                    <TitleBox>
+                        <TitleWrapper>관심 언어</TitleWrapper>
+                        <SubTitleWrapper>LANGUAGE WANTING TO LEARN</SubTitleWrapper>
+                    </TitleBox>
+                    <TooltipBox>
+                        <Tooltip
+                            position={{
+                                horizontal: "right",
+                                vertical: "bottom",
+                                direction: "down",
+                            }}
+                        >
+                            <TooltipContent />
+                        </Tooltip>
+                    </TooltipBox>
+                    <IconButton
+                        shape="blacklined"
+                        icon={ModifyIcon}
+                        onClick={handleLanguageModalOpen}
+                    />
+                </TitleContainer>
+                <LanguageContentBox>
+                    {userProfile.userLanguages &&
+                        userProfile.userLanguages.map((langueage) => (
+                            <LanguageBox>
+                                <LanguageFlag
+                                    src={languages[langueage.languageId - 1]?.img || ""}
+                                    alt="Korean Flag"
+                                />
+                                <LanguageNameRankBox>
+                                    <LanguageName>{langueage.languageKorName}</LanguageName>
+                                    <Grade gradeName={langueage?.gradeName || ""} />
+                                </LanguageNameRankBox>
+                            </LanguageBox>
+                        ))}
+                </LanguageContentBox>
+                <ButtonBar>
+                    <TextButton
+                        text="비밀번호 변경"
+                        width="160px"
+                        shape="negative-normal"
+                        onClick={handlePasswordModalOpen}
+                    />
+                    <TextButton
+                        text="회원탈퇴"
+                        width="120px"
+                        shape="warning-quit"
+                        onClick={handleQuitModalOpen}
+                    />
+                </ButtonBar>
+            </LanguageContainer>
+        </RightPassportPage>
     );
 }
 
@@ -428,23 +471,6 @@ const ValidationList = styled.div`
     margin-top: 25px;
 `;
 
-// const ModalValidationContainer = styled.div`
-//     display: flex;
-//     width: 650px;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     gap: 24px;
-// `;
-
-// const ModalValidationBox = styled.div`
-//     display: flex;
-//     height: 60px;
-//     flex-direction: column;
-//     justify-content: space-between;
-//     align-items: flex-start;
-// `;
-
 const ModalButtonBox = styled.div`
     display: flex;
     justify-content: center;
@@ -465,109 +491,67 @@ const ModalDescriptionTextBox = styled.div`
 `;
 
 // 언어 모달
-const SignupLanguageBox = styled.div`
-    width: 500px;
+const InputBox = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    margin: auto;
-    display: inline-flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-    position: relative; /* position: relative 추가 */
-    z-index: 1;
+    gap: 25px;
 `;
 
-const StyledSelectContainer = styled.div`
-    display: flex;
+const LearningLangBox = styled.div`
     width: 500px;
-    height: 68px;
-    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+`;
+
+const TooltipContent = styled.div`
     position: relative;
-    z-index: 2;
-    align-items: center;
+    z-index: 999;
+    width: 400px;
+    height: 400px;
+    background-image: url(${LanguageRankBox});
+    background-size: cover;
+    border-radius: 20px;
+    background-color: transparent;
+    border: 0.5px solid rgba(0, 0, 0, 0.2);
 `;
 
-const StyledSelectLanguage = styled.div`
-    color: rgba(0, 0, 0, 0.5);
-    font-family: Pretendard;
-    font-size: 20px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 44px;
-    display: flex;
-    width: 180px;
-    height: 50px;
-    padding: 10px 0px;
-    justify-content: space-between;
-    align-items: center;
-    flex-shrink: 0;
-`;
-
-const StyledSelectLevel = styled.div`
-    color: rgba(0, 0, 0, 0.5);
-    font-family: Pretendard;
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 300;
-    line-height: 44px;
-    flex: 1;
-    display: flex;
-    width: 160px;
-    height: 50px;
-    padding: 5px 10px;
-    justify-content: space-between;
-    align-items: center;
-`;
-
-const SelectedLanguagesContainer = styled.div`
+const LearningLangList = styled.div`
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 10px;
-    display: flex;
+    margin-top: 25px;
 `;
 
-const SelectedLanguage = styled.div`
+const LearningLanguageItem = styled.div`
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-family: Pretendard;
-    font-size: 16px;
-`;
-
-const SelectedLanguageLabel = styled.div`
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-radius: 30px;
-    background: #efefef;
-    color: #000;
-    font-family: Pretendard;
+    justify-content: space-around;
+    background-color: ${faintgray};
+    border-radius: 25px;
+    width: 500px;
+    height: 50px;
+    color: black;
     font-size: 20px;
-    font-style: normal;
-    font-weight: 700;
-    line-height: normal;
-    vertical-align: middle;
+`;
+
+const LanguageImg = styled.img`
+    width: 25px;
+    height: 25px;
+`;
+
+const LanguageNameWrapper = styled.div`
+    width: 100px;
     text-align: center;
-    width: 465px;
-    height: 45px;
-    padding: 10px 20px;
+    font-weight: 700;
+`;
 
-    .language-img {
-        width: 24px;
-        height: 24px;
-        margin-right: 10px;
-    }
-
-    .language-title {
-        flex: 1;
-    }
-
-    .language-level {
-        margin-right: 10px;
-    }
+const LanguageGradeWrapper = styled.div`
+    width: 120px;
+    text-align: center;
+    color: ${primary4};
+    font-weight: 500;
 `;
 
 const DeleteButton = styled.button`
@@ -627,18 +611,6 @@ const SubTitleWrapper = styled.div`
     padding-left: 5px;
 `;
 
-const TooltipContentContainer = styled.div`
-    position: relative;
-    z-index: 999;
-    width: 400px;
-    height: 400px;
-    background-image: url(${LanguageRankBox});
-    background-size: cover;
-    border-radius: 20px;
-    background-color: transparent;
-    border: 0.5px solid rgba(0, 0, 0, 0.2);
-`;
-
 const TooltipBox = styled.div`
     position: relative;
     z-index: 0;
@@ -684,24 +656,6 @@ const LanguageName = styled.div`
     font-weight: 700;
     line-height: normal;
     padding-bottom: 10px;
-`;
-
-const LanguageRankContainer = styled.div`
-    display: flex;
-    color: var(--rainbow-blue, #35b1c9);
-    width: 90px;
-`;
-
-const LanguageRank = styled.div`
-    font-size: 20px;
-    font-weight: 700;
-`;
-
-const LanguageGrade = styled.div`
-    font-size: 15px;
-    font-weight: 400;
-    display: flex;
-    align-items: flex-end;
 `;
 
 const ButtonBar = styled.div`
