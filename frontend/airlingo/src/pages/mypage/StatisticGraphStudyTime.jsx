@@ -5,17 +5,21 @@ import "chart.js/auto";
 import { Doughnut } from "react-chartjs-2";
 import { useState, useEffect } from "react";
 import { useSelector } from "react-redux";
+import { useRouter } from "@/hooks";
 import { ReactComponent as Red } from "@/assets/icons/language-red-icon.svg";
 import { ReactComponent as Green } from "@/assets/icons/language-green-icon.svg";
 import { ReactComponent as Orange } from "@/assets/icons/language-orange-icon.svg";
 import { ReactComponent as Purlple } from "@/assets/icons/language-purple-icon.svg";
 import { ReactComponent as Blue } from "@/assets/icons/language-blue-icon.svg";
 import { ReactComponent as YelloW } from "@/assets/icons/language-yellow-icon.svg";
+import { ReactComponent as BackButton } from "@/assets/icons/back-button.svg";
 import { getRecordStatistic } from "@/api";
 import { selectUser } from "@/features/User/UserSlice";
+import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 
 function StudyTimeStatistic() {
     const [data, setData] = useState(null);
+    const { routeTo } = useRouter();
     const [totalStudyTime, setTotalStudyTime] = useState(0);
     const { userId } = useSelector(selectUser);
     const colors = {
@@ -124,82 +128,105 @@ function StudyTimeStatistic() {
     }, []);
 
     return (
-        <PageLayout>
-            <Title>학습 시간 분석</Title>
-            <SubTitle>랭커들과 대화한 시간은 총 몇 시간일까요?</SubTitle>
-            <ChartContainer>
-                {data ? (
-                    <Doughnut
-                        data={data}
-                        options={options}
-                        plugins={[centerTextPlugin, labelsPlugin]}
-                    />
-                ) : (
-                    <p>Loading...</p>
-                )}
-            </ChartContainer>
-            <LanguageContainer>
-                <LanguageRow>
-                    <LanguageBox>
-                        <RedIcon />
-                        <LanguageText>한국어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <BlueIcon />
-                        <LanguageText>영어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <OrangeIcon />
-                        <LanguageText>일본어</LanguageText>
-                    </LanguageBox>
-                </LanguageRow>
-                <LanguageRow>
-                    <LanguageBox>
-                        <PurlpleIcon />
-                        <LanguageText>프랑스어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <GreenIcon />
-                        <LanguageText>중국어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <YellowIcon />
-                        <LanguageText>스페인어</LanguageText>
-                    </LanguageBox>
-                </LanguageRow>
-            </LanguageContainer>
-        </PageLayout>
+        <LeftPageBox id="LPBox">
+            <LeftPassportPages src={leftPassportPages} id="LPPS" />
+            <LeftPassportPage id="LPP">
+                <BackButtonIcon onClick={() => routeTo("/statistic")} />
+                <PageLayout>
+                    <Title>학습 시간 분석</Title>
+                    <SubTitle>랭커들과 대화한 시간은 총 몇 시간일까요?</SubTitle>
+                    <ChartContainer>
+                        {data ? (
+                            <Doughnut
+                                data={data}
+                                options={options}
+                                plugins={[centerTextPlugin, labelsPlugin]}
+                            />
+                        ) : (
+                            <p>Loading...</p>
+                        )}
+                    </ChartContainer>
+                    <LanguageContainer>
+                        <LanguageRow>
+                            <LanguageBox>
+                                <RedIcon />
+                                <LanguageText>한국어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <BlueIcon />
+                                <LanguageText>영어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <OrangeIcon />
+                                <LanguageText>일본어</LanguageText>
+                            </LanguageBox>
+                        </LanguageRow>
+                        <LanguageRow>
+                            <LanguageBox>
+                                <PurlpleIcon />
+                                <LanguageText>프랑스어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <GreenIcon />
+                                <LanguageText>중국어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <YellowIcon />
+                                <LanguageText>스페인어</LanguageText>
+                            </LanguageBox>
+                        </LanguageRow>
+                    </LanguageContainer>
+                </PageLayout>
+            </LeftPassportPage>
+        </LeftPageBox>
     );
 }
 
-const PageLayout = styled.div`
+const LeftPageBox = styled.div`
+    width: 510px;
+    height: 755px;
+`;
+
+const LeftPassportPages = styled.img`
+    margin-top: 55px;
+    margin-left: 5px;
+    position: absolute;
+    z-index: -1;
+`;
+
+const LeftPassportPage = styled.div`
     position: relative;
     width: 500px;
     height: 700px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
     flex-shrink: 0;
+    border-radius: 20px 0px 0px 20px;
+    border: 1px solid #000;
+    background: #fff;
+    margin-right: 10px;
+    margin-top: 50px;
+`;
+
+const PageLayout = styled.div`
+    display: inline-flex;
+    height: 600px;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+    margin-left: 50px;
+    margin-top: 55px;
 `;
 
 const Title = styled.div`
     color: #000;
-    font-family: Pretendard;
     font-size: 40px;
-    font-style: normal;
     font-weight: 700;
-    line-height: normal;
-    margin-bottom: 40px;
 `;
 
 const SubTitle = styled.div`
     color: #000;
-    font-family: Pretendard;
     font-size: 20px;
-    font-style: normal;
     font-weight: 400;
-    line-height: normal;
 `;
 
 const ChartContainer = styled.div`
@@ -208,9 +235,6 @@ const ChartContainer = styled.div`
     height: 350px;
     justify-content: center;
     align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 70px;
-    margin-top: 70px;
 `;
 
 const LanguageContainer = styled.div`
@@ -227,7 +251,6 @@ const LanguageRow = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
 `;
 
 const LanguageBox = styled.span`
@@ -244,11 +267,8 @@ const LanguageText = styled.span`
     flex-direction: column;
     justify-content: center;
     color: var(--black, #000);
-    font-family: Pretendard;
     font-size: 20px;
-    font-style: normal;
     font-weight: 700;
-    line-height: normal;
 `;
 
 const RedIcon = styled(Red)`
@@ -279,6 +299,13 @@ const YellowIcon = styled(YelloW)`
 const OrangeIcon = styled(Orange)`
     width: 15px;
     height: 15px;
+`;
+
+const BackButtonIcon = styled(BackButton)`
+    cursor: pointer;
+    margin-top: 22px;
+    margin-left: 21px;
+    position: absolute;
 `;
 
 export default StudyTimeStatistic;

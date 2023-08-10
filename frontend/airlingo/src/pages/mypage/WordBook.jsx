@@ -238,6 +238,12 @@ function WordBook() {
     const handleClickWordTestRetry = () => {
         setTestInputList(initialArray);
         setModalOpenWordTestEnd(false);
+        setModalOpenReviewNote(true);
+    };
+    // 오답 노트 후 , 단어 테스트 재시작
+    const handleClickWordTestRetry2 = () => {
+        setModalOpenReviewNote(false);
+        setTestInputList(initialArray);
         setModalOpenWordTest(true);
     };
 
@@ -254,11 +260,13 @@ function WordBook() {
     };
 
     return (
-        <WordBigContainer>
-            <BookContainer>
+        <WordBookPageContainer>
+            <PassportContainer id="PC">
+                <TabBarContainer>
+                    <TabBar activeTab="wordbook" id="TabBar" />
+                </TabBarContainer>
                 <LeftPageBox id="LPBox">
                     <LeftPassportPages src={leftPassportPages} id="LPPS" />
-                    <TabBar activeTab="statistic" id="TabBar" />
                     {AllWordList.length === 0 ? (
                         <LeftPassportPage>
                             <NoWordBackgroundBox>
@@ -399,7 +407,7 @@ function WordBook() {
                                             작성해주세요.
                                         </ModalTestText>
                                         <ModalTextWord>
-                                            <b>{WordTestList[currentWordIndex]?.wordDescription}</b>
+                                            <b>{WordTestList[currentWordIndex]?.wordName}</b>
                                         </ModalTextWord>
                                         <TextInput
                                             placeholder="정답을 작성해 주세요."
@@ -661,24 +669,12 @@ function WordBook() {
                         </RightPassportPage>
                     )}
                 </RightPageBox>
-            </BookContainer>
-        </WordBigContainer>
+            </PassportContainer>
+        </WordBookPageContainer>
     );
 }
 
-const ProgressBar = styled.div`
-    width: 500px;
-    height: 5px;
-    background-color: #e3e3e3;
-    position: relative;
-    display: flex;
-`;
-const ProgressInnerBar = styled.div`
-    width: ${({ currentWordIndex }) => 100 * ((currentWordIndex + 1) / 10)}%;
-    background-color: ${({ theme }) => theme.colors.primary4};
-`;
-
-const WordBigContainer = styled.div`
+const WordBookPageContainer = styled.div`
     width: 100%;
     height: calc(100% - 120px);
     position: relative;
@@ -687,22 +683,23 @@ const WordBigContainer = styled.div`
     flex-direction: column;
     align-items: center;
 `;
-const BookContainer = styled.div`
+
+const PassportContainer = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 151px;
     width: 1015px;
     height: 755px;
-    justify-content: flex-end;
 `;
 
 const LeftPageBox = styled.div`
     width: 510px;
     height: 755px;
+    flex-shrink: 0;
 `;
 
 const LeftPassportPages = styled.img`
-    margin-top: 5px;
+    margin-top: 55px;
     margin-left: 5px;
     position: absolute;
     z-index: -1;
@@ -716,11 +713,21 @@ const LeftPassportPage = styled.div`
     border: 1px solid #000;
     background: #fff;
     margin-right: 10px;
+    margin-top: 50px;
+    margin-bottom: 5px;
 `;
+
+const TabBarContainer = styled.div`
+    position: relative;
+    top: 50px;
+`;
+
 const RightPageBox = styled.div`
     width: 507px;
     height: 705px;
+    flex-shrink: 0;
 `;
+
 const RightPassportPage = styled.div`
     width: 500px;
     height: 700px;
@@ -729,6 +736,7 @@ const RightPassportPage = styled.div`
     background: #fff;
     display: flex;
     align-items: center;
+    margin-top: 50px;
     flex-direction: column;
 `;
 
@@ -739,6 +747,7 @@ const ButtonBox = styled.div`
     gap: 10px;
     display: flex;
 `;
+
 const WordBookButtonBox = styled.div`
     display: flex;
     width: 450px;
@@ -757,6 +766,7 @@ const ButtonRow1 = styled.div`
     width: 460px;
     gap: 10px;
 `;
+
 const RightButtonRow1 = styled.div`
     display: flex;
     justify-content: flex-end;
@@ -783,6 +793,7 @@ const WordBookButtonBox2 = styled.div`
     flex-shrink: 0;
     align-items: center;
 `;
+
 const ButtonRow2 = styled.div`
     display: flex;
     gap: 10px;
@@ -853,7 +864,6 @@ const WordExplain = styled.div`
     white-space: nowrap;
 `;
 
-// 모달
 const ModalTextBox = styled.div`
     display: flex;
     justify-content: center;
@@ -881,8 +891,22 @@ const ModalTextWrapper = styled.span`
         font-weight: bolder;
     }
 `;
+
 const ModalTestBox = styled.div``;
 const TestContent = styled.div``;
+const ProgressBar = styled.div`
+    width: 500px;
+    height: 5px;
+    background-color: #e3e3e3;
+    position: relative;
+    display: flex;
+`;
+
+const ProgressInnerBar = styled.div`
+    width: ${({ currentWordIndex }) => 100 * ((currentWordIndex + 1) / 10)}%;
+    background-color: ${({ theme }) => theme.colors.primary4};
+`;
+
 const ModalTestText = styled.div`
     color: #000;
     text-align: center;
@@ -923,6 +947,10 @@ const NoWordBackgroundBox = styled.div`
     justify-content: center;
     width: 100%;
     height: 100%;
+`;
+
+const ReviewWord = styled.div`
+    align-items: flex-start;
 `;
 
 const ReviewWord = styled.div`
