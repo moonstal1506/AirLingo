@@ -14,7 +14,6 @@ import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.
 import { ReactComponent as CloseIcon } from "@/assets/icons/close-icon.svg";
 import { ReactComponent as CameraIcon } from "@/assets/icons/camera-icon.svg";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
-// import TabBar from "@/components/common/tab/TabBar.jsx";
 import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
@@ -179,8 +178,6 @@ function BasicInfoPage2() {
     ).img;
 
     return (
-        // <BasicInfoPageContainer>
-        //     <TabBar activeTab="basicinfo" id="TabBar" />
         <LeftPageBox id="LPBox">
             <LeftPassportPages src={leftPassportPages} id="LPPS" />
             <LeftPassportPage>
@@ -332,14 +329,8 @@ function BasicInfoPage2() {
                 </ProfileContainer>
             </LeftPassportPage>
         </LeftPageBox>
-        // </BasicInfoPageContainer>
     );
 }
-// const BasicInfoPageContainer = styled.div`
-//     position: relative;
-//     width: 100%;
-//     height: 100%;
-// `;
 
 const LeftPageBox = styled.div`
     width: 510px;
