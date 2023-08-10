@@ -5,7 +5,7 @@ import { keyframes } from "@emotion/react";
 import PropTypes from "prop-types";
 import theme from "@/assets/styles/Theme";
 import { ReactComponent as DropdownIcon } from "@/assets/icons/right-full-arrow-icon.svg";
-import iconConfig from "@/config";
+import { iconConfig } from "@/config";
 import combineShape from "@/utils/style";
 
 // ----------------------------------------------------------------------------------------------------

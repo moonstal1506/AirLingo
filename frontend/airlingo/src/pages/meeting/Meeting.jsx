@@ -37,20 +37,17 @@ import {
     removeRecordingId,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
-import MeetingDictionary from "./MeetingDictionary";
 import FreeTalk from "./FreeTalk";
 import ScriptFeedback from "./ScriptFeedback";
 import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
+import MeetingDictionary from "./MeetingDictionary";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1 } = theme.colors;
 const contentGroupData = [
     { Content: () => <div>Content1</div>, Icon: Icons.ScriptIcon },
-    {
-        Content: () => <MeetingDictionary sourceLanguage={selectUser.userNativeLanguage} />,
-        Icon: Icons.DictionaryIcon,
-    },
+    { Content: () => <MeetingDictionary />, Icon: Icons.DictionaryIcon },
     { Content: () => <div>Content3</div>, Icon: Icons.TranslatorIcon },
 ];
 
@@ -580,14 +577,7 @@ const MeetingContainer = styled.div`
     justify-content: start;
     align-items: center;
     background-color: ${primary1};
-`;
-
-const SliderButtonWrapper = styled.div`
-    position: fixed;
-    top: -4%;
-    right: ${({ isOpen }) => (isOpen ? "28%" : "1%")};
-    transition: 0.3s ease-in-out;
-    z-index: 1500;
+    font-family: "Pretendard";
 `;
 
 const MeetingButtonMenu = styled(ButtonMenu)`
@@ -625,6 +615,14 @@ const ChatInput = styled.input`
     font-size: 25px;
     font-weight: 400;
     line-height: normal;
+`;
+
+const SliderButtonWrapper = styled.div`
+    position: fixed;
+    top: -4%;
+    right: ${({ isOpen }) => (isOpen ? "28%" : "1%")};
+    transition: 0.3s ease-in-out;
+    z-index: 1500;
 `;
 
 // ----------------------------------------------------------------------------------------------------

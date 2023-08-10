@@ -2,7 +2,7 @@ import instance from "./instance";
 import { getLogout, loginUser } from "./auth";
 import { getUserProfile, postSignUp } from "./user";
 import { getLanguage, getGrade } from "./language";
-
+import getTranslateResult from "./translator";
 import { getConcurrentUser, postMatching, postOpenviduToken } from "./matching";
 import { getCardCode, getCard } from "./card";
 import { postEvaluate, getRecordStatistic, postStopRecording, postStartRecording } from "./record";
@@ -17,6 +17,7 @@ export {
     postSignUp,
     getLanguage,
     getGrade,
+    getTranslateResult,
     getConcurrentUser,
     postMatching,
     postOpenviduToken,
