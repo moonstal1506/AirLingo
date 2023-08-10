@@ -1,18 +1,33 @@
 /* eslint-disable react/prop-types */
 import styled from "@emotion/styled";
 // import { useDispatch } from "react-redux";
-import { useState } from "react";
+import { useRef } from "react";
+import { useSelector } from "react-redux";
 import ScriptEditor from "@/components/ScriptEditor";
 import { TextButton } from "@/components/common/button";
+import { selectUser } from "@/features/User/UserSlice";
+import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 
-function ScriptFeedback({ publisher, subscribers }) {
-    const [text, setText] = useState("<p>1234</p>");
+function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
+    const quillRef = useRef(null);
+    const { userNickname } = useSelector(selectUser);
+    const { otherUser } = useSelector(selectMeeting);
 
-    const handleChange = (e) => {
-        setText(e);
-    };
     const handleClick = () => {
-        console.log(text);
+        const currentText = quillRef.current.getText().trim();
+        if (!currentText) {
+            alert("스크립트를 제대로 고쳐주세요.");
+            return;
+        }
+
+        console.log(currentText, currentText.split("\n"));
+    };
+
+    const makeDefaultElement = () => {
+        if (scriptData.length === 0) return "<p>Network Error! please re-login!</p>";
+        return scriptData.sentenceResponseDtoList
+            .map(({ speaker, sentence }) => `<p>${speaker}</p><p>${sentence}</p><p><br/></p>`)
+            .join("");
     };
 
     return (
@@ -28,28 +43,28 @@ function ScriptFeedback({ publisher, subscribers }) {
                     ) : (
                         <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
                     )}
-                    <div>수환</div>
+                    <div>{userNickname}(나)</div>
                 </VideoFrame>
-                {subscribers ? (
-                    subscribers.map((subscriber) => (
-                        <VideoFrame key={subscriber.stream.streamId}>
-                            <video
-                                ref={(node) => node && subscriber.addVideoElement(node)}
-                                autoPlay
-                                width="500px"
-                            />
-                            <div>수환</div>
-                        </VideoFrame>
-                    ))
-                ) : (
-                    <VideoFrame>
-                        <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
-                        <div>수환</div>
+                <HeaderMiddleBox>
+                    <TitleWrapper>스크립트 피드백</TitleWrapper>
+                    <SubTitleWrapper>
+                        제공된 스크립트에 대해 이야기하거나, <br />
+                        녹음 파일을 들으면서 스크립트를 수정해 보세요!
+                    </SubTitleWrapper>
+                </HeaderMiddleBox>
+                {subscribers.length > 0 && (
+                    <VideoFrame key={subscribers[0].stream.streamId}>
+                        <video
+                            ref={(node) => node && subscribers[0].addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                        />
+                        <div>{otherUser.userNickname}(상대방)</div>
                     </VideoFrame>
                 )}
             </HeaderContainer>
             <FeedbackContainer>
-                <ScriptEditor onChange={handleChange} text={text} />
+                <ScriptEditor quillRef={quillRef} defaultEl={makeDefaultElement()} id={sessionId} />
                 <TextButton
                     type="button"
                     shape="positive-curved-large"
@@ -60,6 +75,29 @@ function ScriptFeedback({ publisher, subscribers }) {
         </MeetingContainer>
     );
 }
+
+const TitleWrapper = styled.span`
+    color: #000;
+    text-align: center;
+    font-size: 40px;
+    font-weight: 800;
+    line-height: 44px; /* 110% */
+`;
+const SubTitleWrapper = styled.span`
+    color: #000;
+    text-align: center;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 30px;
+`;
+
+const HeaderMiddleBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 18px;
+`;
 
 const VideoFrame = styled.div`
     width: 350px;
@@ -124,6 +162,7 @@ const FeedbackContainer = styled.div`
     border-radius: 20px;
     background: #fff;
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
+    z-index: 500;
 `;
 
 export default ScriptFeedback;
