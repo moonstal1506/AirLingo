@@ -7,6 +7,7 @@ import ScriptEditor from "@/components/ScriptEditor";
 import { TextButton } from "@/components/common/button";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
+import MusicPlayer from "@/components/musicPlayer";
 
 function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
     const quillRef = useRef(null);
@@ -24,7 +25,7 @@ function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
     };
 
     const makeDefaultElement = () => {
-        if (scriptData.length === 0) return "<p>Network Error! please re-login!</p>";
+        if (!scriptData || scriptData.length === 0) return "<p>Network Error! please re-login!</p>";
         return scriptData.sentenceResponseDtoList
             .map(({ speaker, sentence }) => `<p>${speaker}</p><p>${sentence}</p><p><br/></p>`)
             .join("");
@@ -51,17 +52,21 @@ function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
                         제공된 스크립트에 대해 이야기하거나, <br />
                         녹음 파일을 들으면서 스크립트를 수정해 보세요!
                     </SubTitleWrapper>
+                    <MusicPlayer src="https://ccrma.stanford.edu/~jos/mp3/harpsi-cs.mp3" />
                 </HeaderMiddleBox>
-                {subscribers.length > 0 && (
-                    <VideoFrame key={subscribers[0].stream.streamId}>
+
+                <VideoFrame>
+                    {subscribers ? (
                         <video
                             ref={(node) => node && subscribers[0].addVideoElement(node)}
                             autoPlay
                             width="500px"
                         />
-                        <div>{otherUser.userNickname}(상대방)</div>
-                    </VideoFrame>
-                )}
+                    ) : (
+                        <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
+                    )}
+                    <div>{otherUser.userNickname}(상대방)</div>
+                </VideoFrame>
             </HeaderContainer>
             <FeedbackContainer>
                 <ScriptEditor quillRef={quillRef} defaultEl={makeDefaultElement()} id={sessionId} />

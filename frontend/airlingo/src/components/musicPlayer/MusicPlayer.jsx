@@ -80,12 +80,11 @@ MusicPlayer.propTypes = {
 };
 
 const MusicPlayerContainer = styled.div`
-    width: 406px;
+    width: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 8px;
 `;
 
 const ProgressWrapper = styled.input`
