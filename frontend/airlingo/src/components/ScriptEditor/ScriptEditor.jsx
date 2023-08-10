@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-param-reassign */
 /* eslint-disable react/prop-types */
@@ -9,38 +10,28 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
 import styled from "@emotion/styled";
 
-function ScriptEditor({ text, onChange }) {
+function ScriptEditor({ quillRef, defaultEl, id }) {
     const reactQuillRef = useRef(null);
-    const quillRef = useRef(null);
 
-    const attachQuillRefs = () => {
+    useEffect(() => {
         if (typeof reactQuillRef.current.getEditor !== "function") return;
         quillRef.current = reactQuillRef.current.getEditor();
-    };
-    useEffect(() => {
-        attachQuillRefs();
 
         const ydoc = new Y.Doc();
-        const provider = new WebrtcProvider("collab-demo-room", ydoc);
+        const provider = new WebrtcProvider(`${id}`, ydoc);
         const ytext = ydoc.getText("quill");
-
         const binding = new QuillBinding(ytext, quillRef.current, provider.awareness);
-        console.log(binding);
-    }, []);
 
-    const modulesRef = {
-        toolbar: [],
-    };
+        setTimeout(() => {
+            if (quillRef && quillRef.current && quillRef.current.getText() === "\n") {
+                quillRef.current.clipboard.dangerouslyPasteHTML(defaultEl);
+            }
+        }, 200);
+    }, [quillRef]);
 
     return (
         <Container>
-            <ReactQuill
-                ref={reactQuillRef}
-                modules={modulesRef}
-                theme="bubble"
-                onChange={onChange}
-                value={text}
-            />
+            <ReactQuill ref={reactQuillRef} theme="bubble" />
         </Container>
     );
 }
