@@ -1,4 +1,5 @@
-import instance from "./instance";
+// import instance from "./instance";
+import axios from "axios";
 import processApiResponse from "@/utils/api";
 
 // ----------------------------------------------------------------------------------------------------
@@ -6,15 +7,27 @@ import processApiResponse from "@/utils/api";
 const getSearchResult = async ({ responseFunc, data }) => {
     try {
         console.log("검색 수행");
-        const DICTIONARY_API = "/gapi/translate";
+        // const DICTIONARY_API = "https://glosbe.com/gapi/translate";
         const { from, dest, phrase } = data;
-        const response = await instance.get(
-            `${DICTIONARY_API}?from=${from}&dest=${dest}&format=json&pretty=true&phrase=${phrase}`,
-            {
-                baseURL: `https://glosbe.com`,
-                headers: { "Access-Control-Allow-Origin": `https://glosbe.com` },
-            },
-        );
+        const queryParams = {
+            from,
+            dest,
+            format: "json",
+            pretty: true,
+            phrase,
+        };
+        const customAxios = axios.create({
+            // baseURL: "/api",
+            baseURL: "https://glosbe.com",
+            timeout: 10000,
+            withCredentials: true,
+        });
+        const response = await customAxios.get("/gapi/translate", { params: queryParams });
+        //     `${DICTIONARY_API}?from=${from}&dest=${dest}&format=json&pretty=true&phrase=${phrase}`,
+        //     {
+        //         headers: { "Access-Control-Allow-Origin": `https://glosbe.com` },
+        //     },
+        // );
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

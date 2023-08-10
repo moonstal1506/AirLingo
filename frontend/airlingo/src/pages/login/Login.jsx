@@ -28,7 +28,7 @@ function Login() {
                             userAccessToken: response.headers["access-token"],
                         }),
                     );
-                    routeTo("/");
+                    routeTo("/matchhome");
                 },
                 400: () => {
                     console.log("실패!");
