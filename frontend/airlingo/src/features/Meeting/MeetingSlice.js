@@ -9,6 +9,7 @@ const initialState = {
     otherUser: {},
     meetingData: {},
     didReport: false,
+    screenMode: "FreeTalk",
 };
 
 export const MeetingSlice = createSlice({
@@ -42,6 +43,9 @@ export const MeetingSlice = createSlice({
         AddScriptData: (state, actions) => {
             state.scriptData = actions.payload.scriptData;
         },
+        AddScreenMode: (state, actions) => {
+            state.screenMode = actions.payload.screenMode;
+        },
         removeInfo: (state) => {
             state.sessionId = "";
             state.otherUser = {};
@@ -49,6 +53,7 @@ export const MeetingSlice = createSlice({
             state.meetingData = {};
             state.recordingId = "";
             state.scriptData = [];
+            state.screenMode = "FreeTalk";
         },
         removeRecordingId: (state) => {
             state.recordingId = "";
@@ -68,6 +73,7 @@ export const {
     AddInfo,
     AddDidReport,
     AddScriptData,
+    AddScreenMode,
     removeRecordingId,
     removeInfo,
 } = MeetingSlice.actions;
