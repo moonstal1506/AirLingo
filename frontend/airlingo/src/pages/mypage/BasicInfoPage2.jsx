@@ -3,6 +3,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import Dropdown from "@/components/common/dropdown";
+import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import { IconButton, TextButton } from "@/components/common/button";
 import { TextInput } from "@/components/common/input";
 import Grade from "@/components/grade/Grade";
@@ -11,7 +12,6 @@ import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
 import ValidationItem from "@/components/validationList";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.png";
-import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import { ReactComponent as KeyIcon } from "@/assets/icons/key-icon.svg";
 import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
@@ -225,7 +225,6 @@ function BasicInfoPage2() {
     };
 
     return (
-        // <BasicInfoPageContainer>
         <RightPageBox>
             <LeftPassportPages src={rightPassportPages} />
             <RightPassportPage>
@@ -247,52 +246,147 @@ function BasicInfoPage2() {
                             onChange={handleConfirmPasswordChange}
                             color={primary1}
                         />
-                    </ValidationList>
-                    <ModalButtonBox>
-                        <TextButton
-                            shape="positive-curved"
-                            text="확인"
-                            onClick={() => handlePasswordSubmit()}
-                        />
-                        <TextButton
-                            shape="positive-curved"
-                            text="취소"
-                            onClick={() => setPasswordModalOpen(false)}
-                        />
-                    </ModalButtonBox>
-                </Modal>
-            )}
-            {languageModalOpen && (
-                <Modal title="관심언어 추가" modalOpen={languageModalOpen} Icon={HeartIcon}>
-                    <InputBox>
-                        <LearningLangBox>
-                            <Dropdown
-                                width="180px"
-                                data={languages.filter(
-                                    (language) =>
-                                        ![
-                                            userProfile.userNativeLanguage.languageId,
-                                            ...userProfile.userLanguages.map(
-                                                (lang) => lang.languageId,
-                                            ),
-                                            ...learningLangs.value.map((lang) => lang.langId),
-                                        ].includes(language.id),
-                                )}
-                                iconColor="primary"
-                                shape="negative"
-                                selectedOption={selectedLang}
-                                placeholder="관심 언어 설정"
-                                onChange={setSelectedLang}
+                        <ValidationList>
+                            <ValidationItem
+                                isValid={password.valid}
+                                isDirty={password.dirty}
+                                text="비밀번호는 8 ~ 20자의 영어 대 · 소문자, 숫자, 특수문자의 조합입니다."
                             />
-                            <Dropdown
-                                width="160px"
-                                data={grades}
-                                iconColor="primary"
-                                shape="negative"
-                                selectedOption={selectedGrade}
-                                placeholder="숙련도 설정"
-                                onChange={setSelectedGrade}
+                            <ValidationItem
+                                isValid={confirmPassword.valid}
+                                isDirty={confirmPassword.dirty}
+                                text="비밀번호와 비밀번호 확인은 동일해야 합니다."
                             />
+                        </ValidationList>
+                        <ModalButtonBox>
+                            <TextButton
+                                shape="positive-curved"
+                                text="확인"
+                                onClick={() => handlePasswordSubmit()}
+                            />
+                            <TextButton
+                                shape="positive-curved"
+                                text="취소"
+                                onClick={() => setPasswordModalOpen(false)}
+                            />
+                        </ModalButtonBox>
+                    </Modal>
+                )}
+                {languageModalOpen && (
+                    <Modal title="관심언어 추가" modalOpen={languageModalOpen} Icon={HeartIcon}>
+                        <InputBox>
+                            <LearningLangBox>
+                                <Dropdown
+                                    width="180px"
+                                    data={languages.filter(
+                                        (language) =>
+                                            ![
+                                                userProfile.userNativeLanguage.languageId,
+                                                ...userProfile.userLanguages.map(
+                                                    (lang) => lang.languageId,
+                                                ),
+                                                ...learningLangs.value.map((lang) => lang.langId),
+                                            ].includes(language.id),
+                                    )}
+                                    iconColor="primary"
+                                    shape="negative"
+                                    selectedOption={selectedLang}
+                                    placeholder="관심 언어 설정"
+                                    onChange={setSelectedLang}
+                                />
+                                <Dropdown
+                                    width="160px"
+                                    data={grades}
+                                    iconColor="primary"
+                                    shape="negative"
+                                    selectedOption={selectedGrade}
+                                    placeholder="숙련도 설정"
+                                    onChange={setSelectedGrade}
+                                />
+                                <Tooltip
+                                    position={{
+                                        horizontal: "right",
+                                        vertical: "bottom",
+                                        direction: "down",
+                                    }}
+                                >
+                                    <TooltipContent />
+                                </Tooltip>
+                                <TextButton text="추가하기" onClick={addSelectedLanguage} />
+                            </LearningLangBox>
+                        </InputBox>
+                        {learningLangs.value.length > 0 && (
+                            <LearningLangList>
+                                {learningLangs.value.map((language, index) => (
+                                    // eslint-disable-next-line react/no-array-index-key
+                                    <LearningLanguageItem key={index}>
+                                        <LanguageImg src={language.langImg} alt="languageIcon" />
+                                        <LanguageNameWrapper>
+                                            {language.langLabel}
+                                        </LanguageNameWrapper>
+                                        <LanguageGradeWrapper>
+                                            {language.gradeLabel}
+                                        </LanguageGradeWrapper>
+                                        <DeleteButton
+                                            onClick={() => deleteSelectedLanguage(language)}
+                                        >
+                                            <Icons.ValidationInvalidIcon />
+                                        </DeleteButton>
+                                    </LearningLanguageItem>
+                                ))}
+                            </LearningLangList>
+                        )}
+                        <ModalButtonBox>
+                            <TextButton
+                                shape="positive-curved"
+                                text="확인"
+                                onClick={() => handleLanguageSubmit()}
+                            />
+                            <TextButton
+                                shape="positive-curved"
+                                text="취소"
+                                onClick={() => setLanguageModalOpen(false)}
+                            />
+                        </ModalButtonBox>
+                    </Modal>
+                )}
+                {quitModalOpen && (
+                    <Modal
+                        title="회원 탈퇴"
+                        modalOpen={quitModalOpen}
+                        Icon={AlertIcon}
+                        iconColor="red"
+                        titleColor="red"
+                    >
+                        <ModalDescriptionTextBox>
+                            <DescriptionTextWrapper>
+                                정말 회원 탈퇴를 진행하시겠습니까?
+                            </DescriptionTextWrapper>
+                            <WaitingTimeTextWrapper>
+                                계정이 삭제되며, 이 작업은 되돌릴 수 없습니다!
+                            </WaitingTimeTextWrapper>
+                        </ModalDescriptionTextBox>
+                        <ModalButtonBox>
+                            <TextButton
+                                shape="warning-curved"
+                                text="회원 탈퇴"
+                                onClick={() => handleDeleteUser()}
+                            />
+                            <TextButton
+                                shape="positive-curved"
+                                text="취소"
+                                onClick={() => setQuitModalOpen(false)}
+                            />
+                        </ModalButtonBox>
+                    </Modal>
+                )}
+                <LanguageContainer>
+                    <TitleContainer>
+                        <TitleBox>
+                            <TitleWrapper>관심 언어</TitleWrapper>
+                            <SubTitleWrapper>LANGUAGE WANTING TO LEARN</SubTitleWrapper>
+                        </TitleBox>
+                        <TooltipBox>
                             <Tooltip
                                 position={{
                                     horizontal: "right",
@@ -302,65 +396,27 @@ function BasicInfoPage2() {
                             >
                                 <TooltipContent />
                             </Tooltip>
-                            <TextButton text="추가하기" onClick={addSelectedLanguage} />
-                        </LearningLangBox>
-                    </InputBox>
-                    {learningLangs.value.length > 0 && (
-                        <LearningLangList>
-                            {learningLangs.value.map((language, index) => (
-                                // eslint-disable-next-line react/no-array-index-key
-                                <LearningLanguageItem key={index}>
-                                    <LanguageImg src={language.langImg} alt="languageIcon" />
-                                    <LanguageNameWrapper>{language.langLabel}</LanguageNameWrapper>
-                                    <LanguageGradeWrapper>
-                                        {language.gradeLabel}
-                                    </LanguageGradeWrapper>
-                                    <DeleteButton onClick={() => deleteSelectedLanguage(language)}>
-                                        <Icons.ValidationInvalidIcon />
-                                    </DeleteButton>
-                                </LearningLanguageItem>
-                            ))}
-                        </LearningLangList>
-                    )}
-                    <ModalButtonBox>
-                        <TextButton
-                            shape="positive-curved"
-                            text="확인"
-                            onClick={() => handleLanguageSubmit()}
-                        />
-                        <TextButton
-                            shape="positive-curved"
-                            text="취소"
-                            onClick={() => setLanguageModalOpen(false)}
+                        </TooltipBox>
+                        <IconButton
+                            shape="blacklined"
+                            icon={ModifyIcon}
+                            onClick={handleLanguageModalOpen}
                         />
                     </TitleContainer>
                     <LanguageContentBox>
-                        <LanguageBox>
-                            <LanguageFlag
-                                src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg"
-                                alt="Korean Flag"
-                            />
-                            <LanguageNameRankBox>
-                                <LanguageName>한국어</LanguageName>
-                                <LanguageRankContainer>
-                                    <LanguageRank>상급</LanguageRank>
-                                    <LanguageGrade>(C1)</LanguageGrade>
-                                </LanguageRankContainer>
-                            </LanguageNameRankBox>
-                        </LanguageBox>
-                        <LanguageBox>
-                            <LanguageFlag
-                                src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg"
-                                alt="Japanese Flag"
-                            />
-                            <LanguageNameRankBox>
-                                <LanguageName>일본어</LanguageName>
-                                <LanguageRankContainer>
-                                    <LanguageRank>상급</LanguageRank>
-                                    <LanguageGrade>(C1)</LanguageGrade>
-                                </LanguageRankContainer>
-                            </LanguageNameRankBox>
-                        </LanguageBox>
+                        {userProfile.userLanguages &&
+                            userProfile.userLanguages.map((langueage) => (
+                                <LanguageBox>
+                                    <LanguageFlag
+                                        src={languages[langueage.languageId - 1]?.img || ""}
+                                        alt="Korean Flag"
+                                    />
+                                    <LanguageNameRankBox>
+                                        <LanguageName>{langueage.languageKorName}</LanguageName>
+                                        <Grade gradeName={langueage?.gradeName || ""} />
+                                    </LanguageNameRankBox>
+                                </LanguageBox>
+                            ))}
                     </LanguageContentBox>
                     <ButtonBar>
                         <TextButton
@@ -370,75 +426,17 @@ function BasicInfoPage2() {
                             onClick={handlePasswordModalOpen}
                         />
                         <TextButton
-                            shape="positive-curved"
-                            text="취소"
-                            onClick={() => setQuitModalOpen(false)}
+                            text="회원탈퇴"
+                            width="120px"
+                            shape="warning-quit"
+                            onClick={handleQuitModalOpen}
                         />
-                    </ModalButtonBox>
-                </Modal>
-            )}
-            <LanguageContainer>
-                <TitleContainer>
-                    <TitleBox>
-                        <TitleWrapper>관심 언어</TitleWrapper>
-                        <SubTitleWrapper>LANGUAGE WANTING TO LEARN</SubTitleWrapper>
-                    </TitleBox>
-                    <TooltipBox>
-                        <Tooltip
-                            position={{
-                                horizontal: "right",
-                                vertical: "bottom",
-                                direction: "down",
-                            }}
-                        >
-                            <TooltipContent />
-                        </Tooltip>
-                    </TooltipBox>
-                    <IconButton
-                        shape="blacklined"
-                        icon={ModifyIcon}
-                        onClick={handleLanguageModalOpen}
-                    />
-                </TitleContainer>
-                <LanguageContentBox>
-                    {userProfile.userLanguages &&
-                        userProfile.userLanguages.map((langueage) => (
-                            <LanguageBox>
-                                <LanguageFlag
-                                    src={languages[langueage.languageId - 1]?.img || ""}
-                                    alt="Korean Flag"
-                                />
-                                <LanguageNameRankBox>
-                                    <LanguageName>{langueage.languageKorName}</LanguageName>
-                                    <Grade gradeName={langueage?.gradeName || ""} />
-                                </LanguageNameRankBox>
-                            </LanguageBox>
-                        ))}
-                </LanguageContentBox>
-                <ButtonBar>
-                    <TextButton
-                        text="비밀번호 변경"
-                        width="160px"
-                        shape="negative-normal"
-                        onClick={handlePasswordModalOpen}
-                    />
-                    <TextButton
-                        text="회원탈퇴"
-                        width="120px"
-                        shape="warning-quit"
-                        onClick={handleQuitModalOpen}
-                    />
-                </ButtonBar>
-            </LanguageContainer>
-        </RightPassportPage>
+                    </ButtonBar>
+                </LanguageContainer>
+            </RightPassportPage>
+        </RightPageBox>
     );
 }
-
-// const BasicInfoPageContainer = styled.div`
-//     position: relative;
-//     width: 100%;
-//     height: 100%;
-// `;
 
 const RightPageBox = styled.div`
     width: 507px;
@@ -459,6 +457,7 @@ const RightPassportPage = styled.div`
     border: 1px solid #000;
     background: #fff;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     margin-top: 50px;
