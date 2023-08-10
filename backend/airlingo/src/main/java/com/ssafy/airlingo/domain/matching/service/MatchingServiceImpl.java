@@ -29,11 +29,11 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class MatchingServiceImpl implements MatchingService {
 
-	private static final String CONCURRENT_USERS_NUMBER_URL = "http://localhost:8082/matching/waiting-users";
+    public static final int MATCHING_MILEAGE = 500;
+    private static final String CONCURRENT_USERS_NUMBER_URL = "http://localhost:8082/matching/waiting-users";
     private static final int PREMIUM_MILEAGE = 3000;
-	public static final int MATCHING_MILEAGE = 500;
 
-	private final UserRepository userRepository;
+    private final UserRepository userRepository;
     private final LanguageRepository languageRepository;
     private final UserLanguageRepository userLanguageRepository;
     private final RefreshTokenRepository refreshTokenRepository;
@@ -50,7 +50,7 @@ public class MatchingServiceImpl implements MatchingService {
         // 프리미엄 매칭 가능 여부
         if (matchingRequestDto.isPremium()) {
             if (user.isImpossiblePremiumMatching(PREMIUM_MILEAGE)) {
-                throw new NotEnoughMileageException();
+                throw new NotEnoughMileageException("현재 마일리지: " + user.getUserMileage());
             }
         }
 
