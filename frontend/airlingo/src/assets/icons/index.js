@@ -24,6 +24,10 @@ import { ReactComponent as BiometricIcon } from "@/assets/icons/biometric-icon.s
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/arrow-right-icon.svg";
 import { ReactComponent as DownArrowIcon } from "@/assets/icons/arrow-down-icon.svg";
 import { ReactComponent as WordTestIcon } from "@/assets/icons/word-test-icon.svg";
+import { ReactComponent as PauseIcon } from "@/assets/icons/pause-icon.svg";
+import { ReactComponent as ForwardIcon } from "@/assets/icons/forward-icon.svg";
+import { ReactComponent as BackwardIcon } from "@/assets/icons/backward-icon.svg";
+import { ReactComponent as PlayIcon } from "@/assets/icons/play-icon.svg";
 
 export {
     MicOnIcon,
@@ -52,4 +56,8 @@ export {
     RightArrowIcon,
     DownArrowIcon,
     WordTestIcon,
+    PauseIcon,
+    ForwardIcon,
+    BackwardIcon,
+    PlayIcon,
 };
