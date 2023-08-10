@@ -2,6 +2,7 @@ package com.ssafy.airlingo.domain.matching.service;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Queue;
 import java.util.stream.Collectors;
 
@@ -26,7 +27,7 @@ public class MatchingService {
 	private static final String URL = "http://localhost:8081/api/matching/result";
 
 	private Queue<MatchingUserDto> matchingList = new LinkedList<>();
-
+	private Queue<MatchingUserDto> matchingFailList = new LinkedList<>();
 	/**
 	 * 매칭 조건
 	 * 1. 사용자 언어
@@ -38,26 +39,29 @@ public class MatchingService {
 	@Scheduled(fixedDelay = 10000, initialDelay = 1000) // 1초 후 10초마다 동작
 	public void matching() {
 		log.info("MatchingService matching size: {}", matchingList.size());
-		if (matchingList.size() > 1) {
+		while(matchingList.size() > 1){
 			MatchingUserDto matchingUser1 = matchingList.poll();
 
 			// 매칭 가능 유저 필터링
-			List<MatchingUserDto> matchingRequestDtoList = matchingList.stream()
+			Optional<MatchingUserDto> matchingUserDto= matchingList.stream()
 				.filter(waitingUser -> isPossibleUser(matchingUser1, waitingUser))
-				.collect(Collectors.toList());
+				.findFirst();
 
 			// 매칭 실패 대기열 재진입
-			if (matchingRequestDtoList.isEmpty()) {
+			if (!matchingUserDto.isPresent()) {
 				log.info("MatchingService matching fail");
-				matchingList.add(matchingUser1);
-				return;
+				matchingFailList.add(matchingUser1);
+				continue;
 			}
 
 			// 매칭 결과 반환
-			MatchingUserDto matchingUser2 = matchingRequestDtoList.get(0);
+			MatchingUserDto matchingUser2 = matchingUserDto.get();
 			matchingList.remove(matchingUser2);
 			sendMatching(new MatchingResponseDto(matchingUser1, matchingUser2));
 		}
+
+		matchingList.addAll(matchingFailList);
+		matchingFailList = new LinkedList<>();
 	}
 
 	private boolean isPossibleUser(MatchingUserDto matchingUser, MatchingUserDto waitingUser) {
