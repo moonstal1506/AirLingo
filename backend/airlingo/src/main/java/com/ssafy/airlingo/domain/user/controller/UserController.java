@@ -52,7 +52,6 @@ import lombok.extern.slf4j.Slf4j;
 public class UserController {
 
 	private final UserService userService;
-	private final Amazon3SService amazon3SService;
 
 	@Operation(summary = "Sign Up", description = "사용자가 회원가입 합니다.")
 	@ApiResponses(value = {
