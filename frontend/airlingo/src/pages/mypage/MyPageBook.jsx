@@ -2,7 +2,7 @@ import HTMLFlipBook from "react-pageflip";
 import styled from "@emotion/styled";
 import React, { useRef } from "react";
 import {
-    MyPageHome,
+    MyPageCover,
     BasicInfoPage1,
     BasicInfoPage2,
     StatisticHome1,
@@ -12,21 +12,10 @@ import {
 function MyPageBook() {
     const pageFlipRef = useRef(null);
 
-    // // 페이지 플리핑 동작을 막는 함수
-    // const handlePageFlip = useCallback((e) => {
-    //     e.preventDefault();
-    // }, []);
-
     return (
         <MyPageContainer>
             <BookContainer>
-                <HTMLFlipBook
-                    ref={pageFlipRef}
-                    width={505}
-                    height={705}
-                    disableFlipByClick
-                    // onClick={handlePageFlip}
-                >
+                <HTMLFlipBook ref={pageFlipRef} width={505} height={705} disableFlipByClick>
                     <div style={{ width: "100%", height: "100%" }} />
                     <PageCover />
                     <Page1 />
@@ -55,7 +44,7 @@ const BookContainer = styled.div`
 const PageCover = React.forwardRef((props, ref) => {
     return (
         <div className="page" ref={ref} data-density="hard">
-            <MyPageHome />
+            <MyPageCover />
         </div>
     );
 });

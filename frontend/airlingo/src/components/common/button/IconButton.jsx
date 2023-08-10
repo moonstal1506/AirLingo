@@ -32,6 +32,14 @@ const shapeStyle = {
             transition: ease-out 0.35s;
         }
     `,
+    blacklinedlight: `
+        background-color: #ffffff;
+        border: 1px solid #000000;
+        &:hover {
+            background-color: ${primary3};
+            transition: ease-out 0.35s;
+        }
+    `,
 };
 
 // ----------------------------------------------------------------------------------------------------

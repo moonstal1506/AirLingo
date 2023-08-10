@@ -14,7 +14,7 @@ import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.
 import { ReactComponent as CloseIcon } from "@/assets/icons/close-icon.svg";
 import { ReactComponent as CameraIcon } from "@/assets/icons/camera-icon.svg";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
-import TabBar from "@/components/common/tab/TabBar.jsx";
+// import TabBar from "@/components/common/tab/TabBar.jsx";
 import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
@@ -179,176 +179,167 @@ function BasicInfoPage2() {
     ).img;
 
     return (
-        <BasicInfoPageContainer>
-            <TabBar activeTab="basicinfo" id="TabBar" />
-            <LeftPageBox id="LPBox">
-                <LeftPassportPages src={leftPassportPages} id="LPPS" />
-                <LeftPassportPage>
-                    {imageModalOpen && (
-                        <Modal
-                            title="프로필 이미지 편집"
-                            modalOpen={imageModalOpen}
-                            Icon={CameraIcon}
-                        >
-                            <ProfileImageBox>
-                                <ProfileImage src={selectedImage || defaultProfileImage} />
-                                <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
-                                    <CloseIcon />
-                                </CloseIconWrapper>
-                            </ProfileImageBox>
-
-                            <ModalButtonBox>
-                                <input
-                                    type="file"
-                                    accept="image/*"
-                                    onChange={(e) => handleImageUpload(e.target.files)}
-                                    style={{ display: "none" }}
-                                    ref={fileInputRef}
-                                />
-                                <TextButton
-                                    shape="positive-curved"
-                                    text="변경"
-                                    onClick={() => fileInputRef.current.click()}
-                                />
-                                <TextButton
-                                    shape="positive-curved"
-                                    text="삭제"
-                                    onClick={() => handleImageDelete()}
-                                />
-                                <TextButton
-                                    shape="positive-curved"
-                                    text="확인"
-                                    onClick={() => updateImage()}
-                                />
-                            </ModalButtonBox>
-                        </Modal>
-                    )}
-                    <input type="button" value="하이용ㅁ" />
-                    <ProfileContainer>
+        // <BasicInfoPageContainer>
+        //     <TabBar activeTab="basicinfo" id="TabBar" />
+        <LeftPageBox id="LPBox">
+            <LeftPassportPages src={leftPassportPages} id="LPPS" />
+            <LeftPassportPage>
+                {imageModalOpen && (
+                    <Modal title="프로필 이미지 편집" modalOpen={imageModalOpen} Icon={CameraIcon}>
                         <ProfileImageBox>
-                            <GradeBackgroundIconWrapper>
-                                <GradeBackgroundIcon />
-                            </GradeBackgroundIconWrapper>
-                            <GradeFlagIconWrapper>
-                                <GradeFlagIcon />
-                            </GradeFlagIconWrapper>
-                            <GradeTextWrapper>1</GradeTextWrapper>
-                            <ProfileImage src={image || defaultProfileImage} />
-                            <SettingIconWrapper>
-                                <SettingIcon onClick={handleImageModalOpen} />
-                            </SettingIconWrapper>
+                            <ProfileImage src={selectedImage || defaultProfileImage} />
+                            <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
+                                <CloseIcon />
+                            </CloseIconWrapper>
                         </ProfileImageBox>
 
-                        <ProfileContentContainer>
+                        <ModalButtonBox>
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleImageUpload(e.target.files)}
+                                style={{ display: "none" }}
+                                ref={fileInputRef}
+                            />
+                            <TextButton
+                                shape="positive-curved"
+                                text="변경"
+                                onClick={() => fileInputRef.current.click()}
+                            />
+                            <TextButton
+                                shape="positive-curved"
+                                text="삭제"
+                                onClick={() => handleImageDelete()}
+                            />
+                            <TextButton
+                                shape="positive-curved"
+                                text="확인"
+                                onClick={() => updateImage()}
+                            />
+                        </ModalButtonBox>
+                    </Modal>
+                )}
+                <ProfileContainer>
+                    <ProfileImageBox>
+                        <GradeBackgroundIconWrapper>
+                            <GradeBackgroundIcon />
+                        </GradeBackgroundIconWrapper>
+                        <GradeFlagIconWrapper>
+                            <GradeFlagIcon />
+                        </GradeFlagIconWrapper>
+                        <GradeTextWrapper>1</GradeTextWrapper>
+                        <ProfileImage src={image || defaultProfileImage} />
+                        <SettingIconWrapper>
+                            <SettingIcon onClick={handleImageModalOpen} />
+                        </SettingIconWrapper>
+                    </ProfileImageBox>
+
+                    <ProfileContentContainer>
+                        <TitleRowBox>
+                            <TitleBox>
+                                <TitleWrapper>닉네임</TitleWrapper>
+                                <SubTitleWrapper>NICKNAME</SubTitleWrapper>
+                            </TitleBox>
+                            <NicknameInputBox>
+                                <NicknameInputWrapper
+                                    ref={nicknameInputRef}
+                                    value={nickname}
+                                    onChange={handleNicknameChange}
+                                    onKeyDown={(event) => {
+                                        console.log("닉네임 변경 key down");
+                                        if (event.key === "Enter") {
+                                            console.log("닉네임 변경 key down 성공");
+                                            event.preventDefault();
+                                            handleUserNicknameSubmit(event);
+                                            nicknameInputRef.current.blur();
+                                        }
+                                    }}
+                                />
+                                <ModifyIcon onClick={handleUserNicknameSubmit} />
+                            </NicknameInputBox>
+                        </TitleRowBox>
+                        <TitleRowContainer>
                             <TitleRowBox>
                                 <TitleBox>
-                                    <TitleWrapper>닉네임</TitleWrapper>
-                                    <SubTitleWrapper>NICKNAME</SubTitleWrapper>
+                                    <TitleWrapper>평점</TitleWrapper>
+                                    <SubTitleWrapper>RATING</SubTitleWrapper>
                                 </TitleBox>
-                                <NicknameInputBox>
-                                    <NicknameInputWrapper
-                                        ref={nicknameInputRef}
-                                        value={nickname}
-                                        onChange={handleNicknameChange}
-                                        onKeyDown={(event) => {
-                                            console.log("닉네임 변경 key down");
-                                            if (event.key === "Enter") {
-                                                console.log("닉네임 변경 key down 성공");
-                                                event.preventDefault();
-                                                handleUserNicknameSubmit(event);
-                                                nicknameInputRef.current.blur();
-                                            }
-                                        }}
-                                    />
-                                    <ModifyIcon onClick={handleUserNicknameSubmit} />
-                                </NicknameInputBox>
+                                <ContentBox>
+                                    <ContentWrapper>{userProfile.userRating}</ContentWrapper>
+                                </ContentBox>
                             </TitleRowBox>
-                            <TitleRowContainer>
-                                <TitleRowBox>
-                                    <TitleBox>
-                                        <TitleWrapper>평점</TitleWrapper>
-                                        <SubTitleWrapper>RATING</SubTitleWrapper>
-                                    </TitleBox>
-                                    <ContentBox>
-                                        <ContentWrapper>{userProfile.userRating}</ContentWrapper>
-                                    </ContentBox>
-                                </TitleRowBox>
-                                <TitleRowBox>
-                                    <TitleBox>
-                                        <TitleWrapper>등급</TitleWrapper>
-                                        <SubTitleWrapper>CLASS</SubTitleWrapper>
-                                    </TitleBox>
-                                    <ContentBox>
-                                        <ContentWrapper>
-                                            {userProfile.userMileageGrade}
-                                        </ContentWrapper>
-                                    </ContentBox>
-                                </TitleRowBox>
-                            </TitleRowContainer>
-
-                            <TitleRowContainer>
-                                <TitleRowBox>
-                                    <TitleBox>
-                                        <TitleWrapper>대표 언어</TitleWrapper>
-                                        <SubTitleWrapper>NATIVE LANGUAGE</SubTitleWrapper>
-                                    </TitleBox>
-                                    <ContentBox>
-                                        <LanguageImg />
-
-                                        <ContentWrapper>
-                                            {userProfile.userNativeLanguage
-                                                ? userProfile.userNativeLanguage.languageKorName
-                                                : "에어"}
-                                        </ContentWrapper>
-                                    </ContentBox>
-                                </TitleRowBox>
-                                <TitleRowBox>
-                                    <TitleBox>
-                                        <TitleWrapper>누적 마일리지</TitleWrapper>
-                                        <SubTitleWrapper>TOTAL MILEAGE</SubTitleWrapper>
-                                    </TitleBox>
-                                    <ContentBox>
-                                        <ContentWrapper>
-                                            {userProfile.userTotalMileage}
-                                        </ContentWrapper>
-                                    </ContentBox>
-                                </TitleRowBox>
-                            </TitleRowContainer>
                             <TitleRowBox>
                                 <TitleBox>
-                                    <TitleWrapper>자기소개</TitleWrapper>
-                                    <SubTitleWrapper>SELF-INTRODUCTION</SubTitleWrapper>
+                                    <TitleWrapper>등급</TitleWrapper>
+                                    <SubTitleWrapper>CLASS</SubTitleWrapper>
                                 </TitleBox>
-                                <BioAreaBox>
-                                    <BioAreaWrapper
-                                        ref={bioInputRef}
-                                        value={bio}
-                                        onChange={handleBioChange}
-                                        onKeyDown={(event) => {
-                                            console.log("Bio 변경 key down");
-                                            if (event.key === "Enter") {
-                                                console.log("Bio 변경 key down 성공");
-                                                event.preventDefault();
-                                                handleUserBioSubmit(event);
-                                                bioInputRef.current.blur();
-                                            }
-                                        }}
-                                    />
-                                    <ModifyIcon onClick={handleUserBioSubmit} />
-                                </BioAreaBox>
+                                <ContentBox>
+                                    <ContentWrapper>{userProfile.userMileageGrade}</ContentWrapper>
+                                </ContentBox>
                             </TitleRowBox>
-                        </ProfileContentContainer>
-                    </ProfileContainer>
-                </LeftPassportPage>
-            </LeftPageBox>
-        </BasicInfoPageContainer>
+                        </TitleRowContainer>
+
+                        <TitleRowContainer>
+                            <TitleRowBox>
+                                <TitleBox>
+                                    <TitleWrapper>대표 언어</TitleWrapper>
+                                    <SubTitleWrapper>NATIVE LANGUAGE</SubTitleWrapper>
+                                </TitleBox>
+                                <ContentBox>
+                                    <LanguageImg />
+
+                                    <ContentWrapper>
+                                        {userProfile.userNativeLanguage
+                                            ? userProfile.userNativeLanguage.languageKorName
+                                            : "에어"}
+                                    </ContentWrapper>
+                                </ContentBox>
+                            </TitleRowBox>
+                            <TitleRowBox>
+                                <TitleBox>
+                                    <TitleWrapper>누적 마일리지</TitleWrapper>
+                                    <SubTitleWrapper>TOTAL MILEAGE</SubTitleWrapper>
+                                </TitleBox>
+                                <ContentBox>
+                                    <ContentWrapper>{userProfile.userTotalMileage}</ContentWrapper>
+                                </ContentBox>
+                            </TitleRowBox>
+                        </TitleRowContainer>
+                        <TitleRowBox>
+                            <TitleBox>
+                                <TitleWrapper>자기소개</TitleWrapper>
+                                <SubTitleWrapper>SELF-INTRODUCTION</SubTitleWrapper>
+                            </TitleBox>
+                            <BioAreaBox>
+                                <BioAreaWrapper
+                                    ref={bioInputRef}
+                                    value={bio}
+                                    onChange={handleBioChange}
+                                    onKeyDown={(event) => {
+                                        console.log("Bio 변경 key down");
+                                        if (event.key === "Enter") {
+                                            console.log("Bio 변경 key down 성공");
+                                            event.preventDefault();
+                                            handleUserBioSubmit(event);
+                                            bioInputRef.current.blur();
+                                        }
+                                    }}
+                                />
+                                <ModifyIcon onClick={handleUserBioSubmit} />
+                            </BioAreaBox>
+                        </TitleRowBox>
+                    </ProfileContentContainer>
+                </ProfileContainer>
+            </LeftPassportPage>
+        </LeftPageBox>
+        // </BasicInfoPageContainer>
     );
 }
-const BasicInfoPageContainer = styled.div`
-    position: relative;
-    width: 100%;
-    height: 100%;
-`;
+// const BasicInfoPageContainer = styled.div`
+//     position: relative;
+//     width: 100%;
+//     height: 100%;
+// `;
 
 const LeftPageBox = styled.div`
     width: 510px;
@@ -356,7 +347,7 @@ const LeftPageBox = styled.div`
 `;
 
 const LeftPassportPages = styled.img`
-    margin-top: 5px;
+    margin-top: 55px;
     margin-left: 5px;
     position: absolute;
     z-index: -1;
@@ -387,6 +378,7 @@ const LeftPassportPage = styled.div`
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-top: 50px;
 `;
 
 const ProfileContainer = styled.div`
