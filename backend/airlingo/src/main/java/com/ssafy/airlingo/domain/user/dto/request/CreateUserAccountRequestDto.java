@@ -60,7 +60,8 @@ public class CreateUserAccountRequestDto {
 			.userPassword(userPassword)
 			.userEmail(userEmail)
 			.userGoogleId("")
-			.userImgUrl("비어있음")
+			.userImgUrl(
+				"https://airlingobucket.s3.ap-northeast-2.amazonaws.com/322cbe51-5407-44f4-aa9d-08676f3a4e5d.png")
 			.userBio("비어있음")
 			.userNativeLanguage(Language.builder().languageId(userNativeLanguageId).build())
 			.userMileage(0)
