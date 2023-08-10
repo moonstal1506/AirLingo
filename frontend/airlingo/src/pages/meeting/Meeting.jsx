@@ -27,7 +27,7 @@ import {
 } from "@/components/modal/meeting";
 import ChatList from "@/components/chatList/ChatList";
 import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
-import { TextButton, FabButton, SliderButton } from "@/components/common/button";
+import { TextButton, SliderButton } from "@/components/common/button";
 import {
     AddDidReport,
     AddMeetingData,
@@ -39,6 +39,8 @@ import {
 import { selectUser } from "@/features/User/UserSlice";
 import MeetingDictionary from "./MeetingDictionary";
 import FreeTalk from "./FreeTalk";
+import ScriptFeedback from "./ScriptFeedback";
+import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -65,6 +67,7 @@ function Meeting() {
     const { routeTo } = useRouter();
     const { OV, session, publisher, setPublisher, subscribers } = useOpenVidu();
     const { message, sendMessage, chatMessage, ChangeMessages } = useChat();
+
     // Active States...
     const [activeButton, setActiveButton] = useState(null);
     const [isActiveMic, setIsActiveMic] = useState(false);
@@ -85,145 +88,154 @@ function Meeting() {
     // Data States...
     const [requestCardCode, setRequestCardCode] = useState("");
 
-    // 세션 연결 함수
-    async function connectSession() {
-        if (!session) return;
-        const response = await postOpenviduToken({
+    // // 세션 연결 함수
+
+    async function fetchToken() {
+        try {
+            const response = await postOpenviduToken({
+                responseFunc: {
+                    200: () => console.log("get Token Success"),
+                    400: () => console.log("get Token Fail"),
+                },
+                data: { sessionId },
+            });
+            return response.data.data;
+        } catch (error) {
+            console.error("Failed to fetch token", error);
+            throw error;
+        }
+    }
+
+    async function initPublisher() {
+        try {
+            return await OV.current.initPublisherAsync(undefined, {
+                audioSource: undefined,
+                videoSource: undefined,
+                publishAudio: true,
+                publishVideo: true,
+                resolution: "1280x720",
+                frameRate: 60,
+                insertMode: "APPEND",
+                mirror: "false",
+            });
+        } catch (error) {
+            console.error("Failed to init publisher", error);
+            throw error;
+        }
+    }
+
+    async function handleCardCodeSelectResponse(data) {
+        console.log("카드 선택에 대한 답을 받았다!", publisher);
+        const jsonData = JSON.parse(data);
+        if (!jsonData.agree || !publisher) {
+            console.log(
+                "상대가 내 카드 코드 선택에 동의하지 않았거나, publisher가 존재하지 않습니다.",
+            );
+            return;
+        }
+        dispatch(
+            AddMeetingData({
+                meetingData: {
+                    ...meetingData,
+                    currentCardCode: jsonData.currentCardCode,
+                    currentCard: jsonData.currentCard,
+                },
+            }),
+        );
+
+        setOpenResponseWaitModal(false);
+
+        const res = await postStartRecording({
             responseFunc: {
-                200: () => console.log("get Token Success"),
-                400: () => console.log("get Token Fail"),
+                200: (response) => {
+                    dispatch(
+                        AddRecordingId({
+                            recordingId: response.data.data.id,
+                        }),
+                    );
+                },
             },
             data: { sessionId },
         });
+        console.log(res, recordingId, "서버에서 레코딩 아이디 받아왔는데??");
+    }
 
-        session
-            .connect(response.data.data, {
-                clientData: userNickname,
-            })
-            .then(async () => {
-                const publisher = await OV.current.initPublisherAsync(undefined, {
-                    audioSource: undefined,
-                    videoSource: undefined,
-                    publishAudio: true,
-                    publishVideo: true,
-                    resolution: "1280x720",
-                    frameRate: 60,
-                    insertMode: "APPEND",
-                    mirror: "false",
+    async function handleFeedbackStartResponse(data) {
+        setOpenFeedbackStartModal(false);
+        const JsonData = JSON.parse(data);
+
+        if (!JsonData.agree) {
+            console.log("동의 되지 않았거나, 피드백 요청을 보낸 본인입니다.");
+            return;
+        }
+
+        await postStopRecording({
+            responseFunc: {
+                200: (response) => {
+                    dispatch(
+                        AddScriptData({
+                            scriptData: response.data.data,
+                        }),
+                    );
+                },
+            },
+            data: {
+                recordingId: sessionId,
+            },
+        });
+        dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
+    }
+
+    // signal 이벤트 분기처리
+    function handleSignal(event) {
+        const { data, type } = event;
+        const typeArr = type.split(":");
+        switch (typeArr[1]) {
+            case "cardcode-select-request":
+                setOpenCardRequestModal(true);
+                setRequestCardCode(data);
+                break;
+            case "cardcode-select-response":
+                handleCardCodeSelectResponse(data);
+                break;
+            case "feedback-start-request":
+                // 1. 응답 모달창을 열어준다.
+                setOpenFeedbackRequestModal(true);
+                break;
+            case "feedback-start-response":
+                handleFeedbackStartResponse(data);
+                break;
+            default:
+                console.log("없는 이벤트타입입니다.");
+        }
+    }
+
+    async function connectSession() {
+        try {
+            const token = await fetchToken();
+
+            session
+                .connect(token, { clientData: userNickname })
+                .then(async () => {
+                    const publisher = await initPublisher();
+                    session.publish(publisher);
+                    setPublisher(publisher);
+                    session.on("signal", handleSignal);
+                })
+                .catch((error) => {
+                    console.error("Error Connecting to OpenVidu", error);
                 });
-                session.publish(publisher);
-                setPublisher(publisher);
-
-                if (session) {
-                    session.on("signal", (event) => {
-                        const { data, type } = event;
-                        const typeArr = type.split(":");
-                        const processSignal = async () => {
-                            switch (typeArr[1]) {
-                                case "cardcode-select-request":
-                                    setOpenCardRequestModal(true);
-                                    setRequestCardCode(data);
-                                    break;
-
-                                case "cardcode-select-response":
-                                    console.log("카드 선택에 대한 답을 받았다!", publisher);
-
-                                    const jsonData = JSON.parse(data);
-                                    if (jsonData.agree && publisher) {
-                                        dispatch(
-                                            AddMeetingData({
-                                                meetingData: {
-                                                    ...meetingData,
-                                                    currentCardCode: jsonData.currentCardCode,
-                                                    currentCard: jsonData.currentCard,
-                                                },
-                                            }),
-                                        );
-
-                                        console.log("OpenResponseWaitModal 닫기!!!", publisher);
-                                        setOpenResponseWaitModal(false);
-
-                                        const res = await postStartRecording({
-                                            responseFunc: {
-                                                200: (response) => {
-                                                    console.log(response.data.data);
-                                                    dispatch(
-                                                        AddRecordingId({
-                                                            recordingId: response.data.data.id,
-                                                        }),
-                                                    );
-                                                },
-                                            },
-                                            data: { sessionId },
-                                        });
-                                        console.log(
-                                            res,
-                                            recordingId,
-                                            "서버에서 레코딩 아이디 받아왔는데??",
-                                        );
-                                    } else {
-                                        console.log(
-                                            "상대가 내 카드 코드 선택에 동의하지 않았습니다",
-                                        );
-                                    }
-                                    // }
-                                    break;
-
-                                case "feedback-start-request":
-                                    // 1. 응답 모달창을 열어준다.
-                                    setOpenFeedbackRequestModal(true);
-                                    break;
-
-                                case "feedback-start-response":
-                                    console.log("여기까지 오긴 왔긴 했어", meetingData);
-                                    setOpenFeedbackStartModal(false);
-                                    const curJsonData = JSON.parse(data);
-                                    console.log(
-                                        curJsonData,
-                                        recordingId,
-                                        "이제 보낼건데, 한번 보낼 수 있는지 확인!",
-                                    );
-                                    if (curJsonData.agree) {
-                                        console.log("레코딩 ID를 통해 녹음본 받기");
-                                        const res = await postStopRecording({
-                                            responseFunc: {
-                                                200: (response) => {
-                                                    dispatch(
-                                                        AddScriptData({
-                                                            scriptData: response.data.data,
-                                                        }),
-                                                    );
-                                                },
-                                            },
-                                            data: {
-                                                recordingId: sessionId,
-                                            },
-                                        });
-                                        console.log(res.data.data);
-                                        dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
-                                    } else {
-                                        console.log("거절 또는 당신은 요청을 보낸 사람입니다.");
-                                    }
-
-                                    break;
-
-                                default:
-                                    console.log("없는 이벤트타입입니다.");
-                            }
-                        };
-                        processSignal();
-                    });
-                }
-            })
-            .catch((error) => {
-                console.error("Error Connecting to OpenVidu", error);
-            });
+        } catch (error) {
+            console.error("Error in connectSession", error);
+        }
     }
 
     useEffect(() => {
         if (session) {
-            console.log(session, "  세션이 연결된다구!!!");
+            console.log(session, "Success Connection start!");
             connectSession();
+        } else {
+            console.log("Session Connection Start Fail...");
         }
     }, [session]);
 
@@ -523,12 +535,8 @@ function Meeting() {
                                 onClick={handleClickOpenFeedbackStart}
                             />
                         );
-                    case "KeywordTalk":
-                        return <div />;
                     case "Script":
-                        return <div />;
-                    case "lost":
-                        return <div />;
+                        return <ScriptFeedback publisher={publisher} subscribers={subscribers} />;
                     default:
                         return null;
                 }
@@ -537,18 +545,7 @@ function Meeting() {
             <SliderButtonWrapper isOpen={isActiveSlide}>
                 <SliderButton isOpen={isActiveSlide} onClick={handleClickSlideButton} />
             </SliderButtonWrapper>
-
-            <ButtonMenu isActiveChatSlide={isActiveChatSlide}>
-                {buttonList.map(({ buttonName, icon, onClick, category, iconColor }) => (
-                    <FabButton
-                        key={buttonName}
-                        icon={icon}
-                        onClick={onClick}
-                        category={category}
-                        iconColor={iconColor}
-                    />
-                ))}
-            </ButtonMenu>
+            <MeetingButtonMenu isActiveChatSlide={isActiveChatSlide} buttonList={buttonList} />
             <ScriptSlideMenu contentGroup={contentGroupData} slideOpen={isActiveSlide} />
             <ChatSlideMenu isOpen={isActiveChatSlide}>
                 <ChatBox>
@@ -592,18 +589,9 @@ const SliderButtonWrapper = styled.div`
     z-index: 1500;
 `;
 
-const ButtonMenu = styled.div`
-    position: fixed;
-    display: flex;
-    height: fit-content;
-    flex-shrink: 0;
-    left: 50%;
+const MeetingButtonMenu = styled(ButtonMenu)`
     bottom: ${({ isActiveChatSlide }) => (isActiveChatSlide ? "460px" : "0px")};
     transition: 0.3s ease-in-out;
-    margin-bottom: 20px;
-    gap: 20px;
-    z-index: 501;
-    transform: translate(-50%, 0);
 `;
 
 const ChatBox = styled.div`
