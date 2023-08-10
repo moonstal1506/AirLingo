@@ -1,24 +1,30 @@
 import MyPageBook from "./MyPageBook";
-import MyPageHome from "./MyPageHome";
+import MyPageCover from "./MyPageCover";
+import BasicInfoHome from "./BasicInfoHome";
 import BasicInfoPage1 from "./BasicInfoPage1";
 import BasicInfoPage2 from "./BasicInfoPage2";
+import StatisticHome from "./StatisticHome";
 import StatisticHome1 from "./StatisticHome1";
 import StatisticHome2 from "./StatisticHome2";
-import Script from "./Script";
-import StudyTimeStatistic from "./StudyTimeStatistic";
-import StudyCountStatistic from "./StudyCountStatistic";
-import WordBook from "./WordBook";
+import StatisticGraph from "./StatisticGraph";
+import StatisticGraphStudyTime from "./StatisticGraphStudyTime";
+import StatisticGraphStudyCount from "./StatisticGraphStudyCount";
 import CalendarPage from "./CalendarPage";
+import Script from "./Script";
+import WordBook from "./WordBook";
 
 export {
     MyPageBook,
-    MyPageHome,
+    MyPageCover,
+    BasicInfoHome,
     BasicInfoPage1,
     BasicInfoPage2,
+    StatisticHome,
     StatisticHome1,
     StatisticHome2,
-    StudyTimeStatistic,
-    StudyCountStatistic,
+    StatisticGraph,
+    StatisticGraphStudyTime,
+    StatisticGraphStudyCount,
     CalendarPage,
     Script,
     WordBook,

@@ -13,6 +13,7 @@ import { ReactComponent as Blue } from "@/assets/icons/language-blue-icon.svg";
 import { ReactComponent as YelloW } from "@/assets/icons/language-yellow-icon.svg";
 import { getRecordStatistic } from "@/api";
 import { selectUser } from "@/features/User/UserSlice";
+import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 
 function StudyCountStatistic() {
     const [data, setData] = useState(null);
@@ -124,82 +125,102 @@ function StudyCountStatistic() {
     }, []);
 
     return (
-        <PageLayout>
-            <Title>대화 횟수 분석</Title>
-            <SubTitle>랭커들과 대화한 횟수는 총 몇 번일까요?</SubTitle>
-            <ChartContainer>
-                {data ? (
-                    <Doughnut
-                        data={data}
-                        options={options}
-                        plugins={[centerTextPlugin, labelsPlugin]}
-                    />
-                ) : (
-                    <p>Loading...</p>
-                )}
-            </ChartContainer>
-            <LanguageContainer>
-                <LanguageRow>
-                    <LanguageBox>
-                        <RedIcon />
-                        <LanguageText>한국어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <BlueIcon />
-                        <LanguageText>영어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <OrangeIcon />
-                        <LanguageText>일본어</LanguageText>
-                    </LanguageBox>
-                </LanguageRow>
-                <LanguageRow>
-                    <LanguageBox>
-                        <PurlpleIcon />
-                        <LanguageText>프랑스어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <GreenIcon />
-                        <LanguageText>중국어</LanguageText>
-                    </LanguageBox>
-                    <LanguageBox>
-                        <YellowIcon />
-                        <LanguageText>스페인어</LanguageText>
-                    </LanguageBox>
-                </LanguageRow>
-            </LanguageContainer>
-        </PageLayout>
+        <RightPageBox>
+            <LeftPassportPages src={rightPassportPages} />
+            <RightPassportPage>
+                <PageLayout>
+                    <Title>대화 횟수 분석</Title>
+                    <SubTitle>랭커들과 대화한 횟수는 총 몇 번일까요?</SubTitle>
+                    <ChartContainer>
+                        {data ? (
+                            <Doughnut
+                                data={data}
+                                options={options}
+                                plugins={[centerTextPlugin, labelsPlugin]}
+                            />
+                        ) : (
+                            <p>Loading...</p>
+                        )}
+                    </ChartContainer>
+                    <LanguageContainer>
+                        <LanguageRow>
+                            <LanguageBox>
+                                <RedIcon />
+                                <LanguageText>한국어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <BlueIcon />
+                                <LanguageText>영어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <OrangeIcon />
+                                <LanguageText>일본어</LanguageText>
+                            </LanguageBox>
+                        </LanguageRow>
+                        <LanguageRow>
+                            <LanguageBox>
+                                <PurlpleIcon />
+                                <LanguageText>프랑스어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <GreenIcon />
+                                <LanguageText>중국어</LanguageText>
+                            </LanguageBox>
+                            <LanguageBox>
+                                <YellowIcon />
+                                <LanguageText>스페인어</LanguageText>
+                            </LanguageBox>
+                        </LanguageRow>
+                    </LanguageContainer>
+                </PageLayout>
+            </RightPassportPage>
+        </RightPageBox>
     );
 }
 
-const PageLayout = styled.div`
-    position: relative;
+const RightPageBox = styled.div`
+    width: 507px;
+    height: 705px;
+`;
+
+const LeftPassportPages = styled.img`
+    margin-top: 55px;
+    margin-left: 5px;
+    position: absolute;
+    z-index: -1;
+`;
+
+const RightPassportPage = styled.div`
     width: 500px;
     height: 700px;
+    border-radius: 0px 20px 20px 0px;
+    border: 1px solid #000;
+    background: #fff;
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
+    margin-top: 50px;
+`;
+
+const PageLayout = styled.div`
+    display: inline-flex;
+    height: 600px;
     flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
     flex-shrink: 0;
 `;
 
 const Title = styled.div`
     color: #000;
-    font-family: Pretendard;
     font-size: 40px;
-    font-style: normal;
     font-weight: 700;
-    line-height: normal;
-    margin-bottom: 40px;
 `;
 
 const SubTitle = styled.div`
     color: #000;
-    font-family: Pretendard;
     font-size: 20px;
-    font-style: normal;
     font-weight: 400;
-    line-height: normal;
 `;
 
 const ChartContainer = styled.div`
@@ -208,9 +229,6 @@ const ChartContainer = styled.div`
     height: 350px;
     justify-content: center;
     align-items: center;
-    flex-shrink: 0;
-    margin-bottom: 70px;
-    margin-top: 70px;
 `;
 
 const LanguageContainer = styled.div`
@@ -227,7 +245,6 @@ const LanguageRow = styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 40px;
 `;
 
 const LanguageBox = styled.span`
@@ -244,11 +261,8 @@ const LanguageText = styled.span`
     flex-direction: column;
     justify-content: center;
     color: var(--black, #000);
-    font-family: Pretendard;
     font-size: 20px;
-    font-style: normal;
     font-weight: 700;
-    line-height: normal;
 `;
 
 const RedIcon = styled(Red)`

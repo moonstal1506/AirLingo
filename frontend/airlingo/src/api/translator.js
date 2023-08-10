@@ -1,39 +1,19 @@
-// import instance from "./instance";
-// import instance from "./instance";
-import axios from "axios";
+import instance from "./instance";
 import processApiResponse from "@/utils/api";
 
 // ----------------------------------------------------------------------------------------------------
 
 const getTranslateResult = async ({ responseFunc, data }) => {
     try {
-        console.log("번역 수행");
         const { source, target, text } = data;
-        const { PAPAGO_CLIENT_ID, PAPAGO_CLIENT_SECRET } = import.meta.env;
         const queryParams = {
             source,
             target,
             text,
         };
-        const headers = {
-            "Content-Type": "application/x-www-form-urlencoded; charset=UTF-8",
-            "X-Naver-Client-Id": PAPAGO_CLIENT_ID,
-            "X-Naver-Client-Secret": PAPAGO_CLIENT_SECRET,
-        };
-        const customAxios = axios.create({
-            // baseURL: "/api",
-            baseURL: "https://openapi.naver.com",
-            timeout: 10000,
-            withCredentials: true,
+        const response = await instance.get("/api/word", {
+            params: queryParams,
         });
-        const response = await customAxios.post(
-            "/v1/papago/n2mt",
-            {},
-            {
-                params: queryParams,
-                headers,
-            },
-        );
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

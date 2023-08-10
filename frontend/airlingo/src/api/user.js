@@ -116,6 +116,18 @@ const deleteUser = async ({ responseFunc, data }) => {
     }
 };
 
+const updateLanguage = async ({ responseFunc, data }) => {
+    console.log(data);
+    try {
+        const response = await instance.post(`/api/user/language`, data);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        return e.response;
+    }
+};
+
 export {
     getUserProfile,
     postSignUp,
@@ -126,4 +138,5 @@ export {
     getDailyGrid,
     deleteUser,
     updateUserPassword,
+    updateLanguage,
 };

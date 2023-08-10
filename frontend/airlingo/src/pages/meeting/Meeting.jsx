@@ -43,8 +43,9 @@ import { selectUser } from "@/features/User/UserSlice";
 import FreeTalk from "./FreeTalk";
 import ScriptFeedback from "./ScriptFeedback";
 import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
-import MeetingDictionary from "./MeetingDictionary";
 import isKeyInObj from "@/utils/common";
+import MeetingDictionary from "./MeetingDictionary";
+import MeetingTranslator from "./MeetingTranslator";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -52,7 +53,7 @@ const { primary1 } = theme.colors;
 const contentGroupData = [
     { Content: () => <div>Content1</div>, Icon: Icons.ScriptIcon },
     { Content: () => <MeetingDictionary />, Icon: Icons.DictionaryIcon },
-    { Content: () => <div>Content3</div>, Icon: Icons.TranslatorIcon },
+    { Content: () => <MeetingTranslator />, Icon: Icons.TranslatorIcon },
 ];
 
 // ----------------------------------------------------------------------------------------------------
@@ -602,7 +603,6 @@ const MeetingContainer = styled.div`
     justify-content: start;
     align-items: center;
     background-color: ${primary1};
-    font-family: "Pretendard";
 `;
 
 const MeetingButtonMenu = styled(ButtonMenu)`
