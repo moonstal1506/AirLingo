@@ -119,11 +119,11 @@ function WordBook() {
     };
 
     return (
-        <WordBigContainer>
-            <BookContainer>
+        <WordBookPageContainer>
+            <PassportContainer id="PC">
+                <TabBar activeTab="wordbook" id="TabBar" />
                 <LeftPageBox id="LPBox">
                     <LeftPassportPages src={leftPassportPages} id="LPPS" />
-                    <TabBar activeTab="statistic" id="TabBar" />
                     {AllWordList.length === 0 ? (
                         <LeftPassportPage>
                             <NoWordBackgroundBox>
@@ -243,13 +243,13 @@ function WordBook() {
                                     <ModalButtonBox>
                                         {/* 첫 단어 => 테스트 취소 / 다음 단어 버튼 
                         마지막 단어 => 이전 단어 / 테스트 종료
-                        나머지 => 이전단어 / 다음 단어 */}
+                    나머지 => 이전단어 / 다음 단어 */}
                                         {/* <TextButton
                             shape="positive-curved"
                             text="테스트 취소"
                             onClick={}
-                        />
-                        <TextButton
+                            />
+                            <TextButton
                             shape="positive-curved"
                             text="다음 단어"
                             onClick={}
@@ -259,8 +259,8 @@ function WordBook() {
                             shape="positive-curved"
                             text="이전 단어"
                             onClick={}
-                        />
-                        <TextButton
+                            />
+                            <TextButton
                             shape="positive-curved"
                             text="다음 단어"
                             onClick={}
@@ -398,12 +398,14 @@ function WordBook() {
                         </RightPassportPage>
                     )}
                 </RightPageBox>
-            </BookContainer>
-        </WordBigContainer>
+            </PassportContainer>
+        </WordBookPageContainer>
     );
 }
 
-const WordBigContainer = styled.div`
+// ----------------------------------------------------------------------------------------
+
+const WordBookPageContainer = styled.div`
     width: 100%;
     height: calc(100% - 120px);
     position: relative;
@@ -412,23 +414,23 @@ const WordBigContainer = styled.div`
     flex-direction: column;
     align-items: center;
 `;
-const BookContainer = styled.div`
+
+const PassportContainer = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 151px;
     width: 1015px;
     height: 755px;
-
-    justify-content: flex-end; /* 추가 */
 `;
 
 const LeftPageBox = styled.div`
     width: 510px;
     height: 755px;
+    flex-shrink: 0;
 `;
 
 const LeftPassportPages = styled.img`
-    margin-top: 5px;
+    margin-top: 55px;
     margin-left: 5px;
     position: absolute;
     z-index: -1;
@@ -442,11 +444,16 @@ const LeftPassportPage = styled.div`
     border: 1px solid #000;
     background: #fff;
     margin-right: 10px;
+    margin-top: 50px;
+    margin-bottom: 5px;
 `;
+
 const RightPageBox = styled.div`
     width: 507px;
     height: 705px;
+    flex-shrink: 0;
 `;
+
 const RightPassportPage = styled.div`
     width: 500px;
     height: 700px;
@@ -455,8 +462,11 @@ const RightPassportPage = styled.div`
     background: #fff;
     display: flex;
     align-items: center;
+    margin-top: 50px;
     flex-direction: column;
 `;
+
+// ----------------------------------------------------------------------------------------
 
 const ButtonBox = styled.div`
     display: flex;
