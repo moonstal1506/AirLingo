@@ -137,9 +137,10 @@ public class MatchingService {
 
 	public void cancelMatching(Long userId) {
 		synchronized (lock) {
-			matchingList = (Queue<MatchingUserDto>)matchingList.stream().
+			matchingList= matchingList.stream().
 				filter(m -> !m.getUserId().equals(userId))
-				.collect(Collectors.toList());
+				.collect(Collectors.toCollection(LinkedList::new));
+
 		}
 	}
 }

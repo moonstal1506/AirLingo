@@ -33,10 +33,10 @@ function MatchQueue() {
     const stompClientRef = useRef(null);
     const matchingFunc = useCallback(
         async (stompClient) => {
-            console.log(1);
+            console.log("스톰프 연결 전");
             const { studyLanguageId, premium } = location.state;
             stompClient.connect({}, async () => {
-                console.log(2);
+                console.log("스톰프 연결 시작 후");
                 await postMatching({
                     responseFunc: {
                         400: () => {
@@ -99,6 +99,7 @@ function MatchQueue() {
     }
 
     useEffect(() => {
+        console.log("초기화 시작!");
         // 비허용 접근
         if (
             !location.state ||
@@ -111,7 +112,7 @@ function MatchQueue() {
             return () => {};
         }
 
-        console.log(3);
+        console.log("소켓설정");
         // 소켓 설정
         socketRef.current = new SockJS(VITE_SOCKET_URL);
         stompClientRef.current = stomp.over(socketRef.current);
@@ -123,23 +124,30 @@ function MatchQueue() {
 
         return () => {
             clearInterval(interval);
-            stompClientRef.current.disconnect(() => {
-                console.log("Stomp client disconnected.");
-            });
+            if (stompClientRef.current) {
+                console.log("연결 끊기!");
+                stompClientRef.current.disconnect(() => {
+                    console.log("Stomp client disconnected.");
+                });
+            }
         };
     }, []);
 
     useEffect(() => {
-        console.log(isMatching);
+        console.log(`현재 매칭중인가요? : ${isMatching}`);
         if (!isMatching && stompClientRef.current) {
             // 매칭 진행
-            console.log(4);
+            console.log("매칭진행");
             matchingFunc(stompClientRef.current);
+            return () => {};
         }
         return () => {
-            console.log(5);
-            console.log(isMatching);
-            if (!isMatching && stompClientRef.current) stompClientRef.current.disconnect();
+            console.log("RETURN");
+            console.log(`현재 매칭중인가요? : ${isMatching}`);
+            if (isMatching && stompClientRef.current) {
+                console.log("스톰프 디스 커넥트!");
+                stompClientRef.current.disconnect();
+            }
         };
     }, [isMatching]);
 
