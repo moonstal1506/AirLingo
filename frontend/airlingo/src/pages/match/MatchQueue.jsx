@@ -10,13 +10,10 @@ import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/right-arrow-icon.svg";
 import { ReactComponent as LeftArrowIcon } from "@/assets/icons/left-arrow-icon.svg";
-import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
-import { TextButton } from "@/components/common/button";
 import { postMatching } from "@/api";
 import { useRouter } from "@/hooks";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatTime } from "@/utils/format";
-import Modal from "../../components/modal";
 
 function MatchQueue() {
     const { VITE_SOCKET_URL } = import.meta.env;
@@ -26,13 +23,6 @@ function MatchQueue() {
     const { userNickname, userId } = useSelector(selectUser);
     const [expressionIdx, setExpressionIdx] = useState(0);
     const [time, setTime] = useState(0);
-    const [alertMessages, setAlertMessages] = useState([]);
-    const [alertModalOpen, setAlertModalOpen] = useState(false);
-
-    const handleAlertModalOpen = (messages) => {
-        setAlertMessages(messages);
-        setAlertModalOpen(true);
-    };
 
     const matchingFunc = useCallback(async (stompClient) => {
         const { studyLanguageId, premium } = location.state;
@@ -41,11 +31,6 @@ function MatchQueue() {
                 responseFunc: {
                     400: () => {
                         routeTo("/notfound");
-                    },
-                    490: (e) => {
-                        console.log(e.data.messages);
-                        handleAlertModalOpen(e.data.messages);
-                        // routeTo("/matchhome"); 모달 오픈되지 않고 뒤로 감
                     },
                 },
                 data: {
@@ -120,28 +105,6 @@ function MatchQueue() {
     };
     return (
         <MatchQueueContainer>
-            {alertModalOpen && (
-                <Modal
-                    title="마일리지 부족"
-                    modalOpen={alertModalOpen}
-                    Icon={AlertIcon}
-                    iconColor="red"
-                    titleColor="red"
-                    messages={alertMessages}
-                >
-                    <ModalTextBox>
-                        <ModalTextWrapper>마일리지가 부족합니다</ModalTextWrapper>
-                        <ModalSubTextWrapper>{alertMessages}</ModalSubTextWrapper>
-                    </ModalTextBox>
-                    <ModalButtonBox>
-                        <TextButton
-                            shape="positive-curved"
-                            text="확인"
-                            onClick={() => setAlertModalOpen(false)}
-                        />
-                    </ModalButtonBox>
-                </Modal>
-            )}
             <MatchQueueTitle>탑승 수속 중입니다.</MatchQueueTitle>
             <MatchQueueCommonBox>
                 <MatchQueueImgWrapper src={MatchQueueImg} alt="matchqueueimg" />
@@ -261,35 +224,6 @@ const TodayExpressionInterpretText = styled.span`
     font-size: 15px;
     font-weight: 400;
     line-height: normal;
-`;
-
-const ModalButtonBox = styled.div`
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-`;
-
-const ModalTextBox = styled.div`
-    display: flex;
-    width: 600px;
-    height: 40px;
-    flex-direction: column;
-    justify-content: center;
-    color: #000;
-    text-align: center;
-    font-size: 25px;
-    padding: 20px 0px;
-`;
-
-const ModalTextWrapper = styled.div`
-    font-weight: 400;
-    line-height: 44px;
-`;
-
-const ModalSubTextWrapper = styled.div`
-    font-size: 25px;
-    font-weight: 700;
 `;
 
 export default MatchQueue;
