@@ -10,7 +10,7 @@ import Script from "./pages/mypage/Script";
 import SignUp from "./pages/signup";
 import Meeting from "./pages/meeting";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
-import { MyPageBook, BasicInfoHome, StatisticHome, StatisticGraph } from "./pages/mypage";
+import { MyPageBook, BasicInfoHome, StatisticHome, StatisticGraph, ShopHome } from "./pages/mypage";
 
 /* fix me! 페이지 추가에 따른 등록 필요! */
 const routerData = [
@@ -145,6 +145,15 @@ const routerData = [
         path: "/wordbook",
         label: "WordBook",
         element: <WordBook />,
+        withAuth: true,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 15,
+        path: "/shop",
+        label: "Shop",
+        element: <ShopHome />,
         withAuth: true,
         headerExist: true,
         mustNotAuth: false,
