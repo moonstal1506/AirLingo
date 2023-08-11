@@ -3,10 +3,10 @@ import Modal from "../Modal";
 import { ModalTextBox, ModalTextWrapper } from "./MeetingModalStyle";
 import { DictionaryIcon } from "@/assets/icons";
 
-function ResponseWaitModal({ isOpen }) {
+function ResponseWaitModal({ title, isOpen }) {
     return (
         isOpen && (
-            <Modal zIdx={4} Icon={DictionaryIcon} title="상대방의 응답 대기">
+            <Modal zIdx={500} Icon={DictionaryIcon} title={title}>
                 <ModalTextBox>
                     <ModalTextWrapper>상대방의 응답을 대기중입니다...</ModalTextWrapper>
                 </ModalTextBox>
@@ -16,6 +16,7 @@ function ResponseWaitModal({ isOpen }) {
 }
 
 ResponseWaitModal.propTypes = {
+    title: PropTypes.string.isRequired,
     isOpen: PropTypes.bool.isRequired,
 };
 

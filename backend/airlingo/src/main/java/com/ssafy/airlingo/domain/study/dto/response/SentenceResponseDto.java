@@ -21,7 +21,7 @@ public class SentenceResponseDto {
 	@Schema(description = "문잔 내용", example = "2")
 	private String sentence;
 
-	public static SentenceResponseDto createNewSentenceResponseDto(String speaker , String sentence){
+	public static SentenceResponseDto createNewSentenceResponseDto(String speaker, String sentence) {
 		return SentenceResponseDto.builder()
 			.speaker(speaker)
 			.sentence(sentence)

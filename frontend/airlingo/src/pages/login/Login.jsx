@@ -1,16 +1,18 @@
 import styled from "@emotion/styled";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { TextButton } from "@/components/common/button";
 import { loginUser } from "@/api";
 import { useRouter } from "@/hooks";
 import { signinUser } from "@/features/User/UserSlice";
+import LoginFailModal from "@/components/modal/login/LoginFailModal";
 
 function Login() {
     const dispatch = useDispatch();
     const loginIdRef = useRef();
     const passwordRef = useRef();
     const { routeTo } = useRouter();
+    const [isOpen, setIsOpen] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,12 +33,21 @@ function Login() {
                     routeTo("/matchhome");
                 },
                 400: () => {
-                    console.log("실패!");
-                    routeTo("/");
+                    console.log("알수없는 오류로 실패!");
+                    setIsOpen(true);
+                },
+                470: () => {
+                    console.log("로그인 실패!");
+                    setIsOpen(true);
                 },
             },
             data: loginRequetDto,
         });
+    };
+
+    const handleClickLoginFailModal = () => {
+        // 로그인 실패창을 닫는다.
+        setIsOpen(false);
     };
 
     return (
@@ -115,6 +126,7 @@ function Login() {
                     </div>
                 </SocialLoginBox> */}
             </LoginContainer>
+            <LoginFailModal isOpen={isOpen} onClickAgree={() => handleClickLoginFailModal()} />
         </PageLayout>
     );
 }
@@ -164,7 +176,8 @@ const LoginBox = styled.div`
 // `;
 
 const LoginTitle = styled.div`
-    margin-bottom: 50px;
+    margin-top: 10px;
+    margin-bottom: 40px;
     display: flex;
     flex-direction: column;
     padding-top: 20px;

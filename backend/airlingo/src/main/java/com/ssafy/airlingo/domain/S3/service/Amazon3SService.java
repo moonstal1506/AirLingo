@@ -1,21 +1,23 @@
 package com.ssafy.airlingo.domain.S3.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectRequest;
 import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -125,7 +127,7 @@ public class Amazon3SService {
 		return audioPath;
 	}
 
-	public String getVoiceFileUrl(String sessionId){
+	public String getVoiceFileUrl(String sessionId) {
 		log.info("getVoiceFileUrl");
 		String key = sessionId + "/" + sessionId + ".mp3";
 		String voiceFileUrl = amazonS3Client.getUrl(bucketName, key).toString(); // 접근가능한 URL 가져오기

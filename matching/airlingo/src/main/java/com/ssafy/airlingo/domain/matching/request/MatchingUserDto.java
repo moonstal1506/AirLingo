@@ -76,6 +76,10 @@ public class MatchingUserDto {
 	@NotNull
 	@Schema(description = "누적 마일리지", example = "10000")
 	private int userTotalMileage;
+
+	@Schema(description = "매칭 실패 횟수", example = "3")
+	private int matchingFailCount;
+
 	public boolean isMatchLanguage(MatchingUserDto matchingUserDto) {
 		return this.userStudyLanguage.equals(matchingUserDto.getUserNativeLanguage().getLanguageKorName())
 			&& this.userNativeLanguage.getLanguageKorName().equals(matchingUserDto.getUserStudyLanguage());
@@ -83,5 +87,9 @@ public class MatchingUserDto {
 
 	public boolean isPossiblePremiumUser(int premiumGradeScore, int premiumUserRating) {
 		return this.userStudyLanguageGradeScore >= premiumGradeScore && this.userRating >= premiumUserRating;
+	}
+
+	public void addMatchingCount(){
+		this.matchingFailCount += 1;
 	}
 }

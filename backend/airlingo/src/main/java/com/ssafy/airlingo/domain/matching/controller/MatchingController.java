@@ -2,6 +2,7 @@ package com.ssafy.airlingo.domain.matching.controller;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -85,6 +86,22 @@ public class MatchingController {
 
 		webSocketHandler.sendSessionIdAndMatchingDataToUsers(sessionId, studyId, matchingResponseDto, userNicknames);
 	}
+
+	@Operation(summary = "Matching Fail Result", description = "매칭 실패 유저들에게 실패를 알림")
+	@PostMapping("/result-fail")
+	public void matchingFailResult(@RequestBody List<MatchingUserDto> matchingFailUserList) {
+		log.info("MatchingController_matchingFailResult -> 매칭 실패!!!");
+
+		// WebSocketHandler를 통해 매칭에 실패한 사용자들에게 동일한 sessionId를 보내기
+		// 구분자는 String이어야 하므로 userNickname을 사용함
+		List<String> userNicknames = new ArrayList<>();
+		userNicknames.addAll(matchingFailUserList.stream()
+			.map(MatchingUserDto::getUserNickname)
+			.collect(Collectors.toList()));
+
+		webSocketHandler.sendMatchingFailMessage(userNicknames);
+	}
+
 
 	@Operation(summary = "Create Connection", description = "Token 발급 및 WebSocket URL 반환")
 	@PostMapping("/{sessionId}")

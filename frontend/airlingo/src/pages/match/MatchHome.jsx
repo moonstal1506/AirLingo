@@ -48,6 +48,7 @@ function MatchHome() {
         setMileage(mileage);
         setAlertModalOpen(true);
     };
+    console.log("제발!!!");
 
     const isUserInfoValid = () =>
         userNickname &&
@@ -59,7 +60,7 @@ function MatchHome() {
     const fetchConcurrentUser = async () => {
         await getConcurrentUser({
             responseFunc: {
-                200: (response) => setConcurrentUser({ ...response.data }),
+                200: (response) => setConcurrentUser({ ...response.data.data }),
             },
         });
     };
@@ -67,6 +68,7 @@ function MatchHome() {
     useEffect(() => {
         if (isUserInfoValid()) {
             fetchConcurrentUser();
+            console.log(concurrentUser);
         }
         // else {
         //     routeTo("/");
@@ -262,7 +264,7 @@ const ModalButtonBox = styled.div`
 const MatchHomeContainer = styled.div`
     position: relative;
     width: 100%;
-    height: calc(100% - 120px);
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;

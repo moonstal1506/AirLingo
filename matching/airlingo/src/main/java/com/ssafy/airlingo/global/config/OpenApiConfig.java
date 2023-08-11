@@ -8,7 +8,7 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.info.Info;
 
 /**
- *  접속 : http://localhost:8080/swagger-ui/index.html
+ *  접속 : http://localhost:8082/swagger-ui/index.html
  */
 
 @Configuration

@@ -5,7 +5,7 @@ const initialState = {
     sessionId: "",
     recordingId: "",
     studyId: "",
-    scriptData: [],
+    scriptData: {},
     otherUser: {},
     meetingData: {},
     didReport: false,
@@ -17,37 +17,37 @@ export const MeetingSlice = createSlice({
     name: "Meeting",
     initialState,
     reducers: {
-        AddSessionId: (state, actions) => {
+        addSessionId: (state, actions) => {
             state.sessionId = actions.payload.sessionId;
         },
-        AddRecordingId: (state, actions) => {
+        addRecordingId: (state, actions) => {
             state.recordingId = actions.payload.recordingId;
         },
-        AddOtherUser: (state, actions) => {
+        addOtherUser: (state, actions) => {
             state.otherUser = actions.payload.otherUser;
         },
-        AddStudyId: (state, actions) => {
+        addStudyId: (state, actions) => {
             state.studyId = actions.payload.studyId;
         },
-        AddMeetingData: (state, actions) => {
+        addMeetingData: (state, actions) => {
             state.meetingData = actions.payload.meetingData;
         },
-        AddInfo: (state, actions) => {
+        addInfo: (state, actions) => {
             const { sessionId, otherUser, studyId } = actions.payload;
             state.sessionId = sessionId;
             state.otherUser = otherUser;
             state.studyId = studyId;
         },
-        AddDidReport: (state, actions) => {
+        addDidReport: (state, actions) => {
             state.didReport = actions.payload.didReport;
         },
-        AddScriptData: (state, actions) => {
-            state.scriptData = actions.payload.scriptData;
+        addScriptData: (state, actions) => {
+            state.scriptData = { ...state.scriptData, ...actions.payload.scriptData };
         },
-        AddScreenMode: (state, actions) => {
+        addScreenMode: (state, actions) => {
             state.screenMode = actions.payload.screenMode;
         },
-        AddIsShareOn: (state, actions) => {
+        addIsShareOn: (state, actions) => {
             state.isShareOn = actions.payload.isShareOn;
         },
         removeInfo: (state) => {
@@ -56,11 +56,17 @@ export const MeetingSlice = createSlice({
             state.studyId = "";
             state.meetingData = {};
             state.recordingId = "";
-            state.scriptData = [];
+            state.scriptData = {};
             state.screenMode = "FreeTalk";
+        },
+        removeScriptData: (state) => {
+            state.scriptData = {};
         },
         removeRecordingId: (state) => {
             state.recordingId = "";
+        },
+        removeMeetingData: (state) => {
+            state.meetingData = {};
         },
         extraReducers: (builder) => {
             builder.addCase(PURGE, () => initialState);
@@ -69,18 +75,20 @@ export const MeetingSlice = createSlice({
 });
 
 export const {
-    AddSessionId,
-    AddRecordingId,
-    AddOtherUser,
-    AddStudyId,
-    AddMeetingData,
-    AddInfo,
-    AddDidReport,
-    AddScriptData,
-    AddScreenMode,
-    AddIsShareOn,
+    addSessionId,
+    addRecordingId,
+    addOtherUser,
+    addStudyId,
+    addMeetingData,
+    addInfo,
+    addDidReport,
+    addScriptData,
+    addScreenMode,
+    addIsShareOn,
+    removeScriptData,
     removeRecordingId,
     removeInfo,
+    removeMeetingData,
 } = MeetingSlice.actions;
 export const selectMeeting = (state) => state.Meeting;
 export default MeetingSlice.reducer;

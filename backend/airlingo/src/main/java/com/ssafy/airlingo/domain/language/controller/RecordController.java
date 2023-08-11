@@ -41,7 +41,7 @@ public class RecordController {
 	@PostMapping("/record")
 	public ResponseResult evaluateUser(@Valid @RequestBody EvaluateUserRequestDto evaluateUserRequestDto) {
 		log.info("RecordController_evaluateUser");
-		if (recordService.evaluateUser(evaluateUserRequestDto)){
+		if (recordService.evaluateUser(evaluateUserRequestDto)) {
 			studyService.finishStudy(evaluateUserRequestDto);
 			return ResponseResult.successResponse;
 		}

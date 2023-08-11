@@ -1,9 +1,5 @@
 package com.ssafy.airlingo.global.openvidu;
 
-import io.openvidu.java.client.Recording;
-import io.openvidu.java.client.RecordingProperties;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +10,13 @@ import io.openvidu.java.client.ConnectionProperties;
 import io.openvidu.java.client.OpenVidu;
 import io.openvidu.java.client.OpenViduHttpException;
 import io.openvidu.java.client.OpenViduJavaClientException;
+import io.openvidu.java.client.Recording;
+import io.openvidu.java.client.RecordingProperties;
 import io.openvidu.java.client.Session;
 import io.openvidu.java.client.SessionProperties;
 import jakarta.annotation.PostConstruct;
-
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Service
@@ -40,8 +39,8 @@ public class OpenViduManager {
 	// 매칭이 완료되면 OpenVidu의 sessionId를 반환하는 메서드
 	public String createSession() throws OpenViduJavaClientException, OpenViduHttpException {
 		SessionProperties properties = new SessionProperties.Builder().build();
-		log.info("OPENVIDU_URL : {}",OPENVIDU_URL);
-		log.info("OPENVIDU_SECRET : {}",OPENVIDU_SECRET);
+		log.info("OPENVIDU_URL : {}", OPENVIDU_URL);
+		log.info("OPENVIDU_SECRET : {}", OPENVIDU_SECRET);
 		Session session = openVidu.createSession(properties);
 		return session.getSessionId();
 	}
@@ -63,7 +62,7 @@ public class OpenViduManager {
 			.hasAudio(true)
 			.hasVideo(false)
 			.build();
-		if(openviduSessionIdRepository.existsSessionId(sessionId))
+		if (openviduSessionIdRepository.existsSessionId(sessionId))
 			return null;
 		Recording recording = openVidu.startRecording(sessionId, properties);
 		openviduSessionIdRepository.saveSessionId(sessionId);
@@ -73,7 +72,7 @@ public class OpenViduManager {
 	}
 
 	public Recording stopRecording(String recordingId) throws OpenViduJavaClientException, OpenViduHttpException {
-		if(!openviduSessionIdRepository.existsSessionId(recordingId))
+		if (!openviduSessionIdRepository.existsSessionId(recordingId))
 			return null;
 
 		Recording recording = openVidu.stopRecording(recordingId);

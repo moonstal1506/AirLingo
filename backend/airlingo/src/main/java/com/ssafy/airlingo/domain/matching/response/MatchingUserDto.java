@@ -7,6 +7,7 @@ import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import com.ssafy.airlingo.domain.language.dto.response.MileageGrade;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.entity.User;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -82,6 +83,9 @@ public class MatchingUserDto {
 	@Schema(description = "마일리지 등급", example = "프레스티지")
 	private String mileageGrade;
 
+	@Schema(description = "매칭 실패 횟수", example = "3")
+	private int matchingFailCount;
+
 	public static MatchingUserDto toMatchingUserDto(User user, UserLanguage userLanguage, boolean premium) {
 		return MatchingUserDto.builder()
 			.userId(user.getUserId())
@@ -92,8 +96,10 @@ public class MatchingUserDto {
 			.userStudyLanguage(userLanguage.getLanguage().getLanguageKorName())
 			.userStudyLanguageGradeName(userLanguage.getGrade().getGradeName())
 			.userStudyLanguageGradeScore(userLanguage.getGrade().getGradeScore())
-			.userInterestLanguages(user.getUserLanguages().stream()
-				.map(userInterestLanguage -> userInterestLanguage.getLanguage().toLanguageDto()).collect(Collectors.toList()))
+			.userInterestLanguages(user.getUserLanguages()
+				.stream()
+				.map(userInterestLanguage -> userInterestLanguage.getLanguage().toLanguageDto())
+				.collect(Collectors.toList()))
 			.userRating(user.getUserRating())
 			.userBio(user.getUserBio())
 			.premium(premium)
