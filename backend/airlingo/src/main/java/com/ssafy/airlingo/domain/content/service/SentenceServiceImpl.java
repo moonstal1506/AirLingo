@@ -27,7 +27,7 @@ public class SentenceServiceImpl implements SentenceService {
 	private final SentenceRepository sentenceRepository;
 
 	@Override
-	public SentenceResponseDto getSentence(){
+	public SentenceResponseDto getSentence() {
 		log.info("SentenceService_getSentence");
 		List<Sentence> sentences = sentenceRepository.findAll();
 		Collections.shuffle(sentences);

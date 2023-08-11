@@ -37,7 +37,7 @@ public class Card {
 	@Column(nullable = false)
 	private String cardKor;
 
-	public CardResponseDto toCardResponseDto(String languageCode){
+	public CardResponseDto toCardResponseDto(String languageCode) {
 		return CardResponseDto.builder()
 			.cardId(cardId)
 			.subject(languageCode.equals(LanguageCode.KOR.toString())

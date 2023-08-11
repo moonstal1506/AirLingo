@@ -10,6 +10,7 @@ import org.json.simple.parser.JSONParser;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.json.simple.parser.ParseException;
+
 import com.ssafy.airlingo.domain.S3.service.Amazon3SService;
 import com.ssafy.airlingo.domain.content.entity.Card;
 import com.ssafy.airlingo.domain.content.repository.CardRepository;
@@ -24,8 +25,10 @@ import com.ssafy.airlingo.domain.study.repository.ScriptRepository;
 import com.ssafy.airlingo.domain.study.repository.StudyRepository;
 import com.ssafy.airlingo.global.util.ClovaSpeechClient;
 import com.ssafy.airlingo.global.exception.NotExistScriptException;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
@@ -52,7 +55,9 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	@Transactional
-	public ScriptAfterSTTResponseDto createScript(String sessionId , Long studyId , Long cardId) throws IOException, ParseException {
+	public ScriptAfterSTTResponseDto createScript(String sessionId, Long studyId, Long cardId) throws
+		IOException,
+		ParseException {
 		log.info("ScriptServiceImpl_createScript || 녹음 파일 s3저장 및 스크립트 생성");
 		Study study = studyRepository.findById(studyId).get();
 		Card card = cardRepository.findById(cardId).get();
@@ -61,7 +66,8 @@ public class ScriptServiceImpl implements ScriptService {
 		String voiceFileUrl = amazon3SService.getVoiceFileUrl(sessionId);
 		List<SentenceResponseDto> sentenceResponseDtoList = voiceFileSTT(voiceFileUrl);
 		Long scriptId = scriptRepository.save(Script.createNewScript(study, card, voiceFileUrl)).getScriptId();
-		return ScriptAfterSTTResponseDto.createScriptAfterSttResponseDto(scriptId,voiceFileUrl,sentenceResponseDtoList);
+		return ScriptAfterSTTResponseDto.createScriptAfterSttResponseDto(scriptId, voiceFileUrl,
+			sentenceResponseDtoList);
 	}
 
 	@Override
@@ -87,16 +93,16 @@ public class ScriptServiceImpl implements ScriptService {
 		requestEntity.setLanguage("enko");
 
 		String result = clovaSpeechClient.url(audioPath, requestEntity);
-		log.info("STT RESULT : {}",result);
+		log.info("STT RESULT : {}", result);
 
 		JSONParser parser = new JSONParser();
-		JSONObject parse = (JSONObject) parser.parse(result);
-		log.info("STT JSON RESULT : {}",parse);
-		JSONArray segments = (JSONArray) parse.get("segments");
+		JSONObject parse = (JSONObject)parser.parse(result);
+		log.info("STT JSON RESULT : {}", parse);
+		JSONArray segments = (JSONArray)parse.get("segments");
 		return sttResultToSentenceResponseDto(segments);
 	}
 
-	private List<SentenceResponseDto> sttResultToSentenceResponseDto(JSONArray segments){
+	private List<SentenceResponseDto> sttResultToSentenceResponseDto(JSONArray segments) {
 		log.info("STT결과 JSON TO STRING");
 		List<SentenceResponseDto> sentenceResponseDtoList = new ArrayList<>();
 		String content = "";
@@ -110,7 +116,7 @@ public class ScriptServiceImpl implements ScriptService {
 			sentenceResponseDtoList.add(newSentenceResponseDto);
 			content += (name + " : " + text) + '\n';
 		}
-		log.info("STT결과 : {}",content);
+		log.info("STT결과 : {}", content);
 		return sentenceResponseDtoList;
 	}
 }

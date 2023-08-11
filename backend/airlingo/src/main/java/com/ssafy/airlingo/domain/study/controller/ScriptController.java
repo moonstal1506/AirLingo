@@ -12,12 +12,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
 
 import com.ssafy.airlingo.domain.study.dto.request.ModifyScriptContentRequestDto;
 import com.ssafy.airlingo.domain.study.service.LettuceLockOpenviduService;
 import com.ssafy.airlingo.domain.study.service.ScriptService;
-import com.ssafy.airlingo.global.openvidu.OpenViduManager;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
 
@@ -74,13 +72,13 @@ public class ScriptController {
 	@Operation(summary = "Save script Entity before feedback", description = "스크립트 생성")
 	@PostMapping
 	public ResponseResult createScript(@RequestParam String sessionId,
-									   @RequestParam Long studyId,
-									   @RequestParam Long cardId) throws
+		@RequestParam Long studyId,
+		@RequestParam Long cardId) throws
 
 		IOException,
 		ParseException {
 		log.info("ScriptController_CreateScript");
-		return new SingleResponseResult<>(scriptService.createScript(sessionId,studyId,cardId));
+		return new SingleResponseResult<>(scriptService.createScript(sessionId, studyId, cardId));
 	}
 
 	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")

@@ -18,7 +18,7 @@ public enum ExceptionCode {
 	EXPIRED_REFRESH_TOKEN_EXCEPTION(480, "Refresh Token이 만료되었습니다."),
 	NOT_ENOUGH_MILEAGE_EXCEPTION(490, "마일리지가 부족합니다."),
 	EMPTY_IMAGE_EXCEPTION(491, "사진 파일이 비어 있습니다."),
-	EMPTY_STUDY_LIST_EXCEPTION(492,"스터디 리스트가 존재하지 않습니다."),
+	EMPTY_STUDY_LIST_EXCEPTION(492, "스터디 리스트가 존재하지 않습니다."),
 	SERVER_EXCEPTION(500, "서버에서 예측하지 못한 에러가 발생했습니다.");
 
 	private final int errorCode;
@@ -29,4 +29,3 @@ public enum ExceptionCode {
 		this.errorMessage = errorMessage;
 	}
 }
-

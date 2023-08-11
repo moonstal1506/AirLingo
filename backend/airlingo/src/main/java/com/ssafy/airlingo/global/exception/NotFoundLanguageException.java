@@ -9,4 +9,3 @@ public class NotFoundLanguageException extends RuntimeException {
 		super(message);
 	}
 }
-

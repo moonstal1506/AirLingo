@@ -50,8 +50,9 @@ public class LanguageController {
 
 	@Operation(summary = "Get Translated Word", description = "번역된 단어 조회")
 	@GetMapping("/word")
-	public ResponseResult getTranslatedWord(@RequestParam String source,@RequestParam String target,@RequestParam String text) {
+	public ResponseResult getTranslatedWord(@RequestParam String source, @RequestParam String target,
+		@RequestParam String text) {
 		log.info("LanguageController_getTranslatedWord -> 파파고 API 사용");
-		return new SingleResponseResult<>(papagoService.getTranslatedWord(source,target,text));
+		return new SingleResponseResult<>(papagoService.getTranslatedWord(source, target, text));
 	}
 }

@@ -1,6 +1,10 @@
 package com.ssafy.airlingo.global.util;
 
-import com.google.gson.Gson;
+import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
@@ -13,11 +17,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
 
-import java.io.File;
-import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.Gson;
 
 @Service
 public class ClovaSpeechClient {
@@ -92,57 +92,75 @@ public class ClovaSpeechClient {
 		//comma separated words
 		private String forbiddens;
 		private Diarization diarization;
+
 		public String getLanguage() {
 			return language;
 		}
+
 		public void setLanguage(String language) {
 			this.language = language;
 		}
+
 		public String getCompletion() {
 			return completion;
 		}
+
 		public void setCompletion(String completion) {
 			this.completion = completion;
 		}
+
 		public String getCallback() {
 			return callback;
 		}
+
 		public Boolean getWordAlignment() {
 			return wordAlignment;
 		}
+
 		public void setWordAlignment(Boolean wordAlignment) {
 			this.wordAlignment = wordAlignment;
 		}
+
 		public Boolean getFullText() {
 			return fullText;
 		}
+
 		public void setFullText(Boolean fullText) {
 			this.fullText = fullText;
 		}
+
 		public void setCallback(String callback) {
 			this.callback = callback;
 		}
+
 		public Map<String, Object> getUserdata() {
 			return userdata;
 		}
+
 		public void setUserdata(Map<String, Object> userdata) {
 			this.userdata = userdata;
 		}
+
 		public String getForbiddens() {
 			return forbiddens;
 		}
+
 		public void setForbiddens(String forbiddens) {
 			this.forbiddens = forbiddens;
 		}
+
 		public List<Boosting> getBoostings() {
 			return boostings;
 		}
+
 		public void setBoostings(List<Boosting> boostings) {
 			this.boostings = boostings;
 		}
+
 		public Diarization getDiarization() {
 			return diarization;
 		}
+
 		public void setDiarization(Diarization diarization) {
 			this.diarization = diarization;
 		}
@@ -185,12 +203,11 @@ public class ClovaSpeechClient {
 		return execute(httpPost);
 	}
 
-
 	private String execute(HttpPost httpPost) {
-		System.out.println("execute" );
+		System.out.println("execute");
 		try (final CloseableHttpResponse httpResponse = httpClient.execute(httpPost)) {
 			final HttpEntity entity = httpResponse.getEntity();
-			System.out.println("execute2" );
+			System.out.println("execute2");
 			return EntityUtils.toString(entity, StandardCharsets.UTF_8);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

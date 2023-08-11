@@ -54,7 +54,7 @@ public class Script extends BaseTimeEntity {
 	@Column(nullable = false, length = 100)
 	private String scriptUrl;
 
-	public ScriptResponseDto toDto(){
+	public ScriptResponseDto toDto() {
 		return ScriptResponseDto.builder()
 			.scriptId(this.getScriptId())
 			.scriptContent(this.getScriptContent())
@@ -66,7 +66,7 @@ public class Script extends BaseTimeEntity {
 			.build();
 	}
 
-	public static Script createNewScript(Study study , Card card , String scriptUrl){
+	public static Script createNewScript(Study study, Card card, String scriptUrl) {
 		return Script.builder()
 			.scriptContent("")
 			.card(card)
@@ -75,7 +75,7 @@ public class Script extends BaseTimeEntity {
 			.build();
 	}
 
-	public void modifyScriptContent(String scriptContent){
+	public void modifyScriptContent(String scriptContent) {
 		this.scriptContent = scriptContent;
 	}
 }

@@ -26,24 +26,29 @@ public class PapagoService {
 
 	private static final String apiURL = "https://openapi.naver.com/v1/papago/n2mt";
 
-	public String getTranslatedWord(String source, String target , String text){
+	public String getTranslatedWord(String source, String target, String text) {
 		Map<String, String> requestHeaders = new HashMap<>();
 		requestHeaders.put("X-Naver-Client-Id", clientId);
 		requestHeaders.put("X-Naver-Client-Secret", clientSecret);
 
-		String responseBody = post(apiURL, requestHeaders, text,source,target);
+		String responseBody = post(apiURL, requestHeaders, text, source, target);
 		JsonParser parser = new JsonParser();
 		JsonObject jsonObject = parser.parse(responseBody).getAsJsonObject();
-		String translatedText = jsonObject.getAsJsonObject("message").getAsJsonObject("result").get("translatedText").getAsString();
+		String translatedText = jsonObject.getAsJsonObject("message")
+			.getAsJsonObject("result")
+			.get("translatedText")
+			.getAsString();
 		return translatedText;
 	}
 
-	private static String post(String apiUrl, Map<String, String> requestHeaders, String text , String source, String target) {
+	private static String post(String apiUrl, Map<String, String> requestHeaders, String text, String source,
+		String target) {
 		HttpURLConnection con = connect(apiUrl);
-		String postParams = "source="+ source +"&target="+target+"&text=" + text; //원본언어: 한국어 (ko) -> 목적언어: 영어 (en)
+		String postParams =
+			"source=" + source + "&target=" + target + "&text=" + text; //원본언어: 한국어 (ko) -> 목적언어: 영어 (en)
 		try {
 			con.setRequestMethod("POST");
-			for(Map.Entry<String, String> header :requestHeaders.entrySet()) {
+			for (Map.Entry<String, String> header : requestHeaders.entrySet()) {
 				con.setRequestProperty(header.getKey(), header.getValue());
 			}
 
@@ -66,7 +71,7 @@ public class PapagoService {
 		}
 	}
 
-	private static HttpURLConnection connect(String apiUrl){
+	private static HttpURLConnection connect(String apiUrl) {
 		try {
 			URL url = new URL(apiUrl);
 			return (HttpURLConnection)url.openConnection();
@@ -77,7 +82,7 @@ public class PapagoService {
 		}
 	}
 
-	private static String readBody(InputStream body){
+	private static String readBody(InputStream body) {
 		InputStreamReader streamReader = new InputStreamReader(body);
 
 		try (BufferedReader lineReader = new BufferedReader(streamReader)) {
