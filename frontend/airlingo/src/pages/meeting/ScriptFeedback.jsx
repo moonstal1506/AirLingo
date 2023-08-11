@@ -32,7 +32,7 @@ function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
     };
 
     return (
-        <MeetingContainer>
+        <>
             <HeaderContainer>
                 <VideoFrame>
                     {publisher ? (
@@ -42,7 +42,7 @@ function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
                             width="500px"
                         />
                     ) : (
-                        <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
+                        <PlaceholderBox>카메라를 로딩하고 있습니다.</PlaceholderBox>
                     )}
                     <div>{userNickname}(나)</div>
                 </VideoFrame>
@@ -63,7 +63,7 @@ function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
                             width="500px"
                         />
                     ) : (
-                        <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
+                        <PlaceholderBox>카메라를 로딩하고 있습니다.</PlaceholderBox>
                     )}
                     <div>{otherUser.userNickname}(상대방)</div>
                 </VideoFrame>
@@ -77,7 +77,7 @@ function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
                     text="피드백 끝내기"
                 />
             </FeedbackContainer>
-        </MeetingContainer>
+        </>
     );
 }
 
@@ -122,15 +122,6 @@ const VideoFrame = styled.div`
     font-weight: 700;
     line-height: normal;
 `;
-const MeetingContainer = styled.div`
-    width: 100vw;
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: center;
-    background-color: ${(props) => props.theme.colors.primary1};
-`;
 
 const HeaderContainer = styled.div`
     width: 1250px;
@@ -142,7 +133,7 @@ const HeaderContainer = styled.div`
     flex-direction: row;
 `;
 
-const PlacholderBox = styled.div`
+const PlaceholderBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;

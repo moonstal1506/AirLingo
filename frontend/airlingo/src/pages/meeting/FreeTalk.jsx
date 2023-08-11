@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
@@ -5,24 +6,31 @@ import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import isKeyInObj from "@/utils/common";
 import { TextButton } from "@/components/common/button";
 
-function FreeTalk({ publisher, subscribers, onClick }) {
-    const { meetingData } = useSelector(selectMeeting);
+// ----------------------------------------------------------------------------------------------------
+
+function FreeTalk({ publisher, subscribers, screenPublisher, screenSubscribers, onClick }) {
+    const { isShareOn, meetingData } = useSelector(selectMeeting);
 
     return (
         <>
             <VideoContainer>
                 <VideoFrame>
-                    {publisher ? (
+                    {publisher && !isShareOn ? (
                         <video
                             ref={(node) => node && publisher.addVideoElement(node)}
                             autoPlay
                             width="500px"
                         />
+                    ) : screenPublisher && isShareOn ? (
+                        <video
+                            ref={(node) => node && screenPublisher.addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                        />
                     ) : (
-                        <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
+                        <PlaceholderBox>카메라를 로딩하고 있습니다.</PlaceholderBox>
                     )}
                 </VideoFrame>
-
                 {subscribers.length > 0 && (
                     <VideoFrame key={subscribers[0].stream.streamId}>
                         <video
@@ -30,6 +38,17 @@ function FreeTalk({ publisher, subscribers, onClick }) {
                             autoPlay
                             width="500px"
                         />
+                        <div>일반 구독자</div>
+                    </VideoFrame>
+                )}
+                {screenSubscribers.length > 0 && (
+                    <VideoFrame key={screenSubscribers[0].stream.streamId}>
+                        <video
+                            ref={(node) => node && screenSubscribers[0].addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                        />
+                        <div>화면 공유 구독자</div>
                     </VideoFrame>
                 )}
             </VideoContainer>
@@ -38,7 +57,7 @@ function FreeTalk({ publisher, subscribers, onClick }) {
                 <TopicContent>
                     {meetingData && isKeyInObj(meetingData, "currentCard")
                         ? meetingData.currentCard.subject
-                        : "없음"}
+                        : "프리토킹"}
                 </TopicContent>
                 {meetingData && isKeyInObj(meetingData, "currentCard") && (
                     <TextButton
@@ -53,6 +72,8 @@ function FreeTalk({ publisher, subscribers, onClick }) {
     );
 }
 
+// ----------------------------------------------------------------------------------------------------
+
 const VideoContainer = styled.div`
     display: flex;
     align-items: start;
@@ -64,7 +85,7 @@ const VideoFrame = styled.div`
     width: 500px;
 `;
 
-const PlacholderBox = styled.div`
+const PlaceholderBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
@@ -100,5 +121,7 @@ const TopicContent = styled.div`
     font-weight: 700;
     font-size: 50px;
 `;
+
+// ----------------------------------------------------------------------------------------------------
 
 export default FreeTalk;

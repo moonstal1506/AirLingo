@@ -5,7 +5,7 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter, useOpenVidu, useChat } from "@/hooks";
+import { useRouter, useOpenVidu, useChat, useScreenShare } from "@/hooks";
 import {
     getCard,
     postOpenviduToken,
@@ -38,6 +38,7 @@ import {
     AddScriptData,
     removeRecordingId,
     AddScreenMode,
+    AddIsShareOn,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
 import FreeTalk from "./FreeTalk";
@@ -69,6 +70,7 @@ function Meeting() {
         studyId,
         recordingId,
         screenMode,
+        isShareOn,
         scriptData,
     } = useSelector(selectMeeting);
     const { userId, userNickname } = useSelector(selectUser);
@@ -76,6 +78,8 @@ function Meeting() {
     // hooks Area...
     const { routeTo } = useRouter();
     const { OV, session, publisher, setPublisher, subscribers } = useOpenVidu();
+    const { screenOV, screenSession, screenPublisher, setScreenPublisher, screenSubscribers } =
+        useScreenShare();
     const { message, sendMessage, chatMessage, ChangeMessages } = useChat();
 
     // Active States...
@@ -98,8 +102,8 @@ function Meeting() {
     // Data States...
     const [requestCardCode, setRequestCardCode] = useState("");
 
+    console.log("마! 이거 지금 뭐냐? 무슨 일이 벌어지는 거야:", isShareOn);
     // 세션 연결 함수
-
     async function fetchToken() {
         try {
             const response = await postOpenviduToken({
@@ -126,10 +130,22 @@ function Meeting() {
                 resolution: "1280x720",
                 frameRate: 60,
                 insertMode: "APPEND",
-                mirror: "false",
+                mirror: false,
             });
         } catch (error) {
             console.error("Failed to init publisher", error);
+            throw error;
+        }
+    }
+
+    async function initScreenPublisher() {
+        try {
+            return await screenOV.current.initPublisherAsync(undefined, {
+                videoSource: "screen",
+                mirror: false,
+            });
+        } catch (error) {
+            console.error("Failed to init screenPublisher", error);
             throw error;
         }
     }
@@ -256,12 +272,46 @@ function Meeting() {
             session
                 .connect(token, { clientData: userNickname })
                 .then(async () => {
-                    const publisher = await initPublisher();
-                    session.publish(publisher);
-                    setPublisher(publisher);
+                    const curPublisher = await initPublisher();
+                    session.publish(curPublisher);
+                    setPublisher(curPublisher);
                 })
                 .catch((error) => {
                     console.error("Error Connecting to OpenVidu", error);
+                });
+        } catch (error) {
+            console.error("Error in connectSession", error);
+        }
+    }
+
+    async function connectScreenShare() {
+        try {
+            const token = await fetchToken();
+
+            screenSession
+                .connect(token, { clientData: userNickname })
+                .then(async () => {
+                    const curScreenPublisher = await initScreenPublisher();
+                    curScreenPublisher.once("accessAllowed", () => {
+                        curScreenPublisher.stream
+                            .getMediaStream()
+                            .getVideoTracks()[0]
+                            .addEventListener("ended", () => {
+                                console.log('User pressed the "Stop sharing" button');
+                            });
+                        screenSession.publish(curScreenPublisher);
+                        setScreenPublisher(curScreenPublisher);
+                    });
+                    curScreenPublisher.once("accessDenied", () => {
+                        console.warn("ScreenShare: Access Denied");
+                    });
+                })
+                .catch((error) => {
+                    console.warn(
+                        "There was an error connecting to the session:",
+                        error.code,
+                        error.message,
+                    );
                 });
         } catch (error) {
             console.error("Error in connectSession", error);
@@ -276,6 +326,16 @@ function Meeting() {
             console.log("세션 변경 실패!!!");
         }
     }, [session]);
+
+    useEffect(() => {
+        if (isShareOn) {
+            console.log("화면 공유!!!");
+            connectScreenShare();
+        } else if (!isShareOn && screenSession) {
+            screenSession.disconnect();
+            console.log("화면 공유 해제!!!");
+        }
+    }, [screenSession, isShareOn]);
 
     useEffect(() => {
         console.log(scriptData, screenMode);
@@ -338,6 +398,11 @@ function Meeting() {
             return "Share";
         });
         console.log("Share");
+        dispatch(
+            AddIsShareOn({
+                isShareOn: !isShareOn,
+            }),
+        );
     };
 
     const handleCardClick = () => {
@@ -593,6 +658,8 @@ function Meeting() {
                             <FreeTalk
                                 publisher={publisher}
                                 subscribers={subscribers}
+                                screenPublisher={screenPublisher}
+                                screenSubscribers={screenSubscribers}
                                 onClick={handleClickOpenFeedbackStart}
                             />
                         );

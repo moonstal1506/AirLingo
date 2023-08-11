@@ -10,6 +10,7 @@ const initialState = {
     meetingData: {},
     didReport: false,
     screenMode: "FreeTalk",
+    isShareOn: false,
 };
 
 export const MeetingSlice = createSlice({
@@ -46,6 +47,9 @@ export const MeetingSlice = createSlice({
         AddScreenMode: (state, actions) => {
             state.screenMode = actions.payload.screenMode;
         },
+        AddIsShareOn: (state, actions) => {
+            state.isShareOn = actions.payload.isShareOn;
+        },
         removeInfo: (state) => {
             state.sessionId = "";
             state.otherUser = {};
@@ -74,6 +78,7 @@ export const {
     AddDidReport,
     AddScriptData,
     AddScreenMode,
+    AddIsShareOn,
     removeRecordingId,
     removeInfo,
 } = MeetingSlice.actions;
