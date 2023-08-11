@@ -1,6 +1,7 @@
 /* eslint-disable react/no-array-index-key */
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
+import { useRef, useEffect } from "react";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import ProfileBar from "@/components/profileBar";
 import { selectUser } from "@/features/User/UserSlice";
@@ -9,8 +10,17 @@ function MeetingScript() {
     const { chatList, otherUser } = useSelector(selectMeeting);
     const { userNickname, userImgUrl } = useSelector(selectUser);
 
+    const scriptContainerRef = useRef(null);
+
+    useEffect(() => {
+        if (scriptContainerRef.current) {
+            const container = scriptContainerRef.current;
+            container.scrollTop = container.scrollHeight;
+        }
+    }, [chatList]);
+
     return (
-        <ScriptContainer>
+        <ScriptContainer ref={scriptContainerRef}>
             {chatList &&
                 chatList.length > 0 &&
                 chatList.map(({ isMe, text }, idx) => (
