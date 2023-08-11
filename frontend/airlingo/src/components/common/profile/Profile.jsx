@@ -11,7 +11,7 @@ function Profile({ src, size }) {
 
 Profile.propTypes = {
     src: PropTypes.string.isRequired,
-    size: PropTypes.oneOf(["small", "normal", "large"]),
+    size: PropTypes.oneOf(["tiny", "small", "normal", "large"]),
 };
 
 Profile.defaultProps = {
