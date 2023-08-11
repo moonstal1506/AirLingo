@@ -104,7 +104,7 @@ public class MatchingUserDto {
 			.userBio(user.getUserBio())
 			.premium(premium)
 			.userTotalMileage(user.getUserTotalMileage())
-			.mileageGrade(MileageGrade.getMileageGrade(user.getUserTotalMileage()))
+			.mileageGrade(MileageGrade.getMileageGrade(user.getUserTotalMileage()).getMileageGradeName())
 			.build();
 	}
 }

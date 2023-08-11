@@ -55,6 +55,7 @@ function BasicInfoPage1() {
             await getUserProfile({
                 responseFunc: {
                     200: (response) => {
+                        console.log(response.data.data);
                         setUserProfile({ ...response.data.data });
                     },
                 },
@@ -224,7 +225,9 @@ function BasicInfoPage1() {
                         <GradeFlagIconWrapper>
                             <GradeFlagIcon />
                         </GradeFlagIconWrapper>
-                        <GradeTextWrapper>1</GradeTextWrapper>
+                        <GradeTextWrapper>
+                            {userProfile.userMileageGrade?.mileageRank}
+                        </GradeTextWrapper>
                         <ProfileImage src={image || defaultProfileImage} />
                         <SettingIconWrapper>
                             <SettingIcon onClick={handleImageModalOpen} />
@@ -271,7 +274,9 @@ function BasicInfoPage1() {
                                     <SubTitleWrapper>CLASS</SubTitleWrapper>
                                 </TitleBox>
                                 <ContentBox>
-                                    <ContentWrapper>{userProfile.userMileageGrade}</ContentWrapper>
+                                    <ContentWrapper>
+                                        {userProfile.userMileageGrade?.mileageGradeName}
+                                    </ContentWrapper>
                                 </ContentBox>
                             </TitleRowBox>
                         </TitleRowContainer>
