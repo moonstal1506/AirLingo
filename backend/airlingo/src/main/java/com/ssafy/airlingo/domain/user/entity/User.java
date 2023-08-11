@@ -177,8 +177,8 @@ public class User extends BaseTimeEntity {
 		userRating = userTotalRating / userStudyCount;
 	}
 
-	public boolean isImpossiblePremiumMatching(int premiumMileage) {
-		return userMileage < premiumMileage;
+	public boolean isPossiblePremiumMatching(int premiumMileage) {
+		return userMileage >= premiumMileage;
 	}
 
 	public void useMileage(int premiumMileage) {
