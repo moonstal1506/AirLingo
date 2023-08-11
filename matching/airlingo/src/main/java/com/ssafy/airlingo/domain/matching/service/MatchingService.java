@@ -25,9 +25,12 @@ public class MatchingService {
 	private static final int PREMIUM_GRADE_SCORE = 3;
 	private static final int PREMIUM_USER_RATING = 4;
 	private static final String URL = "http://localhost:8081/api/matching/result";
+	private static final String FAIL_URL = "http://localhost:8081/api/matching/result-fail";
 
 	private Queue<MatchingUserDto> matchingList = new LinkedList<>();
 	private Queue<MatchingUserDto> matchingFailList = new LinkedList<>();
+	private Queue<MatchingUserDto> matchingFinalFailList = new LinkedList<>();
+	private final Object lock = new Object();
 
 	/**
 	 * 매칭 조건
@@ -40,29 +43,45 @@ public class MatchingService {
 	@Scheduled(fixedDelay = 10000, initialDelay = 1000) // 1초 후 10초마다 동작
 	public void matching() {
 		log.info("MatchingService matching size: {}", matchingList.size());
-		while (matchingList.size() > 1) {
-			MatchingUserDto matchingUser1 = matchingList.poll();
+		synchronized (lock) {
+			while (matchingList.size() >= 1) {
+				MatchingUserDto matchingUser1 = matchingList.poll();
 
-			// 매칭 가능 유저 필터링
-			Optional<MatchingUserDto> matchingUserDto = matchingList.stream()
-				.filter(waitingUser -> isPossibleUser(matchingUser1, waitingUser))
-				.findFirst();
+				// 매칭 가능 유저 필터링
+				Optional<MatchingUserDto> matchingUserDto = matchingList.stream()
+					.filter(waitingUser -> isPossibleUser(matchingUser1, waitingUser))
+					.findFirst();
 
-			// 매칭 실패 대기열 재진입
-			if (!matchingUserDto.isPresent()) {
-				log.info("MatchingService matching fail");
-				matchingFailList.add(matchingUser1);
-				continue;
+				// 매칭 실패 대기열 재진입
+				if (!matchingUserDto.isPresent()) {
+					log.info("MatchingService matching fail");
+					matchingFailList.add(matchingUser1);
+					continue;
+				}
+
+				// 매칭 결과 반환
+				MatchingUserDto matchingUser2 = matchingUserDto.get();
+				matchingList.remove(matchingUser2);
+				sendMatching(new MatchingResponseDto(matchingUser1, matchingUser2));
 			}
 
-			// 매칭 결과 반환
-			MatchingUserDto matchingUser2 = matchingUserDto.get();
-			matchingList.remove(matchingUser2);
-			sendMatching(new MatchingResponseDto(matchingUser1, matchingUser2));
-		}
+			//매칭 실패한 유저 실패COUNT +1
+			matchingFailList.stream().forEach(m -> m.addMatchingCount());
+			matchingFailList.stream().forEach(m -> System.out.println("m.getMatchingFailCount() = " + m.getMatchingFailCount()));
 
-		matchingList.addAll(matchingFailList);
-		matchingFailList = new LinkedList<>();
+			//매칭 실패 COUNT가 3회 이상인 유저들에게 실패 메시지 전송
+			List<MatchingUserDto> finalFailUserList = matchingFailList.stream()
+				.filter(m -> m.getMatchingFailCount() >= 3)
+				.collect(Collectors.toList());
+
+			if(finalFailUserList.size() > 0)
+				sendFinalFailMatching(finalFailUserList);
+
+			matchingList.addAll(matchingFailList.stream()
+				.filter(m -> m.getMatchingFailCount() < 3)
+				.collect(Collectors.toList()));
+			matchingFailList = new LinkedList<>();
+		}
 	}
 
 	private boolean isPossibleUser(MatchingUserDto matchingUser, MatchingUserDto waitingUser) {
@@ -95,11 +114,32 @@ public class MatchingService {
 		restTemplate.postForEntity(URL, requestMessage, MatchingResponseDto.class);
 	}
 
+	public void sendFinalFailMatching(List<MatchingUserDto> matchingUserFailList){
+		log.info("MatchingService_sendMatching matching fail ");
+		log.info(matchingUserFailList.toString());
+
+		RestTemplate restTemplate = new RestTemplate();
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+
+		HttpEntity<?> requestMessage = new HttpEntity<>(matchingUserFailList, httpHeaders);
+		restTemplate.postForEntity(FAIL_URL, requestMessage, List.class);
+	}
+
 	public void add(MatchingUserDto matchingUserDto) {
 		matchingList.add(matchingUserDto);
 	}
 
 	public int countWaitingUsers() {
 		return matchingList.size();
+	}
+
+	public void cancelMatching(Long userId) {
+		synchronized (lock) {
+			matchingList = (Queue<MatchingUserDto>)matchingList.stream().
+				filter(m -> !m.getUserId().equals(userId))
+				.collect(Collectors.toList());
+		}
 	}
 }

@@ -45,4 +45,10 @@ public class WebSocketHandler extends TextWebSocketHandler {
 			messagingTemplate.convertAndSend("/queue/matchingData/" + userNickname, matchingData);
 		}
 	}
+
+	public void sendMatchingFailMessage(List<String> userNicknames){
+		for (String userNickname : userNicknames) {
+			messagingTemplate.convertAndSend("/queue/matchingData/" + userNickname, "FAIL");
+		}
+	}
 }

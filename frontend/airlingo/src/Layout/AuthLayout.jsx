@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
@@ -45,7 +46,7 @@ function AuthLayout({ children }) {
             await checkValidAuth();
         }
         fetchProfile();
-    }, [children, checkValidAuth]);
+    }, [children]);
 
     /* 2차 체킹. 받아온 userProfile과 현재 store에 저장된 storeUser가 동일한지 체킹 */
     Object.entries(storeUser).forEach(async ([key, value]) => {

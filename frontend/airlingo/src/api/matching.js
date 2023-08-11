@@ -45,4 +45,15 @@ const getPremiumMatching = async ({ responseFunc, data }) => {
     }
 };
 
-export { getConcurrentUser, postMatching, postOpenviduToken, getPremiumMatching };
+const cancelMatching = async ({ responseFunc, data }) => {
+    const { userId } = data;
+    try {
+        const response = await instance.get(`/matching/cancel/${userId}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
+export { getConcurrentUser, postMatching, postOpenviduToken, getPremiumMatching, cancelMatching };

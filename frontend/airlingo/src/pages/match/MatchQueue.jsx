@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import styled from "@emotion/styled";
 import { useLocation } from "react-router-dom";
 import stomp from "stompjs";
@@ -10,10 +10,12 @@ import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/right-arrow-icon.svg";
 import { ReactComponent as LeftArrowIcon } from "@/assets/icons/left-arrow-icon.svg";
-import { postMatching } from "@/api";
+import { postMatching, cancelMatching } from "@/api";
 import { useRouter } from "@/hooks";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatTime } from "@/utils/format";
+import MatchingFailModal from "@/components/modal/match/MatchingFailModal";
+import { TextButton } from "@/components/common/button";
 
 function MatchQueue() {
     const { VITE_SOCKET_URL } = import.meta.env;
@@ -23,42 +25,78 @@ function MatchQueue() {
     const { userNickname, userId } = useSelector(selectUser);
     const [expressionIdx, setExpressionIdx] = useState(0);
     const [time, setTime] = useState(0);
-
-    const matchingFunc = useCallback(async (stompClient) => {
-        const { studyLanguageId, premium } = location.state;
-        stompClient.connect({}, async () => {
-            await postMatching({
-                responseFunc: {
-                    400: () => {
-                        routeTo("/notfound");
+    const [openMatchingFailModal, setOpenMatchingFailModal] = useState(false);
+    const [isMatching, setIsMatching] = useState(false);
+    // const socket = new SockJS(VITE_SOCKET_URL);
+    // const stompClient = stomp.over(socket);
+    const socketRef = useRef(null);
+    const stompClientRef = useRef(null);
+    const matchingFunc = useCallback(
+        async (stompClient) => {
+            console.log(1);
+            const { studyLanguageId, premium } = location.state;
+            stompClient.connect({}, async () => {
+                console.log(2);
+                await postMatching({
+                    responseFunc: {
+                        400: () => {
+                            routeTo("/notfound");
+                        },
                     },
-                },
-                data: {
-                    userId,
-                    studyLanguageId,
-                    premium,
-                },
-            });
+                    data: {
+                        userId,
+                        studyLanguageId,
+                        premium,
+                    },
+                });
 
-            stompClient.subscribe(`/queue/matchingData/${userNickname}`, (matchingResult) => {
-                const { sessionId, studyId, matchingResponseDto } = JSON.parse(matchingResult.body);
+                stompClient.subscribe(`/queue/matchingData/${userNickname}`, (matchingResult) => {
+                    console.log(matchingResult);
+                    if (matchingResult.body === "FAIL") {
+                        console.log("매칭실패");
+                        setOpenMatchingFailModal(true);
+                        return;
+                    }
 
-                dispatch(AddSessionId({ sessionId }));
-                dispatch(AddStudyId({ studyId }));
-                dispatch(
-                    AddOtherUser({
-                        otherUser:
-                            matchingResponseDto[
-                                Object.keys(matchingResponseDto).filter(
-                                    (key) => matchingResponseDto[key].userNickname !== userNickname,
-                                )
-                            ],
-                    }),
-                );
-                routeTo("/matchresult");
+                    const { sessionId, studyId, matchingResponseDto } = JSON.parse(
+                        matchingResult.body,
+                    );
+
+                    dispatch(AddSessionId({ sessionId }));
+                    dispatch(AddStudyId({ studyId }));
+                    dispatch(
+                        AddOtherUser({
+                            otherUser:
+                                matchingResponseDto[
+                                    Object.keys(matchingResponseDto).filter(
+                                        (key) =>
+                                            matchingResponseDto[key].userNickname !== userNickname,
+                                    )
+                                ],
+                        }),
+                    );
+                    routeTo("/matchresult");
+                });
+                setIsMatching(true);
             });
+        },
+        [isMatching],
+    );
+
+    async function cancelMatchingFunc() {
+        await cancelMatching({
+            responseFunc: {
+                200: () => {
+                    console.log("매칭 취소 성공");
+                    routeTo("/matchhome");
+                },
+                400: () => {
+                    console.log("매칭 취소 실패");
+                },
+            },
+            data: { userId },
         });
-    }, []);
+    }
 
     useEffect(() => {
         // 비허용 접근
@@ -73,25 +111,37 @@ function MatchQueue() {
             return () => {};
         }
 
+        console.log(3);
         // 소켓 설정
-        const socket = new SockJS(VITE_SOCKET_URL);
-        const stompClient = stomp.over(socket);
-
+        socketRef.current = new SockJS(VITE_SOCKET_URL);
+        stompClientRef.current = stomp.over(socketRef.current);
+        setIsMatching(true);
         // 타이머 설정
         const interval = setInterval(() => {
             setTime((prev) => prev + 1);
         }, 1000);
 
-        // 매칭 진행
-        matchingFunc(stompClient);
-
         return () => {
             clearInterval(interval);
-            stompClient.disconnect(() => {
+            stompClientRef.current.disconnect(() => {
                 console.log("Stomp client disconnected.");
             });
         };
     }, []);
+
+    useEffect(() => {
+        console.log(isMatching);
+        if (!isMatching && stompClientRef.current) {
+            // 매칭 진행
+            console.log(4);
+            matchingFunc(stompClientRef.current);
+        }
+        return () => {
+            console.log(5);
+            console.log(isMatching);
+            if (!isMatching && stompClientRef.current) stompClientRef.current.disconnect();
+        };
+    }, [isMatching]);
 
     const handleClickPrevButton = () => {
         setExpressionIdx((prev) =>
@@ -103,8 +153,27 @@ function MatchQueue() {
             expressionIdx === EngKorTodayExpressionArr.length - 1 ? 0 : prev + 1,
         );
     };
+
+    const handleClickOpenMatchingConfirm = (agree) => {
+        if (agree) {
+            console.log("매칭 계속 진행");
+            console.log(6);
+            setIsMatching(false);
+        } else {
+            console.log("매칭 정지");
+            routeTo("/matchhome");
+        }
+
+        // 피드백 요청 확인 창을 닫는다.
+        setOpenMatchingFailModal(false);
+    };
     return (
         <MatchQueueContainer>
+            <MatchingFailModal
+                isOpen={openMatchingFailModal}
+                onClickAgree={() => handleClickOpenMatchingConfirm(true)}
+                onClickDisAgree={() => handleClickOpenMatchingConfirm(false)}
+            />
             <MatchQueueTitle>탑승 수속 중입니다.</MatchQueueTitle>
             <MatchQueueCommonBox>
                 <MatchQueueImgWrapper src={MatchQueueImg} alt="matchqueueimg" />
@@ -128,6 +197,12 @@ function MatchQueue() {
                 </MatchQueueCommonBox>
                 <RightArrowIcon onClick={handleClickNextButton} />
             </MatchQueueDownBox>
+            <TextButton
+                type="button"
+                text="매칭 취소"
+                shape="positive"
+                onClick={() => cancelMatchingFunc()}
+            />
         </MatchQueueContainer>
     );
 }
