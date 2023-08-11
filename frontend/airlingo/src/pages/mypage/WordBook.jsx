@@ -226,7 +226,7 @@ function WordBook() {
         let count = 0;
         // 시험지 채점
         for (let i = 0; i < WordTestList.length; i += 1) {
-            if (TestInputList[i] === WordTestList[i].wordDescription) {
+            if (TestInputList[i] === WordTestList[i].wordName) {
                 count += 1;
             }
         }
@@ -401,7 +401,7 @@ function WordBook() {
                                             작성해주세요.
                                         </ModalTestText>
                                         <ModalTextWord>
-                                            <b>{WordTestList[currentWordIndex]?.wordName}</b>
+                                            <b>{WordTestList[currentWordIndex]?.wordDescription}</b>
                                         </ModalTextWord>
                                         <TextInput
                                             placeholder="정답을 작성해 주세요."
@@ -537,7 +537,7 @@ function WordBook() {
                                     <ModalReviewWordBox>
                                         {WordTestList.map((word, index) => {
                                             const userAnswer = TestInputList[index];
-                                            if (userAnswer !== word.wordDescription) {
+                                            if (userAnswer !== word.wordName) {
                                                 const displayIndex = index + 1;
                                                 return (
                                                     <ModalTextWrapper key={word.wordId}>
@@ -609,10 +609,12 @@ function WordBook() {
                                                 checked={isCheckedListLeft[index]}
                                                 onChange={() => handleCheckBoxChangeLeft(index)}
                                             />
-                                            <WordText>{word.wordDescription}</WordText>
+                                            <WordName>{word.wordName}</WordName>
                                         </WordTop>
                                         <WordDown>
-                                            <WordExplain>{word.wordName}</WordExplain>
+                                            <WordDescription>
+                                                {word.wordDescription}
+                                            </WordDescription>
                                         </WordDown>
                                     </WordItem>
                                 ))}
@@ -652,10 +654,12 @@ function WordBook() {
                                                 checked={isCheckedListRight[index]}
                                                 onChange={() => handleCheckBoxChangeRight(index)}
                                             />
-                                            <WordText>{word.wordDescription}</WordText>
+                                            <WordName>{word.wordName}</WordName>
                                         </WordTop>
                                         <WordDown>
-                                            <WordExplain>{word.wordName}</WordExplain>
+                                            <WordDescription>
+                                                {word.wordDescription}
+                                            </WordDescription>
                                         </WordDown>
                                     </WordItem>
                                 ))}
@@ -824,7 +828,7 @@ const WordTop = styled.div`
     flex-shrink: 0;
 `;
 
-const WordText = styled.div`
+const WordName = styled.div`
     color: #000;
     font-family: Pretendard;
     font-size: 25px;
@@ -840,7 +844,7 @@ const WordDown = styled.div`
     border: black;
 `;
 
-const WordExplain = styled.div`
+const WordDescription = styled.div`
     display: flex;
     width: 400px;
     height: 25px;

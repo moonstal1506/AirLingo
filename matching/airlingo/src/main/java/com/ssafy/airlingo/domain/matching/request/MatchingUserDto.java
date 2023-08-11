@@ -76,6 +76,7 @@ public class MatchingUserDto {
 	@NotNull
 	@Schema(description = "누적 마일리지", example = "10000")
 	private int userTotalMileage;
+
 	public boolean isMatchLanguage(MatchingUserDto matchingUserDto) {
 		return this.userStudyLanguage.equals(matchingUserDto.getUserNativeLanguage().getLanguageKorName())
 			&& this.userNativeLanguage.getLanguageKorName().equals(matchingUserDto.getUserStudyLanguage());

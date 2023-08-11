@@ -11,17 +11,18 @@ import { ReactComponent as RightArrowIcon } from "@/assets/icons/arrow-right-ico
 import { ReactComponent as koreaFlagIcon } from "@/assets/icons/korea-flag-icon.svg";
 import { ReactComponent as japanFlagIcon } from "@/assets/icons/japan-flag-icon.svg";
 import { ReactComponent as PremiumIcon } from "@/assets/icons/premium-icon.svg";
+import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
 import { TextButton } from "@/components/common/button";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import Dropdown from "@/components/common/dropdown";
 import LanguageRankBox from "@/assets/imgs/language-rank-box.png";
 import { useRouter } from "@/hooks";
-import { getConcurrentUser } from "@/api";
+import { getConcurrentUser, getPremiumMatching } from "@/api";
 import Modal from "../../components/modal";
 
 function MatchHome() {
     const { routeTo } = useRouter();
-    const { userNickname, userNativeLanguage, userLanguages } = useSelector(selectUser);
+    const { userNickname, userNativeLanguage, userLanguages, userId } = useSelector(selectUser);
     const [modalOpen, setModalOpen] = useState(false);
     const [concurrentUser, setConcurrentUser] = useState({
         waitingUsersSize: 0,
@@ -39,6 +40,14 @@ function MatchHome() {
 
     const [skillLanguage, setSkillLanguage] = useState({ ...skillLanguageList[0] });
     const [studyLanguage, setStudyLanguage] = useState({ ...studyLanguageList[0] });
+
+    const [mileage, setMileage] = useState([]);
+    const [alertModalOpen, setAlertModalOpen] = useState(false);
+
+    const handleAlertModalOpen = (mileage) => {
+        setMileage(mileage);
+        setAlertModalOpen(true);
+    };
 
     const isUserInfoValid = () =>
         userNickname &&
@@ -76,7 +85,24 @@ function MatchHome() {
 
     const handleClickNormalMatching = () => handleMatching(false);
     const handleClickPremiumMatching = () => setModalOpen(true);
-    const handleClickPremiumSelect = () => handleMatching(true);
+    const handleClickPremiumSelect = async () => {
+        await getPremiumMatching({
+            responseFunc: {
+                200: (response) => {
+                    console.log(response.data.data);
+                    if (!response.data.data.possiblePremium) {
+                        setModalOpen(false);
+                        handleAlertModalOpen(response.data.data.mileage);
+                        return;
+                    }
+                    handleMatching(true);
+                },
+            },
+            data: {
+                userId,
+            },
+        });
+    };
 
     return (
         <MatchHomeContainer>
@@ -102,6 +128,28 @@ function MatchHome() {
                             shape="positive-curved"
                             text="취소"
                             onClick={() => setModalOpen(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
+            {alertModalOpen && (
+                <Modal
+                    title="마일리지 부족"
+                    modalOpen={alertModalOpen}
+                    Icon={AlertIcon}
+                    iconColor="red"
+                    titleColor="red"
+                    messages={mileage}
+                >
+                    <ModalTextBox>
+                        <ModalTextWrapper>마일리지가 부족합니다</ModalTextWrapper>
+                        <ModalSubTextWrapper>현재 마일리지: {mileage}</ModalSubTextWrapper>
+                    </ModalTextBox>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => setAlertModalOpen(false)}
                         />
                     </ModalButtonBox>
                 </Modal>
@@ -199,6 +247,11 @@ const ModalTextWrapper = styled.span`
     line-height: 44px;
 `;
 
+const ModalSubTextWrapper = styled.div`
+    font-size: 25px;
+    font-weight: 700;
+`;
+
 const ModalButtonBox = styled.div`
     display: flex;
     justify-content: center;
@@ -209,7 +262,7 @@ const ModalButtonBox = styled.div`
 const MatchHomeContainer = styled.div`
     position: relative;
     width: 100%;
-    height: calc(100% - 120px);
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -334,4 +387,5 @@ const TooltipBox = styled.div`
     position: relative;
     z-index: 100;
 `;
+
 export default MatchHome;

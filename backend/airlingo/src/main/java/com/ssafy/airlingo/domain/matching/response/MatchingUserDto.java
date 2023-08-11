@@ -7,6 +7,7 @@ import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import com.ssafy.airlingo.domain.language.dto.response.MileageGrade;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.user.entity.User;
+
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -92,8 +93,10 @@ public class MatchingUserDto {
 			.userStudyLanguage(userLanguage.getLanguage().getLanguageKorName())
 			.userStudyLanguageGradeName(userLanguage.getGrade().getGradeName())
 			.userStudyLanguageGradeScore(userLanguage.getGrade().getGradeScore())
-			.userInterestLanguages(user.getUserLanguages().stream()
-				.map(userInterestLanguage -> userInterestLanguage.getLanguage().toLanguageDto()).collect(Collectors.toList()))
+			.userInterestLanguages(user.getUserLanguages()
+				.stream()
+				.map(userInterestLanguage -> userInterestLanguage.getLanguage().toLanguageDto())
+				.collect(Collectors.toList()))
 			.userRating(user.getUserRating())
 			.userBio(user.getUserBio())
 			.premium(premium)

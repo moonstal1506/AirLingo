@@ -9,4 +9,3 @@ public class EmptyWordListException extends RuntimeException {
 		super(message);
 	}
 }
-

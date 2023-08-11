@@ -1,16 +1,18 @@
 import styled from "@emotion/styled";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { TextButton } from "@/components/common/button";
 import { loginUser } from "@/api";
 import { useRouter } from "@/hooks";
 import { signinUser } from "@/features/User/UserSlice";
+import LoginFailModal from "@/components/modal/login/LoginFailModal";
 
 function Login() {
     const dispatch = useDispatch();
     const loginIdRef = useRef();
     const passwordRef = useRef();
     const { routeTo } = useRouter();
+    const [isOpen, setIsOpen] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -31,12 +33,21 @@ function Login() {
                     routeTo("/matchhome");
                 },
                 400: () => {
-                    console.log("실패!");
-                    routeTo("/");
+                    console.log("알수없는 오류로 실패!");
+                    setIsOpen(true);
+                },
+                470: () => {
+                    console.log("로그인 실패!");
+                    setIsOpen(true);
                 },
             },
             data: loginRequetDto,
         });
+    };
+
+    const handleClickLoginFailModal = () => {
+        // 로그인 실패창을 닫는다.
+        setIsOpen(false);
     };
 
     return (
@@ -49,42 +60,6 @@ function Login() {
                         <TextInputBox type="password" placeholder="비밀번호" ref={passwordRef} />
                         <TextButton type="submit" shape="login" text="로그인하기" />
                     </LoginForm>
-
-                    <div
-                        style={{
-                            color: "#000",
-                            textAlign: "center",
-                            fontFamily: "Pretendard",
-                            fontSize: "20px",
-                            fontWeight: "300",
-                            fontStyle: "normal",
-                            lineHeight: "normar",
-                            textDecorationLine: "underline",
-                            marginTop: "30px",
-                            marginBottom: "30px",
-                        }}
-                    >
-                        <a href="/">아이디 또는 비밀번호를 잊으셨나요?</a>
-                        {/* fix me! 아이디 또는 비밀번호 API 존재X */}
-                    </div>
-                </LoginBox>
-                <DivisionLineBox>
-                    <DivisionLine />
-                    <DivisionText>또는</DivisionText>
-                    <DivisionLine />
-                </DivisionLineBox>
-                <SocialLoginBox>
-                    <TextButton shape="googleLogin" text="Google 계정으로 로그인" />
-                    {/* fix me! 구글로그인 API 존재X */}
-                    {/* <GoogleLoginButton type="button">
-                        <GoogleLoginDiv>
-                            <GoogleImage
-                                src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/%EA%B5%AC%EA%B8%80%EC%9D%B4%EB%AF%B8%EC%A7%80.png"
-                                alt=""
-                            />
-                            <GoogleLoginText>Google 계정으로 로그인</GoogleLoginText>
-                        </GoogleLoginDiv>
-                    </GoogleLoginButton> */}
                     <div
                         style={{
                             color: "#000",
@@ -100,8 +75,58 @@ function Login() {
                     >
                         <a href="/signup">혹시 회원가입을 하지 않으셨나요?</a>
                     </div>
-                </SocialLoginBox>
+
+                    {/* <div
+                        style={{
+                            color: "#000",
+                            textAlign: "center",
+                            fontFamily: "Pretendard",
+                            fontSize: "20px",
+                            fontWeight: "300",
+                            fontStyle: "normal",
+                            lineHeight: "normar",
+                            textDecorationLine: "underline",
+                            marginTop: "30px",
+                            marginBottom: "30px",
+                        }}
+                    >
+                        <a href="/">아이디 또는 비밀번호를 잊으셨나요?</a>
+                    </div> */}
+                </LoginBox>
+                {/* <DivisionLineBox>
+                    <DivisionLine />
+                    <DivisionText>또는</DivisionText>
+                    <DivisionLine />
+                </DivisionLineBox> */}
+                {/* <SocialLoginBox> */}
+                {/* <TextButton shape="googleLogin" text="Google 계정으로 로그인" /> */}
+                {/* fix me! 구글로그인 API 존재X */}
+                {/* <GoogleLoginButton type="button">
+                        <GoogleLoginDiv>
+                            <GoogleImage
+                                src="https://airlingobucket.s3.ap-northeast-2.amazonaws.com/%EA%B5%AC%EA%B8%80%EC%9D%B4%EB%AF%B8%EC%A7%80.png"
+                                alt=""
+                            />
+                            <GoogleLoginText>Google 계정으로 로그인</GoogleLoginText>
+                        </GoogleLoginDiv>
+                    </GoogleLoginButton> */}
+                {/* <div
+                        style={{
+                            color: "#000",
+                            textAlign: "center",
+                            fontFamily: "Pretendard",
+                            fontSize: "20px",
+                            fontWeight: "300",
+                            fontStyle: "normal",
+                            lineHeight: "normar",
+                            textDecorationLine: "underline",
+                        }}
+                    >
+                        <a href="/signup">혹시 회원가입을 하지 않으셨나요?</a>
+                    </div>
+                </SocialLoginBox> */}
             </LoginContainer>
+            <LoginFailModal isOpen={isOpen} onClickAgree={() => handleClickLoginFailModal()} />
         </PageLayout>
     );
 }
@@ -119,7 +144,7 @@ const LoginContainer = styled.div`
     flex-direction: column;
     align-items: center;
     width: 501px;
-    height: 600px;
+    height: 400px;
     border-radius: 20px;
     border: 3px solid;
     margin-top: 30px;
@@ -132,26 +157,27 @@ const LoginBox = styled.div`
     width: 501px;
     height: 380px;
 `;
-const DivisionLineBox = styled.div`
-    width: 500px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 26px;
-    margin-bottom: 26px;
-`;
+// const DivisionLineBox = styled.div`
+//     width: 500px;
+//     height: 30px;
+//     display: flex;
+//     align-items: center;
+//     gap: 10px;
+//     margin-top: 26px;
+//     margin-bottom: 26px;
+// `;
 
-const SocialLoginBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 501px;
-    height: 157px;
-`;
+// const SocialLoginBox = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     width: 501px;
+//     height: 157px;
+// `;
 
 const LoginTitle = styled.div`
-    margin-bottom: 50px;
+    margin-top: 10px;
+    margin-bottom: 40px;
     display: flex;
     flex-direction: column;
     padding-top: 20px;
@@ -182,22 +208,22 @@ const TextInputBox = styled.input`
     margin: 10px;
 `;
 
-const DivisionLine = styled.hr`
-    width: 200px;
-    height: 2px;
-    flex-grow: 1;
-    border: none;
-    border-top: 1px solid black;
-`;
+// const DivisionLine = styled.hr`
+//     width: 200px;
+//     height: 2px;
+//     flex-grow: 1;
+//     border: none;
+//     border-top: 1px solid black;
+// `;
 
-const DivisionText = styled.span`
-    color: #000;
-    font-family: Pretendard;
-    font-size: 25px;
-    font-style: normal;
-    font-weight: 400;
-    line-height: normal;
-`;
+// const DivisionText = styled.span`
+//     color: #000;
+//     font-family: Pretendard;
+//     font-size: 25px;
+//     font-style: normal;
+//     font-weight: 400;
+//     line-height: normal;
+// `;
 
 // const GoogleLoginButton = styled.button`
 //     background-color: #fff;

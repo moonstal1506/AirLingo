@@ -618,17 +618,14 @@ const TooltipBox = styled.div`
 `;
 
 const LanguageContentBox = styled.div`
-    display: flex;
+    display: grid;
     width: 450px;
     height: 500px;
-    flex-direction: row;
-    flex-wrap: wrap;
-    align-items: flex-start;
-    gap: 5px;
     border-radius: 10px;
     border: 1px solid #000;
-    justify-content: space-between;
     padding: 10px;
+    grid-template-columns: repeat(2, 1fr);
+    grid-template-rows: repeat(6, 1fr);
 `;
 
 const LanguageBox = styled.div`

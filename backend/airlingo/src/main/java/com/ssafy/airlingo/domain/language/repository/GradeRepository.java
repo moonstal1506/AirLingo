@@ -1,9 +1,9 @@
 package com.ssafy.airlingo.domain.language.repository;
 
-
-import com.ssafy.airlingo.domain.language.entity.Grade;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+
+import com.ssafy.airlingo.domain.language.entity.Grade;
 
 @Repository
 public interface GradeRepository extends JpaRepository<Grade, Long> {

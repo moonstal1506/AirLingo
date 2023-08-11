@@ -84,9 +84,9 @@ public class ExceptionController {
 	}
 
 	@ExceptionHandler(NotEnoughMileageException.class)
-	public ResponseResult notExistScriptException(NotEnoughMileageException err) {
+	public ResponseResult notEnoughMileageException(NotEnoughMileageException err) {
 		log.info("Error : {}", err.getClass());
 		log.info("Error Message : {}", err.getMessage());
-		return ResponseResult.exceptionResponse(ExceptionCode.NOT_ENOUGH_MILEAGE_EXCEPTION);
+		return ResponseResult.customExceptionResponse(ExceptionCode.NOT_ENOUGH_MILEAGE_EXCEPTION, err.getMessage());
 	}
 }

@@ -9,4 +9,3 @@ public class EmptyImageException extends RuntimeException {
 		super(message);
 	}
 }
-

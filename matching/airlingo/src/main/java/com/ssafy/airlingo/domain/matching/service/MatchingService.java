@@ -28,6 +28,7 @@ public class MatchingService {
 
 	private Queue<MatchingUserDto> matchingList = new LinkedList<>();
 	private Queue<MatchingUserDto> matchingFailList = new LinkedList<>();
+
 	/**
 	 * 매칭 조건
 	 * 1. 사용자 언어
@@ -39,11 +40,11 @@ public class MatchingService {
 	@Scheduled(fixedDelay = 10000, initialDelay = 1000) // 1초 후 10초마다 동작
 	public void matching() {
 		log.info("MatchingService matching size: {}", matchingList.size());
-		while(matchingList.size() > 1){
+		while (matchingList.size() > 1) {
 			MatchingUserDto matchingUser1 = matchingList.poll();
 
 			// 매칭 가능 유저 필터링
-			Optional<MatchingUserDto> matchingUserDto= matchingList.stream()
+			Optional<MatchingUserDto> matchingUserDto = matchingList.stream()
 				.filter(waitingUser -> isPossibleUser(matchingUser1, waitingUser))
 				.findFirst();
 
@@ -67,16 +68,16 @@ public class MatchingService {
 	private boolean isPossibleUser(MatchingUserDto matchingUser, MatchingUserDto waitingUser) {
 		log.info("MatchingService_isPossibleUser matchingUser: {}, waitingUser: {}", matchingUser, waitingUser);
 		// 언어 필터링
-		if(!matchingUser.isMatchLanguage(waitingUser)){
+		if (!matchingUser.isMatchLanguage(waitingUser)) {
 			return false;
 		}
 		// 둘다 프리미엄일 경우 둘다 프리미엄 기준을 통과해야한다.
-		if(matchingUser.isPremium() && waitingUser.isPremium()){
+		if (matchingUser.isPremium() && waitingUser.isPremium()) {
 			return matchingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING)
 				&& waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
 		}
 		// 현재 매칭 유저만 프리미엄일 경우 상대만 프리미엄 기준을 통과하면 된다.
-		if(matchingUser.isPremium()){
+		if (matchingUser.isPremium()) {
 			return waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
 		}
 		// 조건없이 매칭

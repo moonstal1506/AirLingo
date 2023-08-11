@@ -1,5 +1,9 @@
 package com.ssafy.airlingo.domain.matching.service;
 
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.client.RestTemplate;
+
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
@@ -8,6 +12,7 @@ import com.ssafy.airlingo.domain.matching.request.MatchingRequestDto;
 import com.ssafy.airlingo.domain.matching.response.ConcurrentUsersResponseDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingResponseDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingUserDto;
+import com.ssafy.airlingo.domain.matching.response.PremiumResponseDto;
 import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.study.entity.UserStudy;
 import com.ssafy.airlingo.domain.study.repository.StudyRepository;
@@ -17,8 +22,10 @@ import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
 import com.ssafy.airlingo.global.exception.NotEnoughMileageException;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
+
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
@@ -29,94 +36,103 @@ import org.springframework.web.client.RestTemplate;
 @RequiredArgsConstructor
 public class MatchingServiceImpl implements MatchingService {
 
-	private static final String CONCURRENT_USERS_NUMBER_URL = "http://localhost:8082/matching/waiting-users";
-    private static final int PREMIUM_MILEAGE = 3000;
 	public static final int MATCHING_MILEAGE = 500;
+	private static final String CONCURRENT_USERS_NUMBER_URL = "http://localhost:8082/matching/waiting-users";
+	private static final int PREMIUM_MILEAGE = 3000;
 
 	private final UserRepository userRepository;
-    private final LanguageRepository languageRepository;
-    private final UserLanguageRepository userLanguageRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final StudyRepository studyRepository;
-    private final UserStudyRepository userStudyRepository;
+	private final LanguageRepository languageRepository;
+	private final UserLanguageRepository userLanguageRepository;
+	private final RefreshTokenRepository refreshTokenRepository;
+	private final StudyRepository studyRepository;
+	private final UserStudyRepository userStudyRepository;
 
-    @Override
-    public MatchingUserDto findMatchingUser(MatchingRequestDto matchingRequestDto) {
-        log.info("findMatchingUser");
-        User user = userRepository.findById(matchingRequestDto.getUserId()).get();
-        Language studyLanguage = languageRepository.findById(matchingRequestDto.getStudyLanguageId()).get();
-        UserLanguage userLanguage = userLanguageRepository.findByUserAndLanguage(user, studyLanguage);
+	@Override
+	public MatchingUserDto findMatchingUser(MatchingRequestDto matchingRequestDto) {
+		log.info("findMatchingUser");
+		User user = userRepository.findById(matchingRequestDto.getUserId()).get();
+		Language studyLanguage = languageRepository.findById(matchingRequestDto.getStudyLanguageId()).get();
+		UserLanguage userLanguage = userLanguageRepository.findByUserAndLanguage(user, studyLanguage);
 
-        // 프리미엄 매칭 가능 여부
-        if (matchingRequestDto.isPremium()) {
-            if (user.isImpossiblePremiumMatching(PREMIUM_MILEAGE)) {
-                throw new NotEnoughMileageException();
-            }
-        }
+		// 프리미엄 매칭 가능 여부
+		if (matchingRequestDto.isPremium()) {
+			if (!user.isPossiblePremiumMatching(PREMIUM_MILEAGE)) {
+				throw new NotEnoughMileageException("현재 마일리지: " + user.getUserMileage());
+			}
+		}
 
-        System.out.println("userLanguage = " + userLanguage);
-        System.out.println("studyLanguage = " + studyLanguage);
-        return MatchingUserDto.toMatchingUserDto(user, userLanguage, matchingRequestDto.isPremium());
-    }
+		System.out.println("userLanguage = " + userLanguage);
+		System.out.println("studyLanguage = " + studyLanguage);
+		return MatchingUserDto.toMatchingUserDto(user, userLanguage, matchingRequestDto.isPremium());
+	}
 
-    @Transactional
-    @Override
-    public void updateMileage(MatchingResponseDto matchingResponseDto) {
-        MatchingUserDto MatchingUserDto1 = matchingResponseDto.getUser1();
-        User user1 = userRepository.findById(MatchingUserDto1.getUserId()).get();
-        user1.addMileage(MATCHING_MILEAGE);
-        useMileage(MatchingUserDto1.isPremium(), user1);
+	@Override
+	public PremiumResponseDto isPossiblePremiumMatching(Long userId) {
+		User user = userRepository.findById(userId).get();
+			return PremiumResponseDto.builder()
+				.mileage(user.getUserMileage())
+				.isPossiblePremium(user.isPossiblePremiumMatching(PREMIUM_MILEAGE))
+				.build();
+	}
 
-        MatchingUserDto MatchingUserDto2 = matchingResponseDto.getUser2();
-        User user2 = userRepository.findById(MatchingUserDto2.getUserId()).get();
-        user2.addMileage(MATCHING_MILEAGE);
-        useMileage(MatchingUserDto2.isPremium(), user2);
-    }
+	@Transactional
+	@Override
+	public void updateMileage(MatchingResponseDto matchingResponseDto) {
+		MatchingUserDto MatchingUserDto1 = matchingResponseDto.getUser1();
+		User user1 = userRepository.findById(MatchingUserDto1.getUserId()).get();
+		user1.addMileage(MATCHING_MILEAGE);
+		useMileage(MatchingUserDto1.isPremium(), user1);
 
-    private void useMileage(boolean isPremium, User user) {
-        if (isPremium) {
-            user.useMileage(PREMIUM_MILEAGE);
-        }
-    }
+		MatchingUserDto MatchingUserDto2 = matchingResponseDto.getUser2();
+		User user2 = userRepository.findById(MatchingUserDto2.getUserId()).get();
+		user2.addMileage(MATCHING_MILEAGE);
+		useMileage(MatchingUserDto2.isPremium(), user2);
+	}
 
-    @Override
-    public ConcurrentUsersResponseDto getConcurrentUsersSize() {
-        log.info("getConcurrentUsersSize");
-        RestTemplate restTemplate = new RestTemplate();
-        SingleResponseResult waitingUserResult = restTemplate.getForObject(CONCURRENT_USERS_NUMBER_URL,
-                SingleResponseResult.class);
+	private void useMileage(boolean isPremium, User user) {
+		if (isPremium) {
+			user.useMileage(PREMIUM_MILEAGE);
+		}
+	}
 
-        return ConcurrentUsersResponseDto.builder()
-                .ConcurrentUsersSize(refreshTokenRepository.countConcurrentUsers())
-                .waitingUsersSize((int) waitingUserResult.getData())
-                .build();
-    }
+	@Override
+	public ConcurrentUsersResponseDto getConcurrentUsersSize() {
+		log.info("getConcurrentUsersSize");
+		RestTemplate restTemplate = new RestTemplate();
+		SingleResponseResult waitingUserResult = restTemplate.getForObject(CONCURRENT_USERS_NUMBER_URL,
+			SingleResponseResult.class);
 
-    @Transactional
-    @Override
-    public Long createStudy(MatchingResponseDto matchingResponseDto) {
-        // Study 생성
-        Study study = studyRepository.save(new Study());
+		return ConcurrentUsersResponseDto.builder()
+			.ConcurrentUsersSize(refreshTokenRepository.countConcurrentUsers())
+			.waitingUsersSize((int)waitingUserResult.getData())
+			.build();
+	}
 
-        // UserStudy 생성
-        createUserStudy(matchingResponseDto.getUser1(), study);
-        createUserStudy(matchingResponseDto.getUser2(), study);
+	@Transactional
+	@Override
+	public Long createStudy(MatchingResponseDto matchingResponseDto) {
+		// Study 생성
+		Study study = studyRepository.save(new Study());
 
-        return study.getStudyId();
-    }
+		// UserStudy 생성
+		createUserStudy(matchingResponseDto.getUser1(), study);
+		createUserStudy(matchingResponseDto.getUser2(), study);
 
-    private void createUserStudy(MatchingUserDto matchingUserDto, Study study) {
-        Long userId = matchingUserDto.getUserId();
-        User user = userRepository.findById(userId).get();
-        Language language = languageRepository.findById(matchingUserDto.getUserStudyLanguageId()).get();
+		return study.getStudyId();
+	}
 
-        UserStudy userStudy = UserStudy.builder()
-                .study(study)
-                .user(user)
-                .language(language)
-                .build();
+	private void createUserStudy(MatchingUserDto matchingUserDto, Study study) {
+		Long userId = matchingUserDto.getUserId();
+		User user = userRepository.findById(userId).get();
+		Language language = languageRepository.findById(matchingUserDto.getUserStudyLanguageId()).get();
 
-        userStudyRepository.save(userStudy);
-    }
+		UserStudy userStudy = UserStudy.builder()
+			.study(study)
+			.user(user)
+			.language(language)
+			.build();
+
+		userStudyRepository.save(userStudy);
+	}
 
 }
