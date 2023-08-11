@@ -2,7 +2,6 @@ package com.ssafy.airlingo.global.util;
 
 import java.util.ArrayList;
 
-import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +16,7 @@ import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.study.entity.UserStudy;
 import com.ssafy.airlingo.domain.user.entity.User;
 import com.ssafy.airlingo.domain.user.entity.UserState;
+import com.ssafy.airlingo.domain.word.entity.Word;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityManager;
@@ -230,48 +230,59 @@ public class InitDb {
 		}
 
 		public void userAndStudyInit() {
-
 			User u1 = User.builder()
-				.userComplain(0)
-				.userMileage(100)
-				.userPassportStyle(1)
-				.userRating(3)
-				.userStudyCount(2)
-				.userTotalMileage(1000)
-				.userTotalRating(6)
-				.userEmail("user1@gmail.com")
-				.userLoginId("user1")
 				.userNickname("user1")
-				.userState(UserState.ACTIVE)
+				.userLoginId("user1")
 				.userPassword("1234")
+				.userEmail("user1@gmail.com")
+				.userGoogleId("")
+				.userImgUrl(
+					"https://airlingobucket.s3.ap-northeast-2.amazonaws.com/322cbe51-5407-44f4-aa9d-08676f3a4e5d.png")
+				.userBio("")
 				.userNativeLanguage(
 					Language.builder().languageId(1L).languageKorName("한국어").languageEngName("Korean").build())
+				.userMileage(100)
+				.userTotalMileage(1000)
+				.userRating(3.0)
+				.userTotalRating(6.0)
+				.userStudyCount(2)
+				.userComplain(0)
+				.userState(UserState.ACTIVE)
+				.userPassportStyle(1)
 				.build();
 
 			User u2 = User.builder()
-				.userComplain(0)
-				.userMileage(500)
-				.userPassportStyle(2)
-				.userRating(4)
-				.userStudyCount(2)
-				.userTotalMileage(1000)
-				.userTotalRating(8)
-				.userEmail("user2@gmail.com")
-				.userLoginId("user2")
 				.userNickname("user2")
-				.userState(UserState.ACTIVE)
+				.userLoginId("user2")
 				.userPassword("12345")
+				.userEmail("user2@gmail.com")
+				.userGoogleId("")
+				.userImgUrl(
+					"https://airlingobucket.s3.ap-northeast-2.amazonaws.com/322cbe51-5407-44f4-aa9d-08676f3a4e5d.png")
+				.userBio("")
 				.userNativeLanguage(
 					Language.builder().languageId(2L).languageKorName("영어").languageEngName("English").build())
+				.userMileage(3200)
+				.userTotalMileage(3200)
+				.userRating(4)
+				.userTotalRating(8)
+				.userComplain(0)
+				.userState(UserState.ACTIVE)
+				.userPassportStyle(1)
+				.userStudyCount(2)
 				.build();
 
 			ArrayList<UserLanguage> uls1 = new ArrayList<>();
 			ArrayList<UserLanguage> uls2 = new ArrayList<>();
 
-			Language l1 = new Language(1L, "한국어", "Korean","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg");
-			Language l2 = new Language(2L, "영어", "English","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-britain-icon.svg");
-			Language l3 = new Language(3L, "일본어", "Japanese","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg");
-			Language l4 = new Language(4L, "중국어", "Chinese","https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-china-icon.svg");
+			Language l1 = new Language(1L, "한국어", "Korean",
+				"https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-korea-icon.svg");
+			Language l2 = new Language(2L, "영어", "English",
+				"https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-britain-icon.svg");
+			Language l3 = new Language(3L, "일본어", "Japanese",
+				"https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-japan-icon.svg");
+			Language l4 = new Language(4L, "중국어", "Chinese",
+				"https://airlingobucket.s3.ap-northeast-2.amazonaws.com/flag-china-icon.svg");
 			Grade g1 = new Grade(1L, "A1", "입문", 1);
 			Grade g2 = new Grade(2L, "A2", "초급", 2);
 			Grade g3 = new Grade(3L, "B1", "중급", 3);
@@ -293,8 +304,13 @@ public class InitDb {
 				.studyTime(20)
 				.build();
 
+			Study s3 = Study.builder()
+				.studyTime(15)
+				.build();
+
 			em.persist(s1);
 			em.persist(s2);
+			em.persist(s3);
 
 			UserStudy us1 = UserStudy.builder()
 				.study(s1)
@@ -317,13 +333,113 @@ public class InitDb {
 			UserStudy us4 = UserStudy.builder()
 				.study(s2)
 				.user(u2)
-				.language(l2)
+				.language(l1)
+				.build();
+
+			UserStudy us5 = UserStudy.builder()
+				.study(s3)
+				.user(u1)
+				.language(l3)
+				.build();
+
+			UserStudy us6 = UserStudy.builder()
+				.study(s3)
+				.user(u2)
+				.language(l1)
 				.build();
 
 			em.persist(us1);
 			em.persist(us2);
 			em.persist(us3);
 			em.persist(us4);
+			em.persist(us5);
+			em.persist(us6);
+
+			Word word1 = Word.builder()
+				.user(u1)
+				.wordName("airline")
+				.wordDescription("항공사")
+				.build();
+			Word word2 = Word.builder()
+				.user(u1)
+				.wordName("airplane")
+				.wordDescription("비행기")
+				.build();
+			Word word3 = Word.builder()
+				.user(u1)
+				.wordName("language")
+				.wordDescription("언어")
+				.build();
+			Word word4 = Word.builder()
+				.user(u1)
+				.wordName("lingual")
+				.wordDescription("혀의, 말의, 언어의")
+				.build();
+			Word word5 = Word.builder()
+				.user(u1)
+				.wordName("bilingual")
+				.wordDescription("두 개 언어를 할 줄 아는")
+				.build();
+			Word word6 = Word.builder()
+				.user(u1)
+				.wordName("world")
+				.wordDescription("세계")
+				.build();
+			Word word7 = Word.builder()
+				.user(u1)
+				.wordName("travel")
+				.wordDescription("여행")
+				.build();
+			Word word8 = Word.builder()
+				.user(u1)
+				.wordName("passport")
+				.wordDescription("여권")
+				.build();
+			Word word9 = Word.builder()
+				.user(u1)
+				.wordName("lounge")
+				.wordDescription("라운지, 느긋하게 서있다, 휴게실")
+				.build();
+			Word word10 = Word.builder()
+				.user(u1)
+				.wordName("foreigner")
+				.wordDescription("외국인")
+				.build();
+			Word word11 = Word.builder()
+				.user(u1)
+				.wordName("neighborhood")
+				.wordDescription("근처, 인근, 이웃")
+				.build();
+			Word word12 = Word.builder()
+				.user(u1)
+				.wordName("旅行")
+				.wordDescription("여행")
+				.build();
+			Word word13 = Word.builder()
+				.user(u1)
+				.wordName("飛行機")
+				.wordDescription("비행기")
+				.build();
+			Word word14 = Word.builder()
+				.user(u1)
+				.wordName("話す")
+				.wordDescription("말하다")
+				.build();
+
+			em.persist(word1);
+			em.persist(word2);
+			em.persist(word3);
+			em.persist(word4);
+			em.persist(word5);
+			em.persist(word6);
+			em.persist(word7);
+			em.persist(word8);
+			em.persist(word9);
+			em.persist(word10);
+			em.persist(word11);
+			em.persist(word12);
+			em.persist(word13);
+			em.persist(word14);
 		}
 
 		public void sentenceInit() {
@@ -358,6 +474,5 @@ public class InitDb {
 			em.persist(sentence4);
 			em.persist(sentence5);
 		}
-
 	}
 }
