@@ -50,6 +50,7 @@ import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
 import isKeyInObj from "@/utils/common";
 import MeetingDictionary from "./MeetingDictionary";
 import MeetingTranslator from "./MeetingTranslator";
+import Loading from "@/components/loading";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -103,7 +104,7 @@ function Meeting() {
     // Data States...
     const [requestCardCode, setRequestCardCode] = useState("");
     const [responseWaitTitle, setResponseWaitTitle] = useState("");
-
+    const [isLoading, setIsLoading] = useState(false);
     // 세션 연결 함수
 
     async function fetchToken() {
@@ -183,11 +184,13 @@ function Meeting() {
 
     async function handleFeedbackStartResponse(data) {
         setOpenFeedbackStartModal(false);
+        setIsLoading(true);
         if (!meetingData || !isKeyInObj(meetingData, "currentCard")) return;
         const JsonData = JSON.parse(data);
 
         if (!JsonData.agree) {
             console.log("동의 되지 않았거나, 피드백 요청을 보낸 본인입니다.");
+            setIsLoading(false);
             return;
         }
 
@@ -199,7 +202,9 @@ function Meeting() {
                 recordingId: sessionId,
             },
         });
+
         await sleep(5000);
+
         await postCreateScript({
             responseFunc: {
                 200: (response) => {
@@ -219,7 +224,9 @@ function Meeting() {
                 studyId,
             },
         });
+
         dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
+        setIsLoading(false); // 로딩 종료
     }
 
     function handleScreenModeChangeFeedback(data) {
@@ -626,89 +633,92 @@ function Meeting() {
     ];
 
     return (
-        <MeetingContainer>
-            <CardModal isOpen={openCardModal} onClick={handleClickTopicCard} />
-            <CardRequestModal
-                isOpen={openCardRequestModal}
-                cardCode={requestCardCode}
-                onClickAgree={handleClickCardRequestAgree}
-                onClickDisAgree={() => setOpenCardRequestModal(false)}
-            />
-            <ResponseWaitModal title={responseWaitTitle} isOpen={openResponseWaitModal} />
-            <ReportModal
-                isOpen={openReportModal}
-                onClickAgree={handleClickReportUser}
-                onClickDisAgree={() => setOpenReportModal(false)}
-            />
-            <ReportConfimModal
-                isOpen={openReportConfirmModal}
-                onClickAgree={() => setOpenReportConfirmModal(false)}
-            />
-            <FeedbackStartModal isOpen={openFeedbackStartModal} />
-            <FeedbackRequestModal
-                isOpen={openFeedbackRequestModal}
-                onClickAgree={() => handleClickOpenFeedbackConfirm(true)}
-                onClickDisAgree={() => handleClickOpenFeedbackConfirm(false)}
-            />
-            <EvaluateModal
-                isOpen={openEvaluateModal}
-                onClickAgree={handleClickEvaluateUser}
-                onClickDisAgree={() => setOpenEvaluateModal(false)}
-            />
-            <FeedbackEndRequestModal
-                isOpen={openFeedbackEndRequestModal}
-                onClickAgree={() => handleClickFeedbackEndConfirm(true)}
-                onClickDisAgree={() => handleClickFeedbackEndConfirm(false)}
-            />
-            {(() => {
-                switch (screenMode) {
-                    case "FreeTalk":
-                        return (
-                            <FreeTalk
-                                publisher={publisher}
-                                subscribers={subscribers}
-                                onClick={handleClickOpenFeedbackStart}
-                            />
-                        );
-                    case "ScriptFeedback":
-                        return (
-                            <ScriptFeedback
-                                handleClickFeedbackEndRequest={handleClickFeedbackEndRequest}
-                                sessionId={sessionId}
-                                publisher={publisher}
-                                subscribers={subscribers}
-                                scriptData={scriptData}
-                            />
-                        );
-                    default:
-                        return null;
-                }
-            })()}
+        <>
+            {isLoading && <Loading />}
+            <MeetingContainer>
+                <CardModal isOpen={openCardModal} onClick={handleClickTopicCard} />
+                <CardRequestModal
+                    isOpen={openCardRequestModal}
+                    cardCode={requestCardCode}
+                    onClickAgree={handleClickCardRequestAgree}
+                    onClickDisAgree={() => setOpenCardRequestModal(false)}
+                />
+                <ResponseWaitModal title={responseWaitTitle} isOpen={openResponseWaitModal} />
+                <ReportModal
+                    isOpen={openReportModal}
+                    onClickAgree={handleClickReportUser}
+                    onClickDisAgree={() => setOpenReportModal(false)}
+                />
+                <ReportConfimModal
+                    isOpen={openReportConfirmModal}
+                    onClickAgree={() => setOpenReportConfirmModal(false)}
+                />
+                <FeedbackStartModal isOpen={openFeedbackStartModal} />
+                <FeedbackRequestModal
+                    isOpen={openFeedbackRequestModal}
+                    onClickAgree={() => handleClickOpenFeedbackConfirm(true)}
+                    onClickDisAgree={() => handleClickOpenFeedbackConfirm(false)}
+                />
+                <EvaluateModal
+                    isOpen={openEvaluateModal}
+                    onClickAgree={handleClickEvaluateUser}
+                    onClickDisAgree={() => setOpenEvaluateModal(false)}
+                />
+                <FeedbackEndRequestModal
+                    isOpen={openFeedbackEndRequestModal}
+                    onClickAgree={() => handleClickFeedbackEndConfirm(true)}
+                    onClickDisAgree={() => handleClickFeedbackEndConfirm(false)}
+                />
+                {(() => {
+                    switch (screenMode) {
+                        case "FreeTalk":
+                            return (
+                                <FreeTalk
+                                    publisher={publisher}
+                                    subscribers={subscribers}
+                                    onClick={handleClickOpenFeedbackStart}
+                                />
+                            );
+                        case "ScriptFeedback":
+                            return (
+                                <ScriptFeedback
+                                    handleClickFeedbackEndRequest={handleClickFeedbackEndRequest}
+                                    sessionId={sessionId}
+                                    publisher={publisher}
+                                    subscribers={subscribers}
+                                    scriptData={scriptData}
+                                />
+                            );
+                        default:
+                            return null;
+                    }
+                })()}
 
-            <SliderButtonWrapper isOpen={isActiveSlide}>
-                <SliderButton isOpen={isActiveSlide} onClick={handleClickSlideButton} />
-            </SliderButtonWrapper>
-            <MeetingButtonMenu isActiveChatSlide={isActiveChatSlide} buttonList={buttonList} />
-            <ScriptSlideMenu contentGroup={contentGroupData} slideOpen={isActiveSlide} />
-            <ChatSlideMenu isOpen={isActiveChatSlide}>
-                <ChatBox>
-                    <ChatList data={chatMessage} />
-                    <ChatInputWrapper onSubmit={sendMessage}>
-                        <ChatInput
-                            value={message}
-                            onChange={ChangeMessages}
-                            placeholder="대화 상대방에게 채팅을 보내보세요!"
-                        />
-                        <TextButton
-                            type="submit"
-                            value="보내기"
-                            shape="positive-chat"
-                            text="보내기"
-                        />
-                    </ChatInputWrapper>
-                </ChatBox>
-            </ChatSlideMenu>
-        </MeetingContainer>
+                <SliderButtonWrapper isOpen={isActiveSlide}>
+                    <SliderButton isOpen={isActiveSlide} onClick={handleClickSlideButton} />
+                </SliderButtonWrapper>
+                <MeetingButtonMenu isActiveChatSlide={isActiveChatSlide} buttonList={buttonList} />
+                <ScriptSlideMenu contentGroup={contentGroupData} slideOpen={isActiveSlide} />
+                <ChatSlideMenu isOpen={isActiveChatSlide}>
+                    <ChatBox>
+                        <ChatList data={chatMessage} />
+                        <ChatInputWrapper onSubmit={sendMessage}>
+                            <ChatInput
+                                value={message}
+                                onChange={ChangeMessages}
+                                placeholder="대화 상대방에게 채팅을 보내보세요!"
+                            />
+                            <TextButton
+                                type="submit"
+                                value="보내기"
+                                shape="positive-chat"
+                                text="보내기"
+                            />
+                        </ChatInputWrapper>
+                    </ChatBox>
+                </ChatSlideMenu>
+            </MeetingContainer>
+        </>
     );
 }
 

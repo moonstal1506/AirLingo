@@ -1,13 +1,22 @@
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 
-function Overlay({ zIdx = 1000, children }) {
-    return <OverlayWrapper zIdx={zIdx}>{children}</OverlayWrapper>;
+function Overlay({ zIdx = 1000, className, children }) {
+    return (
+        <OverlayWrapper className={className} zIdx={zIdx}>
+            {children}
+        </OverlayWrapper>
+    );
 }
 
 Overlay.propTypes = {
     zIdx: PropTypes.number.isRequired,
     children: PropTypes.node.isRequired,
+    className: PropTypes.string,
+};
+
+Overlay.defaultProps = {
+    className: "",
 };
 
 const OverlayWrapper = styled.div`
