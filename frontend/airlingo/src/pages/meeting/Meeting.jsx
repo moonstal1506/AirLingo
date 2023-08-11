@@ -44,19 +44,18 @@ import {
     removeMeetingData,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
-import FreeTalk from "./FreeTalk";
-import ScriptFeedback from "./ScriptFeedback";
+import FreeTalk from "./screen/FreeTalk";
+import ScriptFeedback from "./screen/ScriptFeedback";
 import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
 import isKeyInObj from "@/utils/common";
-import MeetingDictionary from "./MeetingDictionary";
-import MeetingTranslator from "./MeetingTranslator";
 import Loading from "@/components/loading";
+import { MeetingScript, MeetingDictionary, MeetingTranslator } from "./slide";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary1 } = theme.colors;
 const contentGroupData = [
-    { Content: () => <div>Content1</div>, Icon: Icons.ScriptIcon },
+    { Content: () => <MeetingScript />, Icon: Icons.ScriptIcon },
     { Content: () => <MeetingDictionary />, Icon: Icons.DictionaryIcon },
     { Content: () => <MeetingTranslator />, Icon: Icons.TranslatorIcon },
 ];
