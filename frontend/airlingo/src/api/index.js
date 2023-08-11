@@ -3,7 +3,13 @@ import { getLogout, loginUser } from "./auth";
 import { getUserProfile, postSignUp } from "./user";
 import { getLanguage, getGrade } from "./language";
 import getTranslateResult from "./translator";
-import { getConcurrentUser, postMatching, postOpenviduToken, getPremiumMatching } from "./matching";
+import {
+    getConcurrentUser,
+    postMatching,
+    postOpenviduToken,
+    getPremiumMatching,
+    cancelMatching,
+} from "./matching";
 import { getCardCode, getCard } from "./card";
 import { postEvaluate, getRecordStatistic, postStopRecording, postStartRecording } from "./record";
 import postCreateChatRoom from "./chat";
@@ -33,5 +39,6 @@ export {
     postReport,
     getReportItems,
     postCreateScript,
+    cancelMatching,
     putSaveScript,
 };
