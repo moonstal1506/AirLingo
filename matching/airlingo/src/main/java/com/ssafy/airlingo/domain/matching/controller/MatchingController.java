@@ -1,6 +1,8 @@
 package com.ssafy.airlingo.domain.matching.controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,5 +38,13 @@ public class MatchingController {
 		int waitingUserSize = matchingService.countWaitingUsers();
 		log.info("MatchingController_countWaitingUsers : {}", waitingUserSize);
 		return new SingleResponseResult<>(waitingUserSize);
+	}
+
+	@Operation(summary = "Cancel matching", description = "매칭 취소")
+	@GetMapping("/cancel/{userId}")
+	public ResponseResult cancelMatching(@PathVariable Long userId) {
+		log.info("MatchingController_cancelMatching");
+		matchingService.cancelMatching(userId);
+		return ResponseResult.successResponse;
 	}
 }

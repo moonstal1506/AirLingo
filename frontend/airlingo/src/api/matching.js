@@ -1,5 +1,19 @@
+import axios from "axios";
 import instance from "./instance";
 import processApiResponse from "@/utils/api";
+
+const { VITE_MATCHING_SERVER_URL } = import.meta.env;
+
+const instanceMatching = axios.create({
+    baseURL: VITE_MATCHING_SERVER_URL,
+    timeout: 10000,
+    headers: {
+        "Content-Type": "application/json;charset=UTF-8",
+        "Access-Control-Allow-Origin": `http://localhost:5173`,
+        "Access-Control-Allow-Credentials": true,
+    },
+    withCredentials: true,
+});
 
 const getConcurrentUser = async ({ responseFunc }) => {
     try {
@@ -45,4 +59,15 @@ const getPremiumMatching = async ({ responseFunc, data }) => {
     }
 };
 
-export { getConcurrentUser, postMatching, postOpenviduToken, getPremiumMatching };
+const cancelMatching = async ({ responseFunc, data }) => {
+    const { userId } = data;
+    try {
+        const response = await instanceMatching.get(`/matching/cancel/${userId}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
+export { getConcurrentUser, postMatching, postOpenviduToken, getPremiumMatching, cancelMatching };

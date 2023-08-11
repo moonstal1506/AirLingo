@@ -83,6 +83,9 @@ public class MatchingUserDto {
 	@Schema(description = "마일리지 등급", example = "프레스티지")
 	private String mileageGrade;
 
+	@Schema(description = "매칭 실패 횟수", example = "3")
+	private int matchingFailCount;
+
 	public static MatchingUserDto toMatchingUserDto(User user, UserLanguage userLanguage, boolean premium) {
 		return MatchingUserDto.builder()
 			.userId(user.getUserId())

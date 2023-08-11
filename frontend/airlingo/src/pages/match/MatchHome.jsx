@@ -48,6 +48,7 @@ function MatchHome() {
         setMileage(mileage);
         setAlertModalOpen(true);
     };
+    console.log("제발!!!");
 
     const isUserInfoValid = () =>
         userNickname &&
