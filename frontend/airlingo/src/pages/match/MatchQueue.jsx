@@ -70,10 +70,10 @@ function MatchQueue() {
                         matchingResult.body,
                     );
 
-                    dispatch(AddSessionId({ sessionId }));
-                    dispatch(AddStudyId({ studyId }));
+                    dispatch(addSessionId({ sessionId }));
+                    dispatch(addStudyId({ studyId }));
                     dispatch(
-                        AddOtherUser({
+                        addOtherUser({
                             otherUser:
                                 matchingResponseDto[
                                     Object.keys(matchingResponseDto).filter(
