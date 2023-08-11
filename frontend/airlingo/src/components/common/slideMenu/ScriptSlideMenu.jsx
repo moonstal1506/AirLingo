@@ -114,6 +114,7 @@ const MenuContentBox = styled.div`
     width: 420px;
     background-color: white;
     border-left: 3px solid ${faintgray};
+    overflow-y: auto;
 `;
 
 export default ScriptSliderMenu;
