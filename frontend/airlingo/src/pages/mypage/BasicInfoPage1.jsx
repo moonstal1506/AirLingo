@@ -28,7 +28,7 @@ import {
 
 const { primary4 } = theme.colors;
 
-function BasicInfoPage2() {
+function BasicInfoPage1() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
     const [userProfile, setUserProfile] = useState({});
@@ -550,4 +550,4 @@ const BioAreaWrapper = styled.textarea`
     }
 `;
 
-export default BasicInfoPage2;
+export default BasicInfoPage1;
