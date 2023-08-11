@@ -41,4 +41,14 @@ const postCreateScript = async ({ responseFunc, data }) => {
     }
 };
 
-export { getScriptList, postScriptList, postCreateScript };
+const putSaveScript = async ({ responseFunc, data }) => {
+    try {
+        const response = await instance.put(`/api/script`, data);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
+export { getScriptList, postScriptList, postCreateScript, putSaveScript };

@@ -14,7 +14,7 @@ import { getCardCode, getCard } from "./card";
 import { postEvaluate, getRecordStatistic, postStopRecording, postStartRecording } from "./record";
 import postCreateChatRoom from "./chat";
 import { postReport, getReportItems } from "./report";
-import { postCreateScript } from "./script";
+import { postCreateScript, putSaveScript } from "./script";
 
 export {
     instance,
@@ -40,4 +40,5 @@ export {
     getReportItems,
     postCreateScript,
     cancelMatching,
+    putSaveScript,
 };

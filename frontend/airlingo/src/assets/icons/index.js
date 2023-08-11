@@ -28,6 +28,7 @@ import { ReactComponent as PauseIcon } from "@/assets/icons/pause-icon.svg";
 import { ReactComponent as ForwardIcon } from "@/assets/icons/forward-icon.svg";
 import { ReactComponent as BackwardIcon } from "@/assets/icons/backward-icon.svg";
 import { ReactComponent as PlayIcon } from "@/assets/icons/play-icon.svg";
+import { ReactComponent as Spinner } from "@/assets/icons/spinner.svg";
 
 export {
     MicOnIcon,
@@ -60,4 +61,5 @@ export {
     ForwardIcon,
     BackwardIcon,
     PlayIcon,
+    Spinner,
 };
