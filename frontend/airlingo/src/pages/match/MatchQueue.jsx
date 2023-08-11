@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import stomp from "stompjs";
 import SockJS from "sockjs-client";
 import { useDispatch, useSelector } from "react-redux";
-import { AddSessionId, AddOtherUser, AddStudyId } from "@/features/Meeting/MeetingSlice";
+import { addSessionId, addOtherUser, addStudyId } from "@/features/Meeting/MeetingSlice";
 import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/right-arrow-icon.svg";
@@ -43,10 +43,10 @@ function MatchQueue() {
             stompClient.subscribe(`/queue/matchingData/${userNickname}`, (matchingResult) => {
                 const { sessionId, studyId, matchingResponseDto } = JSON.parse(matchingResult.body);
 
-                dispatch(AddSessionId({ sessionId }));
-                dispatch(AddStudyId({ studyId }));
+                dispatch(addSessionId({ sessionId }));
+                dispatch(addStudyId({ studyId }));
                 dispatch(
-                    AddOtherUser({
+                    addOtherUser({
                         otherUser:
                             matchingResponseDto[
                                 Object.keys(matchingResponseDto).filter(

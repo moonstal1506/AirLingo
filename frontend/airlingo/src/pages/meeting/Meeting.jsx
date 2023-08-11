@@ -14,6 +14,7 @@ import {
     postStopRecording,
     postReport,
     postCreateScript,
+    putSaveScript,
 } from "@/api";
 import theme from "@/assets/styles/Theme";
 import * as Icons from "@/assets/icons";
@@ -21,6 +22,7 @@ import {
     CardModal,
     CardRequestModal,
     EvaluateModal,
+    FeedbackEndRequestModal,
     FeedbackRequestModal,
     FeedbackStartModal,
     ReportConfimModal,
@@ -31,13 +33,15 @@ import ChatList from "@/components/chatList/ChatList";
 import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
 import { TextButton, SliderButton } from "@/components/common/button";
 import {
-    AddDidReport,
-    AddMeetingData,
+    addDidReport,
+    addMeetingData,
     selectMeeting,
-    AddRecordingId,
-    AddScriptData,
+    addRecordingId,
+    addScriptData,
     removeRecordingId,
-    AddScreenMode,
+    addScreenMode,
+    removeScriptData,
+    removeMeetingData,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
 import FreeTalk from "./FreeTalk";
@@ -94,9 +98,11 @@ function Meeting() {
     const [openFeedbackStartModal, setOpenFeedbackStartModal] = useState(false);
     const [openFeedbackRequestModal, setOpenFeedbackRequestModal] = useState(false);
     const [openEvaluateModal, setOpenEvaluateModal] = useState(false);
+    const [openFeedbackEndRequestModal, setOpenFeedbackEndRequestModal] = useState(false);
 
     // Data States...
     const [requestCardCode, setRequestCardCode] = useState("");
+    const [responseWaitTitle, setResponseWaitTitle] = useState("");
 
     // 세션 연결 함수
 
@@ -144,7 +150,7 @@ function Meeting() {
             return;
         }
         dispatch(
-            AddMeetingData({
+            addMeetingData({
                 meetingData: {
                     ...meetingData,
                     currentCardCode: jsonData.currentCardCode,
@@ -154,12 +160,13 @@ function Meeting() {
         );
 
         setOpenResponseWaitModal(false);
+        setResponseWaitTitle("");
 
         const res = await postStartRecording({
             responseFunc: {
                 200: (response) => {
                     dispatch(
-                        AddRecordingId({
+                        addRecordingId({
                             recordingId: response.data.data.id,
                         }),
                     );
@@ -175,8 +182,8 @@ function Meeting() {
     }
 
     async function handleFeedbackStartResponse(data) {
-        if (!meetingData || !isKeyInObj(meetingData, "currentCard")) return;
         setOpenFeedbackStartModal(false);
+        if (!meetingData || !isKeyInObj(meetingData, "currentCard")) return;
         const JsonData = JSON.parse(data);
 
         if (!JsonData.agree) {
@@ -196,9 +203,8 @@ function Meeting() {
         await postCreateScript({
             responseFunc: {
                 200: (response) => {
-                    console.log(response.data.data);
-                    dispatch(AddScriptData({ scriptData: response.data.data }));
-                    dispatch(AddScreenMode({ screenMode: "ScriptFeedback" }));
+                    dispatch(addScriptData({ scriptData: response.data.data }));
+                    dispatch(addScreenMode({ screenMode: "ScriptFeedback" }));
 
                     session.signal({
                         data: JSON.stringify(response),
@@ -215,6 +221,45 @@ function Meeting() {
         });
         dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
     }
+
+    function handleScreenModeChangeFeedback(data) {
+        const jsonData = JSON.parse(data);
+        console.log(jsonData, jsonData.statusCode === 200);
+        if (jsonData.data.statusCode !== 200) return;
+        setTimeout(() => {
+            dispatch(addScriptData({ scriptData: jsonData.data.data }));
+            dispatch(addScreenMode({ screenMode: "ScriptFeedback" }));
+        }, 100);
+    }
+
+    const handleFeedbackEndResponse = async (data) => {
+        const jsonData = JSON.parse(data);
+        // 요청자의 종료 요청 모달 닫기
+        setOpenFeedbackRequestModal(false);
+        setOpenResponseWaitModal(false);
+        setResponseWaitTitle("");
+
+        // 거절이라면 여기서 끝내야 됨.
+        if (!jsonData.agree) return;
+
+        // 거절하지 않았다면 서버에 서로 최종 수정된 스크립트를 저장한다.
+        if (scriptData && scriptData.modifiedScript) {
+            await putSaveScript({
+                responseFunc: {
+                    200: () => {},
+                },
+                data: {
+                    scriptId: scriptData.scriptId,
+                    scriptContent: scriptData.modifiedScript,
+                },
+            });
+        }
+
+        // freetalk 모드로 변경하고, 스크립트 데이터, 미팅 데이터 초기화
+        dispatch(addScreenMode({ screenMode: "FreeTalk" }));
+        dispatch(removeScriptData());
+        dispatch(removeMeetingData());
+    };
 
     // signal 이벤트 분기처리
     function handleSignal(event) {
@@ -236,19 +281,20 @@ function Meeting() {
                 handleFeedbackStartResponse(data);
                 break;
             case "screenmode-change-feedback":
-                const jsonData = JSON.parse(data);
-                console.log(jsonData, jsonData.statusCode === 200);
-                if (jsonData.data.statusCode !== 200) return;
-                setTimeout(() => {
-                    dispatch(AddScriptData({ scriptData: jsonData.data.data }));
-                    dispatch(AddScreenMode({ screenMode: "ScriptFeedback" }));
-                }, 100);
+                handleScreenModeChangeFeedback(data);
+                break;
+            case "feedback-end-request":
+                // feedback을 끝내는 요청을 받음
+                setOpenFeedbackEndRequestModal(true);
+                break;
+            case "feedback-end-response":
+                // feedback을 끝내는 요청에 대한 응답을 받음
+                handleFeedbackEndResponse(data);
                 break;
             default:
                 console.log("없는 이벤트타입입니다.");
         }
     }
-
     async function connectSession() {
         try {
             const token = await fetchToken();
@@ -267,7 +313,7 @@ function Meeting() {
             console.error("Error in connectSession", error);
         }
     }
-    console.log(subscribers);
+
     useEffect(() => {
         if (session) {
             console.log("세션 변경 성공!!!");
@@ -278,7 +324,6 @@ function Meeting() {
     }, [session]);
 
     useEffect(() => {
-        console.log(scriptData, screenMode);
         if (publisher && session) {
             session.on("signal", handleSignal);
         }
@@ -393,6 +438,7 @@ function Meeting() {
         handleCardClick();
 
         // 4. 또한, 상대방의 응답을 받을 때까지 대기하는 모달 창을 띄워줘야 한다.
+        setResponseWaitTitle("주제 선정 요청");
         setOpenResponseWaitModal(true);
     };
 
@@ -404,7 +450,7 @@ function Meeting() {
                 200: (response) => {
                     // 정상 요청 성공의 경우, redux store 안에다가 {현재 선택한 카드 대주제, 대주제에 따른 소주제} 를 저장한다.
                     dispatch(
-                        AddMeetingData({
+                        addMeetingData({
                             meetingData: {
                                 ...meetingData,
                                 currentCardCode: requestCardCode,
@@ -449,19 +495,17 @@ function Meeting() {
                 description: reportText,
             },
         });
-        dispatch(AddDidReport({ didReport: true }));
+        dispatch(addDidReport({ didReport: true }));
     };
 
     const handleClickOpenFeedbackConfirm = (agree) => {
         // 상대방에게 피드백 시착에 따른 동의/거절 여부를 보내준다.
+        setOpenFeedbackRequestModal(false);
         session.signal({
             data: JSON.stringify({ agree }),
             to: [subscribers[0].stream.connection],
             type: "feedback-start-response",
         });
-
-        // 피드백 요청 확인 창을 닫는다.
-        setOpenFeedbackRequestModal(false);
     };
 
     const handleClickOpenFeedbackStart = async () => {
@@ -493,6 +537,32 @@ function Meeting() {
                 studyId,
                 rating,
             },
+        });
+    };
+
+    const handleClickFeedbackEndRequest = async (modifiedScript) => {
+        // 내 store에 수정된 스크립트 저장 => 상대 store에도 저장해야됨.
+        dispatch(addScriptData({ scriptData: { modifiedScript } }));
+
+        // 상대방에게 스크립트 피드백 종료를 요청한다.
+        setResponseWaitTitle("스크립트 피드백 끝내기 요청");
+        setOpenResponseWaitModal(true);
+
+        // signal을 통해 종료 요청을 보낸다.
+        session.signal({
+            data: "",
+            to: [subscribers[0].stream.connection],
+            type: "feedback-end-request",
+        });
+    };
+
+    // 피드백 종료 요청에 확인를 실행하는 함수
+    const handleClickFeedbackEndConfirm = async (flag) => {
+        setOpenFeedbackEndRequestModal(false);
+        session.signal({
+            data: JSON.stringify({ agree: flag }),
+            to: [],
+            type: "feedback-end-response",
         });
     };
 
@@ -564,7 +634,7 @@ function Meeting() {
                 onClickAgree={handleClickCardRequestAgree}
                 onClickDisAgree={() => setOpenCardRequestModal(false)}
             />
-            <ResponseWaitModal isOpen={openResponseWaitModal} />
+            <ResponseWaitModal title={responseWaitTitle} isOpen={openResponseWaitModal} />
             <ReportModal
                 isOpen={openReportModal}
                 onClickAgree={handleClickReportUser}
@@ -585,7 +655,11 @@ function Meeting() {
                 onClickAgree={handleClickEvaluateUser}
                 onClickDisAgree={() => setOpenEvaluateModal(false)}
             />
-
+            <FeedbackEndRequestModal
+                isOpen={openFeedbackEndRequestModal}
+                onClickAgree={() => handleClickFeedbackEndConfirm(true)}
+                onClickDisAgree={() => handleClickFeedbackEndConfirm(false)}
+            />
             {(() => {
                 switch (screenMode) {
                     case "FreeTalk":
@@ -599,6 +673,7 @@ function Meeting() {
                     case "ScriptFeedback":
                         return (
                             <ScriptFeedback
+                                handleClickFeedbackEndRequest={handleClickFeedbackEndRequest}
                                 sessionId={sessionId}
                                 publisher={publisher}
                                 subscribers={subscribers}
