@@ -1,6 +1,7 @@
 import CardModal from "./CardModal";
 import CardRequestModal from "./CardRequestModal";
 import EvaluateModal from "./EvaluateModal";
+import FeedbackEndRequestModal from "./FeedbackEndRequestModal";
 import FeedbackRequestModal from "./FeedbackRequestModal";
 import FeedbackStartModal from "./FeedbackStartModal";
 import ReportConfimModal from "./ReportConfimModal";
@@ -16,4 +17,5 @@ export {
     ReportConfimModal,
     ReportModal,
     ResponseWaitModal,
+    FeedbackEndRequestModal,
 };

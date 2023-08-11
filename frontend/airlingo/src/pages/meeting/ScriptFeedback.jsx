@@ -9,19 +9,26 @@ import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import MusicPlayer from "@/components/musicPlayer";
 
-function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
+function ScriptFeedback({
+    sessionId,
+    publisher,
+    subscribers,
+    scriptData,
+    handleClickFeedbackEndRequest,
+}) {
     const quillRef = useRef(null);
     const { userNickname } = useSelector(selectUser);
     const { otherUser } = useSelector(selectMeeting);
 
     const handleClick = () => {
-        const currentText = quillRef.current.getText().trim();
-        if (!currentText) {
+        const modifiedScript = quillRef.current.getText().trim();
+        if (!modifiedScript) {
             alert("스크립트를 제대로 고쳐주세요.");
             return;
         }
 
-        console.log(currentText, currentText.split("\n"));
+        // 피드백 종료 요청
+        handleClickFeedbackEndRequest(modifiedScript);
     };
 
     const makeDefaultElement = () => {
@@ -52,7 +59,7 @@ function ScriptFeedback({ sessionId, publisher, subscribers, scriptData }) {
                         제공된 스크립트에 대해 이야기하거나, <br />
                         녹음 파일을 들으면서 스크립트를 수정해 보세요!
                     </SubTitleWrapper>
-                    <MusicPlayer src="https://ccrma.stanford.edu/~jos/mp3/harpsi-cs.mp3" />
+                    <MusicPlayer src={scriptData.voiceFileUrl} />
                 </HeaderMiddleBox>
 
                 <VideoFrame>
@@ -167,7 +174,7 @@ const FeedbackContainer = styled.div`
     border-radius: 20px;
     background: #fff;
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
-    z-index: 500;
+    z-index: 4;
 `;
 
 export default ScriptFeedback;
