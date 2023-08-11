@@ -12,6 +12,7 @@ import StatisticGraphStudyCount from "./StatisticGraphStudyCount";
 import CalendarPage from "./CalendarPage";
 import Script from "./Script";
 import WordBook from "./WordBook";
+import ShopHome from "./ShopHome";
 
 export {
     MyPageBook,
@@ -28,4 +29,5 @@ export {
     CalendarPage,
     Script,
     WordBook,
+    ShopHome,
 };

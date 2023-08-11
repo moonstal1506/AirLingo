@@ -13,7 +13,6 @@ public class WebConfig implements WebMvcConfigurer {
 			.allowedOriginPatterns("*")
 			.allowedMethods("*") // 모든 HTTP 메소드 허용
 			.allowCredentials(true)
-			.exposedHeaders("access-token","refresh-token"); // "access-token" 응답 헤더를 노출합니다.
+			.exposedHeaders("access-token", "refresh-token"); // "access-token" 응답 헤더를 노출합니다.
 	}
 }
-

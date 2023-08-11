@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import com.ssafy.airlingo.domain.user.dto.request.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +22,14 @@ import com.ssafy.airlingo.domain.language.entity.UserLanguage;
 import com.ssafy.airlingo.domain.language.repository.GradeRepository;
 import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
 import com.ssafy.airlingo.domain.language.repository.UserLanguageRepository;
+import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.LanguageWithGradeDto;
+import com.ssafy.airlingo.domain.user.dto.request.LoginRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateBioRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdateNicknameRequestDto;
+import com.ssafy.airlingo.domain.user.dto.request.UpdatePasswordRequestDto;
 import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
@@ -116,7 +123,8 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void updateNickname(UpdateNicknameRequestDto updateNicknameRequestDto) {
 		log.info("UserServiceImpl_updateNickname");
-		User user = userRepository.findById(updateNicknameRequestDto.getUserId()).orElseThrow(NotExistAccountException::new);
+		User user = userRepository.findById(updateNicknameRequestDto.getUserId())
+			.orElseThrow(NotExistAccountException::new);
 		user.updateNickname(updateNicknameRequestDto.getUserNickname());
 	}
 
@@ -192,10 +200,10 @@ public class UserServiceImpl implements UserService {
 			Language language = languageRepository.findByLanguageId(languageWithGrade.getLanguageId());
 			Grade grade = gradeRepository.findByGradeId(languageWithGrade.getGradeId());
 			UserLanguage userLanguage = UserLanguage.builder()
-					.user(user)
-					.language(language)
-					.grade(grade)
-					.build();
+				.user(user)
+				.language(language)
+				.grade(grade)
+				.build();
 			userLanguageRepository.save(userLanguage);
 		}
 	}

@@ -262,7 +262,7 @@ const ModalButtonBox = styled.div`
 const MatchHomeContainer = styled.div`
     position: relative;
     width: 100%;
-    height: calc(100% - 120px);
+    height: 100%;
     display: flex;
     justify-content: center;
     align-items: center;

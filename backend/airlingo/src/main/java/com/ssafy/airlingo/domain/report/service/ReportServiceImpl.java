@@ -46,7 +46,7 @@ public class ReportServiceImpl {
 		User user = userRepository.findById(reportUserRequestDto.getUserId()).get();
 		user.addComplainCount();
 
-		if(user.isComplainCountExceedFive())
+		if (user.isComplainCountExceedFive())
 			user.suspendUser();
 
 		return reportRepository.save(reportUserRequestDto.toReportEntity(user, reportItem)).getReportId();

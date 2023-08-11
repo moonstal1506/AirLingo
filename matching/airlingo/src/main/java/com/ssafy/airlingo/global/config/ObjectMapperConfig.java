@@ -14,7 +14,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 public class ObjectMapperConfig {
 
 	@Bean
-	public ObjectMapper objectMapper(){
+	public ObjectMapper objectMapper() {
 		var objectMapper = new ObjectMapper();
 
 		objectMapper.registerModule(new Jdk8Module());

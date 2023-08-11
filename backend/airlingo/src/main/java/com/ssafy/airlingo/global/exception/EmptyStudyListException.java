@@ -9,4 +9,3 @@ public class EmptyStudyListException extends RuntimeException {
 		super(message);
 	}
 }
-

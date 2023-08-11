@@ -2,7 +2,6 @@ package com.ssafy.airlingo.domain.user.controller;
 
 import java.util.List;
 
-import com.ssafy.airlingo.domain.S3.dto.S3FileDto;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -14,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.ssafy.airlingo.domain.S3.service.Amazon3SService;
 import com.ssafy.airlingo.domain.user.dto.request.AddInterestLanguageRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.CreateUserAccountRequestDto;
 import com.ssafy.airlingo.domain.user.dto.request.DeleteInterestLanguageRequestDto;
