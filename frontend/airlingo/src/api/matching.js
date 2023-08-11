@@ -34,4 +34,15 @@ const postOpenviduToken = async ({ responseFunc, data }) => {
     }
 };
 
-export { getConcurrentUser, postMatching, postOpenviduToken };
+const getPremiumMatching = async ({ responseFunc, data }) => {
+    const { userId } = data;
+    try {
+        const response = await instance.get(`/api/matching/premium/${userId}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        return e.response;
+    }
+};
+
+export { getConcurrentUser, postMatching, postOpenviduToken, getPremiumMatching };

@@ -5,7 +5,6 @@ import { ReactComponent as TitleLogoIcon } from "@/assets/icons/title-logo-icon.
 import { logoutUser, selectUser } from "@/features/User/UserSlice";
 import ProfileBar from "../profileBar";
 import { TextButton } from "../common/button";
-import Dropdown from "../common/dropdown";
 import { getLogout } from "@/api";
 import { useRouter } from "@/hooks";
 
@@ -49,7 +48,6 @@ const Header = React.memo(() => {
                                 text="로그아웃"
                                 onClick={handleClickLogout}
                             />
-                            <Dropdown />
                         </>
                     ) : (
                         <>
@@ -63,7 +61,6 @@ const Header = React.memo(() => {
                                 text="회원가입"
                                 onClick={() => routeTo("/signup")}
                             />
-                            <Dropdown />
                         </>
                     )}
                 </HeaderRightBox>

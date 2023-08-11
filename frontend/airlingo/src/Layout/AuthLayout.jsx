@@ -8,20 +8,22 @@ import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
 function AuthLayout({ children }) {
     const dispatch = useDispatch();
     const storeUser = useSelector(selectUser);
-    const { userLoginId } = storeUser;
+    const { userId } = storeUser;
     const [userProfile, setUserProfile] = useState({});
     const { routeTo } = useRouter();
 
-    if (userLoginId <= 0) routeTo("/");
-
     const checkValidAuth = useCallback(async () => {
+        if (!userId) {
+            routeTo("/login");
+            return;
+        }
         const apiRes = await getUserProfile({
             responseFunc: {
                 200: (response) => {
                     setUserProfile(response.data);
                 },
             },
-            data: { userLoginId },
+            data: { userId },
         });
 
         if (!apiRes) {
@@ -35,7 +37,7 @@ function AuthLayout({ children }) {
                 data: { userLoginId: 123 },
             });
         }
-    }, [routeTo, userLoginId, dispatch]);
+    }, [routeTo, userId, dispatch]);
 
     useEffect(() => {
         /* 1차 체킹. 현재, 로컬에 지정된 상태로 user의 프로필 정보를 받아올 수 있는지 체크 */
@@ -54,7 +56,7 @@ function AuthLayout({ children }) {
                         dispatch(logoutUser());
                         routeTo("/login");
                     },
-                    data: { userLoginId },
+                    data: { userId },
                 },
             });
         }

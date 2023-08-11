@@ -3,7 +3,13 @@ package com.ssafy.airlingo.domain.matching.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import com.ssafy.airlingo.domain.matching.request.MatchingRequestDto;
 import com.ssafy.airlingo.domain.matching.response.MatchingResponseDto;
@@ -51,6 +57,13 @@ public class MatchingController {
 		MatchingUserDto matchingUser = matchingService.findMatchingUser(matchingRequestDto);
 		producer.sendMatchingUser(matchingUser);
 		return ResponseResult.successResponse;
+	}
+
+	@Operation(summary = "Premium Matching", description = "프리미엄 매칭 가능 여부")
+	@GetMapping("/premium/{userId}")
+	public ResponseResult premiumMatching(@PathVariable Long userId) {
+		log.info("MatchingController_premiumMatching");
+		return new SingleResponseResult<>(matchingService.isPossiblePremiumMatching(userId));
 	}
 
 	@Operation(summary = "Matching Result", description = "매칭 성공 유저들에게 SessionId, StudyId 및 상대 정보 반환(웹소켓 이용)")
