@@ -210,6 +210,7 @@ const MatchQueueContainer = styled.div`
     align-items: center;
     flex-direction: column;
     gap: 40px;
+    margin-top: 50px;
 `;
 
 const MatchQueueTitle = styled.span`
