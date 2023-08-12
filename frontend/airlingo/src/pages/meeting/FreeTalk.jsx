@@ -8,47 +8,57 @@ import { TextButton } from "@/components/common/button";
 
 // ----------------------------------------------------------------------------------------------------
 
-function FreeTalk({ publisher, subscribers, screenPublisher, screenSubscribers, onClick }) {
+function FreeTalk({ publisher, subscribers, sharePublisher, shareSubscribers, onClick }) {
     const { isShareOn, meetingData } = useSelector(selectMeeting);
-
+    console.log(publisher, subscribers, sharePublisher, shareSubscribers);
     return (
         <>
             <VideoContainer>
                 <VideoFrame>
-                    {publisher && !isShareOn ? (
+                    {publisher ? (
                         <video
                             ref={(node) => node && publisher.addVideoElement(node)}
                             autoPlay
                             width="500px"
-                        />
-                    ) : screenPublisher && isShareOn ? (
-                        <video
-                            ref={(node) => node && screenPublisher.addVideoElement(node)}
-                            autoPlay
-                            width="500px"
+                            style={{ display: isShareOn ? "none" : "block" }}
                         />
                     ) : (
                         <PlaceholderBox>카메라를 로딩하고 있습니다.</PlaceholderBox>
+                    )}
+                    {isShareOn && sharePublisher && (
+                        <video
+                            ref={(node) => node && sharePublisher.addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                            style={{ display: isShareOn ? "block" : "none" }}
+                        />
                     )}
                 </VideoFrame>
                 {subscribers.length > 0 && (
                     <VideoFrame key={subscribers[0].stream.streamId}>
                         <video
-                            ref={(node) => node && subscribers[0].addVideoElement(node)}
+                            ref={(cameraNode) =>
+                                cameraNode && subscribers[0].addVideoElement(cameraNode)
+                            }
                             autoPlay
                             width="500px"
+                            style={{ display: shareSubscribers.length === 0 ? "block" : "none" }}
                         />
-                        <div>일반 구독자</div>
-                    </VideoFrame>
-                )}
-                {screenSubscribers.length > 0 && (
-                    <VideoFrame key={screenSubscribers[0].stream.streamId}>
-                        <video
-                            ref={(node) => node && screenSubscribers[0].addVideoElement(node)}
-                            autoPlay
-                            width="500px"
-                        />
-                        <div>화면 공유 구독자</div>
+                        {shareSubscribers.length > 0 && (
+                            <VideoFrame key={shareSubscribers[0].stream.streamId}>
+                                <video
+                                    ref={(screenNode) =>
+                                        screenNode &&
+                                        shareSubscribers[0].addVideoElement(screenNode)
+                                    }
+                                    autoPlay
+                                    width="500px"
+                                    style={{
+                                        display: shareSubscribers.length > 0 ? "block" : "none",
+                                    }}
+                                />
+                            </VideoFrame>
+                        )}
                     </VideoFrame>
                 )}
             </VideoContainer>
@@ -91,7 +101,7 @@ const PlaceholderBox = styled.div`
     justify-content: center;
     font-size: 20px;
     width: 500px;
-    height: 281.25px;
+    height: 375px;
     background-color: black;
     border-radius: 20px;
     color: white;

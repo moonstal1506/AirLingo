@@ -2,19 +2,40 @@
 import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
 
+// ----------------------------------------------------------------------------------------------------
+
 const useOpenVidu = () => {
+    // 카메라
     const OV = useRef(new OpenVidu());
-    const [session, setSession] = useState(null); // Initial value changed to null
+    const [session, setSession] = useState(null);
     const [publisher, setPublisher] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
 
-    async function joinSession() {
-        const curSession = OV.current.initSession();
+    // 화면 공유
+    const shareOV = useRef(new OpenVidu());
+    const [shareSession, setShareSession] = useState(null);
+    const [sharePublisher, setSharePublisher] = useState(null);
+    const [shareSubscribers, setShareSubscribers] = useState([]);
 
-        curSession.on("streamCreated", (event) => {
-            const subscriber = curSession.subscribe(event.stream, undefined);
-            setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-            // curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+    async function joinSession() {
+        const cameraSession = OV.current.initSession();
+        const screenSession = shareOV.current.initSession();
+        cameraSession.on("streamCreated", (event) => {
+            if (event.stream.typeOfVideo === "CAMERA") {
+                const subscriber = cameraSession.subscribe(event.stream, undefined);
+                setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+                // curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+            }
+        });
+
+        screenSession.on("streamCreated", (event) => {
+            if (event.stream.typeOfVideo === "SCREEN") {
+                const screenSubscriber = screenSession.subscribe(event.stream, undefined);
+                setShareSubscribers((prevShareSubscribers) => [
+                    ...prevShareSubscribers,
+                    screenSubscriber,
+                ]);
+            }
         });
 
         // curSession.on("speechToTextMessage", (event) => {
@@ -27,24 +48,26 @@ const useOpenVidu = () => {
         //     }
         // });
 
-        curSession.on("streamDestroyed", (event) => {
+        cameraSession.on("streamDestroyed", (event) => {
             console.log("스트림 삭제 이벤트", subscribers, event.stream.streamId);
             setSubscribers((prevSubscribers) =>
                 prevSubscribers.filter((sub) => sub.stream.streamId !== event.stream.streamId),
             );
         });
 
-        curSession.on("exception", (exception) => {
+        cameraSession.on("exception", (exception) => {
             console.warn(exception);
         });
 
-        setSession(curSession);
+        setSession(cameraSession);
+        setShareSession(screenSession);
     }
 
     useEffect(() => {
         joinSession();
         return () => {
             if (session) session.disconnect();
+            if (shareSession) shareSession.disconnect();
         };
     }, []);
 
@@ -56,7 +79,16 @@ const useOpenVidu = () => {
         setPublisher,
         subscribers,
         setSubscribers,
+        shareOV,
+        shareSession,
+        setShareSession,
+        sharePublisher,
+        setSharePublisher,
+        shareSubscribers,
+        setShareSubscribers,
     };
 };
+
+// ----------------------------------------------------------------------------------------------------
 
 export default useOpenVidu;

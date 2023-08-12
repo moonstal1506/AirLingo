@@ -5,7 +5,7 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { useRouter, useOpenVidu, useChat, useScreenShare } from "@/hooks";
+import { useRouter, useOpenVidu, useChat } from "@/hooks";
 import {
     getCard,
     postOpenviduToken,
@@ -75,16 +75,25 @@ function Meeting() {
         studyId,
         recordingId,
         screenMode,
-        isShareOn,
         scriptData,
     } = useSelector(selectMeeting);
     const { userId, userNickname } = useSelector(selectUser);
 
     // hooks Area...
     const { routeTo } = useRouter();
-    const { OV, session, publisher, setPublisher, subscribers } = useOpenVidu();
-    const { screenOV, screenSession, screenPublisher, setScreenPublisher, screenSubscribers } =
-        useScreenShare();
+    const {
+        OV,
+        session,
+        publisher,
+        setPublisher,
+        subscribers,
+        shareOV,
+        shareSession,
+        sharePublisher,
+        setSharePublisher,
+        shareSubscribers,
+        setShareSubscribers,
+    } = useOpenVidu();
     const { message, sendMessage, chatMessage, ChangeMessages } = useChat();
 
     // Active States...
@@ -145,9 +154,9 @@ function Meeting() {
         }
     }
 
-    async function initScreenPublisher() {
+    async function initSharePublisher() {
         try {
-            return await screenOV.current.initPublisherAsync(undefined, {
+            return await shareOV.current.initPublisherAsync(undefined, {
                 videoSource: "screen",
                 mirror: false,
             });
@@ -284,6 +293,11 @@ function Meeting() {
         dispatch(removeMeetingData());
     };
 
+    function handleScreenShareEndRequest() {
+        console.log("상대방이 화면 공유를 종료하였습니다.");
+        setShareSubscribers([]);
+    }
+
     // signal 이벤트 분기처리
     function handleSignal(event) {
         const { data, type } = event;
@@ -314,6 +328,9 @@ function Meeting() {
                 // feedback을 끝내는 요청에 대한 응답을 받음
                 handleFeedbackEndResponse(data);
                 break;
+            case "screenshare-end-request":
+                handleScreenShareEndRequest();
+                break;
             default:
                 console.log("없는 이벤트타입입니다.");
         }
@@ -321,6 +338,7 @@ function Meeting() {
     async function connectSession() {
         try {
             const token = await fetchToken();
+            const shareToken = await fetchToken();
 
             session
                 .connect(token, { clientData: userNickname })
@@ -332,45 +350,57 @@ function Meeting() {
                 .catch((error) => {
                     console.error("Error Connecting to OpenVidu", error);
                 });
-        } catch (error) {
-            console.error("Error in connectSession", error);
-        }
-    }
 
-    async function connectScreenShare() {
-        try {
-            const token = await fetchToken();
-
-            screenSession
-                .connect(token, { clientData: userNickname })
-                .then(async () => {
-                    const curScreenPublisher = await initScreenPublisher();
-                    curScreenPublisher.once("accessAllowed", () => {
-                        curScreenPublisher.stream
-                            .getMediaStream()
-                            .getVideoTracks()[0]
-                            .addEventListener("ended", () => {
-                                console.log('User pressed the "Stop sharing" button');
-                            });
-                        screenSession.publish(curScreenPublisher);
-                        setScreenPublisher(curScreenPublisher);
-                    });
-                    curScreenPublisher.once("accessDenied", () => {
-                        console.warn("ScreenShare: Access Denied");
-                    });
+            shareSession
+                .connect(shareToken, { clientData: userNickname })
+                .then(() => {
+                    console.log("화면 공유를 위한 세션이 연결되었습니다!");
                 })
-                .catch((error) => {
+                .catch((error) =>
                     console.warn(
-                        "There was an error connecting to the session:",
+                        "화면 공유를 위한 세션 연결 중에 다음과 같은 에러가 발생했습니다: ",
                         error.code,
                         error.message,
-                    );
-                });
+                    ),
+                );
         } catch (error) {
             console.error("Error in connectSession", error);
         }
     }
-    console.log(subscribers);
+
+    async function unpublishScreenShare() {
+        session.signal({
+            data: "",
+            to: [subscribers[0].stream.connection],
+            type: "screenshare-end-request",
+        });
+        shareSession.unpublish(sharePublisher);
+        dispatch(addIsShareOn({ isShareOn: false }));
+        setShareSubscribers([]);
+        console.log("사용자가 화면공유를 종료하였습니다.");
+    }
+
+    async function publishScreenShare() {
+        const curSharePublisher = await initSharePublisher();
+        dispatch(addIsShareOn({ isShareOn: true }));
+        curSharePublisher.once("accessAllowed", () => {
+            curSharePublisher.stream
+                .getMediaStream()
+                .getVideoTracks()[0]
+                .addEventListener("ended", () => {
+                    console.log("사용자가 화면공유를 종료하였습니다.");
+                    shareSession.unpublish(curSharePublisher);
+                    dispatch(addIsShareOn({ isShareOn: false }));
+                });
+            shareSession.publish(curSharePublisher);
+        });
+        curSharePublisher.once("accessDenied", () => {
+            unpublishScreenShare();
+            setActiveButton(null);
+            console.warn("화면공유를 위한 접근이 거부되었습니다.");
+        });
+        setSharePublisher(curSharePublisher);
+    }
 
     useEffect(() => {
         if (session) {
@@ -380,16 +410,6 @@ function Meeting() {
             console.log("세션 변경 실패!!!");
         }
     }, [session]);
-
-    useEffect(() => {
-        if (isShareOn) {
-            console.log("화면 공유!!!");
-            connectScreenShare();
-        } else if (!isShareOn && screenSession) {
-            screenSession.disconnect();
-            console.log("화면 공유 해제!!!");
-        }
-    }, [screenSession, isShareOn]);
 
     useEffect(() => {
         console.log(scriptData, screenMode);
@@ -404,6 +424,7 @@ function Meeting() {
         };
     }, [
         publisher,
+        sharePublisher,
         sessionId,
         meetingData,
         didReport,
@@ -430,12 +451,10 @@ function Meeting() {
 
     const handleChatClick = () => {
         setIsActiveChatSlide((prev) => !prev);
-        console.log("hi");
         setActiveButton((prevButtonName) => {
             if (prevButtonName === "Chat") return null;
             return "Chat";
         });
-        console.log("ChatSlide");
     };
 
     const handleBoardClick = () => {
@@ -448,15 +467,14 @@ function Meeting() {
 
     const handleShareClick = () => {
         setActiveButton((prevButtonName) => {
-            if (prevButtonName === "Share") return null;
+            if (prevButtonName === "Share") {
+                unpublishScreenShare();
+                return null;
+            }
+            publishScreenShare();
             return "Share";
         });
         console.log("Share");
-        dispatch(
-            addIsShareOn({
-                isShareOn: !isShareOn,
-            }),
-        );
     };
 
     const handleCardClick = () => {
@@ -743,8 +761,8 @@ function Meeting() {
                                 <FreeTalk
                                     publisher={publisher}
                                     subscribers={subscribers}
-                                    screenPublisher={screenPublisher}
-                                    screenSubscribers={screenSubscribers}
+                                    sharePublisher={sharePublisher}
+                                    shareSubscribers={shareSubscribers}
                                     onClick={handleClickOpenFeedbackStart}
                                 />
                             );
