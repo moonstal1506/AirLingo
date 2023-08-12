@@ -37,6 +37,10 @@ function BasicInfoPage1() {
     const bioInputRef = useRef(null);
     const nicknameInputRef = useRef(null);
     const [imageModalOpen, setImageModalOpen] = useState(false);
+    const [modifyModalOpen, setModifyModalOpen] = useState(false);
+    const [modifyContent, setmodifyContent] = useState("");
+    const [isEditingNickname, setIsEditingNickname] = useState(false);
+    const [isEditingBio, setIsEditingBio] = useState(false);
     const [file, setFile] = useState(null);
     const [image, setImage] = useState(null);
     const [uplodeImage, setUplodeImage] = useState(true);
@@ -72,33 +76,106 @@ function BasicInfoPage1() {
         setSelectedImage(userProfile.userImgUrl);
     }, [userProfile]);
 
+    // 닉네임 수정
+
+    const handleNicknameIModifyIconClick = () => {
+        if (nicknameInputRef.current) {
+            nicknameInputRef.current.focus();
+            setIsEditingNickname(true);
+        }
+    };
+
+    const handleNicknameChange = (event) => {
+        const newNickname = event.target.value.trim();
+        setNickname(newNickname);
+    };
+
     const handleUserNicknameSubmit = async () => {
-        await updateUserNickname({
-            responseFunc: {
-                200: () => {
-                    console.log("닉네임 수정 성공!");
+        if (isEditingNickname) {
+            setIsEditingNickname(false);
+            await updateUserNickname({
+                responseFunc: {
+                    200: () => {
+                        setmodifyContent("닉네임");
+                        setModifyModalOpen(true);
+                        console.log("닉네임 수정 성공!");
+                    },
+                    400: () => {
+                        console.log("닉네임 수정 실패!");
+                    },
                 },
-                400: () => {
-                    console.log("닉네임 수정 실패!");
-                },
-            },
-            data: { userNickname: nickname, userId },
-        });
+                data: { userNickname: nickname, userId },
+            });
+        }
+    };
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (
+                isEditingNickname &&
+                nicknameInputRef.current &&
+                !nicknameInputRef.current.contains(event.target)
+            ) {
+                handleUserNicknameSubmit();
+            }
+        };
+
+        document.addEventListener("mousedown", handleOutsideClick);
+
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, [isEditingNickname]);
+
+    // 자기소개 수정
+    const handleBioIModifyIconClick = () => {
+        if (bioInputRef.current) {
+            bioInputRef.current.focus();
+            setIsEditingBio(true);
+        }
+    };
+
+    const handleBioChange = (event) => {
+        const newBio = event.target.value;
+        setBio(newBio);
     };
 
     const handleUserBioSubmit = async () => {
-        await updateUserBio({
-            responseFunc: {
-                200: () => {
-                    console.log("Bio 수정 성공!");
+        if (isEditingBio) {
+            setIsEditingBio(false);
+            await updateUserBio({
+                responseFunc: {
+                    200: () => {
+                        setmodifyContent("자기소개");
+                        setModifyModalOpen(true);
+                        console.log("Bio 수정 성공!");
+                    },
+                    400: () => {
+                        console.log("Bio 수정 실패!");
+                    },
                 },
-                400: () => {
-                    console.log("Bio 수정 실패!");
-                },
-            },
-            data: { userBio: bio, userId },
-        });
+                data: { userBio: bio, userId },
+            });
+        }
     };
+
+    useEffect(() => {
+        const handleOutsideClick = (event) => {
+            if (
+                isEditingBio &&
+                bioInputRef.current &&
+                !bioInputRef.current.contains(event.target)
+            ) {
+                handleUserBioSubmit();
+            }
+        };
+
+        document.addEventListener("mousedown", handleOutsideClick);
+
+        return () => {
+            document.removeEventListener("mousedown", handleOutsideClick);
+        };
+    }, [isEditingBio]);
 
     const handleImageUpload = (files) => {
         if (files && files.length > 0) {
@@ -162,16 +239,6 @@ function BasicInfoPage1() {
         setImageModalOpen(true);
     };
 
-    const handleNicknameChange = (event) => {
-        const newNickname = event.target.value.trim();
-        setNickname(newNickname);
-    };
-
-    const handleBioChange = (event) => {
-        const newBio = event.target.value;
-        setBio(newBio);
-    };
-
     const LanguageImg = totalLanguage.find(
         (language) =>
             language.id ===
@@ -182,6 +249,27 @@ function BasicInfoPage1() {
         <LeftPageBox id="LPBox">
             <LeftPassportPages src={leftPassportPages} id="LPPS" />
             <LeftPassportPage>
+                {modifyModalOpen && (
+                    <Modal
+                        title={modifyContent}
+                        modalOpen={modifyModalOpen}
+                        Icon={ModifyIcon}
+                        messages={modifyContent}
+                    >
+                        <ModalTextBox>
+                            <ModalTextWrapper>
+                                {modifyContent}을(를) 수정하였습니다.
+                            </ModalTextWrapper>
+                        </ModalTextBox>
+                        <ModalButtonBox>
+                            <TextButton
+                                shape="positive-curved"
+                                text="확인"
+                                onClick={() => setModifyModalOpen(false)}
+                            />
+                        </ModalButtonBox>
+                    </Modal>
+                )}
                 {imageModalOpen && (
                     <Modal title="프로필 이미지 편집" modalOpen={imageModalOpen} Icon={CameraIcon}>
                         <ProfileImageBox>
@@ -233,7 +321,6 @@ function BasicInfoPage1() {
                             <SettingIcon onClick={handleImageModalOpen} />
                         </SettingIconWrapper>
                     </ProfileImageBox>
-
                     <ProfileContentContainer>
                         <TitleRowBox>
                             <TitleBox>
@@ -245,6 +332,7 @@ function BasicInfoPage1() {
                                     ref={nicknameInputRef}
                                     value={nickname}
                                     onChange={handleNicknameChange}
+                                    onClick={handleNicknameIModifyIconClick}
                                     onKeyDown={(event) => {
                                         console.log("닉네임 변경 key down");
                                         if (event.key === "Enter") {
@@ -255,7 +343,7 @@ function BasicInfoPage1() {
                                         }
                                     }}
                                 />
-                                <ModifyIcon onClick={handleUserNicknameSubmit} />
+                                <ModifyIcon onClick={handleNicknameIModifyIconClick} />
                             </NicknameInputBox>
                         </TitleRowBox>
                         <TitleRowContainer>
@@ -317,6 +405,7 @@ function BasicInfoPage1() {
                                     ref={bioInputRef}
                                     value={bio}
                                     onChange={handleBioChange}
+                                    onClick={handleBioIModifyIconClick}
                                     onKeyDown={(event) => {
                                         console.log("Bio 변경 key down");
                                         if (event.key === "Enter") {
@@ -327,7 +416,7 @@ function BasicInfoPage1() {
                                         }
                                     }}
                                 />
-                                <ModifyIcon onClick={handleUserBioSubmit} />
+                                <ModifyIcon onClick={handleBioIModifyIconClick} />
                             </BioAreaBox>
                         </TitleRowBox>
                     </ProfileContentContainer>
@@ -336,6 +425,21 @@ function BasicInfoPage1() {
         </LeftPageBox>
     );
 }
+
+const ModalTextBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+`;
+
+const ModalTextWrapper = styled.span`
+    color: ${({ color }) => color};
+    text-align: center;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 44px;
+`;
 
 const LeftPageBox = styled.div`
     width: 510px;
@@ -440,6 +544,7 @@ const SettingIconWrapper = styled.div`
 `;
 
 const ProfileContentContainer = styled.div`
+    user-select: none;
     gap: 10px;
     display: inline-flex;
     flex-direction: column;
