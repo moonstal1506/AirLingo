@@ -231,18 +231,21 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public boolean checkDuplicationLoginId(String loginId) {
-		return userRepository.existsByUserLoginId(loginId);
+	public void checkDuplicationLoginId(String loginId) {
+		if(userRepository.existsByUserLoginId(loginId))
+			throw new ExistLoginIdException();
 	}
 
 	@Override
-	public boolean checkDuplicationEmail(String email) {
-		return userRepository.existsByUserEmail(email);
+	public void checkDuplicationEmail(String email) {
+		if(userRepository.existsByUserEmail(email))
+			throw new ExistEmailException();
 	}
 
 	@Override
-	public boolean checkDuplicationNickname(String nickname) {
-		return userRepository.existsByUserNickname(nickname);
+	public void checkDuplicationNickname(String nickname) {
+		if(userRepository.existsByUserNickname(nickname))
+			throw new ExistNicknameException();
 	}
 
 	@Override

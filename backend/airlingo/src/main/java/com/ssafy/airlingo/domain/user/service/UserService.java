@@ -62,11 +62,11 @@ public interface UserService {
 	void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto);
 
 	//로그인ID 중복 체크
-	boolean checkDuplicationLoginId(String loginId);
+	void checkDuplicationLoginId(String loginId);
 
 	//이메일 중복 체크
-	boolean checkDuplicationEmail(String email);
+	void checkDuplicationEmail(String email);
 
 	//닉네임 중복 체크
-	boolean checkDuplicationNickname(String nickname);
+	void checkDuplicationNickname(String nickname);
 }
