@@ -12,4 +12,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	// 입력받은 ID, PW를 기반으로 User 조회
 	Optional<User> findUserByUserLoginIdAndUserPassword(String userLoginId, String userPassword);
+	boolean existsByUserLoginId(String userLoginId);
+	boolean existsByUserNickname(String userNickname);
+	boolean existsByUserEmail(String userEmail);
 }

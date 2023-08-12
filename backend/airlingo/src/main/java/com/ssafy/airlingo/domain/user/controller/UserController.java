@@ -65,6 +65,46 @@ public class UserController {
 		return ResponseResult.failResponse;
 	}
 
+	@Operation(summary = "LoginId Duplication Check", description = "로그인 ID 중복체크")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "로그인 ID 중복 존재하지 않음"),
+			@ApiResponse(responseCode = "400", description = "로그인 ID 중복 존재")
+	})
+	@GetMapping("/loginId/{loginId}")
+	public ResponseResult checkDuplicationLoginId(@PathVariable String loginId) {
+		log.info("UserController_checkDuplicationLoginId -> 로그인ID 중복 체크");
+		if(!userService.checkDuplicationLoginId(loginId))
+			return ResponseResult.successResponse;
+		return ResponseResult.failResponse;
+	}
+
+	@Operation(summary = "Email Duplication Check", description = "이메일 중복체크")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "이메일 중복 존재하지 않음"),
+			@ApiResponse(responseCode = "400", description = "이메일 중복 존재")
+	})
+	@GetMapping("/email/{email}")
+	public ResponseResult checkDuplicationEmail(@PathVariable String email) {
+		log.info("UserController_checkDuplicationEmail -> 이메일 중복 체크");
+		if(!userService.checkDuplicationEmail(email))
+			return ResponseResult.successResponse;
+		return ResponseResult.failResponse;
+	}
+
+	@Operation(summary = "Nickname Duplication Check", description = "닉네임 중복체크")
+	@ApiResponses(value = {
+			@ApiResponse(responseCode = "200", description = "닉네임 중복 존재하지 않음"),
+			@ApiResponse(responseCode = "400", description = "닉네임 중복 존재")
+	})
+	@GetMapping("/nickname/{nickname}")
+	public ResponseResult checkDuplicationNickname(@PathVariable String nickname) {
+		log.info("UserController_checkDuplicationLoginId -> 닉네임중복 체크");
+		if(!userService.checkDuplicationNickname(nickname))
+			return ResponseResult.successResponse;
+		return ResponseResult.failResponse;
+	}
+
+
 	@Operation(summary = "Login", description = "사용자가 로그인 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그인 성공")

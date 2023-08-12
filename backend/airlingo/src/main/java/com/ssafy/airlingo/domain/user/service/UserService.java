@@ -61,4 +61,12 @@ public interface UserService {
 	// 관심 언어 삭제
 	void deleteInterestLanguage(DeleteInterestLanguageRequestDto deleteInterestLanguageRequestDto);
 
+	//로그인ID 중복 체크
+	boolean checkDuplicationLoginId(String loginId);
+
+	//이메일 중복 체크
+	boolean checkDuplicationEmail(String email);
+
+	//닉네임 중복 체크
+	boolean checkDuplicationNickname(String nickname);
 }
