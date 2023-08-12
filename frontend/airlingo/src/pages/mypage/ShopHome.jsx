@@ -30,8 +30,6 @@ function BasicInfoHome() {
 }
 
 const ShopHomeContainer = styled.div`
-    width: 100%;
-    height: calc(100% - 120px);
     position: relative;
     font-family: Pretendard;
     display: flex;
@@ -43,8 +41,6 @@ const PassportContainer = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 151px;
-    width: 1015px;
-    height: 755px;
 `;
 
 const LeftPageBox = styled.div`
