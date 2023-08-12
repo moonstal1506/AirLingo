@@ -17,8 +17,6 @@ function StatisticGraph() {
 }
 
 const StatisticHomeContainer = styled.div`
-    width: 100%;
-    height: calc(100% - 120px);
     position: relative;
     font-family: Pretendard;
     display: flex;
@@ -30,14 +28,11 @@ const PassportContainer = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 151px;
-    width: 1015px;
-    height: 755px;
 `;
 
 const TabBarContainer = styled.div`
-    position: relative;
-    top: 50px;
-    z-index: 1;
+    position: absolute;
+    top: 201px;
 `;
 
 export default StatisticGraph;

@@ -185,6 +185,7 @@ function StudyTimeStatistic() {
 const LeftPageBox = styled.div`
     width: 510px;
     height: 755px;
+    flex-shrink: 0;
 `;
 
 const LeftPassportPages = styled.img`
@@ -195,7 +196,6 @@ const LeftPassportPages = styled.img`
 `;
 
 const LeftPassportPage = styled.div`
-    position: relative;
     width: 500px;
     height: 700px;
     flex-shrink: 0;
@@ -204,6 +204,7 @@ const LeftPassportPage = styled.div`
     background: #fff;
     margin-right: 10px;
     margin-top: 50px;
+    margin-bottom: 5px;
 `;
 
 const PageLayout = styled.div`
