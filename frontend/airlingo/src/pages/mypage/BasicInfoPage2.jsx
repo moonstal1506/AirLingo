@@ -574,6 +574,7 @@ const WaitingTimeTextWrapper = styled.div`
 
 // 여권 오른쪽
 const LanguageContainer = styled.div`
+    user-select: none;
     display: inline-flex;
     flex-direction: column;
     align-items: flex-end;
