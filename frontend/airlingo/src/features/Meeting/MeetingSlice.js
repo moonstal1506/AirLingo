@@ -11,6 +11,7 @@ const initialState = {
     didReport: false,
     screenMode: "FreeTalk",
     isShareOn: false,
+    chatList: [],
 };
 
 export const MeetingSlice = createSlice({
@@ -50,6 +51,9 @@ export const MeetingSlice = createSlice({
         addIsShareOn: (state, actions) => {
             state.isShareOn = actions.payload.isShareOn;
         },
+        addChatList: (state, actions) => {
+            state.chatList.push(actions.payload.chat);
+        },
         removeInfo: (state) => {
             state.sessionId = "";
             state.otherUser = {};
@@ -58,6 +62,7 @@ export const MeetingSlice = createSlice({
             state.recordingId = "";
             state.scriptData = {};
             state.screenMode = "FreeTalk";
+            state.chatList = [];
         },
         removeScriptData: (state) => {
             state.scriptData = {};
@@ -85,6 +90,7 @@ export const {
     addScriptData,
     addScreenMode,
     addIsShareOn,
+    addChatList,
     removeScriptData,
     removeRecordingId,
     removeInfo,

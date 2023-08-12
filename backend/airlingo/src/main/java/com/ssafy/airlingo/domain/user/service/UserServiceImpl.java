@@ -7,6 +7,9 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import com.ssafy.airlingo.global.exception.ExistEmailException;
+import com.ssafy.airlingo.global.exception.ExistLoginIdException;
+import com.ssafy.airlingo.global.exception.ExistNicknameException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -67,6 +70,14 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public Long createUserAccount(CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserServiceImpl_createUserAccount -> 새로운 사용자 회원가입");
+
+		if(userRepository.existsByUserLoginId(createUserAccountRequestDto.getUserLoginId()))
+			throw new ExistLoginIdException();
+		if(userRepository.existsByUserEmail(createUserAccountRequestDto.getUserEmail()))
+			throw new ExistEmailException();
+		if(userRepository.existsByUserNickname(createUserAccountRequestDto.getUserNickname()))
+			throw new ExistNicknameException();
+
 		User newUserAccount = createUserAccountRequestDto.toUserEntity(languageRepository, gradeRepository);
 		return userRepository.save(newUserAccount).getUserId();
 	}
@@ -217,6 +228,24 @@ public class UserServiceImpl implements UserService {
 		Language language = languageRepository.findByLanguageId(deleteInterestLanguageRequestDto.getLanguageId());
 
 		userLanguageRepository.deleteByUserAndLanguage(user, language);
+	}
+
+	@Override
+	public void checkDuplicationLoginId(String loginId) {
+		if(userRepository.existsByUserLoginId(loginId))
+			throw new ExistLoginIdException();
+	}
+
+	@Override
+	public void checkDuplicationEmail(String email) {
+		if(userRepository.existsByUserEmail(email))
+			throw new ExistEmailException();
+	}
+
+	@Override
+	public void checkDuplicationNickname(String nickname) {
+		if(userRepository.existsByUserNickname(nickname))
+			throw new ExistNicknameException();
 	}
 
 	@Override

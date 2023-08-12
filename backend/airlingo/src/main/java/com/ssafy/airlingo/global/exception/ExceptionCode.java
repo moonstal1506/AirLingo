@@ -8,6 +8,9 @@ import lombok.Getter;
 @Getter
 public enum ExceptionCode {
 
+	EXIST_EMAIL_EXCEPTION(430,"이미 존재하는 이메일 입니다."),
+	EXIST_NICKNAME_EXCEPTION(431,"이미 존재하는 닉네임 입니다."),
+	EXIST_LOGINID_EXCEPTION(432,"이미 존재하는 로그인ID 입니다."),
 	INCORRECT_LANGUAGE_CODE_EXCEPTION(450, "부적절한 언어 코드 입니다."),
 	NOT_EXIST_WORD_EXCEPTION(460, "요청한 단어가 존재하지 않습니다."),
 	NOT_EXIST_SCRIPT_EXCEPTION(461, "요청한 스크립트가 존재하지 않습니다."),

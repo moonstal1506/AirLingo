@@ -1,3 +1,4 @@
+/* eslint-disable react/no-array-index-key */
 import styled from "@emotion/styled";
 import PropTypes from "prop-types";
 import Profile from "../common/profile";
@@ -13,8 +14,8 @@ function ChatList({ data, onClick }) {
     return (
         <ChatListContainer>
             <ChatListBox onClick={handleClickListItem}>
-                {data.map(({ roomId, userImgUrl, userNickname, content }) => (
-                    <ChatListItem key={`${roomId}_${userNickname}`}>
+                {data.map(({ userImgUrl, userNickname, content }, idx) => (
+                    <ChatListItem key={idx}>
                         <ProfileWrapper>
                             <ProfileBarCustom>
                                 <Profile size="tiny" src={userImgUrl || defaultImageUrl} />
@@ -32,9 +33,9 @@ function ChatList({ data, onClick }) {
 ChatList.propTypes = {
     data: PropTypes.arrayOf(
         PropTypes.shape({
-            imgSrc: PropTypes.string.isRequired,
-            nickname: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
-            text: PropTypes.string.isRequired,
+            userImgUrl: PropTypes.string.isRequired,
+            userNickname: PropTypes.oneOfType([PropTypes.string, PropTypes.elementType]),
+            content: PropTypes.string.isRequired,
         }),
     ).isRequired,
     onClick: PropTypes.func,

@@ -259,7 +259,7 @@ function WordBook() {
     };
 
     return (
-        <WordBookPageContainer>
+        <WordBookPageContainer id="SC">
             <PassportContainer id="PC">
                 <TabBarContainer>
                     <TabBar activeTab="wordbook" id="TabBar" />
@@ -450,8 +450,6 @@ function WordBook() {
 }
 
 const WordBookPageContainer = styled.div`
-    width: 100%;
-    height: calc(100% - 120px);
     position: relative;
     font-family: Pretendard;
     display: flex;
@@ -463,8 +461,6 @@ const PassportContainer = styled.div`
     display: flex;
     justify-content: space-between;
     padding-top: 151px;
-    width: 1015px;
-    height: 755px;
 `;
 
 const LeftPageBox = styled.div`
@@ -493,8 +489,8 @@ const LeftPassportPage = styled.div`
 `;
 
 const TabBarContainer = styled.div`
-    position: relative;
-    top: 50px;
+    position: absolute;
+    top: 201px;
 `;
 
 const RightPageBox = styled.div`

@@ -89,4 +89,25 @@ public class ExceptionController {
 		log.info("Error Message : {}", err.getMessage());
 		return ResponseResult.customExceptionResponse(ExceptionCode.NOT_ENOUGH_MILEAGE_EXCEPTION, err.getMessage());
 	}
+
+	@ExceptionHandler(ExistLoginIdException.class)
+	public ResponseResult ExistLoginIdException(ExistLoginIdException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.customExceptionResponse(ExceptionCode.EXIST_LOGINID_EXCEPTION, err.getMessage());
+	}
+
+	@ExceptionHandler(ExistEmailException.class)
+	public ResponseResult ExistEmailException(ExistEmailException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.customExceptionResponse(ExceptionCode.EXIST_EMAIL_EXCEPTION, err.getMessage());
+	}
+
+	@ExceptionHandler(ExistNicknameException.class)
+	public ResponseResult ExistNicknameException(ExistNicknameException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.customExceptionResponse(ExceptionCode.EXIST_NICKNAME_EXCEPTION, err.getMessage());
+	}
 }

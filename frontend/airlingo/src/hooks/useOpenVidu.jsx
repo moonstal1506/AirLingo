@@ -1,6 +1,9 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
+import { useDispatch, useSelector } from "react-redux";
+import { addChatList } from "@/features/Meeting/MeetingSlice";
+import { selectUser } from "@/features/User/UserSlice";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -16,6 +19,9 @@ const useOpenVidu = () => {
     const [shareSession, setShareSession] = useState(null);
     const [sharePublisher, setSharePublisher] = useState(null);
     const [shareSubscribers, setShareSubscribers] = useState([]);
+
+    const dispatch = useDispatch();
+    const { userNickname } = useSelector(selectUser);
 
     async function joinSession() {
         const cameraSession = OV.current.initSession();
@@ -38,15 +44,31 @@ const useOpenVidu = () => {
             }
         });
 
-        // curSession.on("speechToTextMessage", (event) => {
-        //     console.log(`STT ${event}`);
-        //     console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
-        //     if (event.reason === "recognizing") {
-        //         console.log(`User ${event.connection.connectionId} is speaking: ${event.text}`);
-        //     } else if (event.reason === "recognized") {
-        //         console.log(`User ${event.connection.connectionId} spoke: ${event.text}`);
-        //     }
-        // });
+        cameraSession.on("speechToTextMessage", (event) => {
+            // console.log(`STT ${event}`);
+            // console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
+            // console.log(JSON.parse(event.connection.data).clientData);
+
+            // if (event.reason === "recognizing") {
+            //     console.log(`User ${event.connection.connectionId} is speaking: ${event.text}`);
+            // } else if (event.reason === "recognized") {
+            //     console.log(`User ${event.connection.connectionId} spoke: ${event.text}`);
+            // }
+
+            const currentUserNickname = JSON.parse(event.connection.data).clientData;
+
+            if (event.reason === "recognized") {
+                console.log(`spoke: ${event.text}`);
+                dispatch(
+                    addChatList({
+                        chat: {
+                            isMe: currentUserNickname === userNickname,
+                            text: event.text,
+                        },
+                    }),
+                );
+            }
+        });
 
         cameraSession.on("streamDestroyed", (event) => {
             console.log("스트림 삭제 이벤트", subscribers, event.stream.streamId);

@@ -181,6 +181,7 @@ function StudyCountStatistic() {
 const RightPageBox = styled.div`
     width: 507px;
     height: 705px;
+    flex-shrink: 0;
 `;
 
 const LeftPassportPages = styled.img`
