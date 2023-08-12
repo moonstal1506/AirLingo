@@ -40,6 +40,7 @@ import {
     addScriptData,
     removeRecordingId,
     addScreenMode,
+    addIsShareOn,
     removeScriptData,
     removeMeetingData,
 } from "@/features/Meeting/MeetingSlice";
@@ -79,7 +80,19 @@ function Meeting() {
 
     // hooks Area...
     const { routeTo } = useRouter();
-    const { OV, session, publisher, setPublisher, subscribers } = useOpenVidu();
+    const {
+        OV,
+        session,
+        publisher,
+        setPublisher,
+        subscribers,
+        shareOV,
+        shareSession,
+        sharePublisher,
+        setSharePublisher,
+        shareSubscribers,
+        setShareSubscribers,
+    } = useOpenVidu();
     const { message, sendMessage, chatMessage, ChangeMessages } = useChat();
 
     // Active States...
@@ -104,8 +117,8 @@ function Meeting() {
     const [requestCardCode, setRequestCardCode] = useState("");
     const [responseWaitTitle, setResponseWaitTitle] = useState("");
     const [isLoading, setIsLoading] = useState(false);
-    // 세션 연결 함수
 
+    // 세션 연결 함수
     async function fetchToken() {
         try {
             const response = await postOpenviduToken({
@@ -132,10 +145,22 @@ function Meeting() {
                 resolution: "1280x720",
                 frameRate: 60,
                 insertMode: "APPEND",
-                mirror: "false",
+                mirror: false,
             });
         } catch (error) {
             console.error("Failed to init publisher", error);
+            throw error;
+        }
+    }
+
+    async function initSharePublisher() {
+        try {
+            return await shareOV.current.initPublisherAsync(undefined, {
+                videoSource: "screen",
+                mirror: false,
+            });
+        } catch (error) {
+            console.error("Failed to init screenPublisher", error);
             throw error;
         }
     }
@@ -267,6 +292,11 @@ function Meeting() {
         dispatch(removeMeetingData());
     };
 
+    function handleScreenShareEndRequest() {
+        console.log("상대방이 화면 공유를 종료하였습니다.");
+        setShareSubscribers([]);
+    }
+
     // signal 이벤트 분기처리
     function handleSignal(event) {
         const { data, type } = event;
@@ -297,6 +327,9 @@ function Meeting() {
                 // feedback을 끝내는 요청에 대한 응답을 받음
                 handleFeedbackEndResponse(data);
                 break;
+            case "screenshare-end-request":
+                handleScreenShareEndRequest();
+                break;
             default:
                 console.log("없는 이벤트타입입니다.");
         }
@@ -304,20 +337,68 @@ function Meeting() {
     async function connectSession() {
         try {
             const token = await fetchToken();
+            const shareToken = await fetchToken();
 
             session
                 .connect(token, { clientData: userNickname })
                 .then(async () => {
-                    const publisher = await initPublisher();
-                    session.publish(publisher);
-                    setPublisher(publisher);
+                    const curPublisher = await initPublisher();
+                    session.publish(curPublisher);
+                    setPublisher(curPublisher);
                 })
                 .catch((error) => {
                     console.error("Error Connecting to OpenVidu", error);
                 });
+
+            shareSession
+                .connect(shareToken, { clientData: userNickname })
+                .then(() => {
+                    console.log("화면 공유를 위한 세션이 연결되었습니다!");
+                })
+                .catch((error) =>
+                    console.warn(
+                        "화면 공유를 위한 세션 연결 중에 다음과 같은 에러가 발생했습니다: ",
+                        error.code,
+                        error.message,
+                    ),
+                );
         } catch (error) {
             console.error("Error in connectSession", error);
         }
+    }
+
+    async function unpublishScreenShare() {
+        session.signal({
+            data: "",
+            to: [subscribers[0].stream.connection],
+            type: "screenshare-end-request",
+        });
+        shareSession.unpublish(sharePublisher);
+        dispatch(addIsShareOn({ isShareOn: false }));
+        setShareSubscribers([]);
+        console.log("사용자가 화면공유를 종료하였습니다.");
+    }
+
+    async function publishScreenShare() {
+        const curSharePublisher = await initSharePublisher();
+        dispatch(addIsShareOn({ isShareOn: true }));
+        curSharePublisher.once("accessAllowed", () => {
+            curSharePublisher.stream
+                .getMediaStream()
+                .getVideoTracks()[0]
+                .addEventListener("ended", () => {
+                    console.log("사용자가 화면공유를 종료하였습니다.");
+                    shareSession.unpublish(curSharePublisher);
+                    dispatch(addIsShareOn({ isShareOn: false }));
+                });
+            shareSession.publish(curSharePublisher);
+        });
+        curSharePublisher.once("accessDenied", () => {
+            unpublishScreenShare();
+            setActiveButton(null);
+            console.warn("화면공유를 위한 접근이 거부되었습니다.");
+        });
+        setSharePublisher(curSharePublisher);
     }
 
     useEffect(() => {
@@ -330,6 +411,7 @@ function Meeting() {
     }, [session]);
 
     useEffect(() => {
+        console.log(scriptData, screenMode);
         if (publisher && session) {
             session.on("signal", handleSignal);
         }
@@ -341,6 +423,7 @@ function Meeting() {
         };
     }, [
         publisher,
+        sharePublisher,
         sessionId,
         meetingData,
         didReport,
@@ -367,12 +450,10 @@ function Meeting() {
 
     const handleChatClick = () => {
         setIsActiveChatSlide((prev) => !prev);
-        console.log("hi");
         setActiveButton((prevButtonName) => {
             if (prevButtonName === "Chat") return null;
             return "Chat";
         });
-        console.log("ChatSlide");
     };
 
     const handleBoardClick = () => {
@@ -385,7 +466,11 @@ function Meeting() {
 
     const handleShareClick = () => {
         setActiveButton((prevButtonName) => {
-            if (prevButtonName === "Share") return null;
+            if (prevButtonName === "Share") {
+                unpublishScreenShare();
+                return null;
+            }
+            publishScreenShare();
             return "Share";
         });
         console.log("Share");
@@ -675,6 +760,8 @@ function Meeting() {
                                 <FreeTalk
                                     publisher={publisher}
                                     subscribers={subscribers}
+                                    sharePublisher={sharePublisher}
+                                    shareSubscribers={shareSubscribers}
                                     onClick={handleClickOpenFeedbackStart}
                                 />
                             );
@@ -692,7 +779,6 @@ function Meeting() {
                             return null;
                     }
                 })()}
-
                 <SliderButtonWrapper isOpen={isActiveSlide}>
                     <SliderButton isOpen={isActiveSlide} onClick={handleClickSlideButton} />
                 </SliderButtonWrapper>

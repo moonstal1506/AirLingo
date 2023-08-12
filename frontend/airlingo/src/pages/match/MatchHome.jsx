@@ -15,7 +15,7 @@ import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
 import { TextButton } from "@/components/common/button";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import Dropdown from "@/components/common/dropdown";
-import LanguageRankBox from "@/assets/imgs/language-rank-box.png";
+import PremiumMatchingBox from "@/assets/imgs/premium-matching-box.png";
 import { useRouter } from "@/hooks";
 import { getConcurrentUser, getPremiumMatching } from "@/api";
 import Modal from "../../components/modal";
@@ -378,7 +378,7 @@ const TooltipContentContainer = styled.div`
     position: relative;
     width: 400px;
     height: 400px;
-    background-image: url(${LanguageRankBox});
+    background-image: url(${PremiumMatchingBox});
     background-size: cover;
     border-radius: 20px;
     background-color: transparent;

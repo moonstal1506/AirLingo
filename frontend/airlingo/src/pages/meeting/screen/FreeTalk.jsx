@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
@@ -5,9 +6,11 @@ import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import isKeyInObj from "@/utils/common";
 import { TextButton } from "@/components/common/button";
 
-function FreeTalk({ publisher, subscribers, onClick }) {
-    const { meetingData } = useSelector(selectMeeting);
+// ----------------------------------------------------------------------------------------------------
 
+function FreeTalk({ publisher, subscribers, sharePublisher, shareSubscribers, onClick }) {
+    const { isShareOn, meetingData } = useSelector(selectMeeting);
+    console.log(publisher, subscribers, sharePublisher, shareSubscribers);
     return (
         <>
             <VideoContainer>
@@ -17,19 +20,45 @@ function FreeTalk({ publisher, subscribers, onClick }) {
                             ref={(node) => node && publisher.addVideoElement(node)}
                             autoPlay
                             width="500px"
+                            style={{ display: isShareOn ? "none" : "block" }}
                         />
                     ) : (
-                        <PlacholderBox>카메라를 로딩하고 있습니다.</PlacholderBox>
+                        <PlaceholderBox>카메라를 로딩하고 있습니다.</PlaceholderBox>
+                    )}
+                    {isShareOn && sharePublisher && (
+                        <video
+                            ref={(node) => node && sharePublisher.addVideoElement(node)}
+                            autoPlay
+                            width="500px"
+                            style={{ display: isShareOn ? "block" : "none" }}
+                        />
                     )}
                 </VideoFrame>
-
                 {subscribers.length > 0 && (
                     <VideoFrame key={subscribers[0].stream.streamId}>
                         <video
-                            ref={(node) => node && subscribers[0].addVideoElement(node)}
+                            ref={(cameraNode) =>
+                                cameraNode && subscribers[0].addVideoElement(cameraNode)
+                            }
                             autoPlay
                             width="500px"
+                            style={{ display: shareSubscribers.length === 0 ? "block" : "none" }}
                         />
+                        {shareSubscribers.length > 0 && (
+                            <VideoFrame key={shareSubscribers[0].stream.streamId}>
+                                <video
+                                    ref={(screenNode) =>
+                                        screenNode &&
+                                        shareSubscribers[0].addVideoElement(screenNode)
+                                    }
+                                    autoPlay
+                                    width="500px"
+                                    style={{
+                                        display: shareSubscribers.length > 0 ? "block" : "none",
+                                    }}
+                                />
+                            </VideoFrame>
+                        )}
                     </VideoFrame>
                 )}
             </VideoContainer>
@@ -38,7 +67,7 @@ function FreeTalk({ publisher, subscribers, onClick }) {
                 <TopicContent>
                     {meetingData && isKeyInObj(meetingData, "currentCard")
                         ? meetingData.currentCard.subject
-                        : "없음"}
+                        : "프리토킹"}
                 </TopicContent>
                 {meetingData && isKeyInObj(meetingData, "currentCard") && (
                     <TextButton
@@ -53,6 +82,8 @@ function FreeTalk({ publisher, subscribers, onClick }) {
     );
 }
 
+// ----------------------------------------------------------------------------------------------------
+
 const VideoContainer = styled.div`
     display: flex;
     align-items: start;
@@ -64,13 +95,13 @@ const VideoFrame = styled.div`
     width: 500px;
 `;
 
-const PlacholderBox = styled.div`
+const PlaceholderBox = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 20px;
     width: 500px;
-    height: 281.25px;
+    height: 375px;
     background-color: black;
     border-radius: 20px;
     color: white;
@@ -100,5 +131,7 @@ const TopicContent = styled.div`
     font-weight: 700;
     font-size: 50px;
 `;
+
+// ----------------------------------------------------------------------------------------------------
 
 export default FreeTalk;

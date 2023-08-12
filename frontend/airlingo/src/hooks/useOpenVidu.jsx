@@ -5,23 +5,46 @@ import { useDispatch, useSelector } from "react-redux";
 import { addChatList } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
 
+// ----------------------------------------------------------------------------------------------------
+
 const useOpenVidu = () => {
+    // 카메라
     const OV = useRef(new OpenVidu());
-    const [session, setSession] = useState(null); // Initial value changed to null
+    const [session, setSession] = useState(null);
     const [publisher, setPublisher] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
+
+    // 화면 공유
+    const shareOV = useRef(new OpenVidu());
+    const [shareSession, setShareSession] = useState(null);
+    const [sharePublisher, setSharePublisher] = useState(null);
+    const [shareSubscribers, setShareSubscribers] = useState([]);
+
     const dispatch = useDispatch();
     const { userNickname } = useSelector(selectUser);
-    async function joinSession() {
-        const curSession = OV.current.initSession();
 
-        curSession.on("streamCreated", (event) => {
-            const subscriber = curSession.subscribe(event.stream, undefined);
-            setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-            curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+    async function joinSession() {
+        const cameraSession = OV.current.initSession();
+        const screenSession = shareOV.current.initSession();
+        cameraSession.on("streamCreated", (event) => {
+            if (event.stream.typeOfVideo === "CAMERA") {
+                const subscriber = cameraSession.subscribe(event.stream, undefined);
+                setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+                // curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+            }
         });
 
-        curSession.on("speechToTextMessage", (event) => {
+        screenSession.on("streamCreated", (event) => {
+            if (event.stream.typeOfVideo === "SCREEN") {
+                const screenSubscriber = screenSession.subscribe(event.stream, undefined);
+                setShareSubscribers((prevShareSubscribers) => [
+                    ...prevShareSubscribers,
+                    screenSubscriber,
+                ]);
+            }
+        });
+
+        cameraSession.on("speechToTextMessage", (event) => {
             // console.log(`STT ${event}`);
             // console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
             // console.log(JSON.parse(event.connection.data).clientData);
@@ -47,24 +70,26 @@ const useOpenVidu = () => {
             }
         });
 
-        curSession.on("streamDestroyed", (event) => {
+        cameraSession.on("streamDestroyed", (event) => {
             console.log("스트림 삭제 이벤트", subscribers, event.stream.streamId);
             setSubscribers((prevSubscribers) =>
                 prevSubscribers.filter((sub) => sub.stream.streamId !== event.stream.streamId),
             );
         });
 
-        curSession.on("exception", (exception) => {
+        cameraSession.on("exception", (exception) => {
             console.warn(exception);
         });
 
-        setSession(curSession);
+        setSession(cameraSession);
+        setShareSession(screenSession);
     }
 
     useEffect(() => {
         joinSession();
         return () => {
             if (session) session.disconnect();
+            if (shareSession) shareSession.disconnect();
         };
     }, []);
 
@@ -76,7 +101,16 @@ const useOpenVidu = () => {
         setPublisher,
         subscribers,
         setSubscribers,
+        shareOV,
+        shareSession,
+        setShareSession,
+        sharePublisher,
+        setSharePublisher,
+        shareSubscribers,
+        setShareSubscribers,
     };
 };
+
+// ----------------------------------------------------------------------------------------------------
 
 export default useOpenVidu;
