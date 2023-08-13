@@ -1,18 +1,18 @@
 import instance from "./instance";
 import processApiResponse from "@/utils/api";
 
-const getCardCode = async ({ responseFunc }) => {
+const getCardCode = async ({ responseFunc, routeTo }) => {
     try {
         const response = await instance.get(`/api/cardCode`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };
 
-const getCard = async ({ responseFunc, data }) => {
+const getCard = async ({ responseFunc, data, routeTo }) => {
     const { cardCode, languageCode } = data;
     try {
         const response = await instance.get(
@@ -21,6 +21,7 @@ const getCard = async ({ responseFunc, data }) => {
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
+        routeTo("/error");
         return e.response;
     }
 };
