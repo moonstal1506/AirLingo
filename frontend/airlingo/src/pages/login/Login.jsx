@@ -13,7 +13,6 @@ function Login() {
     const passwordRef = useRef();
     const { routeTo } = useRouter();
     const [isOpen, setIsOpen] = useState(false);
-
     const handleSubmit = async (e) => {
         e.preventDefault();
         const loginRequetDto = {
@@ -29,7 +28,7 @@ function Login() {
                             userAccessToken: response.headers["access-token"],
                         }),
                     );
-                    routeTo("/");
+                    routeTo("/matchhome");
                 },
                 400: () => {
                     setIsOpen(true);

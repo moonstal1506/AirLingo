@@ -35,7 +35,7 @@ function MatchQueue() {
         await postMatching({
             responseFunc: {
                 400: () => {
-                    routeTo("/notfound");
+                    routeTo("/error");
                 },
             },
             data: {

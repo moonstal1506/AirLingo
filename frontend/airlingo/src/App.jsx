@@ -1,6 +1,7 @@
 import styled from "@emotion/styled";
-import { Outlet } from "react-router-dom";
 import { useEffect } from "react";
+import { RouterProvider } from "react-router-dom";
+import routers from "./router";
 
 function App() {
     useEffect(() => {
@@ -10,7 +11,7 @@ function App() {
     }, []);
     return (
         <MainContainer>
-            <Outlet />
+            <RouterProvider router={routers} />
         </MainContainer>
     );
 }
