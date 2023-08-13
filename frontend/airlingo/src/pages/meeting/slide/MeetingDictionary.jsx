@@ -7,10 +7,13 @@ import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
 import { TextButton } from "@/components/common/button";
 import Container from "@/components/common/container";
-import { getTranslateResult, getLanguage } from "@/api";
+import { getTranslateResult, getLanguage, postWord } from "@/api";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
+import { translatorConfig } from "@/config";
+import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
+import Modal from "@/components/modal";
 import { useRouter } from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
@@ -20,12 +23,15 @@ const { distinctgray } = theme.colors;
 // ----------------------------------------------------------------------------------------------------
 
 function MeetingDictionary() {
-    const { userNativeLanguage } = useSelector(selectUser);
+    const { userNativeLanguage, userId } = useSelector(selectUser);
     const { otherUser } = useSelector(selectMeeting);
     const [languageList, setLanguageList] = useState([]);
     const [sourceLang, setSourceLang] = useState(formatLanguage(userNativeLanguage));
     const [targetLang, setTargetLang] = useState(formatLanguage(otherUser.userNativeLanguage));
     const [word, setWord] = useState("");
+    const [translateWord, setTranslateWord] = useState("");
+    const [translateResult, setTranslateResult] = useState("");
+    const [modalOpen, setModalOpen] = useState(false);
     const { routeTo } = useRouter();
 
     useEffect(() => {
@@ -48,12 +54,15 @@ function MeetingDictionary() {
         async function fetchSearchResult() {
             await getTranslateResult({
                 responseFunc: {
-                    200: () => {},
-                    400: () => {},
+                    200: (response) => {
+                        setTranslateWord(word);
+                        setTranslateResult(response.data.data.toLowerCase());
+                    },
+                    400: (response) => console.log(response),
                 },
                 data: {
-                    source: "ko",
-                    target: "en",
+                    source: translatorConfig[sourceLang.id],
+                    target: translatorConfig[targetLang.id],
                     text: word,
                 },
                 routeTo,
@@ -62,8 +71,39 @@ function MeetingDictionary() {
         fetchSearchResult();
     };
 
+    const saveWord = async () => {
+        await postWord({
+            responseFunc: {
+                200: (response) => {
+                    console.log(response);
+                    setModalOpen(true);
+                },
+                400: (response) => console.log(response),
+            },
+            data: {
+                wordName: word,
+                wordDescription: translateResult,
+                userId,
+            },
+        });
+    };
+
     return (
         <DictionaryContainer>
+            {modalOpen && (
+                <Modal title="단어 저장" modalOpen={modalOpen} Icon={ModifyIcon}>
+                    <ModalTextBox>
+                        <ModalTextWrapper>{translateResult}을(를) 저장하였습니다.</ModalTextWrapper>
+                    </ModalTextBox>
+                    <ModalButtonBox>
+                        <TextButton
+                            shape="positive-curved"
+                            text="확인"
+                            onClick={() => setModalOpen(false)}
+                        />
+                    </ModalButtonBox>
+                </Modal>
+            )}
             <ItemBox>
                 <SubTitleWrapper>사전 언어 설정</SubTitleWrapper>
                 <SettingBox>
@@ -103,9 +143,12 @@ function MeetingDictionary() {
             <DivisionLine />
             <ItemBox>
                 <SubTitleWrapper>검색 결과</SubTitleWrapper>
-                <Container width="100%" height="300px" />
+                <Container width="100%" height="300px">
+                    <TitleWrapper>{translateWord}</TitleWrapper>
+                    <TranslateResultWrapper>{translateResult}</TranslateResultWrapper>
+                </Container>
             </ItemBox>
-            <TextButton text="단어장 저장" width="40%" />
+            <TextButton text="단어장 저장" width="40%" onClick={saveWord} />
         </DictionaryContainer>
     );
 }
@@ -119,6 +162,29 @@ const DictionaryContainer = styled.div`
     align-items: center;
     width: 100%;
     height: 100%;
+`;
+
+const ModalTextBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+`;
+
+const ModalTextWrapper = styled.span`
+    color: ${({ color }) => color};
+    text-align: center;
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 44px;
+`;
+
+const ModalButtonBox = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 50px;
+    padding-top: 10px;
 `;
 
 const ItemBox = styled.div`
@@ -159,6 +225,26 @@ const DivisionLine = styled.div`
     background-color: ${distinctgray};
     border-radius: 50px;
     opacity: 0.35;
+`;
+
+const TitleWrapper = styled.div`
+    color: #000;
+    display: flex;
+    display: center;
+    align-items: center;
+    font-size: 40px;
+    font-weight: 700;
+    padding-top: 70px;
+`;
+
+const TranslateResultWrapper = styled.div`
+    color: #000;
+    font-size: 50px;
+    font-weight: 700;
+    display: center;
+    align-items: center;
+    padding-left: 5px;
+    padding-top: 10px;
 `;
 
 // ----------------------------------------------------------------------------------------------------
