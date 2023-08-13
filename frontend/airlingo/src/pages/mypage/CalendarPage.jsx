@@ -26,7 +26,6 @@ function CalendarPage() {
                 responseFunc: {
                     200: (response) => {
                         setDailyGridList({ ...response.data.data });
-                        console.log("데일리 그리드 개수 조회 성공!");
                     },
                 },
                 data: { userId },
@@ -47,7 +46,6 @@ function CalendarPage() {
             emptyGridCountByDate[formattedDate] = dailyGridCount;
         });
         setGridCountByDate({ ...emptyGridCountByDate });
-        console.log(gridCountByDate);
     }, [dailyGridList]);
 
     // 날짜 포맷팅 함수
@@ -58,7 +56,6 @@ function CalendarPage() {
 
     const handleDayClick = (value) => {
         console.log("Clicked day:", formatDate(value));
-        // console.log("Clicked day:", value);
     };
 
     return (

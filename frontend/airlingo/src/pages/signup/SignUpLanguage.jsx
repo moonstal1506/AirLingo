@@ -43,7 +43,7 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                         setLanguages(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
                 routeTo,
             });
@@ -51,7 +51,7 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                 responseFunc: {
                     200: (response) =>
                         setGrades(response.data.data.map((grade) => formatGrade(grade))),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
                 routeTo,
             });

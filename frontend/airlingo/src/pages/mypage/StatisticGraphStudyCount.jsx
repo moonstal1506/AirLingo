@@ -89,7 +89,6 @@ function StudyCountStatistic() {
     };
 
     const getRecordStatisticFunction = async () => {
-        console.log(userId);
         await getRecordStatistic({
             responseFunc: {
                 200: (response) => {
@@ -109,9 +108,7 @@ function StudyCountStatistic() {
                     setData(chartData);
                     setTotalStudyNumber(response.data.data.numberResponse.totalStudyNumber);
                 },
-                400: () => {
-                    console.log("통계 데이터 가져오기 실패");
-                },
+                400: () => {},
             },
             data: userId,
             routeTo,

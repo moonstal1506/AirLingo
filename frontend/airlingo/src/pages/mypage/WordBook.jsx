@@ -176,7 +176,6 @@ function WordBook() {
             await deleteWords({
                 responseFunc: {
                     200: () => {
-                        // console.log("삭제를 성공했습니다.");
                         const updatedWordList = AllWordList.filter(
                             (word) => !selectedIds.includes(word.wordId),
                         );

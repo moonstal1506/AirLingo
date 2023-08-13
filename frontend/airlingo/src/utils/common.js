@@ -1,6 +1,5 @@
 function isKeyInObj(obj, key) {
     if (!obj || !key) {
-        console.log("제대로, props를 넘겨주세요");
         return false;
     }
 

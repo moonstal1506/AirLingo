@@ -36,7 +36,7 @@ function MeetingDictionary() {
                         setLanguageList(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
                 routeTo,
             });
@@ -48,8 +48,8 @@ function MeetingDictionary() {
         async function fetchSearchResult() {
             await getTranslateResult({
                 responseFunc: {
-                    200: (response) => console.log(response),
-                    400: (response) => console.log(response),
+                    200: () => {},
+                    400: () => {},
                 },
                 data: {
                     source: "ko",

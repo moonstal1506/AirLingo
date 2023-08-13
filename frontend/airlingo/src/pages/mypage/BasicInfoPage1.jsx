@@ -61,7 +61,6 @@ function BasicInfoPage1() {
             await getUserProfile({
                 responseFunc: {
                     200: (response) => {
-                        console.log(response.data.data);
                         setUserProfile({ ...response.data.data });
                     },
                 },
@@ -101,11 +100,8 @@ function BasicInfoPage1() {
                     200: () => {
                         setmodifyContent("닉네임");
                         setModifyModalOpen(true);
-                        console.log("닉네임 수정 성공!");
                     },
-                    400: () => {
-                        console.log("닉네임 수정 실패!");
-                    },
+                    400: () => {},
                 },
                 data: { userNickname: nickname, userId },
                 routeTo,
@@ -152,11 +148,8 @@ function BasicInfoPage1() {
                     200: () => {
                         setmodifyContent("자기소개");
                         setModifyModalOpen(true);
-                        console.log("Bio 수정 성공!");
                     },
-                    400: () => {
-                        console.log("Bio 수정 실패!");
-                    },
+                    400: () => {},
                 },
                 data: { userBio: bio, userId },
                 routeTo,
@@ -209,11 +202,8 @@ function BasicInfoPage1() {
                             setSelectedImage(response.data.data.uploadFileUrl);
                             setImage(response.data.data.uploadFileUrl);
                             setImageModalOpen(false);
-                            console.log("수정 성공!");
                         },
-                        400: () => {
-                            console.log("수정 실패!");
-                        },
+                        400: () => {},
                     },
                     data: { files: file, userId },
                     routeTo,
@@ -228,11 +218,8 @@ function BasicInfoPage1() {
                         setSelectedImage(defaultProfileImage);
                         setImage(defaultProfileImage);
                         setImageModalOpen(false);
-                        console.log("삭제 성공!");
                     },
-                    400: () => {
-                        console.log("삭제 실패!");
-                    },
+                    400: () => {},
                 },
                 data: { userId },
                 routeTo,
@@ -341,9 +328,7 @@ function BasicInfoPage1() {
                                     onChange={handleNicknameChange}
                                     onClick={handleNicknameIModifyIconClick}
                                     onKeyDown={(event) => {
-                                        console.log("닉네임 변경 key down");
                                         if (event.key === "Enter") {
-                                            console.log("닉네임 변경 key down 성공");
                                             event.preventDefault();
                                             handleUserNicknameSubmit(event);
                                             nicknameInputRef.current.blur();
@@ -414,9 +399,7 @@ function BasicInfoPage1() {
                                     onChange={handleBioChange}
                                     onClick={handleBioIModifyIconClick}
                                     onKeyDown={(event) => {
-                                        console.log("Bio 변경 key down");
                                         if (event.key === "Enter") {
-                                            console.log("Bio 변경 key down 성공");
                                             event.preventDefault();
                                             handleUserBioSubmit(event);
                                             bioInputRef.current.blur();
