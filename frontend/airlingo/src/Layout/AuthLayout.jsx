@@ -1,3 +1,5 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
@@ -25,6 +27,7 @@ function AuthLayout({ children }) {
                 },
             },
             data: { userId },
+            routeTo,
         });
 
         if (!apiRes) {
@@ -36,6 +39,7 @@ function AuthLayout({ children }) {
                     },
                 },
                 data: { userLoginId: 123 },
+                routeTo,
             });
         }
     }, [userId]);
@@ -57,8 +61,9 @@ function AuthLayout({ children }) {
                         dispatch(logoutUser());
                         routeTo("/login");
                     },
-                    data: { userId },
                 },
+                data: { userId },
+                routeTo,
             });
         }
     });

@@ -3,51 +3,53 @@ import processApiResponse from "@/utils/api";
 
 const { VITE_MATCHING_SERVER_URL } = import.meta.env;
 
-const getConcurrentUser = async ({ responseFunc }) => {
+const getConcurrentUser = async ({ responseFunc, routeTo }) => {
     try {
         const response = await instance.get(`/api/matching/concurrent-users`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };
 
-const postMatching = async ({ responseFunc, data }) => {
+const postMatching = async ({ responseFunc, data, routeTo }) => {
     try {
         const response = await instance.post(`/api/matching`, data);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };
 
-const postOpenviduToken = async ({ responseFunc, data }) => {
+const postOpenviduToken = async ({ responseFunc, data, routeTo }) => {
     if (!("sessionId" in data)) return {};
     try {
         const response = await instance.post(`/api/matching/${data.sessionId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
+        routeTo("/error");
         return e.response;
     }
 };
 
-const getPremiumMatching = async ({ responseFunc, data }) => {
+const getPremiumMatching = async ({ responseFunc, data, routeTo }) => {
     const { userId } = data;
     try {
         const response = await instance.get(`/api/matching/premium/${userId}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
+        routeTo("/error");
         return e.response;
     }
 };
 
-const cancelMatching = async ({ responseFunc, data }) => {
+const cancelMatching = async ({ responseFunc, data, routeTo }) => {
     const { userId } = data;
     try {
         const response = await instance.get(`/matching/cancel/${userId}`, {
@@ -56,6 +58,7 @@ const cancelMatching = async ({ responseFunc, data }) => {
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
+        routeTo("/error");
         return e.response;
     }
 };

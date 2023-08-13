@@ -66,10 +66,10 @@ function BasicInfoPage2() {
                 responseFunc: {
                     200: (response) => {
                         setUserProfile({ ...response.data.data });
-                        console.log(userProfile);
                     },
                 },
                 data: { userId },
+                routeTo,
             });
             await getLanguage({
                 responseFunc: {
@@ -77,15 +77,17 @@ function BasicInfoPage2() {
                         setLanguages(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
+                routeTo,
             });
             await getGrade({
                 responseFunc: {
                     200: (response) =>
                         setGrades(response.data.data.map((grade) => formatGrade(grade))),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
+                routeTo,
             });
         }
         fetchData();
@@ -130,12 +132,9 @@ function BasicInfoPage2() {
         await updateLanguage({
             responseFunc: {
                 200: () => {
-                    console.log("관심 언어 수정 성공!");
                     setLanguageModalOpen(false);
                 },
-                400: () => {
-                    console.log("관심 언어 수정 실패!");
-                },
+                400: () => {},
             },
             data: {
                 userId,
@@ -144,15 +143,16 @@ function BasicInfoPage2() {
                     gradeId: language.gradeId,
                 })),
             },
+            routeTo,
         });
         await getUserProfile({
             responseFunc: {
                 200: (response) => {
                     setUserProfile({ ...response.data.data });
-                    console.log(userProfile);
                 },
             },
             data: { userId },
+            routeTo,
         });
     };
 
@@ -189,16 +189,14 @@ function BasicInfoPage2() {
         await updateUserPassword({
             responseFunc: {
                 200: () => {
-                    console.log("수정 성공!");
                     setPasswordModalOpen(false);
                     setPassword({ value: "", valid: false, dirty: false });
                     setConfirmPassword({ value: "", valid: false, dirty: false });
                 },
-                400: () => {
-                    console.log("수정 실패!");
-                },
+                400: () => {},
             },
             data: { userPassword: password.value, userId },
+            routeTo,
         });
     };
 
@@ -213,14 +211,12 @@ function BasicInfoPage2() {
                 200: () => {
                     dispatch(logoutUser());
                     setQuitModalOpen(false);
-                    console.log("회원 탈퇴 성공!");
                     routeTo("/");
                 },
-                400: () => {
-                    console.log("회원 탈퇴 실패!");
-                },
+                400: () => {},
             },
             data: { userId },
+            routeTo,
         });
     };
 

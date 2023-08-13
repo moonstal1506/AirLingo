@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ValidationItem from "@/components/validationList";
 import { TextInput } from "@/components/common/input";
 import theme from "@/assets/styles/Theme";
 import { TextButton } from "@/components/common/button";
 import { checkId, checkPassword, checkConfirmPassword } from "@/utils/validationCheck";
+import { getLoginIdIsDuplicated } from "@/api/user";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -16,7 +17,9 @@ const { primary1, primary4 } = theme.colors;
 function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
     const [id, setId] = useState({
         value: totalState.id,
+        debounced: totalState.id,
         valid: checkId(totalState.id),
+        possible: false,
         dirty: totalState.id.length > 0,
     });
     const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
@@ -25,6 +28,36 @@ function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
         valid: false,
         dirty: false,
     });
+
+    useEffect(() => {
+        const timerId = setTimeout(() => {
+            setId((prev) => ({ ...prev, debounced: id.value }));
+        }, 250);
+
+        return () => {
+            clearTimeout(timerId);
+        };
+    }, [id.value]);
+
+    useEffect(() => {
+        if (id.debounced) {
+            getLoginIdIsDuplicated({
+                responseFunc: {
+                    200: () => {
+                        console.log("아이디가 중복되지 않았습니다!");
+                        setId((prev) => ({ ...prev, possible: true }));
+                    },
+                    432: () => {
+                        console.log("이미 사용 중인 아이디입니다!");
+                        setId((prev) => ({ ...prev, possible: false }));
+                    },
+                },
+                data: {
+                    userLoginId: id.debounced,
+                },
+            });
+        }
+    }, [id.debounced]);
 
     const handleIdChange = (event) => {
         const newId = event.target.value.trim();
@@ -90,6 +123,11 @@ function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     text="아이디는 4 ~ 20자의 영어 소문자와 숫자의 조합입니다."
                 />
                 <ValidationItem
+                    isValid={id.possible}
+                    isDirty={id.dirty}
+                    text="아이디는 다른 회원의 아이디와 중복되지 않아야 합니다."
+                />
+                <ValidationItem
                     isValid={password.valid}
                     isDirty={password.dirty}
                     text="비밀번호는 8 ~ 20자의 영어 대 · 소문자, 숫자, 특수문자의 조합입니다."
@@ -112,7 +150,9 @@ function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     text="다음 단계"
                     width="200px"
                     onClick={() => onHandleNextStep({ id: id.value, password: password.value })}
-                    disabled={!id.valid || !password.valid || !confirmPassword.valid}
+                    disabled={
+                        !id.valid || !id.possible || !password.valid || !confirmPassword.valid
+                    }
                 />
             </ButtonBox>
         </InfoContainer>

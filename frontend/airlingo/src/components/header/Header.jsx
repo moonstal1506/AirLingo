@@ -19,15 +19,12 @@ const Header = React.memo(() => {
         await getLogout({
             responseFunc: {
                 200: () => {
-                    console.log("logout");
                     dispatch(logoutUser());
                     routeTo("/");
                 },
-                400: () => {
-                    /* fix me! go to error page */
-                },
             },
             data: { userLoginId },
+            routeTo,
         });
     };
 
@@ -89,6 +86,9 @@ const HeaderInnerContainer = styled.div`
     align-items: center;
     width: 100%;
     padding: 0 160px;
+    & > svg {
+        cursor: pointer;
+    }
 `;
 
 const HeaderRightBox = styled.div`

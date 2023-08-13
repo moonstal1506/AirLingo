@@ -14,8 +14,7 @@ import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import { translatorConfig } from "@/config";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import Modal from "@/components/modal";
-// import getSearchResult from "@/api/dictionary";
-// import { dictConfig } from "@/config";
+import { useRouter } from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -33,9 +32,7 @@ function MeetingDictionary() {
     const [translateWord, setTranslateWord] = useState("");
     const [translateResult, setTranslateResult] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
-    console.log("sourceLang:", sourceLang);
-    console.log(setLanguageList);
-    console.log("why?", otherUser);
+    const { routeTo } = useRouter();
 
     useEffect(() => {
         async function fetchLanguageData() {
@@ -45,12 +42,13 @@ function MeetingDictionary() {
                         setLanguageList(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
+                routeTo,
             });
         }
         fetchLanguageData();
-    }, []);
+    }, [routeTo]);
 
     const searchWord = () => {
         async function fetchSearchResult() {
@@ -67,6 +65,7 @@ function MeetingDictionary() {
                     target: translatorConfig[targetLang.id],
                     text: word,
                 },
+                routeTo,
             });
         }
         fetchSearchResult();
