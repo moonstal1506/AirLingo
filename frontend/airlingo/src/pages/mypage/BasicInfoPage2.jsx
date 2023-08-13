@@ -17,7 +17,7 @@ import { ReactComponent as KeyIcon } from "@/assets/icons/key-icon.svg";
 import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
 import { ReactComponent as HeartIcon } from "@/assets/icons/heart-icon.svg";
 import * as Icons from "@/assets/icons";
-import { logoutUser, selectUser } from "@/features/User/UserSlice";
+import { logoutUser, selectUser, signinUser } from "@/features/User/UserSlice";
 import { getUserProfile, deleteUser, updateUserPassword, updateLanguage } from "@/api/user.js";
 import { getLanguage, getGrade } from "@/api/language";
 import { formatLanguage, formatGrade } from "@/utils/format";
@@ -58,7 +58,25 @@ function BasicInfoPage2() {
     });
     const [selectedLang, setSelectedLang] = useState({ id: 0, label: "", img: "" });
     const [selectedGrade, setSelectedGrade] = useState({ id: 0, label: "", img: "" });
+    const [updateProfile, setUpdateProfile] = useState(false);
 
+    useEffect(() => {
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        dispatch(signinUser({ ...response.data.data }));
+                    },
+                },
+                data: { userId },
+                routeTo,
+            });
+        }
+        if (updateProfile) {
+            fetchData();
+            setUpdateProfile(false);
+        }
+    }, [updateProfile]);
     // 프로필 조회
     useEffect(() => {
         async function fetchData() {
@@ -144,6 +162,7 @@ function BasicInfoPage2() {
             responseFunc: {
                 200: () => {
                     setLanguageModalOpen(false);
+                    setUpdateProfile(true);
                 },
                 400: () => {
                     alert("응답에 실패하였습니다. 다시 시도해주세요.");
@@ -437,15 +456,15 @@ function BasicInfoPage2() {
                     </TitleContainer>
                     <LanguageContentBox>
                         {userProfile.userLanguages &&
-                            userProfile.userLanguages.map((langueage) => (
-                                <LanguageBox>
+                            userProfile.userLanguages.map((language) => (
+                                <LanguageBox key={language.languageId}>
                                     <LanguageFlag
-                                        src={languages[langueage.languageId - 1]?.img || ""}
+                                        src={languages[language.languageId - 1]?.img || ""}
                                         alt="Korean Flag"
                                     />
                                     <LanguageNameRankBox>
-                                        <LanguageName>{langueage.languageKorName}</LanguageName>
-                                        <Grade gradeName={langueage?.gradeName || ""} />
+                                        <LanguageName>{language.languageKorName}</LanguageName>
+                                        <Grade gradeName={language?.gradeName || ""} />
                                     </LanguageNameRankBox>
                                 </LanguageBox>
                             ))}

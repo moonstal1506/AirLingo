@@ -17,7 +17,7 @@ import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
-import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser, signinUser } from "@/features/User/UserSlice.js";
 import {
     getUserProfile,
     updateUserNickname,
@@ -33,10 +33,10 @@ function BasicInfoPage1() {
     const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
     const dispatch = useDispatch();
-    const { userId } = storeUser;
+    const { userId, userNickname, userBio } = storeUser;
     const [userProfile, setUserProfile] = useState({});
-    const [nickname, setNickname] = useState("에어링고");
-    const [bio, setBio] = useState("안녕하세요. 만나서 반갑습니다.");
+    const [nickname, setNickname] = useState(userNickname);
+    const [bio, setBio] = useState(userBio);
     const bioInputRef = useRef(null);
     const nicknameInputRef = useRef(null);
     const [imageModalOpen, setImageModalOpen] = useState(false);
@@ -48,6 +48,7 @@ function BasicInfoPage1() {
     const [image, setImage] = useState(null);
     const [uplodeImage, setUplodeImage] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
+    const [updateProfile, setUpdateProfile] = useState(false);
     const fileInputRef = useRef(null);
 
     const totalLanguage = [
@@ -86,6 +87,25 @@ function BasicInfoPage1() {
         setSelectedImage(userProfile.userImgUrl);
     }, [userProfile]);
 
+    useEffect(() => {
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        console.log(response.data.data);
+                        dispatch(signinUser({ ...response.data.data }));
+                    },
+                },
+                data: { userId },
+                routeTo,
+            });
+        }
+        if (updateProfile) {
+            fetchData();
+            setUpdateProfile(false);
+        }
+    }, [updateProfile]);
+
     // 닉네임 수정
 
     const handleNicknameIModifyIconClick = () => {
@@ -98,9 +118,11 @@ function BasicInfoPage1() {
     const handleNicknameChange = (event) => {
         const newNickname = event.target.value.trim();
         setNickname(newNickname);
+        console.log(nickname);
     };
 
     const handleUserNicknameSubmit = async () => {
+        console.log(nickname);
         if (isEditingNickname) {
             setIsEditingNickname(false);
             await updateUserNickname({
@@ -108,6 +130,7 @@ function BasicInfoPage1() {
                     200: () => {
                         setmodifyContent("닉네임");
                         setModifyModalOpen(true);
+                        setUpdateProfile(true);
                     },
                     400: () => {
                         alert("응답에 실패하였습니다. 다시 시도해주세요.");
@@ -115,6 +138,9 @@ function BasicInfoPage1() {
                     470: () => {
                         dispatch(logoutUser());
                         routeTo("/error");
+                    },
+                    500: () => {
+                        alert("중복된 닉네임입니다. 다른 닉네임을 입력해주세요.");
                     },
                 },
                 data: { userNickname: nickname, userId },
@@ -162,6 +188,7 @@ function BasicInfoPage1() {
                     200: () => {
                         setmodifyContent("자기소개");
                         setModifyModalOpen(true);
+                        setUpdateProfile(true);
                     },
                     400: () => {
                         alert("응답에 실패하였습니다. 다시 시도해주세요.");
@@ -221,6 +248,7 @@ function BasicInfoPage1() {
                             setSelectedImage(response.data.data.uploadFileUrl);
                             setImage(response.data.data.uploadFileUrl);
                             setImageModalOpen(false);
+                            setUpdateProfile(true);
                         },
                         400: () => {
                             alert("응답에 실패했습니다. 다시 시도해주세요.");
