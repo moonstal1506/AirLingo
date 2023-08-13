@@ -68,14 +68,14 @@ function Script() {
                 responseFunc: {
                     200: (response) => {
                         setDailyGridList({ ...response.data.data });
-                        console.log("데일리 그리드 개수 조회 성공!");
                     },
                 },
                 data: { userId },
+                routeTo,
             });
         }
         fetchData();
-    }, [userId]);
+    }, [userId, routeTo]);
 
     useEffect(() => {
         const emptyGridCountByDate = {};
@@ -113,13 +113,13 @@ function Script() {
                     }, // 스크립트가 없는 경우
                 },
                 data: { userId, date: desiredDate },
+                routeTo,
             });
         }
         fetchData();
-    }, [userId, desiredDate]);
+    }, [userId, desiredDate, routeTo]);
 
     const handleLookupScript = () => {
-        console.log(openScriptModal);
         setOpenScriptModal(true);
     };
 

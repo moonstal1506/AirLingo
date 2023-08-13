@@ -11,8 +11,7 @@ import { getTranslateResult, getLanguage } from "@/api";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
-// import getSearchResult from "@/api/dictionary";
-// import { dictConfig } from "@/config";
+import { useRouter } from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -27,9 +26,7 @@ function MeetingDictionary() {
     const [sourceLang, setSourceLang] = useState(formatLanguage(userNativeLanguage));
     const [targetLang, setTargetLang] = useState(formatLanguage(otherUser.userNativeLanguage));
     const [word, setWord] = useState("");
-    console.log("sourceLang:", sourceLang);
-    console.log(setLanguageList);
-    console.log("why?", otherUser);
+    const { routeTo } = useRouter();
 
     useEffect(() => {
         async function fetchLanguageData() {
@@ -39,25 +36,27 @@ function MeetingDictionary() {
                         setLanguageList(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
+                routeTo,
             });
         }
         fetchLanguageData();
-    }, []);
+    }, [routeTo]);
 
     const searchWord = () => {
         async function fetchSearchResult() {
             await getTranslateResult({
                 responseFunc: {
-                    200: (response) => console.log(response),
-                    400: (response) => console.log(response),
+                    200: () => {},
+                    400: () => {},
                 },
                 data: {
                     source: "ko",
                     target: "en",
                     text: word,
                 },
+                routeTo,
             });
         }
         fetchSearchResult();

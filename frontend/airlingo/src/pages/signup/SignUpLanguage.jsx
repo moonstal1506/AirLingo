@@ -10,6 +10,7 @@ import { formatLanguage, formatGrade } from "@/utils/format";
 import Tooltip from "@/components/common/tooltip/Tooltip";
 import Validation from "@/components/validationList";
 import theme from "@/assets/styles/Theme";
+import { useRouter } from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -18,6 +19,7 @@ const { faintgray, primary4, warning } = theme.colors;
 // ----------------------------------------------------------------------------------------------------
 
 function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
+    const { routeTo } = useRouter();
     const [languages, setLanguages] = useState([]);
     const [grades, setGrades] = useState([]);
     const [primaryLang, setPrimaryLang] = useState({
@@ -41,19 +43,21 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                         setLanguages(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
+                routeTo,
             });
             await getGrade({
                 responseFunc: {
                     200: (response) =>
                         setGrades(response.data.data.map((grade) => formatGrade(grade))),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
+                routeTo,
             });
         }
         fetchData();
-    }, []);
+    }, [routeTo]);
 
     const changePrimaryLang = (language) => {
         setPrimaryLang((prev) => ({ ...prev, value: language, valid: true, dirty: true }));

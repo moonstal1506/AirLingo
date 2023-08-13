@@ -22,10 +22,12 @@ import NoWordTestModal from "@/components/modal/wordBook/NoWordTestModal";
 import WordTestProgressModal from "@/components/modal/wordBook/WordTestProgressModal";
 import WordTestEndModal from "@/components/modal/wordBook/WordTestEndModal";
 import ReviewNoteModal from "@/components/modal/wordBook/ReviewNoteModal";
+import { useRouter } from "@/hooks";
 
 function WordBook() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
+    const { routeTo } = useRouter();
 
     // 단어 조회 ,삭제 관련
     const [AllWordList, setWordList] = useState([]); // 저장한 전체 단어
@@ -78,6 +80,7 @@ function WordBook() {
                     }, // 단어가 없는 경우
                 },
                 data: { userId },
+                routeTo,
             });
         }
         fetchData();
@@ -173,7 +176,6 @@ function WordBook() {
             await deleteWords({
                 responseFunc: {
                     200: () => {
-                        // console.log("삭제를 성공했습니다.");
                         const updatedWordList = AllWordList.filter(
                             (word) => !selectedIds.includes(word.wordId),
                         );
@@ -182,6 +184,7 @@ function WordBook() {
                     },
                 },
                 data: { userId, selectedIds },
+                routeTo,
             });
         } catch (error) {
             // console.error("삭제 중 오류가 발생했습니다.", error);
@@ -218,6 +221,7 @@ function WordBook() {
                         },
                     },
                     data: { userId },
+                    routeTo,
                 });
             } catch (error) {
                 // console.error("삭제 중 오류가 발생했습니다.", error);
