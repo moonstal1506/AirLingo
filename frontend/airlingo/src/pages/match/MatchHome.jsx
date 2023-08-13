@@ -1,8 +1,7 @@
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-shadow */
-/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import { useSelector } from "react-redux";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatLanguage } from "@/utils/format";
@@ -48,14 +47,6 @@ function MatchHome() {
         setMileage(mileage);
         setAlertModalOpen(true);
     };
-    console.log("제발!!!");
-
-    const isUserInfoValid = () =>
-        userNickname &&
-        Object.keys(userNativeLanguage).length > 0 &&
-        userLanguages.length > 0 &&
-        skillLanguageList.length > 0 &&
-        studyLanguageList.length > 0;
 
     const fetchConcurrentUser = async () => {
         await getConcurrentUser({
@@ -65,15 +56,21 @@ function MatchHome() {
         });
     };
 
+    const isUserInfoValid = useCallback(() => {
+        return (
+            userNickname &&
+            Object.keys(userNativeLanguage).length > 0 &&
+            userLanguages.length > 0 &&
+            skillLanguageList.length > 0 &&
+            studyLanguageList.length > 0
+        );
+    }, [userNickname, userNativeLanguage, userLanguages, skillLanguageList, studyLanguageList]);
+
     useEffect(() => {
         if (isUserInfoValid()) {
             fetchConcurrentUser();
-            console.log(concurrentUser);
         }
-        // else {
-        //     routeTo("/");
-        // }
-    }, [skillLanguageList, studyLanguage]);
+    }, [isUserInfoValid]);
 
     const handleMatching = (premium) => {
         if (studyLanguage) {
@@ -91,7 +88,6 @@ function MatchHome() {
         await getPremiumMatching({
             responseFunc: {
                 200: (response) => {
-                    console.log(response.data.data);
                     if (!response.data.data.possiblePremium) {
                         setModalOpen(false);
                         handleAlertModalOpen(response.data.data.mileage);
