@@ -98,7 +98,7 @@ function MatchQueue() {
             responseFunc: {
                 200: () => {
                     console.log("매칭 취소 성공");
-                    routeTo("/matchhome");
+                    routeTo("/");
                 },
                 400: () => {
                     console.log("매칭 취소 실패");
@@ -155,7 +155,7 @@ function MatchQueue() {
             matchingRequestFunc();
         } else {
             console.log("매칭 정지");
-            routeTo("/matchhome");
+            routeTo("/");
         }
 
         // 피드백 요청 확인 창을 닫는다.

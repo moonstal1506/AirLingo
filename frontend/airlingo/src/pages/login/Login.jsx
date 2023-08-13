@@ -29,7 +29,7 @@ function Login() {
                             userAccessToken: response.headers["access-token"],
                         }),
                     );
-                    routeTo("/matchhome");
+                    routeTo("/");
                 },
                 400: () => {
                     setIsOpen(true);

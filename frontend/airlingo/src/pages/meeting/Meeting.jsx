@@ -618,7 +618,7 @@ function Meeting() {
             responseFunc: {
                 200: () => {
                     session.disconnect();
-                    routeTo("/matchhome", { replace: false });
+                    routeTo("/", { replace: false });
                 },
             },
             data: {

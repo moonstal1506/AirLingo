@@ -37,7 +37,7 @@ function MatchHome() {
     const [skillLanguage, setSkillLanguage] = useState({ ...skillLanguageList[0] });
     const [studyLanguage, setStudyLanguage] = useState({ ...studyLanguageList[0] });
 
-    const [mileage, setMileage] = useState([]);
+    const [mileage, setMileage] = useState(0);
     const [alertModalOpen, setAlertModalOpen] = useState(false);
 
     const handleAlertModalOpen = (mileage) => {
