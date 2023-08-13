@@ -23,7 +23,6 @@ function Login() {
         await loginUser({
             responseFunc: {
                 200: (response) => {
-                    console.log("로그인 성공!");
                     dispatch(
                         signinUser({
                             ...response.data.data,
@@ -33,11 +32,9 @@ function Login() {
                     routeTo("/matchhome");
                 },
                 400: () => {
-                    console.log("알수없는 오류로 실패!");
                     setIsOpen(true);
                 },
                 470: () => {
-                    console.log("로그인 실패!");
                     setIsOpen(true);
                 },
             },
