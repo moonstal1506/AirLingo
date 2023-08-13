@@ -13,6 +13,42 @@ const getUserProfile = async ({ responseFunc, data, routeTo }) => {
     }
 };
 
+const getLoginIdIsDuplicated = async ({ responseFunc, data }) => {
+    const { userLoginId } = data;
+    try {
+        const response = await instance.get(`/api/user/loginId/${userLoginId}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        routeTo("/error");
+        return e.response;
+    }
+};
+
+const getNicknameIsDuplicated = async ({ responseFunc, data }) => {
+    const { nickname } = data;
+    try {
+        const response = await instance.get(`/api/user/nickname/${nickname}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        routeTo("/error");
+        return e.response;
+    }
+};
+
+const getEmailIsDuplicated = async ({ responseFunc, data }) => {
+    const { email } = data;
+    try {
+        const response = await instance.get(`/api/user/email/${email}`);
+        processApiResponse({ responseFunc, response });
+        return response;
+    } catch (e) {
+        routeTo("/error");
+        return e.response;
+    }
+};
+
 const postSignUp = async ({ responseFunc, data, routeTo }) => {
     try {
         const response = await instance.post(`/api/user/signup`, data);
@@ -125,6 +161,9 @@ const updateLanguage = async ({ responseFunc, data, routeTo }) => {
 
 export {
     getUserProfile,
+    getLoginIdIsDuplicated,
+    getNicknameIsDuplicated,
+    getEmailIsDuplicated,
     postSignUp,
     updateUserNickname,
     updateUserBio,
