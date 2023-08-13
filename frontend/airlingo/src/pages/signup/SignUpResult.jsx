@@ -34,6 +34,7 @@ function SignUpResult({ totalState }) {
                         gradeId: language.gradeId,
                     })),
                 },
+                routeTo,
             });
         }
         fetchSignUp();
@@ -44,6 +45,7 @@ function SignUpResult({ totalState }) {
         totalState.email,
         totalState.primaryLang,
         totalState.learningLangs,
+        routeTo,
     ]);
 
     return (

@@ -6,8 +6,10 @@ import { useSelector } from "react-redux";
 import { postCreateChatRoom } from "@/api";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
+import useRouter from "./useRouter";
 
 function useChat() {
+    const { routeTo } = useRouter();
     const { VITE_CHAT_SOCKET_URL } = import.meta.env;
     const stompCilent = useRef({});
     const [message, setMessage] = useState("");
@@ -69,6 +71,7 @@ function useChat() {
                 },
             },
             data: sessionId,
+            routeTo,
         });
 
         connect();

@@ -127,6 +127,7 @@ function Meeting() {
                     400: () => console.log("get Token Fail"),
                 },
                 data: { sessionId },
+                routeTo,
             });
             return response.data.data;
         } catch (error) {
@@ -198,6 +199,7 @@ function Meeting() {
                 },
             },
             data: { sessionId },
+            routeTo,
         });
         console.log(res, recordingId, "서버에서 레코딩 아이디 받아왔는데??");
     }
@@ -225,6 +227,7 @@ function Meeting() {
             data: {
                 recordingId: sessionId,
             },
+            routeTo,
         });
 
         await sleep(5000);
@@ -247,6 +250,7 @@ function Meeting() {
                 cardId: meetingData.currentCard.cardId,
                 studyId,
             },
+            routeTo,
         });
 
         dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
@@ -283,6 +287,7 @@ function Meeting() {
                     scriptId: scriptData.scriptId,
                     scriptContent: scriptData.modifiedScript,
                 },
+                routeTo,
             });
         }
 
@@ -566,6 +571,7 @@ function Meeting() {
                 cardCode: requestCardCode,
                 languageCode: "KOR",
             },
+            routeTo,
         });
         setOpenCardRequestModal(false);
     };
@@ -585,6 +591,7 @@ function Meeting() {
                 userId,
                 description: reportText,
             },
+            routeTo,
         });
         dispatch(addDidReport({ didReport: true }));
     };
@@ -628,6 +635,7 @@ function Meeting() {
                 studyId,
                 rating,
             },
+            routeTo,
         });
     };
 

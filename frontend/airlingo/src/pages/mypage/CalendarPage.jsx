@@ -8,13 +8,14 @@ import { selectUser } from "@/features/User/UserSlice.js";
 import { getDailyGrid } from "@/api/user.js";
 import theme from "@/assets/styles/Theme";
 import "react-calendar/dist/Calendar.css";
+import { useRouter } from "@/hooks";
 
 const { primary2, primary3, primary4, primary6, selection, faintgray } = theme.colors;
 
 function CalendarPage() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
-
+    const { routeTo } = useRouter();
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [dailyGridList, setDailyGridList] = useState({});
     const [gridCountByDate, setGridCountByDate] = useState({});
@@ -29,6 +30,7 @@ function CalendarPage() {
                     },
                 },
                 data: { userId },
+                routeTo,
             });
         }
         fetchData();

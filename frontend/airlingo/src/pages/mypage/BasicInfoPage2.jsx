@@ -70,6 +70,7 @@ function BasicInfoPage2() {
                     },
                 },
                 data: { userId },
+                routeTo,
             });
             await getLanguage({
                 responseFunc: {
@@ -79,6 +80,7 @@ function BasicInfoPage2() {
                         ),
                     400: (response) => console.log(response),
                 },
+                routeTo,
             });
             await getGrade({
                 responseFunc: {
@@ -86,6 +88,7 @@ function BasicInfoPage2() {
                         setGrades(response.data.data.map((grade) => formatGrade(grade))),
                     400: (response) => console.log(response),
                 },
+                routeTo,
             });
         }
         fetchData();
@@ -144,6 +147,7 @@ function BasicInfoPage2() {
                     gradeId: language.gradeId,
                 })),
             },
+            routeTo,
         });
         await getUserProfile({
             responseFunc: {
@@ -153,6 +157,7 @@ function BasicInfoPage2() {
                 },
             },
             data: { userId },
+            routeTo,
         });
     };
 
@@ -199,6 +204,7 @@ function BasicInfoPage2() {
                 },
             },
             data: { userPassword: password.value, userId },
+            routeTo,
         });
     };
 
@@ -221,6 +227,7 @@ function BasicInfoPage2() {
                 },
             },
             data: { userId },
+            routeTo,
         });
     };
 

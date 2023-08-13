@@ -14,8 +14,10 @@ import { ReactComponent as YelloW } from "@/assets/icons/language-yellow-icon.sv
 import { getRecordStatistic } from "@/api";
 import { selectUser } from "@/features/User/UserSlice";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
+import { useRouter } from "@/hooks";
 
 function StudyCountStatistic() {
+    const { routeTo } = useRouter();
     const [data, setData] = useState(null);
     const [totalStudyNumber, setTotalStudyNumber] = useState(0);
     const { userId } = useSelector(selectUser);
@@ -91,10 +93,7 @@ function StudyCountStatistic() {
         await getRecordStatistic({
             responseFunc: {
                 200: (response) => {
-                    console.log("통계 데이터 가져오기 성공");
-                    console.log(response.data.data.numberResponse);
                     const { languageNumberResponseDtoList } = response.data.data.numberResponse;
-                    console.log(languageNumberResponseDtoList);
                     const chartData = {
                         labels: languageNumberResponseDtoList.map((item) => item.languageName),
                         datasets: [
@@ -108,15 +107,14 @@ function StudyCountStatistic() {
                     };
 
                     setData(chartData);
-                    console.log(chartData);
                     setTotalStudyNumber(response.data.data.numberResponse.totalStudyNumber);
-                    console.log(totalStudyNumber);
                 },
                 400: () => {
                     console.log("통계 데이터 가져오기 실패");
                 },
             },
             data: userId,
+            routeTo,
         });
     };
 

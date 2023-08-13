@@ -25,10 +25,12 @@ import {
     updateUserImage,
     deleteUserImage,
 } from "@/api/user.js";
+import { useRouter } from "@/hooks";
 
 const { primary4 } = theme.colors;
 
 function BasicInfoPage1() {
+    const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
     const [userProfile, setUserProfile] = useState({});
@@ -64,6 +66,7 @@ function BasicInfoPage1() {
                     },
                 },
                 data: { userId },
+                routeTo,
             });
         }
         fetchData();
@@ -105,6 +108,7 @@ function BasicInfoPage1() {
                     },
                 },
                 data: { userNickname: nickname, userId },
+                routeTo,
             });
         }
     };
@@ -155,6 +159,7 @@ function BasicInfoPage1() {
                     },
                 },
                 data: { userBio: bio, userId },
+                routeTo,
             });
         }
     };
@@ -211,6 +216,7 @@ function BasicInfoPage1() {
                         },
                     },
                     data: { files: file, userId },
+                    routeTo,
                 });
                 return;
             }
@@ -229,6 +235,7 @@ function BasicInfoPage1() {
                     },
                 },
                 data: { userId },
+                routeTo,
             });
         } catch (error) {
             console.error("Error updating user image:", error);

@@ -45,13 +45,14 @@ function MatchHome() {
         setAlertModalOpen(true);
     };
 
-    const fetchConcurrentUser = async () => {
+    const fetchConcurrentUser = useCallback(async () => {
         await getConcurrentUser({
             responseFunc: {
                 200: (response) => setConcurrentUser({ ...response.data.data }),
             },
+            routeTo,
         });
-    };
+    }, [routeTo]);
 
     const isUserInfoValid = useCallback(() => {
         return (
@@ -67,7 +68,7 @@ function MatchHome() {
         if (isUserInfoValid()) {
             fetchConcurrentUser();
         }
-    }, [isUserInfoValid]);
+    }, [isUserInfoValid, fetchConcurrentUser]);
 
     const handleMatching = (premium) => {
         if (studyLanguage) {
@@ -96,6 +97,7 @@ function MatchHome() {
             data: {
                 userId,
             },
+            routeTo,
         });
     };
 
