@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import com.ssafy.airlingo.global.exception.ExistEmailException;
 import com.ssafy.airlingo.global.exception.ExistLoginIdException;
 import com.ssafy.airlingo.global.exception.ExistNicknameException;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,6 +43,7 @@ import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
 import com.ssafy.airlingo.domain.user.repository.RefreshTokenRepository;
 import com.ssafy.airlingo.domain.user.repository.UserRepository;
 import com.ssafy.airlingo.global.exception.NotExistAccountException;
+import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.util.JwtService;
 
 import jakarta.servlet.http.HttpServletResponse;
@@ -71,11 +73,11 @@ public class UserServiceImpl implements UserService {
 	public Long createUserAccount(CreateUserAccountRequestDto createUserAccountRequestDto) {
 		log.info("UserServiceImpl_createUserAccount -> 새로운 사용자 회원가입");
 
-		if(userRepository.existsByUserLoginId(createUserAccountRequestDto.getUserLoginId()))
+		if (userRepository.existsByUserLoginId(createUserAccountRequestDto.getUserLoginId()))
 			throw new ExistLoginIdException();
-		if(userRepository.existsByUserEmail(createUserAccountRequestDto.getUserEmail()))
+		if (userRepository.existsByUserEmail(createUserAccountRequestDto.getUserEmail()))
 			throw new ExistEmailException();
-		if(userRepository.existsByUserNickname(createUserAccountRequestDto.getUserNickname()))
+		if (userRepository.existsByUserNickname(createUserAccountRequestDto.getUserNickname()))
 			throw new ExistNicknameException();
 
 		User newUserAccount = createUserAccountRequestDto.toUserEntity(languageRepository, gradeRepository);
@@ -111,6 +113,24 @@ public class UserServiceImpl implements UserService {
 	public void logout(String userLoginId) {
 		log.info("UserServiceImpl_logout -> 로그아웃 중");
 		refreshTokenRepository.deleteRefreshToken(userLoginId);
+	}
+
+	@Override
+	public void tmpLogout(String accessToken) {
+		try {
+			log.info(accessToken);
+
+			String userLoginId = jwtService.extractUserLoginIdFromAccessToken(accessToken);
+			log.info("userLoginId : " + userLoginId);
+			if (userLoginId != null) {
+				refreshTokenRepository.deleteRefreshToken(userLoginId);
+				log.info("UserServiceImpl_logout -> 로그아웃 성공, userLoginId: {}", userLoginId);
+			} else {
+				log.error("UserServiceImpl_logout -> 로그아웃 실패: 유효하지 않은 토큰");
+			}
+		} catch (Exception e) {
+			log.error("UserServiceImpl_logout -> 로그아웃 실패: {}", e.getMessage());
+		}
 	}
 
 	@Override
@@ -232,19 +252,19 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public void checkDuplicationLoginId(String loginId) {
-		if(userRepository.existsByUserLoginId(loginId))
+		if (userRepository.existsByUserLoginId(loginId))
 			throw new ExistLoginIdException();
 	}
 
 	@Override
 	public void checkDuplicationEmail(String email) {
-		if(userRepository.existsByUserEmail(email))
+		if (userRepository.existsByUserEmail(email))
 			throw new ExistEmailException();
 	}
 
 	@Override
 	public void checkDuplicationNickname(String nickname) {
-		if(userRepository.existsByUserNickname(nickname))
+		if (userRepository.existsByUserNickname(nickname))
 			throw new ExistNicknameException();
 	}
 
