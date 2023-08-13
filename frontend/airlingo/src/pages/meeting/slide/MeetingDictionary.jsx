@@ -7,7 +7,7 @@ import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
 import { TextButton } from "@/components/common/button";
 import Container from "@/components/common/container";
-import { getTranslateResult, getLanguage, postWord } from "@/api";
+import { getTranslateResult, getLanguage, postWord, getTTS } from "@/api";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
@@ -89,6 +89,18 @@ function MeetingDictionary() {
         });
     };
 
+    const playTTS = async () => {
+        await getTTS({
+            responseFunc: {
+                200: (response) => {
+                    console.log("tts", response);
+                },
+                400: (response) => console.log(response),
+            },
+            data: {},
+        });
+    };
+
     return (
         <DictionaryContainer>
             {modalOpen && (
@@ -150,6 +162,7 @@ function MeetingDictionary() {
                 </Container>
             </ItemBox>
             <TextButton text="단어장 저장" width="40%" onClick={saveWord} />
+            <TextButton text="발음 듣기" width="40%" onClick={playTTS} />
         </DictionaryContainer>
     );
 }
