@@ -3,9 +3,11 @@ import { useEffect, useState } from "react";
 import { PropTypes } from "prop-types";
 import Overlay from "@/components/common/overlay";
 import { getCardCode } from "@/api";
+import { useRouter } from "@/hooks";
 
 function CardModal({ isOpen, onClick }) {
     const [cardCode, setCardCode] = useState([]);
+    const { routeTo } = useRouter();
 
     useEffect(() => {
         async function fetchData() {
@@ -15,10 +17,11 @@ function CardModal({ isOpen, onClick }) {
                         setCardCode([...response.data.data]);
                     },
                 },
+                routeTo,
             });
         }
         fetchData();
-    }, []);
+    }, [routeTo]);
 
     return (
         isOpen && (

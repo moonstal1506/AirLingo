@@ -11,6 +11,7 @@ import { getLanguage, getTranslateResult } from "@/api";
 import Container from "@/components/common/container";
 import { TextArea } from "@/components/common/input";
 import { translatorConfig } from "@/config";
+import { useRouter } from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -27,7 +28,7 @@ function MeetingTranslator() {
     const [text, setText] = useState("");
     const [debouncedText, setDebouncedText] = useState(text);
     const [translateResult, setTranslateResult] = useState("여기에 번역 결과가 표시됩니다.");
-
+    const { routeTo } = useRouter();
     useEffect(() => {
         async function fetchLanguageData() {
             await getLanguage({
@@ -38,10 +39,11 @@ function MeetingTranslator() {
                         ),
                     400: (response) => console.log(response),
                 },
+                routeTo,
             });
         }
         fetchLanguageData();
-    }, []);
+    }, [routeTo]);
 
     useEffect(() => {
         const timerId = setTimeout(() => {

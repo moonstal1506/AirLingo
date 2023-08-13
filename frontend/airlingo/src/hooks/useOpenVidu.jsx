@@ -45,20 +45,9 @@ const useOpenVidu = () => {
         });
 
         cameraSession.on("speechToTextMessage", (event) => {
-            // console.log(`STT ${event}`);
-            // console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
-            // console.log(JSON.parse(event.connection.data).clientData);
-
-            // if (event.reason === "recognizing") {
-            //     console.log(`User ${event.connection.connectionId} is speaking: ${event.text}`);
-            // } else if (event.reason === "recognized") {
-            //     console.log(`User ${event.connection.connectionId} spoke: ${event.text}`);
-            // }
-
             const currentUserNickname = JSON.parse(event.connection.data).clientData;
 
             if (event.reason === "recognized") {
-                console.log(`spoke: ${event.text}`);
                 dispatch(
                     addChatList({
                         chat: {
@@ -71,7 +60,6 @@ const useOpenVidu = () => {
         });
 
         cameraSession.on("streamDestroyed", (event) => {
-            console.log("스트림 삭제 이벤트", subscribers, event.stream.streamId);
             setSubscribers((prevSubscribers) =>
                 prevSubscribers.filter((sub) => sub.stream.streamId !== event.stream.streamId),
             );

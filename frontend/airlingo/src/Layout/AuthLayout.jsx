@@ -25,6 +25,7 @@ function AuthLayout({ children }) {
                 },
             },
             data: { userId },
+            routeTo,
         });
 
         if (!apiRes) {
@@ -36,6 +37,7 @@ function AuthLayout({ children }) {
                     },
                 },
                 data: { userLoginId: 123 },
+                routeTo,
             });
         }
     }, [userId]);
@@ -57,8 +59,9 @@ function AuthLayout({ children }) {
                         dispatch(logoutUser());
                         routeTo("/login");
                     },
-                    data: { userId },
                 },
+                data: { userId },
+                routeTo,
             });
         }
     });
