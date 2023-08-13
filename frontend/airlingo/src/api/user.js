@@ -13,7 +13,7 @@ const getUserProfile = async ({ responseFunc, data, routeTo }) => {
     }
 };
 
-const getLoginIdIsDuplicated = async ({ responseFunc, data }) => {
+const getLoginIdIsDuplicated = async ({ responseFunc, data, routeTo }) => {
     const { userLoginId } = data;
     try {
         const response = await instance.get(`/api/user/loginId/${userLoginId}`);
@@ -25,7 +25,7 @@ const getLoginIdIsDuplicated = async ({ responseFunc, data }) => {
     }
 };
 
-const getNicknameIsDuplicated = async ({ responseFunc, data }) => {
+const getNicknameIsDuplicated = async ({ responseFunc, data, routeTo }) => {
     const { nickname } = data;
     try {
         const response = await instance.get(`/api/user/nickname/${nickname}`);
@@ -37,7 +37,7 @@ const getNicknameIsDuplicated = async ({ responseFunc, data }) => {
     }
 };
 
-const getEmailIsDuplicated = async ({ responseFunc, data }) => {
+const getEmailIsDuplicated = async ({ responseFunc, data, routeTo }) => {
     const { email } = data;
     try {
         const response = await instance.get(`/api/user/email/${email}`);
