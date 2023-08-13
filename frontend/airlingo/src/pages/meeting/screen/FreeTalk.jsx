@@ -1,15 +1,16 @@
-/* eslint-disable no-nested-ternary */
 /* eslint-disable react/prop-types */
 import styled from "@emotion/styled";
 import { useSelector } from "react-redux";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
+import { selectUser } from "@/features/User/UserSlice";
 import isKeyInObj from "@/utils/common";
 import { TextButton } from "@/components/common/button";
 
 // ----------------------------------------------------------------------------------------------------
 
 function FreeTalk({ publisher, subscribers, sharePublisher, shareSubscribers, onClick }) {
-    const { isShareOn, meetingData } = useSelector(selectMeeting);
+    const { isShareOn, meetingData, otherUser } = useSelector(selectMeeting);
+    const { userNickname } = useSelector(selectUser);
     return (
         <>
             <VideoContainer>
@@ -32,6 +33,7 @@ function FreeTalk({ publisher, subscribers, sharePublisher, shareSubscribers, on
                             style={{ display: isShareOn ? "block" : "none" }}
                         />
                     )}
+                    <div>{userNickname}(나)</div>
                 </VideoFrame>
                 {subscribers.length > 0 && (
                     <VideoFrame key={subscribers[0].stream.streamId}>
@@ -58,6 +60,7 @@ function FreeTalk({ publisher, subscribers, sharePublisher, shareSubscribers, on
                                 />
                             </VideoFrame>
                         )}
+                        <div>{otherUser.userNickname}(상대방)</div>
                     </VideoFrame>
                 )}
             </VideoContainer>
