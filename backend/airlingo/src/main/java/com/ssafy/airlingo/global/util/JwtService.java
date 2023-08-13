@@ -4,6 +4,8 @@ import java.security.SecureRandom;
 import java.util.Date;
 import java.util.Map;
 
+import javax.naming.AuthenticationException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -11,6 +13,7 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import com.ssafy.airlingo.global.exception.ExpiredRefreshTokenException;
+import com.ssafy.airlingo.global.exception.InvalidAccessTokenException;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
@@ -76,32 +79,17 @@ public class JwtService {
 		return Keys.hmacShaKeyFor(SECRET_KEY.getBytes()).getEncoded();
 	}
 
-	//	전달 받은 토큰이 제대로 생성된것인지 확인 하고 문제가 있다면 UnauthorizedException을 발생.
-	public boolean checkToken(String jwt) {
+	//	전달 받은 토큰이 제대로 생성된 것인지 확인 후 문제가 있다면 InvalidAccessTokenException을 발생.
+	public String extractUserLoginIdFromAccessToken(String accessToken) {
 		try {
 			// setSigningKey : JWS 서명 검증을 위한  secret key 세팅
 			// parseClaimsJws : 파싱하여 원본 jws 만들기
-			Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(jwt);
 			// Claims 는 Map의 구현체 형태
-			logger.debug("claims: {}", claims);
-			return true;
+			Jws<Claims> claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(accessToken);
+			return claims.getBody().get("userLoginId", String.class);
 		} catch (Exception e) {
 			logger.error(e.getMessage());
-			throw new ExpiredRefreshTokenException();
+			throw new InvalidAccessTokenException();
 		}
-	}
-
-	public Map<String, Object> get(HttpServletRequest request) {
-		String jwt = request.getHeader("Authorization");
-		Jws<Claims> claims;
-		try {
-			claims = Jwts.parser().setSigningKey(this.generateKey()).parseClaimsJws(jwt);
-		} catch (Exception e) {
-			logger.info(e.getMessage());
-			throw new ExpiredRefreshTokenException();
-		}
-		Map<String, Object> value = claims.getBody();
-		logger.info("value : {}", value);
-		return value;
 	}
 }

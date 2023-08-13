@@ -19,6 +19,7 @@ public enum ExceptionCode {
 	NOT_FOUND_GRADE_EXCEPTION(472, "요청한 등급을 찾을 수 없습니다."),
 	EMPTY_WORD_LIST_EXCEPTION(473, "단어장이 비어있습니다."),
 	EXPIRED_REFRESH_TOKEN_EXCEPTION(480, "Refresh Token이 만료되었습니다."),
+	INVALID_ACCESS_TOKEN_EXCEPTION(481, "Access Token이 유효하지 않습니다."),
 	NOT_ENOUGH_MILEAGE_EXCEPTION(490, "마일리지가 부족합니다."),
 	EMPTY_IMAGE_EXCEPTION(491, "사진 파일이 비어 있습니다."),
 	EMPTY_STUDY_LIST_EXCEPTION(492, "스터디 리스트가 존재하지 않습니다."),
