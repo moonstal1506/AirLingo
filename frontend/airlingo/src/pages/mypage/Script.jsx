@@ -68,7 +68,6 @@ function Script() {
                 responseFunc: {
                     200: (response) => {
                         setDailyGridList({ ...response.data.data });
-                        console.log("데일리 그리드 개수 조회 성공!");
                     },
                 },
                 data: { userId },
@@ -121,7 +120,6 @@ function Script() {
     }, [userId, desiredDate, routeTo]);
 
     const handleLookupScript = () => {
-        console.log(openScriptModal);
         setOpenScriptModal(true);
     };
 

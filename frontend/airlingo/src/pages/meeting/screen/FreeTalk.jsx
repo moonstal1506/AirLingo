@@ -10,7 +10,6 @@ import { TextButton } from "@/components/common/button";
 
 function FreeTalk({ publisher, subscribers, sharePublisher, shareSubscribers, onClick }) {
     const { isShareOn, meetingData } = useSelector(selectMeeting);
-    console.log(publisher, subscribers, sharePublisher, shareSubscribers);
     return (
         <>
             <VideoContainer>

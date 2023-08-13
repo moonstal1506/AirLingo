@@ -198,7 +198,6 @@ function BasicInfoPage1() {
                 await updateUserImage({
                     responseFunc: {
                         200: (response) => {
-                            console.log(response.data.data.uploadFileUrl);
                             setSelectedImage(response.data.data.uploadFileUrl);
                             setImage(response.data.data.uploadFileUrl);
                             setImageModalOpen(false);
