@@ -90,6 +90,9 @@ function MatchQueue() {
                 200: () => {
                     routeTo("/");
                 },
+                400: () => {
+                    routeTo("/error");
+                },
             },
             data: { userId },
             routeTo,

@@ -49,6 +49,7 @@ function MatchHome() {
         await getConcurrentUser({
             responseFunc: {
                 200: (response) => setConcurrentUser({ ...response.data.data }),
+                400: () => alert("응답에 실패했습니다. 다시 시도해주세요."),
             },
             routeTo,
         });
@@ -92,6 +93,9 @@ function MatchHome() {
                         return;
                     }
                     handleMatching(true);
+                },
+                400: () => {
+                    alert("응답에 실패했습니다. 다시 시도해주세요.");
                 },
             },
             data: {
