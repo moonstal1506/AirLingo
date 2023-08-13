@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import defaultProfileImage from "@/assets/imgs/profiles/default-profile.png";
 import { ReactComponent as SettingIcon } from "@/assets/icons/setting-icon.svg";
 import { ReactComponent as GradeBackgroundIcon } from "@/assets/icons/grade-background-icon.svg";
@@ -17,7 +17,7 @@ import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
-import { selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
 import {
     getUserProfile,
     updateUserNickname,
@@ -32,6 +32,7 @@ const { primary4 } = theme.colors;
 function BasicInfoPage1() {
     const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
+    const dispatch = useDispatch();
     const { userId } = storeUser;
     const [userProfile, setUserProfile] = useState({});
     const [nickname, setNickname] = useState("에어링고");
@@ -62,6 +63,13 @@ function BasicInfoPage1() {
                 responseFunc: {
                     200: (response) => {
                         setUserProfile({ ...response.data.data });
+                    },
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
                     },
                 },
                 data: { userId },
@@ -101,7 +109,13 @@ function BasicInfoPage1() {
                         setmodifyContent("닉네임");
                         setModifyModalOpen(true);
                     },
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userNickname: nickname, userId },
                 routeTo,
@@ -149,7 +163,13 @@ function BasicInfoPage1() {
                         setmodifyContent("자기소개");
                         setModifyModalOpen(true);
                     },
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userBio: bio, userId },
                 routeTo,
@@ -202,7 +222,16 @@ function BasicInfoPage1() {
                             setImage(response.data.data.uploadFileUrl);
                             setImageModalOpen(false);
                         },
-                        400: () => {},
+                        400: () => {
+                            alert("응답에 실패했습니다. 다시 시도해주세요.");
+                        },
+                        470: () => {
+                            dispatch(logoutUser());
+                            routeTo("/error");
+                        },
+                        491: () => {
+                            alert("사진이 비어있습니다! 다시 시도해주세요.");
+                        },
                     },
                     data: { files: file, userId },
                     routeTo,
@@ -218,7 +247,13 @@ function BasicInfoPage1() {
                         setImage(defaultProfileImage);
                         setImageModalOpen(false);
                     },
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userId },
                 routeTo,

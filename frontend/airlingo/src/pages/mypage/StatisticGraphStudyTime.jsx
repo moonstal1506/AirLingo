@@ -109,7 +109,9 @@ function StudyTimeStatistic() {
                     setData(chartData);
                     setTotalStudyTime(response.data.data.timeResponse.totalStudyTime);
                 },
-                400: () => {},
+                400: () => {
+                    alert("응답에 실패했습니다. 다시 시도해주세요.");
+                },
             },
             data: userId,
             routeTo,

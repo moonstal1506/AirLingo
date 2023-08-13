@@ -43,7 +43,9 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                         setLanguages(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: () => {},
+                    400: () => {
+                        alert("서버에서 정보를 받아오지 못했습니다. 다시 시도해주세요.");
+                    },
                 },
                 routeTo,
             });
@@ -51,7 +53,9 @@ function SignUpLanguage({ totalState, onHandlePrevStep, onHandleNextStep }) {
                 responseFunc: {
                     200: (response) =>
                         setGrades(response.data.data.map((grade) => formatGrade(grade))),
-                    400: () => {},
+                    400: () => {
+                        alert("서버에서 정보를 받아오지 못했습니다. 다시 시도해주세요.");
+                    },
                 },
                 routeTo,
             });

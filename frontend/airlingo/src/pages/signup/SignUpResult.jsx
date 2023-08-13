@@ -21,7 +21,9 @@ function SignUpResult({ totalState }) {
             await postSignUp({
                 responseFunc: {
                     200: () => {},
-                    400: () => {},
+                    400: () => {
+                        routeTo("/error");
+                    },
                 },
                 data: {
                     userLoginId: totalState.id,

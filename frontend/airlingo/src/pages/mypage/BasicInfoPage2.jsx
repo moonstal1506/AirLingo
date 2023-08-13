@@ -67,6 +67,13 @@ function BasicInfoPage2() {
                     200: (response) => {
                         setUserProfile({ ...response.data.data });
                     },
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userId },
                 routeTo,
@@ -77,7 +84,9 @@ function BasicInfoPage2() {
                         setLanguages(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
                 },
                 routeTo,
             });
@@ -85,7 +94,9 @@ function BasicInfoPage2() {
                 responseFunc: {
                     200: (response) =>
                         setGrades(response.data.data.map((grade) => formatGrade(grade))),
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
                 },
                 routeTo,
             });
@@ -134,7 +145,13 @@ function BasicInfoPage2() {
                 200: () => {
                     setLanguageModalOpen(false);
                 },
-                400: () => {},
+                400: () => {
+                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                },
+                470: () => {
+                    dispatch(logoutUser());
+                    routeTo("/error");
+                },
             },
             data: {
                 userId,
@@ -149,6 +166,13 @@ function BasicInfoPage2() {
             responseFunc: {
                 200: (response) => {
                     setUserProfile({ ...response.data.data });
+                },
+                400: () => {
+                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                },
+                470: () => {
+                    dispatch(logoutUser());
+                    routeTo("/error");
                 },
             },
             data: { userId },
@@ -193,7 +217,13 @@ function BasicInfoPage2() {
                     setPassword({ value: "", valid: false, dirty: false });
                     setConfirmPassword({ value: "", valid: false, dirty: false });
                 },
-                400: () => {},
+                400: () => {
+                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                },
+                470: () => {
+                    dispatch(logoutUser());
+                    routeTo("/error");
+                },
             },
             data: { userPassword: password.value, userId },
             routeTo,
@@ -213,7 +243,13 @@ function BasicInfoPage2() {
                     setQuitModalOpen(false);
                     routeTo("/");
                 },
-                400: () => {},
+                400: () => {
+                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                },
+                470: () => {
+                    dispatch(logoutUser());
+                    routeTo("/error");
+                },
             },
             data: { userId },
             routeTo,
