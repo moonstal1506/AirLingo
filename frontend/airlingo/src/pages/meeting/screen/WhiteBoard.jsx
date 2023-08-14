@@ -10,18 +10,23 @@ import theme from "@/assets/styles/Theme";
 import { IconButton } from "@/components/common/button";
 import * as Icons from "@/assets/icons";
 import { useKeyBoardEvents, useLines, useUser } from "@/hooks/whiteboard";
-import Line from "@/components/whiteboard/Line";
+import Drawing from "@/components/drawing";
 
 // ----------------------------------------------------------------------------------------------------
 
 const { primary4 } = theme.colors;
 const doc = new Y.Doc();
-const provider = new WebsocketProvider("ws://localhost:1234", "whiteboard", doc);
+const provider = new WebsocketProvider("wss://i9a308.p.ssafy.io", "ywebsocket", doc);
 const { awareness } = provider;
 const yLines = doc.getArray("whiteboard");
 const undoManager = new Y.UndoManager(yLines);
 function getPoint(x, y) {
-    return [x - 250, y - 225];
+    const svgElement = document.querySelector("svg");
+    const point = svgElement.createSVGPoint();
+    point.x = x;
+    point.y = y;
+    const transformedPoint = point.matrixTransform(svgElement.getScreenCTM().inverse());
+    return [transformedPoint.x, transformedPoint.y];
 }
 
 // ----------------------------------------------------------------------------------------------------
@@ -45,18 +50,19 @@ function WhiteBoard({ publisher, subscribers }) {
     const handlePointerDown = useCallback(
         (e) => {
             e.currentTarget.setPointerCapture(e.pointerId);
-            startLine(getPoint(e.clientX, e.clientY));
+            const [x, y] = getPoint(e.clientX, e.clientY);
+            startLine([x, y]);
         },
         [startLine],
     );
 
     const handlePointerMove = useCallback(
         (e) => {
-            const point = getPoint(e.clientX, e.clientY);
-            updateUserPoint(point);
+            const [x, y] = getPoint(e.clientX, e.clientY);
+            updateUserPoint([x, y]);
 
             if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-                addPointToLine(point);
+                addPointToLine([x, y]);
             }
         },
         [addPointToLine, updateUserPoint],
@@ -115,7 +121,7 @@ function WhiteBoard({ publisher, subscribers }) {
                 </VideoBox>
             </VideoContainer>
             <BoardContainer>
-                <svg
+                <BoardBox
                     onPointerDown={handlePointerDown}
                     onPointerMove={handlePointerMove}
                     onPointerUp={handlePointerUp}
@@ -125,21 +131,21 @@ function WhiteBoard({ publisher, subscribers }) {
                 >
                     <g>
                         {lines.map((line) => (
-                            <Line key={line.get("id")} line={line} />
+                            <Drawing key={line.get("id")} line={line} />
                         ))}
                     </g>
-                </svg>
+                </BoardBox>
                 <ControllerBox>
                     <IconButton
-                        icon={Icons.DeleteIcon}
+                        icon={Icons.UndoIcon}
                         onClick={undoLine}
-                        iconColor="white"
+                        iconColor="black"
                         shape="blacklined"
                     />
                     <IconButton
-                        icon={Icons.DeleteIcon}
+                        icon={Icons.RedoIcon}
                         onClick={redoLine}
-                        iconColor="white"
+                        iconColor="black"
                         shape="blacklined"
                     />
                     <IconButton
@@ -211,12 +217,13 @@ const BoardContainer = styled.div`
     gap: 5px;
     position: relative;
     z-index: 2;
-    svg {
-        position: absolute;
-        touch-action: none;
-        width: 100%;
-        height: 100%;
-    }
+`;
+
+const BoardBox = styled.svg`
+    position: absolute;
+    touch-action: none;
+    width: 100%;
+    height: 100%;
 `;
 
 const ControllerBox = styled.div`

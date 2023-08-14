@@ -82,9 +82,11 @@ const IconButtonWrapper = styled.button`
 `;
 
 const IconWrapper = styled.div`
-    display: block;
-    width: 25px;
-    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
     svg path {
         fill: ${({ iconColor }) => iconConfig.color[iconColor]};
     }

@@ -6,7 +6,7 @@ import { getSvgPathFromStroke } from "@/utils/whiteboard";
 
 // ----------------------------------------------------------------------------------------------------
 
-function Line({ line }) {
+function Drawing({ line }) {
     const { points, color, isComplete } = useLine(line);
     const pathData = getSvgPathFromStroke(
         getStroke(points, {
@@ -25,10 +25,10 @@ function Line({ line }) {
     );
 }
 
-Line.propTypes = {
+Drawing.propTypes = {
     line: PropTypes.instanceOf(Y.Map).isRequired,
 };
 
 // ----------------------------------------------------------------------------------------------------
 
-export default Line;
+export default Drawing;

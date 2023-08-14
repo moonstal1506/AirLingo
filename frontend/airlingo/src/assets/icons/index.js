@@ -4,6 +4,8 @@ import { ReactComponent as VideoOnIcon } from "@/assets/icons/video-on-icon.svg"
 import { ReactComponent as VideoOffIcon } from "@/assets/icons/video-off-icon.svg";
 import { ReactComponent as ChatIcon } from "@/assets/icons/chat-icon.svg";
 import { ReactComponent as DeleteIcon } from "@/assets/icons/delete-icon.svg";
+import { ReactComponent as RedoIcon } from "@/assets/icons/redo-icon.svg";
+import { ReactComponent as UndoIcon } from "@/assets/icons/undo-icon.svg";
 import { ReactComponent as BoardIcon } from "@/assets/icons/board-icon.svg";
 import { ReactComponent as ShareIcon } from "@/assets/icons/share-icon.svg";
 import { ReactComponent as CardIcon } from "@/assets/icons/card-icon.svg";
@@ -42,6 +44,8 @@ export {
     VideoOffIcon,
     ChatIcon,
     DeleteIcon,
+    RedoIcon,
+    UndoIcon,
     BoardIcon,
     ShareIcon,
     CardIcon,
