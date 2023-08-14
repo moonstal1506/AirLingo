@@ -52,7 +52,6 @@ const useOpenVidu = () => {
 
         cameraSession.on("speechToTextMessage", (event) => {
             const currentUserNickname = JSON.parse(event.connection.data).clientData;
-
             if (event.reason === "recognized") {
                 dispatch(
                     addChatList({

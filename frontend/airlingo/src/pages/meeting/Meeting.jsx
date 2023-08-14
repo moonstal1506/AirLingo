@@ -102,6 +102,8 @@ function Meeting() {
     const [isActiveSlide, setIsActiveSlide] = useState(false);
     const [isActiveChatSlide, setIsActiveChatSlide] = useState(false);
 
+    const [isChatAlert, setIsChatAlert] = useState(false);
+
     // Modal States...
     const [openResponseWaitModal, setOpenResponseWaitModal] = useState(false);
     const [openCardModal, setOpenCardModal] = useState(false); // 카드 모달의 on/off
@@ -271,7 +273,7 @@ function Meeting() {
         // 거절이라면 여기서 끝내야 됨.
         if (!jsonData.agree) return;
 
-        // 거절하지 않았다면 서버에 서로 최종 수정된 스크립트를 저장한다.
+        // 거절하지 않았다면 서버에 최종 수정된 스크립트를 저장한다.
         if (scriptData && scriptData.modifiedScript) {
             await putSaveScript({
                 responseFunc: {
@@ -429,6 +431,12 @@ function Meeting() {
         scriptData,
     ]);
 
+    useEffect(() => {
+        if (activeButton !== "Chat" && chatMessage.length > 0) {
+            setIsChatAlert(true);
+        }
+    }, [chatMessage]);
+
     // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
@@ -447,6 +455,7 @@ function Meeting() {
             if (prevButtonName === "Chat") return null;
             return "Chat";
         });
+        setIsChatAlert(false);
     };
 
     const handleBoardClick = () => {
@@ -678,6 +687,7 @@ function Meeting() {
             onClick: handleChatClick,
             category: activeButton === "Chat" ? "active" : "white",
             iconColor: activeButton === "Chat" ? "white" : "black",
+            alertMark: isChatAlert,
         },
         {
             buttonName: "Board",
@@ -781,7 +791,10 @@ function Meeting() {
                             return null;
                     }
                 })()}
-                <SliderButtonWrapper isOpen={isActiveSlide}>
+                <SliderButtonWrapper
+                    isOpen={isActiveSlide}
+                    style={{ zIndex: openCardModal ? "10" : "30" }}
+                >
                     <SliderButton isOpen={isActiveSlide} onClick={handleClickSlideButton} />
                 </SliderButtonWrapper>
                 <MeetingButtonMenu isActiveChatSlide={isActiveChatSlide} buttonList={buttonList} />
@@ -824,6 +837,7 @@ const MeetingContainer = styled.div`
 const MeetingButtonMenu = styled(ButtonMenu)`
     bottom: ${({ isActiveChatSlide }) => (isActiveChatSlide ? "460px" : "0px")};
     transition: 0.3s ease-in-out;
+    z-index: 30;
 `;
 
 const ChatBox = styled.div`
@@ -863,7 +877,7 @@ const SliderButtonWrapper = styled.div`
     top: -4%;
     right: ${({ isOpen }) => (isOpen ? "28%" : "1%")};
     transition: 0.3s ease-in-out;
-    z-index: 1500;
+    z-index: 31;
 `;
 
 // ----------------------------------------------------------------------------------------------------

@@ -6,7 +6,7 @@ import { useRouter } from "@/hooks";
 
 function DeviceSetup() {
     const [devices, setDevices] = useState([]);
-    const [time, setTime] = useState(20);
+    const [time, setTime] = useState(15);
     const [selectedAudioInputDevice, setSelectedAudioInputDevice] = useState("");
     const [selectedAudioOutputDevice, setSelectedAudioOutputDevice] = useState("");
     const videoRef = useRef(null);

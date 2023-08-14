@@ -13,7 +13,6 @@ const { faintgray, distinctgray } = theme.colors;
 function ScriptSliderMenu({ contentGroup, slideOpen }) {
     const [slideIdx, setSlideIdx] = useState(0);
     const CurrentContent = contentGroup[slideIdx].Content;
-
     const handleClickButton = (e) => {
         const closestButton = e.target.closest("button");
         if (!closestButton || !closestButton.id || slideIdx === +closestButton.id) return;
@@ -21,7 +20,7 @@ function ScriptSliderMenu({ contentGroup, slideOpen }) {
     };
 
     return (
-        <SlideMenuContainer>
+        <SlideMenuContainer style={{ zIndex: slideOpen ? 30 : 15 }}>
             <MenuContainer slideOpen={slideOpen}>
                 <MenuHeaderButtonBox onClick={handleClickButton}>
                     {contentGroup.map((CurContent, idx) => (
@@ -58,7 +57,6 @@ const SlideMenuContainer = styled.div`
     bottom: 0;
     right: 0;
     height: 100vh;
-    z-index: 1000;
 `;
 
 const MenuContainer = styled.div`

@@ -121,7 +121,7 @@ const TopicContainer = styled.div`
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
     gap: 5px;
     position: relative;
-    z-index: 2;
+    z-index: 10;
 `;
 
 const TopicHeader = styled.div`
