@@ -50,6 +50,7 @@ function ReportModal({ isOpen, onClickAgree, onClickDisAgree }) {
                         onChange={setReportState}
                         selectedOption={reportState}
                         data={reportList}
+                        iconColor="white"
                     />
                 </ModalContentBox>
                 <ModalContentBox>

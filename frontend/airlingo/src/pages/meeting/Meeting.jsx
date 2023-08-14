@@ -103,6 +103,8 @@ function Meeting() {
     const [isActiveSlide, setIsActiveSlide] = useState(false);
     const [isActiveChatSlide, setIsActiveChatSlide] = useState(false);
 
+    const [isChatAlert, setIsChatAlert] = useState(false);
+
     // Modal States...
     const [openResponseWaitModal, setOpenResponseWaitModal] = useState(false);
     const [openCardModal, setOpenCardModal] = useState(false); // 카드 모달의 on/off
@@ -430,6 +432,12 @@ function Meeting() {
         scriptData,
     ]);
 
+    useEffect(() => {
+        if (activeButton !== "Chat" && chatMessage.length > 0) {
+            setIsChatAlert(true);
+        }
+    }, [chatMessage]);
+
     // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
@@ -448,6 +456,7 @@ function Meeting() {
             if (prevButtonName === "Chat") return null;
             return "Chat";
         });
+        setIsChatAlert(false);
     };
 
     const handleBoardClick = () => {
@@ -675,6 +684,7 @@ function Meeting() {
             onClick: handleChatClick,
             category: activeButton === "Chat" ? "active" : "white",
             iconColor: activeButton === "Chat" ? "white" : "black",
+            alertMark: isChatAlert,
         },
         {
             buttonName: "Board",

@@ -37,10 +37,6 @@ function EvaluateModal({ isOpen, onClickAgree, onClickDisAgree }) {
                     상대 랭커의 매너와 언어 실력에 대해서 평가를 남겨주세요!
                 </ModalTextWrapper>
                 <ModalContentBox>
-                    <ModalTextWrapper weight="700px">매너 점수</ModalTextWrapper>
-                    <StarRate rating={rating} setRating={setRating} />
-                </ModalContentBox>
-                <ModalContentBox>
                     <ModalTextWrapper weight="700px">실력 점수</ModalTextWrapper>
                     <Dropdown
                         width="400px"
@@ -48,7 +44,12 @@ function EvaluateModal({ isOpen, onClickAgree, onClickDisAgree }) {
                         onChange={setSelectedGrade}
                         selectedOption={selectedGrade}
                         data={grade.map((cur) => formatGrade(cur))}
+                        iconColor="white"
                     />
+                </ModalContentBox>
+                <ModalContentBox>
+                    <ModalTextWrapper weight="700px">매너 점수</ModalTextWrapper>
+                    <StarRate rating={rating} setRating={setRating} />
                 </ModalContentBox>
                 <ModalButtonBox>
                     <TextButton
