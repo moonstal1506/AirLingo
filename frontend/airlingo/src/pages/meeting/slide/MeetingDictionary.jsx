@@ -2,6 +2,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Icons from "@/assets/icons";
+import Play from "@/public/output";
 import Dropdown from "@/components/common/dropdown";
 import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
@@ -33,9 +34,7 @@ function MeetingDictionary() {
     const [translateWord, setTranslateWord] = useState("");
     const [translateResult, setTranslateResult] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
-    console.log("sourceLang:", sourceLang);
-    console.log(setLanguageList);
-    console.log("why?", otherUser);
+    const [playing, setPlaying] = useState(false);
 
     useEffect(() => {
         async function fetchLanguageData() {
@@ -90,15 +89,20 @@ function MeetingDictionary() {
     };
 
     const playTTS = async () => {
-        await getTTS({
-            responseFunc: {
-                200: (response) => {
-                    console.log("tts", response);
-                },
-                400: (response) => console.log(response),
-            },
-            data: {},
-        });
+        try {
+            const response = await getTTS(); // getTTS 함수에서 응답 받음
+            console.log(response, 1);
+            if (response && response.status === 200) {
+                const audio = new Audio(Play);
+                audio.play();
+            } else {
+                console.error("Error playing TTS:", response); // 에러 응답 처리
+                setPlaying(false);
+            }
+        } catch (error) {
+            console.error("Error playing TTS:", error);
+            setPlaying(false);
+        }
     };
 
     return (
@@ -162,7 +166,7 @@ function MeetingDictionary() {
                 </Container>
             </ItemBox>
             <TextButton text="단어장 저장" width="40%" onClick={saveWord} />
-            <TextButton text="발음 듣기" width="40%" onClick={playTTS} />
+            <TextButton text="발음 듣기" width="40%" onClick={playTTS} disabled={playing} />
         </DictionaryContainer>
     );
 }

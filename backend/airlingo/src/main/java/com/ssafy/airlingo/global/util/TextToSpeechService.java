@@ -15,7 +15,7 @@ public class TextToSpeechService {
 
 	public static void main(String[] args) throws Exception {
 		// 서비스 계정 키 파일 경로 설정
-		String credentialsPath = "C:\\ssafy/airlingo-395807-df08ac102954.json.json";
+		String credentialsPath = "C:\\ssafy/airlingo-395807-df08ac102954.json";
 
 		// Google Cloud Text-to-Speech API 인증 설정
 		GoogleCredentials credentials = ServiceAccountCredentials.fromStream(new FileInputStream(credentialsPath));
