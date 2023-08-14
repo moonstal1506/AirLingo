@@ -82,8 +82,8 @@ function MeetingDictionary() {
                 400: (response) => console.log(response),
             },
             data: {
-                wordName: word,
-                wordDescription: translateResult,
+                wordName: translateResult,
+                wordDescription: word,
                 userId,
             },
         });
@@ -100,7 +100,7 @@ function MeetingDictionary() {
 
             if (response && response.status === 200) {
                 // 상대 경로를 output.mp3 파일에 연결하여 경로 생성
-                const audioPath = "../public/output.mp3";
+                const audioPath = "./../public/output.mp3";
 
                 // 오디오 엘리먼트 생성
                 const audioElement = new Audio(audioPath);
