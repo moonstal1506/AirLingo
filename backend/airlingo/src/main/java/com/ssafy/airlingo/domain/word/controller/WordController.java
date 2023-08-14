@@ -108,10 +108,8 @@ public class WordController {
 	})
 	@GetMapping("/tts")
 	public ResponseEntity<byte[]> playTTS(String target, String text) throws IOException {
-		System.out.println(target);
-		System.out.println(text);
 		log.info("WordController_playTTS -> 발음 듣기");
-		String credentialsPath = "C:\\ssafy/airlingo-395807-df08ac102954.json"; // 실제 경로로 변경
+		String credentialsPath = "../../backend/airlingo/src/main/resources/airlingo-395807-df08ac102954.json"; // 실제 경로로 변경
 		InputStream credentialsStream = new FileInputStream(credentialsPath);
 		GoogleCredentials credentials = ServiceAccountCredentials.fromStream(credentialsStream);
 
@@ -142,7 +140,7 @@ public class WordController {
 			ByteString audioContents = response.getAudioContent();
 
 			// MP3 파일 저장 경로 설정
-			String mp3FilePath = "C:\\ssafy\\AirLingo\\frontend\\airlingo\\public\\output.mp3";
+			String mp3FilePath = "../../frontend/airlingo/public/output.mp3";
 
 			// MP3 파일 저장
 			Path path = Path.of(mp3FilePath);
