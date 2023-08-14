@@ -107,7 +107,9 @@ public class WordController {
 		@ApiResponse(responseCode = "200", description = "tts 실행 성공"),
 	})
 	@GetMapping("/tts")
-	public ResponseEntity<byte[]> playTTS() throws IOException {
+	public ResponseEntity<byte[]> playTTS(String target, String text) throws IOException {
+		System.out.println(target);
+		System.out.println(text);
 		log.info("WordController_playTTS -> 발음 듣기");
 		String credentialsPath = "C:\\ssafy/airlingo-395807-df08ac102954.json"; // 실제 경로로 변경
 		InputStream credentialsStream = new FileInputStream(credentialsPath);
@@ -119,12 +121,12 @@ public class WordController {
 
 		try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create(settings)) {
 			// 합성할 텍스트 지정
-			SynthesisInput input = SynthesisInput.newBuilder().setText("airlingo").build();
+			SynthesisInput input = SynthesisInput.newBuilder().setText(text).build();
 
 			// 음성 선택 설정
 			VoiceSelectionParams voice =
 				VoiceSelectionParams.newBuilder()
-					.setLanguageCode("en-US")
+					.setLanguageCode(target)
 					.setSsmlGender(SsmlVoiceGender.FEMALE)
 					.build();
 

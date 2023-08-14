@@ -2,7 +2,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Icons from "@/assets/icons";
-import Play from "@/public/output";
+// import Play from "@/public/output";
 import Dropdown from "@/components/common/dropdown";
 import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
@@ -12,7 +12,7 @@ import { getTranslateResult, getLanguage, postWord, getTTS } from "@/api";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
-import { translatorConfig } from "@/config";
+import { translatorConfig, ttsConfig } from "@/config";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import Modal from "@/components/modal";
 // import getSearchResult from "@/api/dictionary";
@@ -90,11 +90,25 @@ function MeetingDictionary() {
 
     const playTTS = async () => {
         try {
-            const response = await getTTS(); // getTTS 함수에서 응답 받음
+            const response = await getTTS({
+                data: {
+                    target: ttsConfig[targetLang.id],
+                    text: translateResult,
+                },
+            }); // getTTS 함수에서 응답 받음
             console.log(response, 1);
             if (response && response.status === 200) {
-                const audio = new Audio(Play);
-                audio.play();
+                const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
+                const audioUrl = URL.createObjectURL(audioBlob);
+
+                // audio 엘리먼트 생성 및 재생
+                const audioElement = new Audio(audioUrl);
+                audioElement.play();
+
+                // 재생이 끝나면 playing 상태 복원
+                audioElement.addEventListener("ended", () => {
+                    setPlaying(false);
+                });
             } else {
                 console.error("Error playing TTS:", response); // 에러 응답 처리
                 setPlaying(false);
