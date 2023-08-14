@@ -52,6 +52,7 @@ import isKeyInObj from "@/utils/common";
 import Loading from "@/components/loading";
 import { MeetingScript, MeetingDictionary, MeetingTranslator } from "./slide";
 import { FreeTalk, WhiteBoard, ScriptFeedback } from "./screen";
+import { useLines } from "@/hooks/whiteboard";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -95,6 +96,7 @@ function Meeting() {
         setShareSubscribers,
     } = useOpenVidu();
     const { message, sendMessage, chatMessage, ChangeMessages } = useChat();
+    const { lines } = useLines();
 
     // Active States...
     const [activeButton, setActiveButton] = useState(null);
@@ -104,6 +106,7 @@ function Meeting() {
     const [isActiveChatSlide, setIsActiveChatSlide] = useState(false);
 
     const [isChatAlert, setIsChatAlert] = useState(false);
+    const [isBoardAlert, setIsBoardAlert] = useState(false);
 
     // Modal States...
     const [openResponseWaitModal, setOpenResponseWaitModal] = useState(false);
@@ -442,6 +445,12 @@ function Meeting() {
         }
     }, [chatMessage]);
 
+    useEffect(() => {
+        if (activeButton !== "Board" && lines.length > 0) {
+            setIsBoardAlert(true);
+        }
+    }, [lines]);
+
     // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
@@ -700,6 +709,7 @@ function Meeting() {
             onClick: handleBoardClick,
             category: activeButton === "Board" ? "active" : "white",
             iconColor: activeButton === "Board" ? "white" : "black",
+            alertMark: isBoardAlert,
         },
         {
             buttonName: "Share",
