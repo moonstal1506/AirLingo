@@ -154,6 +154,9 @@ public class UserServiceImpl implements UserService {
 	@Transactional
 	public void updateNickname(UpdateNicknameRequestDto updateNicknameRequestDto) {
 		log.info("UserServiceImpl_updateNickname");
+		if(userRepository.existsByUserNickname(updateNicknameRequestDto.getUserNickname()))
+			throw new ExistNicknameException();
+
 		User user = userRepository.findById(updateNicknameRequestDto.getUserId())
 			.orElseThrow(NotExistAccountException::new);
 		user.updateNickname(updateNicknameRequestDto.getUserNickname());
