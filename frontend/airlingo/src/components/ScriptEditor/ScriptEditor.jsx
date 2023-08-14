@@ -19,7 +19,7 @@ function ScriptEditor({ quillRef, defaultEl, id }) {
 
         const ydoc = new Y.Doc();
         const provider = new WebrtcProvider(`${id}`, ydoc, {
-            signaling: ["ws://localhost:3333"],
+            signaling: ["wss://i9a308.p.ssafy.io/ywebrtc"],
         });
         const ytext = ydoc.getText("quill");
         const binding = new QuillBinding(ytext, quillRef.current, provider.awareness);
