@@ -2,8 +2,9 @@
 import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
 import { useDispatch, useSelector } from "react-redux";
-import { addChatList } from "@/features/Meeting/MeetingSlice";
+import { addChatList, selectMeeting } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
+import languageCodeConfig from "@/config/languageCodeConfig";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -22,6 +23,7 @@ const useOpenVidu = () => {
 
     const dispatch = useDispatch();
     const { userNickname } = useSelector(selectUser);
+    const { myData } = useSelector(selectMeeting);
 
     async function joinSession() {
         const cameraSession = OV.current.initSession();
@@ -30,7 +32,11 @@ const useOpenVidu = () => {
             if (event.stream.typeOfVideo === "CAMERA") {
                 const subscriber = cameraSession.subscribe(event.stream, undefined);
                 setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-                // curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+                cameraSession.subscribeToSpeechToText(
+                    event.stream,
+                    languageCodeConfig.find((cur) => cur.languageId === myData.userStudyLanguageId)
+                        .languageCode,
+                );
             }
         });
 
@@ -45,20 +51,9 @@ const useOpenVidu = () => {
         });
 
         cameraSession.on("speechToTextMessage", (event) => {
-            // console.log(`STT ${event}`);
-            // console.log(`커넥션 아이디 : ${event.connection.connectionId}`);
-            // console.log(JSON.parse(event.connection.data).clientData);
-
-            // if (event.reason === "recognizing") {
-            //     console.log(`User ${event.connection.connectionId} is speaking: ${event.text}`);
-            // } else if (event.reason === "recognized") {
-            //     console.log(`User ${event.connection.connectionId} spoke: ${event.text}`);
-            // }
-
             const currentUserNickname = JSON.parse(event.connection.data).clientData;
 
             if (event.reason === "recognized") {
-                console.log(`spoke: ${event.text}`);
                 dispatch(
                     addChatList({
                         chat: {
@@ -71,7 +66,6 @@ const useOpenVidu = () => {
         });
 
         cameraSession.on("streamDestroyed", (event) => {
-            console.log("스트림 삭제 이벤트", subscribers, event.stream.streamId);
             setSubscribers((prevSubscribers) =>
                 prevSubscribers.filter((sub) => sub.stream.streamId !== event.stream.streamId),
             );

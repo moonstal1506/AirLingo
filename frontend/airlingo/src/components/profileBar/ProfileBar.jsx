@@ -37,6 +37,7 @@ const ProfileBarWrapper = styled.div`
     color: ${({ textColor }) => textColor};
     font-size: 25px;
     font-weight: 700;
+    cursor: pointer;
 `;
 
 export default ProfileBar;

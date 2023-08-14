@@ -22,5 +22,5 @@ server:
       timeout: 5000 # 서버와의 연결 시도 및 응답 대기 시간 최대 5초
 
 #openvidu
-openviduUrl: http://localhost:4443/
-openviduSecret: MY_SECRET
+openviduUrl: https://i9a308.p.ssafy.io
+openviduSecret: airlingo

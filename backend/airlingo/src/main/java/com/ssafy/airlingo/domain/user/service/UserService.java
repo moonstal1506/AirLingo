@@ -16,6 +16,7 @@ import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.LoginResponseDto;
 import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.entity.User;
+import com.ssafy.airlingo.global.response.ResponseResult;
 
 import jakarta.servlet.http.HttpServletResponse;
 
@@ -30,6 +31,8 @@ public interface UserService {
 
 	// 로그아웃 관련
 	void logout(String userLoginId);
+
+	void tmpLogout(String authorizationHeader);
 
 	// 회원탈퇴
 	void deleteUserAccount(Long userId);

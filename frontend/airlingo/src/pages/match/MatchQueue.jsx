@@ -5,7 +5,7 @@ import { useLocation } from "react-router-dom";
 import stomp from "stompjs";
 import SockJS from "sockjs-client";
 import { useDispatch, useSelector } from "react-redux";
-import { addSessionId, addOtherUser, addStudyId } from "@/features/Meeting/MeetingSlice";
+import { addSessionId, addOtherUser, addStudyId, addMyData } from "@/features/Meeting/MeetingSlice";
 import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/right-arrow-icon.svg";
@@ -26,19 +26,16 @@ function MatchQueue() {
     const [expressionIdx, setExpressionIdx] = useState(0);
     const [time, setTime] = useState(0);
     const [openMatchingFailModal, setOpenMatchingFailModal] = useState(false);
-    // const socket = new SockJS(VITE_SOCKET_URL);
-    // const stompClient = stomp.over(socket);
     const socketRef = useRef(null);
     const stompClientRef = useRef(null);
     const interval = useRef(null);
 
     async function matchingRequestFunc() {
         const { studyLanguageId, premium } = location.state;
-        console.log("매칭 시도!");
         await postMatching({
             responseFunc: {
                 400: () => {
-                    routeTo("/notfound");
+                    routeTo("/error");
                 },
             },
             data: {
@@ -46,22 +43,18 @@ function MatchQueue() {
                 studyLanguageId,
                 premium,
             },
+            routeTo,
         });
     }
 
     const matchingFunc = useCallback(async () => {
-        console.log("스톰프 연결 전");
-
         stompClientRef.current.connect({}, async () => {
-            console.log("스톰프 연결 시작 후");
             matchingRequestFunc();
 
             stompClientRef.current.subscribe(
                 `/queue/matchingData/${userNickname}`,
                 (matchingResult) => {
-                    console.log(matchingResult);
                     if (matchingResult.body === "FAIL") {
-                        console.log("매칭실패");
                         setOpenMatchingFailModal(true);
                         return;
                     }
@@ -72,6 +65,15 @@ function MatchQueue() {
 
                     dispatch(addSessionId({ sessionId }));
                     dispatch(addStudyId({ studyId }));
+                    dispatch(
+                        addMyData({
+                            myData: matchingResponseDto[
+                                Object.keys(matchingResponseDto).filter(
+                                    (key) => matchingResponseDto[key].userNickname === userNickname,
+                                )
+                            ],
+                        }),
+                    );
                     dispatch(
                         addOtherUser({
                             otherUser:
@@ -84,9 +86,7 @@ function MatchQueue() {
                         }),
                     );
                     clearInterval(interval.current);
-                    stompClientRef.current.disconnect(() => {
-                        console.log("Stomp client disconnected.");
-                    });
+                    stompClientRef.current.disconnect(() => {});
                     routeTo("/matchresult");
                 },
             );
@@ -97,19 +97,18 @@ function MatchQueue() {
         await cancelMatching({
             responseFunc: {
                 200: () => {
-                    console.log("매칭 취소 성공");
-                    routeTo("/matchhome");
+                    routeTo("/");
                 },
                 400: () => {
-                    console.log("매칭 취소 실패");
+                    routeTo("/error");
                 },
             },
             data: { userId },
+            routeTo,
         });
     }
 
     useEffect(() => {
-        console.log("초기화 시작!");
         // 비허용 접근
         if (
             !location.state ||
@@ -122,7 +121,6 @@ function MatchQueue() {
             return () => {};
         }
 
-        console.log("소켓설정");
         // 소켓 설정
         socketRef.current = new SockJS(VITE_SOCKET_URL);
         stompClientRef.current = stomp.over(socketRef.current);
@@ -133,9 +131,7 @@ function MatchQueue() {
             setTime((prev) => prev + 1);
         }, 1000);
 
-        return () => {
-            console.log("초기화 완료");
-        };
+        return () => {};
     }, []);
 
     const handleClickPrevButton = () => {
@@ -151,11 +147,9 @@ function MatchQueue() {
 
     const handleClickOpenMatchingConfirm = (agree) => {
         if (agree) {
-            console.log("매칭 계속 진행");
             matchingRequestFunc();
         } else {
-            console.log("매칭 정지");
-            routeTo("/matchhome");
+            routeTo("/");
         }
 
         // 피드백 요청 확인 창을 닫는다.

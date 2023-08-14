@@ -9,11 +9,10 @@ import loginSuccessImage from "@/assets/imgs/Login-Success-Image.png";
 import { useRouter } from "@/hooks";
 
 function MatchResult() {
-    // eslint-disable-next-line no-unused-vars
-    const { sessionId, otherUser } = useSelector(selectMeeting);
+    const { otherUser } = useSelector(selectMeeting);
     const [time, setTime] = useState(10);
     const { routeTo } = useRouter();
-
+    console.log(otherUser);
     useEffect(() => {
         if (time === 0) {
             routeTo("/matchstandby");
@@ -45,7 +44,7 @@ function MatchResult() {
                         <ContentSubTitle>다음 랭커와 매칭에 성공하였습니다!</ContentSubTitle>
                         <ContentMainTitle>{otherUser.userNickname}</ContentMainTitle>
                     </ContentTitleWrapper>
-                    <ContentImageWrapper />
+                    <ContentImageWrapper src={otherUser.userImgUrl} />
                     <ContentLine />
                     <ContentScoreBox>
                         <ContentScoreTextBox>
@@ -56,7 +55,9 @@ function MatchResult() {
                         <ContentScoreTextBox>
                             <ContentScoreText weight="400">등급</ContentScoreText>
                             <ContentScoreText weight="400">|</ContentScoreText>
-                            <ContentScoreText weight="700">{otherUser.userRating}</ContentScoreText>
+                            <ContentScoreText weight="700">
+                                {otherUser.mileageGrade}
+                            </ContentScoreText>
                         </ContentScoreTextBox>
                     </ContentScoreBox>
                     <ContentLine />
@@ -64,33 +65,26 @@ function MatchResult() {
                         <span>대표 언어</span>
                         <ProfileContentBox>
                             <FlagWrapper>
-                                <img src="public/favicon-192x192.png" alt="flagIcon" />
-                                <span>한국어</span>
+                                <img src={otherUser.userNativeLanguage.imageUrl} alt="flagIcon" />
+                                <span>{otherUser.userNativeLanguage.languageKorName}</span>
                             </FlagWrapper>
                         </ProfileContentBox>
                     </ProfileBox>
                     <ProfileBox>
                         <span>관심 언어</span>
                         <ProfileContentBox>
-                            <FlagWrapper>
-                                <img src="public/favicon-192x192.png" alt="flagIcon" />
-                                <span>한국어</span>
-                            </FlagWrapper>{" "}
-                            <FlagWrapper>
-                                <img src="public/favicon-192x192.png" alt="flagIcon" />
-                                <span>한국어</span>
-                            </FlagWrapper>{" "}
-                            <FlagWrapper>
-                                <img src="public/favicon-192x192.png" alt="flagIcon" />
-                                <span>한국어</span>
-                            </FlagWrapper>
+                            {/* 관심언어 개수만큼 반복 */}
+                            {otherUser.userInterestLanguages.map((language) => (
+                                <FlagWrapper key={language.languageKorName}>
+                                    <img src={language.imageUrl} alt="flagIcon" />
+                                    <span>{language.languageKorName}</span>
+                                </FlagWrapper>
+                            ))}
                         </ProfileContentBox>
                     </ProfileBox>
                     <ProfileBox>
                         <span>자기소개</span>
-                        <ProfileIntroduceText>
-                            Those who cling to death, live. Those who cling to life, die.
-                        </ProfileIntroduceText>
+                        <ProfileIntroduceText>{otherUser.userBio}</ProfileIntroduceText>
                     </ProfileBox>
                 </MatchResultContentBox>
             </MatchResultContainer>

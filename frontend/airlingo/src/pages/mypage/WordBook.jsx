@@ -2,7 +2,7 @@
 /* eslint-disable no-unused-vars */
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { TextButton } from "@/components/common/button";
 import { CheckBox } from "@/components/common/input";
 import { ReactComponent as BackButton } from "@/assets/icons/back-button.svg";
@@ -11,9 +11,8 @@ import { ReactComponent as NoWordBackground } from "@/assets/icons/no-word-icon.
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import rightPassportPages from "@/assets/imgs/profiles/right-passport-pages.png";
 import TabBar from "@/components/common/tab/TabBar.jsx";
-import { selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
 import { getWordList, deleteWords, getWordTest } from "@/api/word";
-
 // 모달 분리
 import SelectDeleteModal from "@/components/modal/wordBook/SelectDeleteModal";
 import NoSelectDeleteModal from "@/components/modal/wordBook/NoSelectDeleteModal";
@@ -22,10 +21,13 @@ import NoWordTestModal from "@/components/modal/wordBook/NoWordTestModal";
 import WordTestProgressModal from "@/components/modal/wordBook/WordTestProgressModal";
 import WordTestEndModal from "@/components/modal/wordBook/WordTestEndModal";
 import ReviewNoteModal from "@/components/modal/wordBook/ReviewNoteModal";
+import { useRouter } from "@/hooks";
 
 function WordBook() {
+    const dispatch = useDispatch();
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
+    const { routeTo } = useRouter();
 
     // 단어 조회 ,삭제 관련
     const [AllWordList, setWordList] = useState([]); // 저장한 전체 단어
@@ -73,11 +75,16 @@ function WordBook() {
                     200: (response) => {
                         setWordList(response.data.data);
                     },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                     473: () => {
                         setWordList([]);
                     }, // 단어가 없는 경우
                 },
                 data: { userId },
+                routeTo,
             });
         }
         fetchData();
@@ -173,15 +180,25 @@ function WordBook() {
             await deleteWords({
                 responseFunc: {
                     200: () => {
-                        // console.log("삭제를 성공했습니다.");
                         const updatedWordList = AllWordList.filter(
                             (word) => !selectedIds.includes(word.wordId),
                         );
                         setWordList(updatedWordList);
                         setModalOpenSelectDelete(false);
                     },
+                    460: () => {
+                        // not word
+                        alert("삭제하려는 단어가 존재하지 않습니다. 정보를 갱신해주세요.");
+                        setModalOpenSelectDelete(false);
+                    },
+                    470: () => {
+                        // not user
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userId, selectedIds },
+                routeTo,
             });
         } catch (error) {
             // console.error("삭제 중 오류가 발생했습니다.", error);
@@ -212,12 +229,17 @@ function WordBook() {
                             setModalOpenWordTestProgress(true);
                             setCurrentWordIndex(0); // 첫 번째 단어부터 시작
                         },
+                        470: () => {
+                            dispatch(logoutUser());
+                            routeTo("/error");
+                        },
                         // 단어테스트가 없는 경우
                         473: () => {
                             setWordTestList([]);
                         },
                     },
                     data: { userId },
+                    routeTo,
                 });
             } catch (error) {
                 // console.error("삭제 중 오류가 발생했습니다.", error);

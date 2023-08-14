@@ -8,11 +8,13 @@ import Dropdown from "@/components/common/dropdown";
 import { getGrade } from "@/api";
 import { TextButton } from "@/components/common/button";
 import { formatGrade } from "@/utils/format";
+import { useRouter } from "@/hooks";
 
 function EvaluateModal({ isOpen, onClickAgree, onClickDisAgree }) {
     const [rating, setRating] = useState(0);
     const [grade, setGrade] = useState([]);
     const [selectedGrade, setSelectedGrade] = useState({});
+    const { routeTo } = useRouter();
 
     useEffect(() => {
         async function fetchData() {
@@ -22,10 +24,11 @@ function EvaluateModal({ isOpen, onClickAgree, onClickDisAgree }) {
                         setGrade([...response.data.data]);
                     },
                 },
+                routeTo,
             });
         }
         fetchData();
-    }, []);
+    }, [routeTo]);
 
     return (
         isOpen && (
@@ -51,7 +54,7 @@ function EvaluateModal({ isOpen, onClickAgree, onClickDisAgree }) {
                     <TextButton
                         shape="positive-curved"
                         text="나가기"
-                        onClick={() => onClickAgree(rating, grade)}
+                        onClick={() => onClickAgree(rating, selectedGrade)}
                     />
                     <TextButton shape="positive-curved" text="취소" onClick={onClickDisAgree} />
                 </ModalButtonBox>

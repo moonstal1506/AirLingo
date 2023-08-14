@@ -1,11 +1,12 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import ValidationItem from "@/components/validationList";
 import { TextInput } from "@/components/common/input";
 import theme from "@/assets/styles/Theme";
 import { TextButton } from "@/components/common/button";
 import { checkNickname, checkEmail } from "@/utils/validationCheck";
+import { getNicknameIsDuplicated, getEmailIsDuplicated } from "@/api/user";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -16,14 +17,73 @@ const { primary1, primary4 } = theme.colors;
 function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
     const [nickname, setNickname] = useState({
         value: totalState.nickname,
+        debounced: totalState.nickname,
         valid: checkNickname(totalState.nickname),
+        possible: false,
         dirty: totalState.nickname.length > 0,
     });
     const [email, setEmail] = useState({
         value: totalState.email,
+        debounced: totalState.email,
         valid: checkEmail(totalState.email),
+        possible: false,
         dirty: totalState.email.length > 0,
     });
+
+    useEffect(() => {
+        const nicknameTimerId = setTimeout(() => {
+            setNickname((prev) => ({ ...prev, debounced: nickname.value }));
+        }, 250);
+
+        const emailTimerId = setTimeout(() => {
+            setEmail((prev) => ({ ...prev, debounced: email.value }));
+        }, 250);
+
+        return () => {
+            clearTimeout(nicknameTimerId);
+            clearTimeout(emailTimerId);
+        };
+    }, [email.value, nickname.value]);
+
+    useEffect(() => {
+        if (nickname.debounced) {
+            getNicknameIsDuplicated({
+                responseFunc: {
+                    200: () => {
+                        console.log("닉네임이 중복되지 않았습니다!");
+                        setNickname((prev) => ({ ...prev, possible: true }));
+                    },
+                    431: () => {
+                        console.log("이미 사용 중인 닉네임입니다!");
+                        setNickname((prev) => ({ ...prev, possible: false }));
+                    },
+                },
+                data: {
+                    nickname: nickname.debounced,
+                },
+            });
+        }
+    }, [nickname.debounced]);
+
+    useEffect(() => {
+        if (email.debounced) {
+            getEmailIsDuplicated({
+                responseFunc: {
+                    200: () => {
+                        console.log("이메일이 중복되지 않았습니다!");
+                        setEmail((prev) => ({ ...prev, possible: true }));
+                    },
+                    430: () => {
+                        console.log("이미 사용 중인 이메일입니다!");
+                        setEmail((prev) => ({ ...prev, possible: false }));
+                    },
+                },
+                data: {
+                    email: email.debounced,
+                },
+            });
+        }
+    }, [email.debounced]);
 
     const handleIdChange = (event) => {
         const newNickname = event.target.value.trim();
@@ -69,11 +129,21 @@ function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     isValid={nickname.valid}
                     isDirty={nickname.dirty}
                     text="닉네임은 2 ~ 20자의 영어 대 · 소문자, 숫자의 조합입니다."
-                />{" "}
+                />
+                <ValidationItem
+                    isValid={nickname.possible}
+                    isDirty={nickname.dirty}
+                    text="닉네임은 다른 회원의 닉네임과 중복되지 않아야 합니다."
+                />
                 <ValidationItem
                     isValid={email.valid}
                     isDirty={email.dirty}
                     text="이메일은 example@domain.com과 같은 형식으로 작성해야 합니다."
+                />
+                <ValidationItem
+                    isValid={email.possible}
+                    isDirty={email.dirty}
+                    text="이메일은 다른 회원의 이메일과 중복되지 않아야 합니다."
                 />
             </ValidationList>
             <ButtonBox>
@@ -92,7 +162,9 @@ function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
                     onClick={() =>
                         onHandleNextStep({ nickname: nickname.value, email: email.value })
                     }
-                    disabled={!nickname.valid || !email.valid}
+                    disabled={
+                        !nickname.valid || !nickname.possible || !email.valid || !email.possible
+                    }
                 />
             </ButtonBox>
         </ProfileContainer>

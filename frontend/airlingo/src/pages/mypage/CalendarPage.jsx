@@ -1,20 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
 import styled from "@emotion/styled";
 import moment from "moment";
-import { selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
 import { getDailyGrid } from "@/api/user.js";
 import theme from "@/assets/styles/Theme";
 import "react-calendar/dist/Calendar.css";
+import { useRouter } from "@/hooks";
 
 const { primary2, primary3, primary4, primary6, selection, faintgray } = theme.colors;
 
 function CalendarPage() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
-
+    const { routeTo } = useRouter();
+    const dispatch = useDispatch();
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [dailyGridList, setDailyGridList] = useState({});
     const [gridCountByDate, setGridCountByDate] = useState({});
@@ -25,10 +27,17 @@ function CalendarPage() {
                 responseFunc: {
                     200: (response) => {
                         setDailyGridList({ ...response.data.data });
-                        console.log("데일리 그리드 개수 조회 성공!");
+                    },
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
                     },
                 },
                 data: { userId },
+                routeTo,
             });
         }
         fetchData();
@@ -45,7 +54,6 @@ function CalendarPage() {
             emptyGridCountByDate[formattedDate] = dailyGridCount;
         });
         setGridCountByDate({ ...emptyGridCountByDate });
-        console.log(gridCountByDate);
     }, [dailyGridList]);
 
     // 날짜 포맷팅 함수
@@ -56,7 +64,6 @@ function CalendarPage() {
 
     const handleDayClick = (value) => {
         console.log("Clicked day:", formatDate(value));
-        // console.log("Clicked day:", value);
     };
 
     return (

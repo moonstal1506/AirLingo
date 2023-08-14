@@ -123,10 +123,11 @@ function Meeting() {
         try {
             const response = await postOpenviduToken({
                 responseFunc: {
-                    200: () => console.log("get Token Success"),
-                    400: () => console.log("get Token Fail"),
+                    200: () => {},
+                    400: () => {},
                 },
                 data: { sessionId },
+                routeTo,
             });
             return response.data.data;
         } catch (error) {
@@ -167,11 +168,8 @@ function Meeting() {
 
     async function handleCardCodeSelectResponse(data) {
         const jsonData = JSON.parse(data);
-        console.log("카드 선택에 대한 답을 받았다!", publisher, jsonData);
+
         if (!jsonData.agree || !publisher) {
-            console.log(
-                "상대가 내 카드 코드 선택에 동의하지 않았거나, publisher가 존재하지 않습니다.",
-            );
             return;
         }
         dispatch(
@@ -187,7 +185,7 @@ function Meeting() {
         setOpenResponseWaitModal(false);
         setResponseWaitTitle("");
 
-        const res = await postStartRecording({
+        await postStartRecording({
             responseFunc: {
                 200: (response) => {
                     dispatch(
@@ -198,8 +196,8 @@ function Meeting() {
                 },
             },
             data: { sessionId },
+            routeTo,
         });
-        console.log(res, recordingId, "서버에서 레코딩 아이디 받아왔는데??");
     }
 
     function sleep(ms) {
@@ -213,7 +211,6 @@ function Meeting() {
         const JsonData = JSON.parse(data);
 
         if (!JsonData.agree) {
-            console.log("동의 되지 않았거나, 피드백 요청을 보낸 본인입니다.");
             setIsLoading(false);
             return;
         }
@@ -225,6 +222,7 @@ function Meeting() {
             data: {
                 recordingId: sessionId,
             },
+            routeTo,
         });
 
         await sleep(5000);
@@ -247,6 +245,7 @@ function Meeting() {
                 cardId: meetingData.currentCard.cardId,
                 studyId,
             },
+            routeTo,
         });
 
         dispatch(removeRecordingId()); // 쓴 Recording Id는 삭제하기!
@@ -255,7 +254,6 @@ function Meeting() {
 
     function handleScreenModeChangeFeedback(data) {
         const jsonData = JSON.parse(data);
-        console.log(jsonData, jsonData.statusCode === 200);
         if (jsonData.data.statusCode !== 200) return;
         setTimeout(() => {
             dispatch(addScriptData({ scriptData: jsonData.data.data }));
@@ -283,6 +281,7 @@ function Meeting() {
                     scriptId: scriptData.scriptId,
                     scriptContent: scriptData.modifiedScript,
                 },
+                routeTo,
             });
         }
 
@@ -403,15 +402,11 @@ function Meeting() {
 
     useEffect(() => {
         if (session) {
-            console.log("세션 변경 성공!!!");
             connectSession();
-        } else {
-            console.log("세션 변경 실패!!!");
         }
     }, [session]);
 
     useEffect(() => {
-        console.log(scriptData, screenMode);
         if (publisher && session) {
             session.on("signal", handleSignal);
         }
@@ -437,14 +432,12 @@ function Meeting() {
     // 마이크 ON/OFF 메서드
     const handleMicClick = () => {
         setIsActiveMic((prevState) => !prevState);
-        console.log(`Microphone : ${isActiveMic}`);
         publisher.publishAudio(isActiveMic);
     };
 
     // 비디오 ON/OFF 메서드
     const handleVideoClick = () => {
         setIsActiveVideo((prevState) => !prevState);
-        console.log(`Video : ${isActiveVideo}`);
         publisher.publishVideo(isActiveVideo);
     };
 
@@ -461,7 +454,6 @@ function Meeting() {
             if (prevButtonName === "Board") return null;
             return "Board";
         });
-        console.log("Board");
     };
 
     const handleShareClick = () => {
@@ -473,7 +465,6 @@ function Meeting() {
             publishScreenShare();
             return "Share";
         });
-        console.log("Share");
     };
 
     const handleCardClick = () => {
@@ -506,7 +497,6 @@ function Meeting() {
 
         // 평가하기 모달을 띄워줘야 한다.
         setOpenEvaluateModal(true);
-        console.log("Exit");
     };
 
     const handleClickSlideButton = () => {
@@ -550,7 +540,6 @@ function Meeting() {
                         }),
                     );
                     // 상대방도 저장할 수 있도록, 내가 스토어에 저장한 것과 동일한 데이터를 보내준다.
-                    console.log(subscribers);
                     session.signal({
                         data: JSON.stringify({
                             agree: true,
@@ -566,6 +555,7 @@ function Meeting() {
                 cardCode: requestCardCode,
                 languageCode: "KOR",
             },
+            routeTo,
         });
         setOpenCardRequestModal(false);
     };
@@ -574,7 +564,6 @@ function Meeting() {
         await postReport({
             responseFunc: {
                 200: () => {
-                    console.log("신고 성공!");
                     // 2. 신고 모달의 상태를 변경한다.
                     setOpenReportModal((prev) => !prev);
                     setOpenReportConfirmModal(true);
@@ -585,6 +574,7 @@ function Meeting() {
                 userId,
                 description: reportText,
             },
+            routeTo,
         });
         dispatch(addDidReport({ didReport: true }));
     };
@@ -618,7 +608,7 @@ function Meeting() {
             responseFunc: {
                 200: () => {
                     session.disconnect();
-                    routeTo("/matchhome", { replace: false });
+                    routeTo("/", { replace: false });
                 },
             },
             data: {
@@ -628,6 +618,7 @@ function Meeting() {
                 studyId,
                 rating,
             },
+            routeTo,
         });
     };
 

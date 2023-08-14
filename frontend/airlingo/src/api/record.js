@@ -1,7 +1,7 @@
 import instance from "./instance";
 import processApiResponse from "@/utils/api";
 
-const postScript = async ({ responseFunc, data }) => {
+const postScript = async ({ responseFunc, data, routeTo }) => {
     try {
         const response = await instance.post(`/api/script`, data, {
             headers: {
@@ -11,12 +11,12 @@ const postScript = async ({ responseFunc, data }) => {
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };
 
-const postStartRecording = async ({ responseFunc, data }) => {
+const postStartRecording = async ({ responseFunc, data, routeTo }) => {
     try {
         const response = await instance.post(
             `/api/script/recording/start?sessionId=${data.sessionId}`,
@@ -24,11 +24,11 @@ const postStartRecording = async ({ responseFunc, data }) => {
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };
-const postStopRecording = async ({ responseFunc, data }) => {
+const postStopRecording = async ({ responseFunc, data, routeTo }) => {
     try {
         const response = await instance.post(
             `/api/script/recording/stop?recordingId=${data.recordingId}`,
@@ -36,29 +36,29 @@ const postStopRecording = async ({ responseFunc, data }) => {
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };
 
-const postEvaluate = async ({ responseFunc, data }) => {
+const postEvaluate = async ({ responseFunc, data, routeTo }) => {
     try {
         const response = await instance.post(`/api/record`, data);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };
 
-const getRecordStatistic = async ({ responseFunc, data }) => {
+const getRecordStatistic = async ({ responseFunc, data, routeTo }) => {
     try {
         const response = await instance.get(`/api/record/statistic/${data}`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {
-        // fix me! : 불순한 접근, 네트워킹 에러로 판단. e.response의 코드를 가지고 error 페이지로 이동하기!
+        routeTo("/error");
         return e.response;
     }
 };

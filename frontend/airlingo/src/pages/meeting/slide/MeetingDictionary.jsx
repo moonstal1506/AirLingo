@@ -43,12 +43,13 @@ function MeetingDictionary() {
                         setLanguageList(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
+                routeTo,
             });
         }
         fetchLanguageData();
-    }, []);
+    }, [routeTo]);
 
     const searchWord = () => {
         async function fetchSearchResult() {

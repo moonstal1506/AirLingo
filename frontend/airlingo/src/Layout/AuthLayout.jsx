@@ -1,10 +1,12 @@
+/* eslint-disable no-unused-vars */
+/* eslint-disable react/prop-types */
 /* eslint-disable react-hooks/exhaustive-deps */
 import PropTypes from "prop-types";
 import { useSelector, useDispatch } from "react-redux";
 import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "../hooks";
 import { getLogout, getUserProfile } from "@/api";
-import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser, signinUser } from "@/features/User/UserSlice.js";
 
 function AuthLayout({ children }) {
     const dispatch = useDispatch();
@@ -22,9 +24,11 @@ function AuthLayout({ children }) {
             responseFunc: {
                 200: (response) => {
                     setUserProfile(response.data);
+                    dispatch(signinUser(response.data.data));
                 },
             },
             data: { userId },
+            routeTo,
         });
 
         if (!apiRes) {
@@ -36,6 +40,7 @@ function AuthLayout({ children }) {
                     },
                 },
                 data: { userLoginId: 123 },
+                routeTo,
             });
         }
     }, [userId]);
@@ -57,8 +62,9 @@ function AuthLayout({ children }) {
                         dispatch(logoutUser());
                         routeTo("/login");
                     },
-                    data: { userId },
                 },
+                data: { userId },
+                routeTo,
             });
         }
     });
