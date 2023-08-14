@@ -1,5 +1,11 @@
 package com.ssafy.airlingo.domain.word.controller;
 
+import java.io.IOException;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +18,7 @@ import com.ssafy.airlingo.domain.word.dto.request.WordRequestDto;
 import com.ssafy.airlingo.domain.word.service.WordService;
 import com.ssafy.airlingo.global.response.ListResponseResult;
 import com.ssafy.airlingo.global.response.ResponseResult;
+import com.ssafy.airlingo.global.util.TextToSpeechService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -28,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WordController {
 
 	private final WordService wordService;
+	private final TextToSpeechService textToSpeechService;
 
 	@Operation(summary = "Get Word List", description = "단어장 전체 조회")
 	@ApiResponses(value = {
@@ -75,4 +83,18 @@ public class WordController {
 		wordService.saveWordByUserId(userId, wordRequestDto);
 		return ResponseResult.successResponse;
 	}
+
+	@Operation(summary = "Play TTS", description = "tts 실행")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "tts 실행 성공"),
+	})
+	@GetMapping("/tts")
+	public ResponseEntity<byte[]> playTTS(String target, String text) throws IOException {
+		log.info("WordController_playTTS -> 발음 듣기");
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData("attachment", "output.mp3");
+		return new ResponseEntity<>(textToSpeechService.playTTS(target, text), headers, HttpStatus.OK);
+	}
 }
+
