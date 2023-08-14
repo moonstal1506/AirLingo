@@ -7,7 +7,7 @@ import { DictionaryIcon } from "@/assets/icons";
 function CardRequestModal({ isOpen, cardCode, onClickAgree, onClickDisAgree }) {
     return (
         isOpen && (
-            <Modal zIdx={4} Icon={DictionaryIcon} title="대화 주제 선택 요청">
+            <Modal zIdx={40} Icon={DictionaryIcon} title="대화 주제 선택 요청">
                 <ModalTextBox>
                     <div>
                         <ModalTextWrapper color="black">

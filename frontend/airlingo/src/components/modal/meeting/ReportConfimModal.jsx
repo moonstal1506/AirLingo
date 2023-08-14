@@ -7,7 +7,13 @@ import { TextButton } from "@/components/common/button";
 function ReportConfimModal({ isOpen, onClickAgree }) {
     return (
         isOpen && (
-            <Modal zIdx={4} Icon={DictionaryIcon} title="신고하기" iconColor="red" titleColor="red">
+            <Modal
+                zIdx={40}
+                Icon={DictionaryIcon}
+                title="신고하기"
+                iconColor="red"
+                titleColor="red"
+            >
                 <ModalTextWrapper weight="400px">
                     해당 랭커에 대한 신고가 정상적으로 접수되었습니다.
                 </ModalTextWrapper>

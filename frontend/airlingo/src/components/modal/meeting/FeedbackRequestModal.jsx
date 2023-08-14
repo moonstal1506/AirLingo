@@ -7,7 +7,7 @@ import { TextButton } from "@/components/common/button";
 function FeedbackRequestModal({ isOpen, onClickAgree, onClickDisAgree }) {
     return (
         isOpen && (
-            <Modal zIdx={4} Icon={DictionaryIcon} title="스크립트 피드백 요청">
+            <Modal zIdx={40} Icon={DictionaryIcon} title="스크립트 피드백 요청">
                 <ModalTextBox>
                     <ModalTextWrapper weight="400px">
                         상대방으로부터 스크립트 피드백 요청을 받았습니다.

@@ -32,7 +32,13 @@ function ReportModal({ isOpen, onClickAgree, onClickDisAgree }) {
 
     return (
         isOpen && (
-            <Modal zIdx={4} Icon={DictionaryIcon} title="신고하기" iconColor="red" titleColor="red">
+            <Modal
+                zIdx={40}
+                Icon={DictionaryIcon}
+                title="신고하기"
+                iconColor="red"
+                titleColor="red"
+            >
                 <ModalTextWrapper weight="400px">
                     해당 랭커를 다음과 같은 사유로 신고하시겠습니까?
                 </ModalTextWrapper>

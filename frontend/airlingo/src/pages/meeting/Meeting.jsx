@@ -272,7 +272,7 @@ function Meeting() {
         // 거절이라면 여기서 끝내야 됨.
         if (!jsonData.agree) return;
 
-        // 거절하지 않았다면 서버에 서로 최종 수정된 스크립트를 저장한다.
+        // 거절하지 않았다면 서버에 최종 수정된 스크립트를 저장한다.
         if (scriptData && scriptData.modifiedScript) {
             await putSaveScript({
                 responseFunc: {
@@ -776,7 +776,10 @@ function Meeting() {
                             return null;
                     }
                 })()}
-                <SliderButtonWrapper isOpen={isActiveSlide}>
+                <SliderButtonWrapper
+                    isOpen={isActiveSlide}
+                    style={{ zIndex: openCardModal ? "10" : "30" }}
+                >
                     <SliderButton isOpen={isActiveSlide} onClick={handleClickSlideButton} />
                 </SliderButtonWrapper>
                 <MeetingButtonMenu isActiveChatSlide={isActiveChatSlide} buttonList={buttonList} />
@@ -819,6 +822,7 @@ const MeetingContainer = styled.div`
 const MeetingButtonMenu = styled(ButtonMenu)`
     bottom: ${({ isActiveChatSlide }) => (isActiveChatSlide ? "460px" : "0px")};
     transition: 0.3s ease-in-out;
+    z-index: 30;
 `;
 
 const ChatBox = styled.div`
@@ -858,7 +862,7 @@ const SliderButtonWrapper = styled.div`
     top: -4%;
     right: ${({ isOpen }) => (isOpen ? "28%" : "1%")};
     transition: 0.3s ease-in-out;
-    z-index: 1500;
+    z-index: 31;
 `;
 
 // ----------------------------------------------------------------------------------------------------

@@ -32,7 +32,7 @@ function EvaluateModal({ isOpen, onClickAgree, onClickDisAgree }) {
 
     return (
         isOpen && (
-            <Modal zIdx={4} Icon={ExitIcon} title="상대 랭커 평가하기">
+            <Modal zIdx={40} Icon={ExitIcon} title="상대 랭커 평가하기">
                 <ModalTextWrapper weight="400px">
                     상대 랭커의 매너와 언어 실력에 대해서 평가를 남겨주세요!
                 </ModalTextWrapper>

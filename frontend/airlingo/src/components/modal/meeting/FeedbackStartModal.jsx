@@ -6,7 +6,7 @@ import { ModalTextWrapper } from "./MeetingModalStyle";
 function FeedbackStartModal({ isOpen }) {
     return (
         isOpen && (
-            <Modal zIdx={4} Icon={DictionaryIcon} title="스크립트 피드백 요청">
+            <Modal zIdx={40} Icon={DictionaryIcon} title="스크립트 피드백 요청">
                 <ModalTextWrapper weight="400px">
                     상대방에게 스크립트 피드백 요청을 보냈습니다.
                 </ModalTextWrapper>

@@ -59,7 +59,7 @@ function ScriptFeedback({
                         제공된 스크립트에 대해 이야기하거나, <br />
                         녹음 파일을 들으면서 스크립트를 수정해 보세요!
                     </SubTitleWrapper>
-                    <MusicPlayer src={scriptData.voiceFileUrl} />
+                    <MusicPlayer src={scriptData?.voiceFileUrl} />
                 </HeaderMiddleBox>
 
                 <VideoFrame>
@@ -165,7 +165,7 @@ const FeedbackContainer = styled.div`
     border-radius: 20px;
     background: #fff;
     box-shadow: 0px 5px 5px 0px rgba(0, 0, 0, 0.25) inset;
-    z-index: 4;
+    z-index: 10;
 `;
 
 export default ScriptFeedback;

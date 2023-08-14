@@ -25,7 +25,7 @@ function CardModal({ isOpen, onClick }) {
 
     return (
         isOpen && (
-            <Overlay zIdx={501}>
+            <Overlay zIdx={30}>
                 <CardModalContainer>
                     <TopicCardBox onClick={onClick}>
                         {cardCode.map((cur) => (

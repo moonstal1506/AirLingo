@@ -6,7 +6,7 @@ import { DictionaryIcon } from "@/assets/icons";
 function ResponseWaitModal({ title, isOpen }) {
     return (
         isOpen && (
-            <Modal zIdx={500} Icon={DictionaryIcon} title={title}>
+            <Modal zIdx={40} Icon={DictionaryIcon} title={title}>
                 <ModalTextBox>
                     <ModalTextWrapper>상대방의 응답을 대기중입니다...</ModalTextWrapper>
                 </ModalTextBox>
