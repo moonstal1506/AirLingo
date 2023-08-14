@@ -72,7 +72,7 @@ function MatchResult() {
                         <span>관심 언어</span>
                         <ProfileContentBox>
                             {/* 관심언어 개수만큼 반복 */}
-                            {otherUser.userLanguages.map((language) => (
+                            {otherUser.userInterestLanguages.map((language) => (
                                 <FlagWrapper key={language.languageKorName}>
                                     <img src={language.imageUrl} alt="flagIcon" />
                                     <span>{language.languageKorName}</span>
