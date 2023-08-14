@@ -161,7 +161,7 @@ const DivisionLine = styled.div`
 const ResultTextWrapper = styled.div`
     color: ${primary4};
     font-weight: 500;
-    font-size: 17px;
+    font-size: 25px;
 `;
 
 const ResultBox = styled.div`
