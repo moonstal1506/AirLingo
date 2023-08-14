@@ -17,15 +17,15 @@ const shapeStyle = {
         }
     `,
     blacklined: `
-        background-color: #ffffff;
-        border: 3px solid #000000;
+        background-color: white;
+        border: 3px solid black;
         &:hover {
             background-color: ${primary3};
             transition: ease-out 0.35s;
         }
     `,
     redlined: `
-        background-color: #ffffff;
+        background-color: white;
         border: 3px solid ${warning};
         &:hover {
             background-color: ${primary3};
@@ -33,8 +33,8 @@ const shapeStyle = {
         }
     `,
     blacklinedlight: `
-        background-color: #ffffff;
-        border: 1px solid #000000;
+        background-color: white;
+        border: 1px solid black;
         &:hover {
             background-color: ${primary3};
             transition: ease-out 0.35s;
@@ -82,9 +82,11 @@ const IconButtonWrapper = styled.button`
 `;
 
 const IconWrapper = styled.div`
-    display: block;
-    width: 25px;
-    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
     svg path {
         fill: ${({ iconColor }) => iconConfig.color[iconColor]};
     }

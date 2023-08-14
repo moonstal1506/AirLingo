@@ -61,7 +61,6 @@ function ScriptFeedback({
                     </SubTitleWrapper>
                     <MusicPlayer src={scriptData.voiceFileUrl} />
                 </HeaderMiddleBox>
-
                 <VideoFrame>
                     {subscribers.length > 0 ? (
                         <video

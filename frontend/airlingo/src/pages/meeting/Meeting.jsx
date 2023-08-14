@@ -46,12 +46,11 @@ import {
     removeInfo,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
-import FreeTalk from "./screen/FreeTalk";
-import ScriptFeedback from "./screen/ScriptFeedback";
 import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
 import isKeyInObj from "@/utils/common";
 import Loading from "@/components/loading";
 import { MeetingScript, MeetingDictionary, MeetingTranslator } from "./slide";
+import { FreeTalk, WhiteBoard, ScriptFeedback } from "./screen";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -452,7 +451,11 @@ function Meeting() {
 
     const handleBoardClick = () => {
         setActiveButton((prevButtonName) => {
-            if (prevButtonName === "Board") return null;
+            if (prevButtonName === "Board") {
+                dispatch(addScreenMode({ screenMode: "FreeTalk" }));
+                return null;
+            }
+            dispatch(addScreenMode({ screenMode: "WhiteBoard" }));
             return "Board";
         });
     };
@@ -772,6 +775,8 @@ function Meeting() {
                                     scriptData={scriptData}
                                 />
                             );
+                        case "WhiteBoard":
+                            return <WhiteBoard publisher={publisher} subscribers={subscribers} />;
                         default:
                             return null;
                     }
