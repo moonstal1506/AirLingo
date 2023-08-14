@@ -1,6 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
 import moment from "moment";
 import { useRouter } from "@/hooks";
@@ -15,7 +16,7 @@ import { ReactComponent as NoscriptBackground } from "@/assets/icons/no-data-ico
 import { ReactComponent as BackButton } from "@/assets/icons/back-button.svg";
 import scriptBackground from "@/assets/imgs/script-background.png";
 import { getScriptList } from "@/api/script";
-import { selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
 import { getDailyGrid } from "@/api/user.js";
 import theme from "@/assets/styles/Theme";
 import "react-calendar/dist/Calendar.css";
@@ -49,6 +50,7 @@ function createScriptList(data) {
 
 function Script() {
     const storeUser = useSelector(selectUser);
+    const dispatch = useDispatch();
     const { routeTo } = useRouter();
     const { userId } = storeUser;
     const [desiredDate, setDesiredDate] = useState();
@@ -68,6 +70,12 @@ function Script() {
                 responseFunc: {
                     200: (response) => {
                         setDailyGridList({ ...response.data.data });
+                    },
+                    470: () => {
+                        setDailyGridList({});
+                    },
+                    400: () => {
+                        alert("응답에 실패했습니다. 다시 시도해주세요.");
                     },
                 },
                 data: { userId },
@@ -111,12 +119,19 @@ function Script() {
                     492: () => {
                         setScriptList([]);
                     }, // 스크립트가 없는 경우
+                    400: () => {
+                        alert("응답에 실패했습니다. 다시 시도해주세요.");
+                    },
+                    500: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userId, date: desiredDate },
                 routeTo,
             });
         }
-        fetchData();
+        if (userId && desiredDate) fetchData();
     }, [userId, desiredDate, routeTo]);
 
     const handleLookupScript = () => {

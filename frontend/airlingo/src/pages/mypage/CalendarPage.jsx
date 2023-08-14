@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Calendar from "react-calendar";
 import styled from "@emotion/styled";
 import moment from "moment";
-import { selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser } from "@/features/User/UserSlice.js";
 import { getDailyGrid } from "@/api/user.js";
 import theme from "@/assets/styles/Theme";
 import "react-calendar/dist/Calendar.css";
@@ -16,6 +16,7 @@ function CalendarPage() {
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
     const { routeTo } = useRouter();
+    const dispatch = useDispatch();
     const [selectedDate, setSelectedDate] = useState(new Date());
     const [dailyGridList, setDailyGridList] = useState({});
     const [gridCountByDate, setGridCountByDate] = useState({});
@@ -26,6 +27,13 @@ function CalendarPage() {
                 responseFunc: {
                     200: (response) => {
                         setDailyGridList({ ...response.data.data });
+                    },
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
                     },
                 },
                 data: { userId },

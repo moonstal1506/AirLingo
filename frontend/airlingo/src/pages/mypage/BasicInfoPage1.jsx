@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import defaultProfileImage from "@/assets/imgs/profiles/default-profile.png";
 import { ReactComponent as SettingIcon } from "@/assets/icons/setting-icon.svg";
 import { ReactComponent as GradeBackgroundIcon } from "@/assets/icons/grade-background-icon.svg";
@@ -17,7 +17,7 @@ import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
 import { TextButton } from "@/components/common/button";
 import theme from "@/assets/styles/Theme";
 import Modal from "@/components/modal";
-import { selectUser } from "@/features/User/UserSlice.js";
+import { logoutUser, selectUser, signinUser } from "@/features/User/UserSlice.js";
 import {
     getUserProfile,
     updateUserNickname,
@@ -32,10 +32,12 @@ const { primary4 } = theme.colors;
 function BasicInfoPage1() {
     const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
+    const dispatch = useDispatch();
+
     const { userId } = storeUser;
-    const [userProfile, setUserProfile] = useState({});
-    const [nickname, setNickname] = useState("에어링고");
-    const [bio, setBio] = useState("안녕하세요. 만나서 반갑습니다.");
+    const [userProfile, setUserProfile] = useState({
+        ...storeUser,
+    });
     const bioInputRef = useRef(null);
     const nicknameInputRef = useRef(null);
     const [imageModalOpen, setImageModalOpen] = useState(false);
@@ -44,10 +46,10 @@ function BasicInfoPage1() {
     const [isEditingNickname, setIsEditingNickname] = useState(false);
     const [isEditingBio, setIsEditingBio] = useState(false);
     const [file, setFile] = useState(null);
-    const [image, setImage] = useState(null);
     const [uplodeImage, setUplodeImage] = useState(true);
     const [selectedImage, setSelectedImage] = useState(null);
     const fileInputRef = useRef(null);
+    const [updateProfile, setUpdateProfile] = useState(false);
 
     const totalLanguage = [
         { id: 1, label: "한국어", img: KoreaFlagIcon },
@@ -63,6 +65,13 @@ function BasicInfoPage1() {
                     200: (response) => {
                         setUserProfile({ ...response.data.data });
                     },
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userId },
                 routeTo,
@@ -72,14 +81,32 @@ function BasicInfoPage1() {
     }, []);
 
     useEffect(() => {
-        setNickname(userProfile.userNickname);
-        setBio(userProfile.userBio);
-        setImage(userProfile.userImgUrl);
-        setSelectedImage(userProfile.userImgUrl);
-    }, [userProfile]);
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        setUserProfile({ ...response.data.data });
+                        dispatch(signinUser({ ...response.data.data }));
+                    },
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
+                },
+                data: { userId },
+                routeTo,
+            });
+        }
+        if (updateProfile) {
+            fetchData();
+            setUpdateProfile(false);
+        }
+    }, [updateProfile]);
 
     // 닉네임 수정
-
     const handleNicknameIModifyIconClick = () => {
         if (nicknameInputRef.current) {
             nicknameInputRef.current.focus();
@@ -89,9 +116,8 @@ function BasicInfoPage1() {
 
     const handleNicknameChange = (event) => {
         const newNickname = event.target.value.trim();
-        setNickname(newNickname);
+        setUserProfile((prev) => ({ ...prev, userNickname: newNickname }));
     };
-
     const handleUserNicknameSubmit = async () => {
         if (isEditingNickname) {
             setIsEditingNickname(false);
@@ -100,10 +126,23 @@ function BasicInfoPage1() {
                     200: () => {
                         setmodifyContent("닉네임");
                         setModifyModalOpen(true);
+                        setUpdateProfile(true);
                     },
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    431: () => {
+                        alert("중복된 닉네임입니다. 다른 닉네임을 입력해주세요!");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
+                    500: () => {
+                        alert("중복된 닉네임입니다. 다른 닉네임을 입력해주세요.");
+                    },
                 },
-                data: { userNickname: nickname, userId },
+                data: { userNickname: userProfile.userNickname, userId },
                 routeTo,
             });
         }
@@ -125,7 +164,7 @@ function BasicInfoPage1() {
         return () => {
             document.removeEventListener("mousedown", handleOutsideClick);
         };
-    }, [isEditingNickname]);
+    }, [isEditingNickname, userProfile]);
 
     // 자기소개 수정
     const handleBioIModifyIconClick = () => {
@@ -137,7 +176,7 @@ function BasicInfoPage1() {
 
     const handleBioChange = (event) => {
         const newBio = event.target.value;
-        setBio(newBio);
+        setUserProfile((prev) => ({ ...prev, userBio: newBio }));
     };
 
     const handleUserBioSubmit = async () => {
@@ -148,10 +187,17 @@ function BasicInfoPage1() {
                     200: () => {
                         setmodifyContent("자기소개");
                         setModifyModalOpen(true);
+                        setUpdateProfile(true);
                     },
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
-                data: { userBio: bio, userId },
+                data: { userBio: userProfile.userBio, userId },
                 routeTo,
             });
         }
@@ -173,7 +219,7 @@ function BasicInfoPage1() {
         return () => {
             document.removeEventListener("mousedown", handleOutsideClick);
         };
-    }, [isEditingBio]);
+    }, [isEditingBio, userProfile]);
 
     const handleImageUpload = (files) => {
         if (files && files.length > 0) {
@@ -199,10 +245,19 @@ function BasicInfoPage1() {
                     responseFunc: {
                         200: (response) => {
                             setSelectedImage(response.data.data.uploadFileUrl);
-                            setImage(response.data.data.uploadFileUrl);
                             setImageModalOpen(false);
+                            setUpdateProfile(true);
                         },
-                        400: () => {},
+                        400: () => {
+                            alert("응답에 실패했습니다. 다시 시도해주세요.");
+                        },
+                        470: () => {
+                            dispatch(logoutUser());
+                            routeTo("/error");
+                        },
+                        491: () => {
+                            alert("사진이 비어있습니다! 다시 시도해주세요.");
+                        },
                     },
                     data: { files: file, userId },
                     routeTo,
@@ -215,10 +270,16 @@ function BasicInfoPage1() {
                 responseFunc: {
                     200: () => {
                         setSelectedImage(defaultProfileImage);
-                        setImage(defaultProfileImage);
                         setImageModalOpen(false);
+                        setUpdateProfile(true);
                     },
-                    400: () => {},
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
+                    },
                 },
                 data: { userId },
                 routeTo,
@@ -309,7 +370,7 @@ function BasicInfoPage1() {
                         <GradeTextWrapper>
                             {userProfile.userMileageGrade?.mileageRank}
                         </GradeTextWrapper>
-                        <ProfileImage src={image || defaultProfileImage} />
+                        <ProfileImage src={userProfile.userImgUrl || defaultProfileImage} />
                         <SettingIconWrapper>
                             <SettingIcon onClick={handleImageModalOpen} />
                         </SettingIconWrapper>
@@ -323,7 +384,7 @@ function BasicInfoPage1() {
                             <NicknameInputBox>
                                 <NicknameInputWrapper
                                     ref={nicknameInputRef}
-                                    value={nickname}
+                                    value={userProfile.userNickname}
                                     onChange={handleNicknameChange}
                                     onClick={handleNicknameIModifyIconClick}
                                     onKeyDown={(event) => {
@@ -394,7 +455,7 @@ function BasicInfoPage1() {
                             <BioAreaBox>
                                 <BioAreaWrapper
                                     ref={bioInputRef}
-                                    value={bio}
+                                    value={userProfile.userBio}
                                     onChange={handleBioChange}
                                     onClick={handleBioIModifyIconClick}
                                     onKeyDown={(event) => {

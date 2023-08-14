@@ -10,6 +10,7 @@ const initialState = {
     userAccessToken: "",
     userNativeLanguage: {},
     userLanguages: [],
+    userBio: "",
 };
 
 export const UserSlice = createSlice({
@@ -25,6 +26,7 @@ export const UserSlice = createSlice({
                 userAccessToken,
                 userNativeLanguage,
                 userLanguages,
+                userBio,
             } = actions.payload;
             state.isLogIn = true;
             state.userId = userId;
@@ -34,6 +36,7 @@ export const UserSlice = createSlice({
             state.userAccessToken = userAccessToken;
             state.userNativeLanguage = userNativeLanguage;
             state.userLanguages = userLanguages;
+            state.userBio = userBio;
         },
         logoutUser: (state) => {
             state.isLogIn = false;
@@ -44,6 +47,7 @@ export const UserSlice = createSlice({
             state.userAccessToken = "";
             state.userNativeLanguage = {};
             state.userLanguages = [];
+            state.userBio = "";
         },
         reloadUser: (state, actions) => {
             const { userAccessToken } = actions.payload;

@@ -153,7 +153,7 @@ const routerData = [
         path: "*",
         label: "Error",
         element: <Error />,
-        withAuth: true,
+        withAuth: false,
         headerExist: true,
         mustNotAuth: false,
     },

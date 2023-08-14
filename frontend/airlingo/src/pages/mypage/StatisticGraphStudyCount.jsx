@@ -108,7 +108,9 @@ function StudyCountStatistic() {
                     setData(chartData);
                     setTotalStudyNumber(response.data.data.numberResponse.totalStudyNumber);
                 },
-                400: () => {},
+                400: () => {
+                    alert("응답에 실패했습니다. 다시 시도해주세요");
+                },
             },
             data: userId,
             routeTo,

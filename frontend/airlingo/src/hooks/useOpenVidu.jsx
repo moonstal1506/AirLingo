@@ -2,8 +2,9 @@
 import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
 import { useDispatch, useSelector } from "react-redux";
-import { addChatList } from "@/features/Meeting/MeetingSlice";
+import { addChatList, selectMeeting } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
+import languageCodeConfig from "@/config/languageCodeConfig";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -22,6 +23,7 @@ const useOpenVidu = () => {
 
     const dispatch = useDispatch();
     const { userNickname } = useSelector(selectUser);
+    const { myData } = useSelector(selectMeeting);
 
     async function joinSession() {
         const cameraSession = OV.current.initSession();
@@ -30,7 +32,11 @@ const useOpenVidu = () => {
             if (event.stream.typeOfVideo === "CAMERA") {
                 const subscriber = cameraSession.subscribe(event.stream, undefined);
                 setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-                // curSession.subscribeToSpeechToText(event.stream, "ko-KR");
+                cameraSession.subscribeToSpeechToText(
+                    event.stream,
+                    languageCodeConfig.find((cur) => cur.languageId === myData.userStudyLanguageId)
+                        .languageCode,
+                );
             }
         });
 
