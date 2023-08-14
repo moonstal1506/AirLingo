@@ -149,9 +149,11 @@ public class User extends BaseTimeEntity {
 				.stream()
 				.map(userLanguage -> LanguageDto.builder()
 					.languageId(userLanguage.getLanguage().getLanguageId())
-					.gradeName(userLanguage.getGrade().getGradeName())
 					.languageKorName(userLanguage.getLanguage().getLanguageKorName())
 					.languageEngName(userLanguage.getLanguage().getLanguageEngName())
+					.imageUrl(userLanguage.getLanguage().getImageUrl())
+					.gradeName(userLanguage.getGrade().getGradeName())
+					.gradeKorName(userLanguage.getGrade().getGradeKorName())
 					.build())
 				.collect(Collectors.toList()))
 			.build();
