@@ -1,10 +1,18 @@
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 
 const useRouter = () => {
-    const router = useNavigate();
+    const navigate = useNavigate();
+
+    const routeTo = useCallback(
+        (path, state = {}) => {
+            navigate(path, state);
+        },
+        [navigate],
+    );
 
     return {
-        routeTo: (path, state = {}) => router(path, state),
+        routeTo,
     };
 };
 

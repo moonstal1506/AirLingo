@@ -61,7 +61,7 @@ const TextAreaWrapper = styled.textarea`
     outline: none;
     padding: 10px 20px;
     color: ${secondary3};
-    font-size: 17px;
+    font-size: 25px;
     font-weight: 500;
     resize: none;
     &::placeholder {

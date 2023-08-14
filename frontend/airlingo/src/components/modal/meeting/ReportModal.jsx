@@ -8,12 +8,13 @@ import { TextArea } from "@/components/common/input";
 import { TextButton } from "@/components/common/button";
 import { getReportItems } from "@/api";
 import { formatReportItem } from "@/utils/format";
+import { useRouter } from "@/hooks";
 
 function ReportModal({ isOpen, onClickAgree, onClickDisAgree }) {
     const [reportState, setReportState] = useState({});
     const [reportText, setReportText] = useState("");
     const [reportList, setReportList] = useState([]);
-
+    const { routeTo } = useRouter();
     useEffect(() => {
         async function fetchData() {
             await getReportItems({
@@ -23,10 +24,11 @@ function ReportModal({ isOpen, onClickAgree, onClickDisAgree }) {
                     },
                 },
                 data: { languageCode: "KOR" },
+                routeTo,
             });
         }
         fetchData();
-    }, []);
+    }, [routeTo]);
 
     return (
         isOpen && (

@@ -90,14 +90,10 @@ function StudyTimeStatistic() {
     };
 
     const getRecordStatisticFunction = async () => {
-        console.log(userId);
         await getRecordStatistic({
             responseFunc: {
                 200: (response) => {
-                    console.log("통계 데이터 가져오기 성공");
-                    console.log(response.data.data.timeResponse);
                     const { learningLanguageResponseList } = response.data.data.timeResponse;
-                    console.log(learningLanguageResponseList);
                     const chartData = {
                         labels: learningLanguageResponseList.map((item) => item.languageName),
                         datasets: [
@@ -111,15 +107,14 @@ function StudyTimeStatistic() {
                     };
 
                     setData(chartData);
-                    console.log(chartData);
                     setTotalStudyTime(response.data.data.timeResponse.totalStudyTime);
-                    console.log(totalStudyTime);
                 },
                 400: () => {
-                    console.log("통계 데이터 가져오기 실패");
+                    alert("응답에 실패했습니다. 다시 시도해주세요.");
                 },
             },
             data: userId,
+            routeTo,
         });
     };
 

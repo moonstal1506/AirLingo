@@ -17,7 +17,7 @@ import { ReactComponent as KeyIcon } from "@/assets/icons/key-icon.svg";
 import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
 import { ReactComponent as HeartIcon } from "@/assets/icons/heart-icon.svg";
 import * as Icons from "@/assets/icons";
-import { logoutUser, selectUser } from "@/features/User/UserSlice";
+import { logoutUser, selectUser, signinUser } from "@/features/User/UserSlice";
 import { getUserProfile, deleteUser, updateUserPassword, updateLanguage } from "@/api/user.js";
 import { getLanguage, getGrade } from "@/api/language";
 import { formatLanguage, formatGrade } from "@/utils/format";
@@ -39,7 +39,7 @@ function BasicInfoPage2() {
     const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
-    const [userProfile, setUserProfile] = useState([]);
+    const [userProfile, setUserProfile] = useState({});
     const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
     const [confirmPassword, setConfirmPassword] = useState({
         value: "",
@@ -58,7 +58,26 @@ function BasicInfoPage2() {
     });
     const [selectedLang, setSelectedLang] = useState({ id: 0, label: "", img: "" });
     const [selectedGrade, setSelectedGrade] = useState({ id: 0, label: "", img: "" });
+    const [updateProfile, setUpdateProfile] = useState(false);
 
+    useEffect(() => {
+        async function fetchData() {
+            await getUserProfile({
+                responseFunc: {
+                    200: (response) => {
+                        dispatch(signinUser({ ...response.data.data }));
+                        setUserProfile({ ...response.data.data });
+                    },
+                },
+                data: { userId },
+                routeTo,
+            });
+        }
+        if (updateProfile) {
+            fetchData();
+            setUpdateProfile(false);
+        }
+    }, [updateProfile]);
     // 프로필 조회
     useEffect(() => {
         async function fetchData() {
@@ -66,10 +85,17 @@ function BasicInfoPage2() {
                 responseFunc: {
                     200: (response) => {
                         setUserProfile({ ...response.data.data });
-                        console.log(userProfile);
+                    },
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
+                    470: () => {
+                        dispatch(logoutUser());
+                        routeTo("/error");
                     },
                 },
                 data: { userId },
+                routeTo,
             });
             await getLanguage({
                 responseFunc: {
@@ -77,15 +103,21 @@ function BasicInfoPage2() {
                         setLanguages(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
                 },
+                routeTo,
             });
             await getGrade({
                 responseFunc: {
                     200: (response) =>
                         setGrades(response.data.data.map((grade) => formatGrade(grade))),
-                    400: (response) => console.log(response),
+                    400: () => {
+                        alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                    },
                 },
+                routeTo,
             });
         }
         fetchData();
@@ -95,6 +127,7 @@ function BasicInfoPage2() {
     const handleLanguageModalOpen = () => {
         setLanguageModalOpen(true);
     };
+
     const addSelectedLanguage = () => {
         if (selectedLang.label && selectedGrade.label) {
             const newLanguage = {
@@ -130,11 +163,15 @@ function BasicInfoPage2() {
         await updateLanguage({
             responseFunc: {
                 200: () => {
-                    console.log("관심 언어 수정 성공!");
                     setLanguageModalOpen(false);
+                    setUpdateProfile(true);
                 },
                 400: () => {
-                    console.log("관심 언어 수정 실패!");
+                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                },
+                470: () => {
+                    dispatch(logoutUser());
+                    routeTo("/error");
                 },
             },
             data: {
@@ -144,15 +181,7 @@ function BasicInfoPage2() {
                     gradeId: language.gradeId,
                 })),
             },
-        });
-        await getUserProfile({
-            responseFunc: {
-                200: (response) => {
-                    setUserProfile({ ...response.data.data });
-                    console.log(userProfile);
-                },
-            },
-            data: { userId },
+            routeTo,
         });
     };
 
@@ -189,16 +218,20 @@ function BasicInfoPage2() {
         await updateUserPassword({
             responseFunc: {
                 200: () => {
-                    console.log("수정 성공!");
                     setPasswordModalOpen(false);
                     setPassword({ value: "", valid: false, dirty: false });
                     setConfirmPassword({ value: "", valid: false, dirty: false });
                 },
                 400: () => {
-                    console.log("수정 실패!");
+                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                },
+                470: () => {
+                    dispatch(logoutUser());
+                    routeTo("/error");
                 },
             },
             data: { userPassword: password.value, userId },
+            routeTo,
         });
     };
 
@@ -213,14 +246,18 @@ function BasicInfoPage2() {
                 200: () => {
                     dispatch(logoutUser());
                     setQuitModalOpen(false);
-                    console.log("회원 탈퇴 성공!");
                     routeTo("/");
                 },
                 400: () => {
-                    console.log("회원 탈퇴 실패!");
+                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
+                },
+                470: () => {
+                    dispatch(logoutUser());
+                    routeTo("/error");
                 },
             },
             data: { userId },
+            routeTo,
         });
     };
 
@@ -405,15 +442,15 @@ function BasicInfoPage2() {
                     </TitleContainer>
                     <LanguageContentBox>
                         {userProfile.userLanguages &&
-                            userProfile.userLanguages.map((langueage) => (
-                                <LanguageBox>
+                            userProfile.userLanguages.map((language) => (
+                                <LanguageBox key={language.languageId}>
                                     <LanguageFlag
-                                        src={languages[langueage.languageId - 1]?.img || ""}
+                                        src={languages[language.languageId - 1]?.img || ""}
                                         alt="Korean Flag"
                                     />
                                     <LanguageNameRankBox>
-                                        <LanguageName>{langueage.languageKorName}</LanguageName>
-                                        <Grade gradeName={langueage?.gradeName || ""} />
+                                        <LanguageName>{language.languageKorName}</LanguageName>
+                                        <Grade gradeName={language?.gradeName || ""} />
                                     </LanguageNameRankBox>
                                 </LanguageBox>
                             ))}

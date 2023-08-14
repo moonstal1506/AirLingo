@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -67,8 +68,8 @@ public class UserController {
 
 	@Operation(summary = "LoginId Duplication Check", description = "로그인 ID 중복체크")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "로그인 ID 중복 존재하지 않음"),
-			@ApiResponse(responseCode = "432", description = "로그인 ID 중복 존재")
+		@ApiResponse(responseCode = "200", description = "로그인 ID 중복 존재하지 않음"),
+		@ApiResponse(responseCode = "432", description = "로그인 ID 중복 존재")
 	})
 	@GetMapping("/loginId/{loginId}")
 	public ResponseResult checkDuplicationLoginId(@PathVariable String loginId) {
@@ -80,8 +81,8 @@ public class UserController {
 
 	@Operation(summary = "Email Duplication Check", description = "이메일 중복체크")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "이메일 중복 존재하지 않음"),
-			@ApiResponse(responseCode = "430", description = "이메일 중복 존재")
+		@ApiResponse(responseCode = "200", description = "이메일 중복 존재하지 않음"),
+		@ApiResponse(responseCode = "430", description = "이메일 중복 존재")
 	})
 	@GetMapping("/email/{email}")
 	public ResponseResult checkDuplicationEmail(@PathVariable String email) {
@@ -92,8 +93,8 @@ public class UserController {
 
 	@Operation(summary = "Nickname Duplication Check", description = "닉네임 중복체크")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "닉네임 중복 존재하지 않음"),
-			@ApiResponse(responseCode = "431", description = "닉네임 중복 존재")
+		@ApiResponse(responseCode = "200", description = "닉네임 중복 존재하지 않음"),
+		@ApiResponse(responseCode = "431", description = "닉네임 중복 존재")
 	})
 	@GetMapping("/nickname/{nickname}")
 	public ResponseResult checkDuplicationNickname(@PathVariable String nickname) {
@@ -102,7 +103,6 @@ public class UserController {
 		return ResponseResult.successResponse;
 
 	}
-
 
 	@Operation(summary = "Login", description = "사용자가 로그인 합니다.")
 	@ApiResponses(value = {
@@ -115,6 +115,7 @@ public class UserController {
 		return new SingleResponseResult<>(loginResponseDto);
 	}
 
+	// 직접 pathvariable로 userLoginId를 받고 해당 계정의 refresh-token을 직접 삭제하여 로그아웃하는 방식
 	@Operation(summary = "Logout", description = "사용자가 로그아웃 합니다.")
 	@ApiResponses(value = {
 		@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
@@ -124,6 +125,19 @@ public class UserController {
 	public ResponseResult logout(@PathVariable String userLoginId) {
 		log.info("UserController_logout -> 로그아웃 시도, userLoginId: {}", userLoginId);
 		userService.logout(userLoginId);
+		return ResponseResult.successResponse;
+	}
+
+	// Header에 포함된 access-token을 이용해 userLoginId를 추출해 해당 계정의 refresh-token을 직접 삭제하여 로그아웃하는 방식
+	@Operation(summary = "Logout", description = "사용자가 로그아웃 합니다.")
+	@ApiResponses(value = {
+		@ApiResponse(responseCode = "200", description = "로그아웃 성공"),
+		@ApiResponse(responseCode = "400", description = "로그아웃 실패")
+	})
+	@GetMapping("/logout")
+	public ResponseResult tmpLogout(@RequestHeader("access-token") String authorizationHeader) {
+		log.info("UserController_logout -> 로그아웃 시도");
+		userService.tmpLogout(authorizationHeader);
 		return ResponseResult.successResponse;
 	}
 

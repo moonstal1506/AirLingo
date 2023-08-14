@@ -20,8 +20,10 @@ function SignUpResult({ totalState }) {
         async function fetchSignUp() {
             await postSignUp({
                 responseFunc: {
-                    200: () => console.log("회원가입 성공!"),
-                    400: () => console.log("회원가입 실패!"),
+                    200: () => {},
+                    400: () => {
+                        routeTo("/error");
+                    },
                 },
                 data: {
                     userLoginId: totalState.id,
@@ -34,6 +36,7 @@ function SignUpResult({ totalState }) {
                         gradeId: language.gradeId,
                     })),
                 },
+                routeTo,
             });
         }
         fetchSignUp();
@@ -44,6 +47,7 @@ function SignUpResult({ totalState }) {
         totalState.email,
         totalState.primaryLang,
         totalState.learningLangs,
+        routeTo,
     ]);
 
     return (

@@ -1,5 +1,5 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import catchphraseBackground from "@/assets/imgs/catchphrase-background.png";
 import subcatchphrase1Background from "@/assets/imgs/subcatchphrase1-background.png";
 import subcatchphrase2Background from "@/assets/imgs/subcatchphrase2-background.png";
@@ -9,31 +9,23 @@ import developersLogo from "@/assets/imgs/developers-logo.png";
 import { TextButton } from "@/components/common/button";
 import { useRouter } from "@/hooks";
 
-const HomeContainer = styled.div`
-    width: 100%;
-    height: calc(100% - 120px);
-    position: relative;
-    font-family: Pretendard;
-    padding-top: 120px;
-`;
-
 function Home() {
     const { routeTo } = useRouter();
 
     const [setCurrentContainerIndex] = useState(0);
+    const containerRefArr = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
 
     const scrollToNextContainer = (containerIndex) => {
         const nextContainerIndex = containerIndex + 1;
-        const nextContainerElement = document.getElementById(`container-${nextContainerIndex}`);
-        if (nextContainerElement) {
-            nextContainerElement.scrollIntoView({ behavior: "smooth", block: "end" });
-            setCurrentContainerIndex(nextContainerIndex);
-        }
+        const nextContainerElement = containerRefArr[nextContainerIndex].current;
+        if (!nextContainerElement) return;
+        nextContainerElement.scrollIntoView({ behavior: "smooth", block: "end" });
+        setCurrentContainerIndex(nextContainerIndex);
     };
 
     return (
         <HomeContainer>
-            <MainCatchphraseBox id="container-0">
+            <MainCatchphraseBox ref={containerRefArr[0]}>
                 <CatchphraseWrapper>
                     <div>
                         <CatchphraseAirLingo>에어링고</CatchphraseAirLingo>
@@ -47,7 +39,7 @@ function Home() {
                 <ArrowIcon onClick={() => scrollToNextContainer(0)} src={downIcon} />
             </MainCatchphraseBox>
 
-            <WhiteSubCatchphraseBox1 id="container-1">
+            <WhiteSubCatchphraseBox1 ref={containerRefArr[1]}>
                 <CatchphraseImage src={subcatchphrase1Background} />
                 <CatchphraseTextWrapper1>
                     <CatchphraseTitle>
@@ -67,7 +59,7 @@ function Home() {
                 <ArrowIcon onClick={() => scrollToNextContainer(1)} src={downIcon} />
             </WhiteSubCatchphraseBox1>
 
-            <WhiteSubCatchphraseBox2 id="container-2">
+            <WhiteSubCatchphraseBox2 ref={containerRefArr[2]}>
                 <CatchphraseTextWrapper2>
                     <CatchphraseTitle>
                         <CatchphraseTitleColor>다양한 주제로 대화</CatchphraseTitleColor>하며,
@@ -89,7 +81,7 @@ function Home() {
                 <ArrowIcon onClick={() => scrollToNextContainer(2)} src={downIcon} />
             </WhiteSubCatchphraseBox2>
 
-            <WhiteSubCatchphraseBox1 id="container-3">
+            <WhiteSubCatchphraseBox1 ref={containerRefArr[3]}>
                 <CatchphraseImage src={subcatchphrase3Background} />
                 <CatchphraseTextWrapper2>
                     <CatchphraseTitle>
@@ -108,7 +100,7 @@ function Home() {
                 <ArrowIcon onClick={() => scrollToNextContainer(3)} src={downIcon} />
             </WhiteSubCatchphraseBox1>
 
-            <JoinContainer id="container-4">
+            <JoinContainer ref={containerRefArr[4]}>
                 <JoinTextContainer>
                     <JoinText>
                         에어링고에서는 <JoinTextColor>이외에도 다양한 기능</JoinTextColor>을
@@ -118,7 +110,7 @@ function Home() {
                 <TextButton
                     shape="positive-home"
                     text="세계 여행 시작하기"
-                    onClick={() => routeTo("/matchhome")}
+                    onClick={() => routeTo("/login")}
                 />
             </JoinContainer>
 
@@ -149,6 +141,14 @@ function Home() {
         </HomeContainer>
     );
 }
+
+const HomeContainer = styled.div`
+    width: 100%;
+    height: calc(100% - 120px);
+    position: relative;
+    font-family: Pretendard;
+    padding-top: 120px;
+`;
 
 const MainCatchphraseBox = styled.div`
     width: 100%;

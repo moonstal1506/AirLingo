@@ -110,4 +110,11 @@ public class ExceptionController {
 		log.info("Error Message : {}", err.getMessage());
 		return ResponseResult.customExceptionResponse(ExceptionCode.EXIST_NICKNAME_EXCEPTION, err.getMessage());
 	}
+
+	@ExceptionHandler(InvalidAccessTokenException.class)
+	public ResponseResult invalidAccessTokenException(InvalidAccessTokenException err) {
+		log.info("Error : {}", err.getClass());
+		log.info("Error Message : {}", err.getMessage());
+		return ResponseResult.customExceptionResponse(ExceptionCode.INVALID_ACCESS_TOKEN_EXCEPTION, err.getMessage());
+	}
 }
