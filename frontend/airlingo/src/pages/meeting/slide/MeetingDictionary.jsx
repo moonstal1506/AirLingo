@@ -1,13 +1,14 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useSpeechSynthesis } from "react-speech-kit";
 import * as Icons from "@/assets/icons";
 import Dropdown from "@/components/common/dropdown";
 import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
 import { TextButton } from "@/components/common/button";
 import Container from "@/components/common/container";
-import { getTranslateResult, getLanguage, postWord, getTTS } from "@/api";
+import { getTranslateResult, getLanguage, postWord } from "@/api";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
@@ -32,7 +33,7 @@ function MeetingDictionary() {
     const [translateWord, setTranslateWord] = useState("");
     const [translateResult, setTranslateResult] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
-    const [playing, setPlaying] = useState(false);
+    const { speak, voices } = useSpeechSynthesis();
     const { routeTo } = useRouter();
 
     useEffect(() => {
@@ -88,37 +89,15 @@ function MeetingDictionary() {
             },
         });
     };
+    const handleSpeak = () => {
+        // 여기서 선택하고자 하는 언어의 음성 데이터를 찾습니다.
+        const selectedVoice = voices.find((voice) => voice.lang === ttsConfig[targetLang.id]);
 
-    const playTTS = async () => {
-        try {
-            const response = await getTTS({
-                data: {
-                    target: ttsConfig[targetLang.id],
-                    text: translateResult,
-                },
-            }); // getTTS 함수에서 응답 받음
-
-            if (response && response.status === 200) {
-                // 상대 경로를 output.mp3 파일에 연결하여 경로 생성
-                const audioPath = "./../public/output.mp3";
-
-                // 오디오 엘리먼트 생성
-                const audioElement = new Audio(audioPath);
-
-                // 오디오 재생
-                audioElement.play();
-
-                // 재생이 끝날 때 처리
-                audioElement.addEventListener("ended", () => {
-                    setPlaying(false);
-                });
-            } else {
-                console.error("Error playing TTS:", response); // 에러 응답 처리
-                setPlaying(false);
-            }
-        } catch (error) {
-            console.error("Error playing TTS:", error);
-            setPlaying(false);
+        if (selectedVoice) {
+            speak({
+                text: translateResult,
+                voice: selectedVoice,
+            });
         }
     };
 
@@ -182,8 +161,10 @@ function MeetingDictionary() {
                     <TranslateResultWrapper>{translateResult}</TranslateResultWrapper>
                 </Container>
             </ItemBox>
-            <TextButton text="단어장 저장" width="40%" onClick={saveWord} />
-            <TextButton text="발음 듣기" width="40%" onClick={playTTS} disabled={playing} />
+            <ModalButtonBox>
+                <TextButton text="단어장 저장" width="300px" onClick={saveWord} />
+                <TextButton text="발음 듣기" width="300px" onClick={handleSpeak} />
+            </ModalButtonBox>
         </DictionaryContainer>
     );
 }
