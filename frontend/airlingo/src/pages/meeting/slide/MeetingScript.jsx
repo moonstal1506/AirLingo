@@ -23,12 +23,12 @@ function MeetingScript() {
         <ScriptContainer ref={scriptContainerRef}>
             {chatList &&
                 chatList.length > 0 &&
-                chatList.map(({ isMe, text }, idx) => (
+                chatList.map(({ name, text }, idx) => (
                     <ChatBox key={idx}>
                         <ProfileBar
                             imgSize="tiny"
-                            imgSrc={isMe ? userImgUrl : otherUser.userImgUrl}
-                            nickname={isMe ? userNickname : otherUser.userNickname}
+                            imgSrc={userNickname === name ? userImgUrl : otherUser.userImgUrl}
+                            nickname={name}
                             textColor="#000"
                         />
                         <ChatTextWrapper>{text}</ChatTextWrapper>

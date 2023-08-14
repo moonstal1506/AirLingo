@@ -1,9 +1,8 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
-import { useDispatch, useSelector } from "react-redux";
-import { addChatList, selectMeeting } from "@/features/Meeting/MeetingSlice";
-import { selectUser } from "@/features/User/UserSlice";
+import { useSelector } from "react-redux";
+import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import languageCodeConfig from "@/config/languageCodeConfig";
 
 // ----------------------------------------------------------------------------------------------------
@@ -21,8 +20,6 @@ const useOpenVidu = () => {
     const [sharePublisher, setSharePublisher] = useState(null);
     const [shareSubscribers, setShareSubscribers] = useState([]);
 
-    const dispatch = useDispatch();
-    const { userNickname } = useSelector(selectUser);
     const { myData } = useSelector(selectMeeting);
 
     async function joinSession() {
@@ -53,14 +50,14 @@ const useOpenVidu = () => {
         cameraSession.on("speechToTextMessage", (event) => {
             const currentUserNickname = JSON.parse(event.connection.data).clientData;
             if (event.reason === "recognized") {
-                dispatch(
-                    addChatList({
-                        chat: {
-                            isMe: currentUserNickname === userNickname,
-                            text: event.text,
-                        },
+                cameraSession.signal({
+                    data: JSON.stringify({
+                        name: currentUserNickname,
+                        text: event.text,
                     }),
-                );
+                    to: [],
+                    type: "chatlist-add",
+                });
             }
         });
 

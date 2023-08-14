@@ -44,6 +44,7 @@ import {
     removeScriptData,
     removeMeetingData,
     removeInfo,
+    addChatList,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
 import ButtonMenu from "../../components/buttonMenu/ButtonMenu";
@@ -330,6 +331,10 @@ function Meeting() {
                 break;
             case "screenshare-end-request":
                 handleScreenShareEndRequest();
+                break;
+            case "chatlist-add":
+                const jsonData = JSON.parse(data);
+                dispatch(addChatList({ chat: jsonData }));
                 break;
             default:
                 console.log("없는 이벤트타입입니다.");
