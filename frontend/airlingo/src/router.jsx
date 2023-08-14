@@ -7,7 +7,7 @@ import WordBook from "./pages/mypage/WordBook";
 import Login from "./pages/login/Login";
 import Script from "./pages/mypage/Script";
 import SignUp from "./pages/signup";
-import Meeting from "./pages/meeting/slide/MeetingDictionary";
+import Meeting from "./pages/meeting";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 import { MyPageBook, BasicInfoHome, StatisticHome, StatisticGraph, ShopHome } from "./pages/mypage";
 import Error from "./pages/Error/Error";
