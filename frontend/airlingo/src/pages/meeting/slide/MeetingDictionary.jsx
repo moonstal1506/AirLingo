@@ -96,16 +96,18 @@ function MeetingDictionary() {
                     text: translateResult,
                 },
             }); // getTTS 함수에서 응답 받음
-            console.log(response, 1);
-            if (response && response.status === 200) {
-                const audioBlob = new Blob([response.data], { type: "audio/mpeg" });
-                const audioUrl = URL.createObjectURL(audioBlob);
 
-                // audio 엘리먼트 생성 및 재생
-                const audioElement = new Audio(audioUrl);
+            if (response && response.status === 200) {
+                // 상대 경로를 output.mp3 파일에 연결하여 경로 생성
+                const audioPath = "../public/output.mp3";
+
+                // 오디오 엘리먼트 생성
+                const audioElement = new Audio(audioPath);
+
+                // 오디오 재생
                 audioElement.play();
 
-                // 재생이 끝나면 playing 상태 복원
+                // 재생이 끝날 때 처리
                 audioElement.addEventListener("ended", () => {
                     setPlaying(false);
                 });
