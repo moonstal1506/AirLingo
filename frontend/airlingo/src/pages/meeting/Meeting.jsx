@@ -583,11 +583,15 @@ function Meeting() {
     const handleClickOpenFeedbackConfirm = (agree) => {
         // 상대방에게 피드백 시착에 따른 동의/거절 여부를 보내준다.
         setOpenFeedbackRequestModal(false);
+        setIsLoading(true);
         session.signal({
             data: JSON.stringify({ agree }),
             to: [subscribers[0].stream.connection],
             type: "feedback-start-response",
         });
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 6000);
     };
 
     const handleClickOpenFeedbackStart = async () => {
