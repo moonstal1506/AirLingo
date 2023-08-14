@@ -131,6 +131,9 @@ function BasicInfoPage1() {
                     400: () => {
                         alert("응답에 실패하였습니다. 다시 시도해주세요.");
                     },
+                    431: () => {
+                        alert("중복된 닉네임입니다. 다른 닉네임을 입력해주세요!");
+                    },
                     470: () => {
                         dispatch(logoutUser());
                         routeTo("/error");
