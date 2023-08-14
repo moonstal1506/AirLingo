@@ -16,7 +16,7 @@ import java.nio.file.StandardOpenOption;
 public class TextToSpeechService {
 
 	public byte[] playTTS(String target, String text) throws IOException {
-		String credentialsPath = "../../backend/airlingo/src/main/resources/airlingo-395807-df08ac102954.json"; // 실제 경로로 변경
+		String credentialsPath = "./../../backend/airlingo/src/main/resources/airlingo-395807-df08ac102954.json"; // 실제 경로로 변경
 		InputStream credentialsStream = new FileInputStream(credentialsPath);
 		GoogleCredentials credentials = ServiceAccountCredentials.fromStream(credentialsStream);
 
