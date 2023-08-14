@@ -54,7 +54,7 @@ function EvaluateModal({ isOpen, onClickAgree, onClickDisAgree }) {
                     <TextButton
                         shape="positive-curved"
                         text="나가기"
-                        onClick={() => onClickAgree(rating, grade)}
+                        onClick={() => onClickAgree(rating, selectedGrade)}
                     />
                     <TextButton shape="positive-curved" text="취소" onClick={onClickDisAgree} />
                 </ModalButtonBox>
