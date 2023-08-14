@@ -2,7 +2,6 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import * as Icons from "@/assets/icons";
-// import Play from "@/public/output";
 import Dropdown from "@/components/common/dropdown";
 import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
@@ -15,8 +14,7 @@ import { selectMeeting } from "@/features/Meeting/MeetingSlice";
 import { translatorConfig, ttsConfig } from "@/config";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import Modal from "@/components/modal";
-// import getSearchResult from "@/api/dictionary";
-// import { dictConfig } from "@/config";
+import { useRouter } from "@/hooks";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -35,6 +33,7 @@ function MeetingDictionary() {
     const [translateResult, setTranslateResult] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
     const [playing, setPlaying] = useState(false);
+    const { routeTo } = useRouter();
 
     useEffect(() => {
         async function fetchLanguageData() {
@@ -66,6 +65,7 @@ function MeetingDictionary() {
                     target: translatorConfig[targetLang.id],
                     text: word,
                 },
+                routeTo,
             });
         }
         fetchSearchResult();

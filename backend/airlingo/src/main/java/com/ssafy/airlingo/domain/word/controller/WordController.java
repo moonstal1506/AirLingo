@@ -1,13 +1,6 @@
 package com.ssafy.airlingo.domain.word.controller;
 
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardOpenOption;
 
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -21,23 +14,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.google.api.gax.core.FixedCredentialsProvider;
-import com.google.auth.oauth2.GoogleCredentials;
-import com.google.auth.oauth2.ServiceAccountCredentials;
-import com.google.cloud.texttospeech.v1.AudioConfig;
-import com.google.cloud.texttospeech.v1.AudioEncoding;
-import com.google.cloud.texttospeech.v1.SsmlVoiceGender;
-import com.google.cloud.texttospeech.v1.SynthesisInput;
-import com.google.cloud.texttospeech.v1.SynthesizeSpeechResponse;
-import com.google.cloud.texttospeech.v1.TextToSpeechClient;
-import com.google.cloud.texttospeech.v1.TextToSpeechSettings;
-import com.google.cloud.texttospeech.v1.VoiceSelectionParams;
-import com.google.protobuf.ByteString;
 import com.ssafy.airlingo.domain.word.dto.request.WordRequestDto;
 import com.ssafy.airlingo.domain.word.service.WordService;
 import com.ssafy.airlingo.global.response.ListResponseResult;
 import com.ssafy.airlingo.global.response.ResponseResult;
-import com.ssafy.airlingo.global.response.SingleResponseResult;
+import com.ssafy.airlingo.global.util.TextToSpeechService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -54,6 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class WordController {
 
 	private final WordService wordService;
+	private final TextToSpeechService textToSpeechService;
 
 	@Operation(summary = "Get Word List", description = "단어장 전체 조회")
 	@ApiResponses(value = {
@@ -109,51 +91,10 @@ public class WordController {
 	@GetMapping("/tts")
 	public ResponseEntity<byte[]> playTTS(String target, String text) throws IOException {
 		log.info("WordController_playTTS -> 발음 듣기");
-		String credentialsPath = "../../backend/airlingo/src/main/resources/airlingo-395807-df08ac102954.json"; // 실제 경로로 변경
-		InputStream credentialsStream = new FileInputStream(credentialsPath);
-		GoogleCredentials credentials = ServiceAccountCredentials.fromStream(credentialsStream);
-
-		TextToSpeechSettings settings = TextToSpeechSettings.newBuilder()
-			.setCredentialsProvider(FixedCredentialsProvider.create(credentials))
-			.build();
-
-		try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create(settings)) {
-			// 합성할 텍스트 지정
-			SynthesisInput input = SynthesisInput.newBuilder().setText(text).build();
-
-			// 음성 선택 설정
-			VoiceSelectionParams voice =
-				VoiceSelectionParams.newBuilder()
-					.setLanguageCode(target)
-					.setSsmlGender(SsmlVoiceGender.FEMALE)
-					.build();
-
-			// 오디오 설정
-			AudioConfig audioConfig =
-				AudioConfig.newBuilder().setAudioEncoding(AudioEncoding.MP3).build();
-
-			// Text-to-Speech API 호출
-			SynthesizeSpeechResponse response =
-				textToSpeechClient.synthesizeSpeech(input, voice, audioConfig);
-
-			// 음성 데이터 가져오기
-			ByteString audioContents = response.getAudioContent();
-
-			// MP3 파일 저장 경로 설정
-			String mp3FilePath = "../../frontend/airlingo/public/output.mp3";
-
-			// MP3 파일 저장
-			Path path = Path.of(mp3FilePath);
-			Files.write(path, audioContents.toByteArray(), StandardOpenOption.CREATE);
-
-			// 음성 데이터를 byte 배열로 변환하여 클라이언트에게 전송
-			byte[] audioBytes = audioContents.toByteArray();
-
-			HttpHeaders headers = new HttpHeaders();
-			headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-			headers.setContentDispositionFormData("attachment", "output.mp3");
-
-			return new ResponseEntity<>(audioBytes, headers, HttpStatus.OK);
-		}
+		HttpHeaders headers = new HttpHeaders();
+		headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+		headers.setContentDispositionFormData("attachment", "output.mp3");
+		return new ResponseEntity<>(textToSpeechService.playTTS(target, text), headers, HttpStatus.OK);
 	}
 }
+
