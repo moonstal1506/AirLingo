@@ -131,7 +131,7 @@ function Script() {
                 routeTo,
             });
         }
-        fetchData();
+        if (userId && desiredDate) fetchData();
     }, [userId, desiredDate, routeTo]);
 
     const handleLookupScript = () => {
