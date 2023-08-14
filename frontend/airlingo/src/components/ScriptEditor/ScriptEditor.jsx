@@ -47,6 +47,7 @@ const Container = styled.div`
     border: 1px solid #000;
     width: 1150px;
     height: 320px;
+    overflow-y: auto;
 `;
 
 export default ScriptEditor;
