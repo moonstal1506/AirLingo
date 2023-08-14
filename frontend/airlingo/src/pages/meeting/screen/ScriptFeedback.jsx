@@ -63,7 +63,7 @@ function ScriptFeedback({
                 </HeaderMiddleBox>
 
                 <VideoFrame>
-                    {subscribers ? (
+                    {subscribers.length > 0 ? (
                         <video
                             ref={(node) => node && subscribers[0].addVideoElement(node)}
                             autoPlay

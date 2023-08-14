@@ -43,6 +43,7 @@ import {
     addIsShareOn,
     removeScriptData,
     removeMeetingData,
+    removeInfo,
 } from "@/features/Meeting/MeetingSlice";
 import { selectUser } from "@/features/User/UserSlice";
 import FreeTalk from "./screen/FreeTalk";
@@ -608,6 +609,7 @@ function Meeting() {
             responseFunc: {
                 200: () => {
                     session.disconnect();
+                    dispatch(removeInfo());
                     routeTo("/", { replace: false });
                 },
             },
