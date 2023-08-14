@@ -18,7 +18,13 @@ function ScriptEditor({ quillRef, defaultEl, id }) {
         quillRef.current = reactQuillRef.current.getEditor();
 
         const ydoc = new Y.Doc();
-        const provider = new WebrtcProvider(`${id}`, ydoc);
+        const provider = new WebrtcProvider(`${id}`, ydoc, {
+            signaling: [
+                "wss://signaling.yjs.dev",
+                "wss://y-webrtc-signaling-eu.herokuapp.com",
+                "wss://y-webrtc-signaling-us.herokuapp.com",
+            ],
+        });
         const ytext = ydoc.getText("quill");
         const binding = new QuillBinding(ytext, quillRef.current, provider.awareness);
 

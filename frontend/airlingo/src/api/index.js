@@ -2,7 +2,7 @@ import instance from "./instance";
 import { getLogout, loginUser } from "./auth";
 import { getUserProfile, postSignUp } from "./user";
 import { getLanguage, getGrade } from "./language";
-import { getTranslateResult, postWord } from "./translator";
+import { getTranslateResult, postWord, getTTS } from "./translator";
 import {
     getConcurrentUser,
     postMatching,
@@ -42,4 +42,5 @@ export {
     cancelMatching,
     putSaveScript,
     postWord,
+    getTTS,
 };

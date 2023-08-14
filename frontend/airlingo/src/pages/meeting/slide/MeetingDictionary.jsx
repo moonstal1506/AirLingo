@@ -7,11 +7,11 @@ import theme from "@/assets/styles/Theme";
 import { TextInput } from "@/components/common/input";
 import { TextButton } from "@/components/common/button";
 import Container from "@/components/common/container";
-import { getTranslateResult, getLanguage, postWord } from "@/api";
+import { getTranslateResult, getLanguage, postWord, getTTS } from "@/api";
 import { formatLanguage } from "@/utils/format";
 import { selectUser } from "@/features/User/UserSlice";
 import { selectMeeting } from "@/features/Meeting/MeetingSlice";
-import { translatorConfig } from "@/config";
+import { translatorConfig, ttsConfig } from "@/config";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
 import Modal from "@/components/modal";
 import { useRouter } from "@/hooks";
@@ -32,6 +32,7 @@ function MeetingDictionary() {
     const [translateWord, setTranslateWord] = useState("");
     const [translateResult, setTranslateResult] = useState("");
     const [modalOpen, setModalOpen] = useState(false);
+    const [playing, setPlaying] = useState(false);
     const { routeTo } = useRouter();
 
     useEffect(() => {
@@ -86,6 +87,39 @@ function MeetingDictionary() {
                 userId,
             },
         });
+    };
+
+    const playTTS = async () => {
+        try {
+            const response = await getTTS({
+                data: {
+                    target: ttsConfig[targetLang.id],
+                    text: translateResult,
+                },
+            }); // getTTS 함수에서 응답 받음
+
+            if (response && response.status === 200) {
+                // 상대 경로를 output.mp3 파일에 연결하여 경로 생성
+                const audioPath = "../public/output.mp3";
+
+                // 오디오 엘리먼트 생성
+                const audioElement = new Audio(audioPath);
+
+                // 오디오 재생
+                audioElement.play();
+
+                // 재생이 끝날 때 처리
+                audioElement.addEventListener("ended", () => {
+                    setPlaying(false);
+                });
+            } else {
+                console.error("Error playing TTS:", response); // 에러 응답 처리
+                setPlaying(false);
+            }
+        } catch (error) {
+            console.error("Error playing TTS:", error);
+            setPlaying(false);
+        }
     };
 
     return (
@@ -149,6 +183,7 @@ function MeetingDictionary() {
                 </Container>
             </ItemBox>
             <TextButton text="단어장 저장" width="40%" onClick={saveWord} />
+            <TextButton text="발음 듣기" width="40%" onClick={playTTS} disabled={playing} />
         </DictionaryContainer>
     );
 }
