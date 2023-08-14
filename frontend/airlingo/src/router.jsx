@@ -11,6 +11,7 @@ import Meeting from "./pages/meeting";
 import { MatchHome, MatchQueue, MatchResult, MatchStandby } from "./pages/match";
 import { MyPageBook, BasicInfoHome, StatisticHome, StatisticGraph, ShopHome } from "./pages/mypage";
 import Error from "./pages/Error/Error";
+import { ScriptFeedback } from "./pages/meeting/screen";
 
 const routerData = [
     {
@@ -132,7 +133,7 @@ const routerData = [
     },
     {
         id: 13,
-        path: "wordbook",
+        path: "/wordbook",
         label: "WordBook",
         element: <WordBook />,
         withAuth: true,
@@ -141,7 +142,7 @@ const routerData = [
     },
     {
         id: 14,
-        path: "shop",
+        path: "/shop",
         label: "Shop",
         element: <ShopHome />,
         withAuth: true,
@@ -150,6 +151,15 @@ const routerData = [
     },
     {
         id: 15,
+        path: "/scriptfeedback",
+        label: "ScriptFeedback",
+        element: <ScriptFeedback />,
+        withAuth: false,
+        headerExist: true,
+        mustNotAuth: false,
+    },
+    {
+        id: 16,
         path: "*",
         label: "Error",
         element: <Error />,
@@ -177,6 +187,7 @@ const routers = createBrowserRouter(
             return {
                 path: router.path,
                 element: <AuthLayout>{seperatedHeaderCheckElement(router)}</AuthLayout>,
+                errorElement: <Error />,
             };
         }
 
@@ -189,6 +200,7 @@ const routers = createBrowserRouter(
                         {seperatedHeaderCheckElement(router)}
                     </NotAuthLayout>
                 ),
+                errorElement: <Error />,
             };
         }
 
@@ -196,6 +208,7 @@ const routers = createBrowserRouter(
         return {
             path: router.path,
             element: seperatedHeaderCheckElement(router),
+            errorElement: <Error />,
         };
     }),
 );
