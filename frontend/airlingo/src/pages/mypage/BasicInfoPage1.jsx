@@ -118,10 +118,8 @@ function BasicInfoPage1() {
         const newNickname = event.target.value.trim();
         setUserProfile((prev) => ({ ...prev, userNickname: newNickname }));
     };
-    console.log(userProfile.userNickname);
     const handleUserNicknameSubmit = async () => {
         if (isEditingNickname) {
-            console.log("여가더", userProfile.userNickname);
             setIsEditingNickname(false);
             await updateUserNickname({
                 responseFunc: {

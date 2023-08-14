@@ -39,7 +39,7 @@ function BasicInfoPage2() {
     const { routeTo } = useRouter();
     const storeUser = useSelector(selectUser);
     const { userId } = storeUser;
-    const [userProfile, setUserProfile] = useState([]);
+    const [userProfile, setUserProfile] = useState({});
     const [password, setPassword] = useState({ value: "", valid: false, dirty: false });
     const [confirmPassword, setConfirmPassword] = useState({
         value: "",
@@ -66,6 +66,7 @@ function BasicInfoPage2() {
                 responseFunc: {
                     200: (response) => {
                         dispatch(signinUser({ ...response.data.data }));
+                        setUserProfile({ ...response.data.data });
                     },
                 },
                 data: { userId },
@@ -126,6 +127,7 @@ function BasicInfoPage2() {
     const handleLanguageModalOpen = () => {
         setLanguageModalOpen(true);
     };
+
     const addSelectedLanguage = () => {
         if (selectedLang.label && selectedGrade.label) {
             const newLanguage = {
@@ -179,22 +181,6 @@ function BasicInfoPage2() {
                     gradeId: language.gradeId,
                 })),
             },
-            routeTo,
-        });
-        await getUserProfile({
-            responseFunc: {
-                200: (response) => {
-                    setUserProfile({ ...response.data.data });
-                },
-                400: () => {
-                    alert("응답에 실패하였습니다. 다시 시도해주세요.");
-                },
-                470: () => {
-                    dispatch(logoutUser());
-                    routeTo("/error");
-                },
-            },
-            data: { userId },
             routeTo,
         });
     };
