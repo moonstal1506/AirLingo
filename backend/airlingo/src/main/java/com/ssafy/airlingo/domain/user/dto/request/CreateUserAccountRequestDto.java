@@ -94,7 +94,7 @@ public class CreateUserAccountRequestDto {
 				user.addUserLanguage(userLanguage);
 			}
 		} else {
-			// null 처리
+			throw new NotFoundLanguageException();
 		}
 
 		return user;

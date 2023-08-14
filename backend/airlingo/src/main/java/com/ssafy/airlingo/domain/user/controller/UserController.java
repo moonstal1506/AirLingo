@@ -27,7 +27,6 @@ import com.ssafy.airlingo.domain.user.dto.response.UserResponseDto;
 import com.ssafy.airlingo.domain.user.service.UserService;
 import com.ssafy.airlingo.global.response.ResponseResult;
 import com.ssafy.airlingo.global.response.SingleResponseResult;
-import com.ssafy.airlingo.global.util.JwtService;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -69,8 +68,8 @@ public class UserController {
 
 	@Operation(summary = "LoginId Duplication Check", description = "로그인 ID 중복체크")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "로그인 ID 중복 존재하지 않음"),
-			@ApiResponse(responseCode = "432", description = "로그인 ID 중복 존재")
+		@ApiResponse(responseCode = "200", description = "로그인 ID 중복 존재하지 않음"),
+		@ApiResponse(responseCode = "432", description = "로그인 ID 중복 존재")
 	})
 	@GetMapping("/loginId/{loginId}")
 	public ResponseResult checkDuplicationLoginId(@PathVariable String loginId) {
@@ -82,8 +81,8 @@ public class UserController {
 
 	@Operation(summary = "Email Duplication Check", description = "이메일 중복체크")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "이메일 중복 존재하지 않음"),
-			@ApiResponse(responseCode = "430", description = "이메일 중복 존재")
+		@ApiResponse(responseCode = "200", description = "이메일 중복 존재하지 않음"),
+		@ApiResponse(responseCode = "430", description = "이메일 중복 존재")
 	})
 	@GetMapping("/email/{email}")
 	public ResponseResult checkDuplicationEmail(@PathVariable String email) {
@@ -94,8 +93,8 @@ public class UserController {
 
 	@Operation(summary = "Nickname Duplication Check", description = "닉네임 중복체크")
 	@ApiResponses(value = {
-			@ApiResponse(responseCode = "200", description = "닉네임 중복 존재하지 않음"),
-			@ApiResponse(responseCode = "431", description = "닉네임 중복 존재")
+		@ApiResponse(responseCode = "200", description = "닉네임 중복 존재하지 않음"),
+		@ApiResponse(responseCode = "431", description = "닉네임 중복 존재")
 	})
 	@GetMapping("/nickname/{nickname}")
 	public ResponseResult checkDuplicationNickname(@PathVariable String nickname) {
