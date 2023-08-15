@@ -641,7 +641,10 @@ function Meeting() {
 
     const handleClickEvaluateUser = async (rating, selectedGrade) => {
         // gradeId : 실력점수, rating : 매너점수
-
+        if (!rating || rating === 0 || !selectedGrade || !isKeyInObj(selectedGrade, "id")) {
+            alert("평가를 위해, 상대방의 실력, 매너 점수를 필수로 넣어주세요!");
+            return;
+        }
         await postEvaluate({
             responseFunc: {
                 200: () => {
