@@ -47,13 +47,6 @@ function BasicInfoPage1() {
     const fileInputRef = useRef(null);
     const [updateProfile, setUpdateProfile] = useState(false);
 
-    // const totalLanguage = [
-    //     { id: 1, label: "한국어", img: "" },
-    //     { id: 2, label: "영어", img: "" },
-    //     { id: 3, label: "일본어", img: "" },
-    //     { id: 4, label: "중국어", img: "" },
-    // ];
-
     useEffect(() => {
         async function fetchData() {
             await getUserProfile({
@@ -289,12 +282,6 @@ function BasicInfoPage1() {
         setImageModalOpen(true);
     };
 
-    // const LanguageImg = totalLanguage.find(
-    //     (language) =>
-    //         language.id ===
-    //         (userProfile.userNativeLanguage ? userProfile.userNativeLanguage.languageId : 1),
-    // ).img;
-
     return (
         <LeftPageBox id="LPBox">
             <LeftPassportPages src={leftPassportPages} id="LPPS" />
@@ -418,7 +405,6 @@ function BasicInfoPage1() {
                                 </ContentBox>
                             </TitleRowBox>
                         </TitleRowContainer>
-
                         <TitleRowContainer>
                             <TitleRowBox>
                                 <TitleBox>
@@ -426,7 +412,10 @@ function BasicInfoPage1() {
                                     <SubTitleWrapper>NATIVE LANGUAGE</SubTitleWrapper>
                                 </TitleBox>
                                 <ContentBox>
-                                    {/* <LanguageImg /> */}
+                                    <img
+                                        src={userProfile.userNativeLanguage.imageUrl}
+                                        alt="LanguageIcon"
+                                    />
                                     <ContentWrapper>
                                         {userProfile.userNativeLanguage
                                             ? userProfile.userNativeLanguage.languageKorName

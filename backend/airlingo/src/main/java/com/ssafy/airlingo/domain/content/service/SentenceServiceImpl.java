@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
 import org.springframework.stereotype.Service;
 
 import com.ssafy.airlingo.domain.content.dto.response.CardCodeResponseDto;
@@ -27,11 +28,10 @@ public class SentenceServiceImpl implements SentenceService {
 	private final SentenceRepository sentenceRepository;
 
 	@Override
-	public SentenceResponseDto getSentence() {
+	public List<SentenceResponseDto> getSentence() {
 		log.info("SentenceService_getSentence");
 		List<Sentence> sentences = sentenceRepository.findAll();
-		Collections.shuffle(sentences);
-		return sentences.get(0).toSentenceResponseDto();
+		return sentences.stream().map(sentence ->sentence.toSentenceResponseDto()).collect(Collectors.toList());
 	}
 }
 

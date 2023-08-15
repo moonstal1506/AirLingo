@@ -38,6 +38,6 @@ public class SentenceController {
 	@GetMapping("/sentence")
 	public ResponseResult getSentence() {
 		log.info("SentenceController_getSentence");
-		return new SingleResponseResult<>(sentenceService.getSentence());
+		return new ListResponseResult<>(sentenceService.getSentence());
 	}
 }

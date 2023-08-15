@@ -32,7 +32,7 @@ public interface RecordRepository extends JpaRepository<Record, Long> {
 	@Query("SELECT new com.ssafy.airlingo.domain.language.dto.response.LearningLanguageNumberResponseDto("
 		+ "l.languageId, "
 		+ "l.languageKorName, "
-		+ "ROUND(COUNT(l.languageId) * 100 / (SELECT COUNT(r) FROM Record r)), "
+		+ "ROUND(COUNT(l.languageId) * 100 / (SELECT COUNT(r) FROM Record r WHERE r.user = :user)), "
 		+ "COUNT(l.languageId) "
 		+ ") "
 		+ "FROM Record r "
