@@ -15,6 +15,7 @@ import { postEvaluate, getRecordStatistic, postStopRecording, postStartRecording
 import postCreateChatRoom from "./chat";
 import { postReport, getReportItems } from "./report";
 import { postCreateScript, putSaveScript } from "./script";
+import getSentence from "./sentence";
 
 export {
     instance,
@@ -43,4 +44,5 @@ export {
     putSaveScript,
     postWord,
     getTTS,
+    getSentence,
 };
