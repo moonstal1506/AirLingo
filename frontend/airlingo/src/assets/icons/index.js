@@ -34,8 +34,6 @@ import { ReactComponent as PlayIcon } from "@/assets/icons/play-icon.svg";
 import { ReactComponent as Spinner } from "@/assets/icons/spinner.svg";
 import { ReactComponent as PremiumIcon } from "@/assets/icons/premium-icon.svg";
 import { ReactComponent as AlertIcon } from "@/assets/icons/alert-icon.svg";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/korea-flag-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/icons/japan-flag-icon.svg";
 
 export {
     MicOnIcon,
@@ -74,6 +72,4 @@ export {
     Spinner,
     PremiumIcon,
     AlertIcon,
-    KoreaFlagIcon,
-    JapanFlagIcon,
 };
