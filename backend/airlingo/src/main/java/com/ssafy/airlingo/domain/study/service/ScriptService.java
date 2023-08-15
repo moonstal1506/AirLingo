@@ -13,6 +13,8 @@ import com.ssafy.airlingo.domain.study.dto.response.SentenceResponseDto;
 
 import org.springframework.web.multipart.MultipartFile;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 public interface ScriptService {
 	ScriptResponseDto findScriptByScriptId(Long scriptId);
 
@@ -22,7 +24,7 @@ public interface ScriptService {
 		IOException,
 		ParseException;
 
-	void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto, String accessToken);
+	void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto, HttpServletRequest request);
 
 	List<SentenceResponseDto> voiceFileSTT(String audioPath) throws ParseException;
 }
