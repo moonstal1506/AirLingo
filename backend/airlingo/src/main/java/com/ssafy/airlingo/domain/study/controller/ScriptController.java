@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -84,9 +85,10 @@ public class ScriptController {
 	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")
 	@PutMapping
 	public ResponseResult modifyScriptContent(
+		@RequestHeader("access-token") String accessToken,
 		@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto) {
 		log.info("ScriptController_ModifyScriptContent");
-		scriptService.modifyScriptContent(modifyScriptRequestDto);
+		scriptService.modifyScriptContent(modifyScriptRequestDto, accessToken);
 		return ResponseResult.successResponse;
 	}
 

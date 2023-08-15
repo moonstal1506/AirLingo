@@ -1,8 +1,10 @@
 package com.ssafy.airlingo.domain.study.service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -23,8 +25,14 @@ import com.ssafy.airlingo.domain.study.entity.Script;
 import com.ssafy.airlingo.domain.study.entity.Study;
 import com.ssafy.airlingo.domain.study.repository.ScriptRepository;
 import com.ssafy.airlingo.domain.study.repository.StudyRepository;
+import com.ssafy.airlingo.domain.user.entity.DailyGrid;
+import com.ssafy.airlingo.domain.user.entity.User;
+import com.ssafy.airlingo.domain.user.repository.DailyGridRepository;
+import com.ssafy.airlingo.domain.user.repository.UserRepository;
+import com.ssafy.airlingo.global.exception.NotExistAccountException;
 import com.ssafy.airlingo.global.util.ClovaSpeechClient;
 import com.ssafy.airlingo.global.exception.NotExistScriptException;
+import com.ssafy.airlingo.global.util.JwtService;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +49,9 @@ public class ScriptServiceImpl implements ScriptService {
 	private final CardRepository cardRepository;
 	private final Amazon3SService amazon3SService;
 	private final ClovaSpeechClient clovaSpeechClient;
+	private final JwtService jwtService;
+	private final UserRepository userRepository;
+	private final DailyGridRepository dailyGridRepository;
 
 	@Override
 	public ScriptResponseDto findScriptByScriptId(Long scriptId) {
@@ -72,8 +83,15 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	@Transactional
-	public void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto) {
+	public void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto, String accessToken) {
 		log.info("ScriptServiceImpl_modifyScriptContent || 피드백 종료후 스크립트 내용 수정");
+		String userLoginId = jwtService.extractUserLoginIdFromAccessToken(accessToken);
+		log.info("userLoginId", userLoginId);
+		User user = userRepository.findUserByUserLoginId(userLoginId).orElseThrow(NotExistAccountException::new);
+		DailyGrid dailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(user.getUserId(), LocalDate.now())
+			.orElseGet((Supplier<? extends DailyGrid>)dailyGridRepository.save(
+				DailyGrid.builder().user(user).dailyGridCount(0).build()));
+		dailyGrid.update();
 		Script script = scriptRepository.findById(modifyScriptContentRequestDto.getScriptId()).get();
 		script.modifyScriptContent(modifyScriptContentRequestDto.getScriptContent());
 	}

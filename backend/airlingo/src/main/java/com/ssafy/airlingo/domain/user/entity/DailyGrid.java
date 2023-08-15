@@ -45,4 +45,7 @@ public class DailyGrid extends BaseTimeEntity {
 			.build();
 	}
 
+	public void update() {
+		dailyGridCount += 1;
+	}
 }
