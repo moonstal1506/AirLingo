@@ -10,7 +10,7 @@ import ReactQuill from "react-quill";
 import "react-quill/dist/quill.bubble.css";
 import styled from "@emotion/styled";
 
-function ScriptEditor({ quillRef, defaultEl, id }) {
+function ScriptEditor({ quillRef, defaultEl, id, isScriptStart }) {
     const reactQuillRef = useRef(null);
 
     useEffect(() => {
@@ -25,7 +25,12 @@ function ScriptEditor({ quillRef, defaultEl, id }) {
         const binding = new QuillBinding(ytext, quillRef.current, provider.awareness);
 
         setTimeout(() => {
-            if (quillRef && quillRef.current && quillRef.current.getText() === "\n") {
+            if (
+                quillRef &&
+                quillRef.current &&
+                quillRef.current.getText() === "\n" &&
+                isScriptStart
+            ) {
                 quillRef.current.clipboard.dangerouslyPasteHTML(defaultEl);
             }
         }, 200);

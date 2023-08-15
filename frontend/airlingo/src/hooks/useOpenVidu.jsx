@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useRef } from "react";
 import { OpenVidu } from "openvidu-browser";
@@ -25,11 +26,11 @@ const useOpenVidu = () => {
     async function joinSession() {
         const cameraSession = OV.current.initSession();
         const screenSession = shareOV.current.initSession();
-        cameraSession.on("streamCreated", (event) => {
+        cameraSession.on("streamCreated", async (event) => {
             if (event.stream.typeOfVideo === "CAMERA") {
                 const subscriber = cameraSession.subscribe(event.stream, undefined);
                 setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-                cameraSession.subscribeToSpeechToText(
+                await cameraSession.subscribeToSpeechToText(
                     event.stream,
                     languageCodeConfig.find(
                         (cur) => cur.languageId === otherUser.userStudyLanguageId,
@@ -68,8 +69,26 @@ const useOpenVidu = () => {
             );
         });
 
-        cameraSession.on("exception", (exception) => {
-            console.warn(exception);
+        cameraSession.on("exception", async (event) => {
+            if (event.name === "SPEECH_TO_TEXT_DISCONNECTED") {
+                let speechToTextReconnected = false;
+                while (!speechToTextReconnected) {
+                    await new Promise((r) => {
+                        setTimeout(r, 1000);
+                    });
+                    try {
+                        await cameraSession.subscribeToSpeechToText(
+                            event.stream,
+                            languageCodeConfig.find(
+                                (cur) => cur.languageId === otherUser.userStudyLanguageId,
+                            ).languageCode,
+                        );
+                        speechToTextReconnected = true;
+                    } catch (error) {
+                        console.warn("Speech to Text service still unavailable. Retrying again...");
+                    }
+                }
+            }
         });
 
         setSession(cameraSession);

@@ -15,6 +15,7 @@ function ScriptFeedback({
     subscribers,
     scriptData,
     handleClickFeedbackEndRequest,
+    isScriptStart,
 }) {
     const quillRef = useRef(null);
     const { userNickname } = useSelector(selectUser);
@@ -75,7 +76,12 @@ function ScriptFeedback({
                 </VideoFrame>
             </HeaderContainer>
             <FeedbackContainer>
-                <ScriptEditor quillRef={quillRef} defaultEl={makeDefaultElement()} id={sessionId} />
+                <ScriptEditor
+                    quillRef={quillRef}
+                    defaultEl={makeDefaultElement()}
+                    id={sessionId}
+                    isScriptStart={isScriptStart}
+                />
                 <TextButton
                     type="button"
                     shape="positive-curved-large"
