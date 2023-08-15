@@ -26,6 +26,7 @@ function ScriptEditor({ quillRef, defaultEl, id }) {
 
         setTimeout(() => {
             if (quillRef && quillRef.current && quillRef.current.getText() === "\n") {
+                quillRef.current.setText("");
                 quillRef.current.clipboard.dangerouslyPasteHTML(defaultEl);
             }
         }, 200);
