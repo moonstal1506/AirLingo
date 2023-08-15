@@ -173,8 +173,11 @@ function Meeting() {
         const jsonData = JSON.parse(data);
 
         if (!jsonData.agree || !publisher) {
+            setOpenResponseWaitModal(false);
+            setResponseWaitTitle("");
             return;
         }
+
         dispatch(
             addMeetingData({
                 meetingData: {
@@ -578,6 +581,15 @@ function Meeting() {
         setOpenCardRequestModal(false);
     };
 
+    const handleClickCardRequestDisAgree = () => {
+        setOpenCardRequestModal(false);
+        session.signal({
+            data: JSON.stringify({ agree: false }),
+            to: [subscribers[0].stream.connection],
+            type: "cardcode-select-response",
+        });
+    };
+
     const handleClickReportUser = async (reportState, reportText) => {
         await postReport({
             responseFunc: {
@@ -740,7 +752,7 @@ function Meeting() {
                     isOpen={openCardRequestModal}
                     cardCode={requestCardCode}
                     onClickAgree={handleClickCardRequestAgree}
-                    onClickDisAgree={() => setOpenCardRequestModal(false)}
+                    onClickDisAgree={handleClickCardRequestDisAgree}
                 />
                 <ResponseWaitModal title={responseWaitTitle} isOpen={openResponseWaitModal} />
                 <ReportModal
