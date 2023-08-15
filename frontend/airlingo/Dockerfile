@@ -8,7 +8,7 @@ COPY package*.json .
 # .env.production 파일을 .env로 복사
 COPY .env.production ./.env 
 #종속성 다운
-RUN npm install --no-optional
+RUN npm install --no-optional —legacy-peer-deps
 RUN npm install websocket
 #모든 소스코드들 WORKDIR로 복사
 COPY . .
