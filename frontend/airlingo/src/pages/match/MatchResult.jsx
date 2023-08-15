@@ -50,7 +50,9 @@ function MatchResult() {
                         <ContentScoreTextBox>
                             <ContentScoreText weight="400">매칭 점수</ContentScoreText>
                             <ContentScoreText weight="400">|</ContentScoreText>
-                            <ContentScoreText weight="700">{otherUser.userRating}</ContentScoreText>
+                            <ContentScoreText weight="700">
+                                {otherUser.userRating?.toFixed(1)}
+                            </ContentScoreText>
                         </ContentScoreTextBox>
                         <ContentScoreTextBox>
                             <ContentScoreText weight="400">등급</ContentScoreText>
