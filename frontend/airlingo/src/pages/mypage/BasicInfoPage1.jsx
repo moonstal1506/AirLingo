@@ -405,7 +405,10 @@ function BasicInfoPage1() {
                                     <SubTitleWrapper>RATING</SubTitleWrapper>
                                 </TitleBox>
                                 <ContentBox>
-                                    <ContentWrapper>{userProfile.userRating}</ContentWrapper>
+                                    <ContentWrapper>
+                                        {userProfile.userRating &&
+                                            userProfile.userRating.toFixed(1)}
+                                    </ContentWrapper>
                                 </ContentBox>
                             </TitleRowBox>
                             <TitleRowBox>
