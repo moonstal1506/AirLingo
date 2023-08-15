@@ -20,7 +20,7 @@ const useOpenVidu = () => {
     const [sharePublisher, setSharePublisher] = useState(null);
     const [shareSubscribers, setShareSubscribers] = useState([]);
 
-    const { myData } = useSelector(selectMeeting);
+    const { otherUser } = useSelector(selectMeeting);
 
     async function joinSession() {
         const cameraSession = OV.current.initSession();
@@ -31,8 +31,9 @@ const useOpenVidu = () => {
                 setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
                 cameraSession.subscribeToSpeechToText(
                     event.stream,
-                    languageCodeConfig.find((cur) => cur.languageId === myData.userStudyLanguageId)
-                        .languageCode,
+                    languageCodeConfig.find(
+                        (cur) => cur.languageId === otherUser.userStudyLanguageId,
+                    ).languageCode,
                 );
             }
         });
