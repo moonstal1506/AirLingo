@@ -46,7 +46,7 @@ function StudyTimeStatistic() {
             ctx.textBaseline = "middle";
             ctx.font = "600 45px Pretendard";
             ctx.fillStyle = "#000";
-            ctx.fillText(`${totalStudyTime}시간`, center.x, center.y);
+            ctx.fillText(`${totalStudyTime}분`, center.x, center.y);
         },
     };
 
