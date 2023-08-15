@@ -47,12 +47,12 @@ function BasicInfoPage1() {
     const fileInputRef = useRef(null);
     const [updateProfile, setUpdateProfile] = useState(false);
 
-    const totalLanguage = [
-        { id: 1, label: "한국어", img: "" },
-        { id: 2, label: "영어", img: "" },
-        { id: 3, label: "일본어", img: "" },
-        { id: 4, label: "중국어", img: "" },
-    ];
+    // const totalLanguage = [
+    //     { id: 1, label: "한국어", img: "" },
+    //     { id: 2, label: "영어", img: "" },
+    //     { id: 3, label: "일본어", img: "" },
+    //     { id: 4, label: "중국어", img: "" },
+    // ];
 
     useEffect(() => {
         async function fetchData() {
