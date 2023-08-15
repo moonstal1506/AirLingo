@@ -288,6 +288,8 @@ function Meeting() {
                 data: {
                     scriptId: scriptData.scriptId,
                     scriptContent: scriptData.modifiedScript,
+                    userId,
+                    otherUserId: otherUser.userId,
                 },
                 routeTo,
             });
