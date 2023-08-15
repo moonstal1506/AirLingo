@@ -34,6 +34,7 @@ import com.ssafy.airlingo.global.util.ClovaSpeechClient;
 import com.ssafy.airlingo.global.exception.NotExistScriptException;
 import com.ssafy.airlingo.global.util.JwtService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -83,9 +84,9 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	@Transactional
-	public void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto, String accessToken) {
+	public void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto, HttpServletRequest request) {
 		log.info("ScriptServiceImpl_modifyScriptContent || 피드백 종료후 스크립트 내용 수정");
-		String userLoginId = jwtService.extractUserLoginIdFromAccessToken(accessToken);
+		String userLoginId = jwtService.extractUserLoginIdFromAccessToken(request.getHeader("access-token"));
 		log.info("userLoginId", userLoginId);
 		User user = userRepository.findUserByUserLoginId(userLoginId).orElseThrow(NotExistAccountException::new);
 		DailyGrid dailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(user.getUserId(), LocalDate.now())

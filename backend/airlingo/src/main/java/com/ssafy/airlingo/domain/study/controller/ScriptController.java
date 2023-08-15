@@ -28,6 +28,8 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -85,10 +87,9 @@ public class ScriptController {
 	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")
 	@PutMapping
 	public ResponseResult modifyScriptContent(
-		@RequestHeader("access-token") String accessToken,
-		@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto) {
+		@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto, HttpServletRequest request) {
 		log.info("ScriptController_ModifyScriptContent");
-		scriptService.modifyScriptContent(modifyScriptRequestDto, accessToken);
+		scriptService.modifyScriptContent(modifyScriptRequestDto, request);
 		return ResponseResult.successResponse;
 	}
 
