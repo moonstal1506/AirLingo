@@ -6,11 +6,10 @@ import stomp from "stompjs";
 import SockJS from "sockjs-client";
 import { useDispatch, useSelector } from "react-redux";
 import { addSessionId, addOtherUser, addStudyId, addMyData } from "@/features/Meeting/MeetingSlice";
-import EngKorTodayExpressionArr from "@/config/TodayExpressionConfig";
 import MatchQueueImg from "@/assets/imgs/match-queue-img.jpg";
 import { ReactComponent as RightArrowIcon } from "@/assets/icons/right-arrow-icon.svg";
 import { ReactComponent as LeftArrowIcon } from "@/assets/icons/left-arrow-icon.svg";
-import { postMatching, cancelMatching } from "@/api";
+import { postMatching, cancelMatching, getSentence } from "@/api";
 import { useRouter } from "@/hooks";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatTime } from "@/utils/format";
@@ -29,6 +28,7 @@ function MatchQueue() {
     const socketRef = useRef(null);
     const stompClientRef = useRef(null);
     const interval = useRef(null);
+    const [sentenceArr, setSentenceArr] = useState([]);
 
     async function matchingRequestFunc() {
         const { studyLanguageId, premium } = location.state;
@@ -109,6 +109,21 @@ function MatchQueue() {
     }
 
     useEffect(() => {
+        async function fetchData() {
+            await getSentence({
+                responseFunc: {
+                    200: (response) => {
+                        setSentenceArr(response.data.data);
+                    },
+                    400: () => {
+                        alert("응답에 실패했습니다. 다시 시도해주세요.");
+                    },
+                },
+                routeTo,
+            });
+        }
+        fetchData();
+
         // 비허용 접근
         if (
             !location.state ||
@@ -135,14 +150,10 @@ function MatchQueue() {
     }, []);
 
     const handleClickPrevButton = () => {
-        setExpressionIdx((prev) =>
-            expressionIdx === 0 ? EngKorTodayExpressionArr.length - 1 : prev - 1,
-        );
+        setExpressionIdx((prev) => (expressionIdx === 0 ? sentenceArr.length - 1 : prev - 1));
     };
     const handleClickNextButton = () => {
-        setExpressionIdx((prev) =>
-            expressionIdx === EngKorTodayExpressionArr.length - 1 ? 0 : prev + 1,
-        );
+        setExpressionIdx((prev) => (expressionIdx === sentenceArr.length - 1 ? 0 : prev + 1));
     };
 
     const handleClickOpenMatchingConfirm = (agree) => {
@@ -176,10 +187,10 @@ function MatchQueue() {
                     <TodayExpressionContentTitle>오늘의 표현</TodayExpressionContentTitle>
                     <TodayExpressionContentBox>
                         <TodayExpressionOriginalText>
-                            {EngKorTodayExpressionArr[expressionIdx].originalText}
+                            {sentenceArr && sentenceArr[expressionIdx].sentenceEng}
                         </TodayExpressionOriginalText>
                         <TodayExpressionInterpretText>
-                            {EngKorTodayExpressionArr[expressionIdx].interpretText}
+                            {sentenceArr && sentenceArr[expressionIdx].sentenceKor}
                         </TodayExpressionInterpretText>
                     </TodayExpressionContentBox>
                 </MatchQueueCommonBox>
