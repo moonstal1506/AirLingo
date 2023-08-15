@@ -92,12 +92,17 @@ public class ScriptServiceImpl implements ScriptService {
 		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
 		User otherUser = userRepository.findById(otherUserId).orElseThrow(NotExistAccountException::new);
 
-		DailyGrid userDailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(userId, LocalDate.now())
-			.orElseGet((Supplier<? extends DailyGrid>)dailyGridRepository.save(
-				DailyGrid.builder().user(user).dailyGridCount(0).build()));
-		DailyGrid otherUserDailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(otherUserId, LocalDate.now())
-			.orElseGet((Supplier<? extends DailyGrid>)dailyGridRepository.save(
-				DailyGrid.builder().user(otherUser).dailyGridCount(0).build()));
+		DailyGrid userDailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(userId, LocalDate.now());
+		DailyGrid otherUserDailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(otherUserId, LocalDate.now());
+
+		if (userDailyGrid == null) {
+			userDailyGrid = dailyGridRepository.save(
+				DailyGrid.builder().user(user).dailyGridCount(0).build());
+		}
+		if (otherUserDailyGrid == null) {
+			otherUserDailyGrid = dailyGridRepository.save(
+				DailyGrid.builder().user(otherUser).dailyGridCount(0).build());
+		}
 
 		userDailyGrid.update();
 		otherUserDailyGrid.update();
