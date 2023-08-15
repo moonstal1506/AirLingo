@@ -402,8 +402,7 @@ function BasicInfoPage1() {
                                 </TitleBox>
                                 <ContentBox>
                                     <ContentWrapper>
-                                        {userProfile.userRating &&
-                                            userProfile.userRating.toFixed(1)}
+                                        {userProfile.userRating?.toFixed(1)}
                                     </ContentWrapper>
                                 </ContentBox>
                             </TitleRowBox>
