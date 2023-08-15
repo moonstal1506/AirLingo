@@ -282,7 +282,7 @@ function Script() {
                                                         {new Date(
                                                             scriptList[
                                                                 currentScriptIdx
-                                                            ].createdTime,
+                                                            ].createdDate,
                                                         ).toLocaleTimeString("ko-KR", {
                                                             hour: "2-digit",
                                                             minute: "2-digit",
