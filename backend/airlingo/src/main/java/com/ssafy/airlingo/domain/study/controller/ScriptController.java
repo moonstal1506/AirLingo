@@ -87,9 +87,9 @@ public class ScriptController {
 	@Operation(summary = "Save script content after feedback", description = "피드백 끝난 스크립트 저장")
 	@PutMapping
 	public ResponseResult modifyScriptContent(
-		@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto, HttpServletRequest request) {
+		@Valid @RequestBody ModifyScriptContentRequestDto modifyScriptRequestDto) {
 		log.info("ScriptController_ModifyScriptContent");
-		scriptService.modifyScriptContent(modifyScriptRequestDto, request);
+		scriptService.modifyScriptContent(modifyScriptRequestDto);
 		return ResponseResult.successResponse;
 	}
 

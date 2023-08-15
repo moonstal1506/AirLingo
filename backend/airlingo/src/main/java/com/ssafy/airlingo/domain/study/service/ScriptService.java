@@ -24,7 +24,7 @@ public interface ScriptService {
 		IOException,
 		ParseException;
 
-	void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto, HttpServletRequest request);
+	void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto);
 
 	List<SentenceResponseDto> voiceFileSTT(String audioPath) throws ParseException;
 }

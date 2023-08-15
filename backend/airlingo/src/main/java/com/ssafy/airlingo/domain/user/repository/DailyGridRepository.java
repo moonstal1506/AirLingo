@@ -22,7 +22,7 @@ public interface DailyGridRepository extends JpaRepository<DailyGrid, Long> {
 	@Query(value = "SELECT * FROM daily_grid "
 		+ "WHERE DATE_FORMAT(created_date, '%Y-%m-%d') = :createdDate "
 		+ "AND user_id = :userId", nativeQuery = true)
-	Optional<DailyGrid> findDailyGridByUserIdAndCreatedDate(
+	DailyGrid findDailyGridByUserIdAndCreatedDate(
 		@org.springframework.data.repository.query.Param("userId") Long userId,
 		@Param("createdDate") LocalDate createdDate);
 }

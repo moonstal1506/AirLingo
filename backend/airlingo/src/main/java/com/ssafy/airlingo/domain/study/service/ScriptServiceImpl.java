@@ -84,15 +84,29 @@ public class ScriptServiceImpl implements ScriptService {
 
 	@Override
 	@Transactional
-	public void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto, HttpServletRequest request) {
+	public void modifyScriptContent(ModifyScriptContentRequestDto modifyScriptContentRequestDto) {
 		log.info("ScriptServiceImpl_modifyScriptContent || 피드백 종료후 스크립트 내용 수정");
-		String userLoginId = jwtService.extractUserLoginIdFromAccessToken(request.getHeader("access-token"));
-		log.info("userLoginId", userLoginId);
-		User user = userRepository.findUserByUserLoginId(userLoginId).orElseThrow(NotExistAccountException::new);
-		DailyGrid dailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(user.getUserId(), LocalDate.now())
-			.orElseGet((Supplier<? extends DailyGrid>)dailyGridRepository.save(
-				DailyGrid.builder().user(user).dailyGridCount(0).build()));
-		dailyGrid.update();
+		Long userId = modifyScriptContentRequestDto.getUserId();
+		Long otherUserId = modifyScriptContentRequestDto.getOtherUserId();
+
+		User user = userRepository.findById(userId).orElseThrow(NotExistAccountException::new);
+		User otherUser = userRepository.findById(otherUserId).orElseThrow(NotExistAccountException::new);
+
+		DailyGrid userDailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(userId, LocalDate.now());
+		DailyGrid otherUserDailyGrid = dailyGridRepository.findDailyGridByUserIdAndCreatedDate(otherUserId, LocalDate.now());
+
+		if (userDailyGrid == null) {
+			userDailyGrid = dailyGridRepository.save(
+				DailyGrid.builder().user(user).dailyGridCount(0).build());
+		}
+		if (otherUserDailyGrid == null) {
+			otherUserDailyGrid = dailyGridRepository.save(
+				DailyGrid.builder().user(otherUser).dailyGridCount(0).build());
+		}
+
+		userDailyGrid.update();
+		otherUserDailyGrid.update();
+
 		Script script = scriptRepository.findById(modifyScriptContentRequestDto.getScriptId()).get();
 		script.modifyScriptContent(modifyScriptContentRequestDto.getScriptContent());
 	}
