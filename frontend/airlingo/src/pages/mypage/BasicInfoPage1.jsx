@@ -289,11 +289,11 @@ function BasicInfoPage1() {
         setImageModalOpen(true);
     };
 
-    const LanguageImg = totalLanguage.find(
-        (language) =>
-            language.id ===
-            (userProfile.userNativeLanguage ? userProfile.userNativeLanguage.languageId : 1),
-    ).img;
+    // const LanguageImg = totalLanguage.find(
+    //     (language) =>
+    //         language.id ===
+    //         (userProfile.userNativeLanguage ? userProfile.userNativeLanguage.languageId : 1),
+    // ).img;
 
     return (
         <LeftPageBox id="LPBox">
@@ -427,8 +427,7 @@ function BasicInfoPage1() {
                                     <SubTitleWrapper>NATIVE LANGUAGE</SubTitleWrapper>
                                 </TitleBox>
                                 <ContentBox>
-                                    <LanguageImg />
-
+                                    {/* <LanguageImg /> */}
                                     <ContentWrapper>
                                         {userProfile.userNativeLanguage
                                             ? userProfile.userNativeLanguage.languageKorName
