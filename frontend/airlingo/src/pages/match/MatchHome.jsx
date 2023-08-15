@@ -126,9 +126,9 @@ function MatchHome() {
                             <TextWrapper size="subTitle">DEPERATURE</TextWrapper>
                             <Dropdown
                                 width="175px"
-                                shape="negative"
                                 data={skillLanguageList}
-                                defaultOption={{ id: "135", label: "한국어", img: "" }}
+                                iconColor="primary"
+                                shape="negative"
                                 selectedOption={skillLanguage}
                                 onChange={setSkillLanguage}
                             />
@@ -139,9 +139,9 @@ function MatchHome() {
                             <TextWrapper size="subTitle">ARRIVAL</TextWrapper>
                             <Dropdown
                                 width="175px"
-                                shape="negative"
                                 data={studyLanguageList}
-                                defaultOption={{ id: "242", label: "일본어", img: "" }}
+                                iconColor="primary"
+                                shape="negative"
                                 selectedOption={studyLanguage}
                                 onChange={setStudyLanguage}
                             />
@@ -215,8 +215,8 @@ const MatchHomeTitle = styled.div`
 `;
 
 const TicketBackgroundBox = styled.div`
-    width: 802px; // add this
-    height: 306px; // add this
+    width: 802px;
+    height: 306px;
     background-image: url(${ticketBackground});
     background-repeat: no-repeat;
     background-size: cover;
