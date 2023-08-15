@@ -120,6 +120,7 @@ function Meeting() {
     const [requestCardCode, setRequestCardCode] = useState("");
     const [responseWaitTitle, setResponseWaitTitle] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const [isScriptStart, setIsScriptStart] = useState(false);
 
     // 세션 연결 함수
     async function fetchToken() {
@@ -261,6 +262,7 @@ function Meeting() {
     function handleScreenModeChangeFeedback(data) {
         const jsonData = JSON.parse(data);
         if (jsonData.data.statusCode !== 200) return;
+        setIsScriptStart(true);
         setTimeout(() => {
             dispatch(addScriptData({ scriptData: jsonData.data.data }));
             dispatch(addScreenMode({ screenMode: "ScriptFeedback" }));
@@ -800,6 +802,7 @@ function Meeting() {
                                     publisher={publisher}
                                     subscribers={subscribers}
                                     scriptData={scriptData}
+                                    isScriptStart={isScriptStart}
                                 />
                             );
                         case "WhiteBoard":
