@@ -57,21 +57,9 @@ function Login() {
                         <TextInputBox type="password" placeholder="비밀번호" ref={passwordRef} />
                         <TextButton type="submit" shape="login" text="로그인하기" />
                     </LoginForm>
-                    <div
-                        style={{
-                            color: "#000",
-                            textAlign: "center",
-                            fontFamily: "Pretendard",
-                            fontSize: "20px",
-                            fontWeight: "300",
-                            fontStyle: "normal",
-                            lineHeight: "normar",
-                            textDecorationLine: "underline",
-                            marginTop: "30px",
-                        }}
-                    >
+                    <SignUpTextWrapper>
                         <a href="/signup">혹시 회원가입을 하지 않으셨나요?</a>
-                    </div>
+                    </SignUpTextWrapper>
 
                     {/* <div
                         style={{
@@ -154,6 +142,16 @@ const LoginBox = styled.div`
     width: 501px;
     height: 380px;
 `;
+
+const SignUpTextWrapper = styled.div`
+    margin-top: 30px;
+    color: black;
+    font-size: 20px;
+    font-weight: 300;
+    text-align: center;
+    text-decoration-line: underline;
+`;
+
 // const DivisionLineBox = styled.div`
 //     width: 500px;
 //     height: 30px;

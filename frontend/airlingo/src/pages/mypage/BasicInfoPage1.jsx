@@ -7,10 +7,6 @@ import { ReactComponent as SettingIcon } from "@/assets/icons/setting-icon.svg";
 import { ReactComponent as GradeBackgroundIcon } from "@/assets/icons/grade-background-icon.svg";
 import { ReactComponent as GradeFlagIcon } from "@/assets/icons/grade-flag-icon.svg";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.svg";
-import { ReactComponent as BritainFlagIcon } from "@/assets/icons/flag-britain-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
-import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.svg";
 import { ReactComponent as CloseIcon } from "@/assets/icons/close-icon.svg";
 import { ReactComponent as CameraIcon } from "@/assets/icons/camera-icon.svg";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
@@ -52,10 +48,10 @@ function BasicInfoPage1() {
     const [updateProfile, setUpdateProfile] = useState(false);
 
     const totalLanguage = [
-        { id: 1, label: "한국어", img: KoreaFlagIcon },
-        { id: 2, label: "영어", img: BritainFlagIcon },
-        { id: 3, label: "일본어", img: JapanFlagIcon },
-        { id: 4, label: "중국어", img: ChinaFlagIcon },
+        { id: 1, label: "한국어", img: "" },
+        { id: 2, label: "영어", img: "" },
+        { id: 3, label: "일본어", img: "" },
+        { id: 4, label: "중국어", img: "" },
     ];
 
     useEffect(() => {
