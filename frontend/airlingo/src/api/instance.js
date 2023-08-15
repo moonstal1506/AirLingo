@@ -19,7 +19,7 @@ instance.interceptors.request.use(
     (config) => {
         const accessToken = store.getState().User.userAccessToken;
         if (config.headers && accessToken) {
-            config.headers.authorization = `Bearer: ${accessToken}`;
+            config.headers["access-token"] = `${accessToken}`;
         }
         return config;
     },
