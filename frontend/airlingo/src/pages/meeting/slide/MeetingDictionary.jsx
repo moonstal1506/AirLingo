@@ -162,8 +162,8 @@ function MeetingDictionary() {
                 </Container>
             </ItemBox>
             <ModalButtonBox>
-                <TextButton text="단어장 저장" width="200px" onClick={saveWord} />
-                <TextButton text="발음 듣기" width="200px" onClick={handleSpeak} />
+                <TextButton text="단어장 저장" width="150px" onClick={saveWord} />
+                <TextButton text="발음 듣기" width="150px" onClick={handleSpeak} />
             </ModalButtonBox>
         </DictionaryContainer>
     );

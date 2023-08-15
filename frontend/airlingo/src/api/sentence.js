@@ -3,7 +3,7 @@ import instance from "./instance";
 
 const getSentence = async ({ responseFunc, routeTo }) => {
     try {
-        const response = await instance.post(`/api/sentence`);
+        const response = await instance.get(`/api/sentence`);
         processApiResponse({ responseFunc, response });
         return response;
     } catch (e) {

@@ -187,10 +187,10 @@ function MatchQueue() {
                     <TodayExpressionContentTitle>오늘의 표현</TodayExpressionContentTitle>
                     <TodayExpressionContentBox>
                         <TodayExpressionOriginalText>
-                            {sentenceArr && sentenceArr[expressionIdx].sentenceEng}
+                            {sentenceArr.length > 0 && sentenceArr[expressionIdx].sentenceEng}
                         </TodayExpressionOriginalText>
                         <TodayExpressionInterpretText>
-                            {sentenceArr && sentenceArr[expressionIdx].sentenceKor}
+                            {sentenceArr.length > 0 && sentenceArr[expressionIdx].sentenceKor}
                         </TodayExpressionInterpretText>
                     </TodayExpressionContentBox>
                 </MatchQueueCommonBox>
