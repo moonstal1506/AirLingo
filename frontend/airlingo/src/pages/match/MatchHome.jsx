@@ -14,7 +14,7 @@ import { useRouter } from "@/hooks";
 import { getConcurrentUser, getPremiumMatching } from "@/api";
 import PremiumModal from "@/components/modal/match/matchhome/PremiumModal";
 import PremiumFailModal from "@/components/modal/match/matchhome/PremiumFailModal";
-import { RightArrowIcon, KoreaFlagIcon, JapanFlagIcon } from "@/assets/icons";
+import { RightArrowIcon } from "@/assets/icons";
 
 function MatchHome() {
     const { routeTo } = useRouter();
@@ -128,7 +128,7 @@ function MatchHome() {
                                 width="175px"
                                 shape="negative"
                                 data={skillLanguageList}
-                                defaultOption={{ id: "135", label: "한국어", img: KoreaFlagIcon }}
+                                defaultOption={{ id: "135", label: "한국어", img: "" }}
                                 selectedOption={skillLanguage}
                                 onChange={setSkillLanguage}
                             />
@@ -141,7 +141,7 @@ function MatchHome() {
                                 width="175px"
                                 shape="negative"
                                 data={studyLanguageList}
-                                defaultOption={{ id: "242", label: "일본어", img: JapanFlagIcon }}
+                                defaultOption={{ id: "242", label: "일본어", img: "" }}
                                 selectedOption={studyLanguage}
                                 onChange={setStudyLanguage}
                             />

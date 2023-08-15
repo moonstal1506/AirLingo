@@ -7,10 +7,6 @@ import { ReactComponent as SettingIcon } from "@/assets/icons/setting-icon.svg";
 import { ReactComponent as GradeBackgroundIcon } from "@/assets/icons/grade-background-icon.svg";
 import { ReactComponent as GradeFlagIcon } from "@/assets/icons/grade-flag-icon.svg";
 import { ReactComponent as ModifyIcon } from "@/assets/icons/modify-icon.svg";
-import { ReactComponent as KoreaFlagIcon } from "@/assets/icons/flag-korea-icon.svg";
-import { ReactComponent as BritainFlagIcon } from "@/assets/icons/flag-britain-icon.svg";
-import { ReactComponent as JapanFlagIcon } from "@/assets/icons/flag-japan-icon.svg";
-import { ReactComponent as ChinaFlagIcon } from "@/assets/icons/flag-china-icon.svg";
 import { ReactComponent as CloseIcon } from "@/assets/icons/close-icon.svg";
 import { ReactComponent as CameraIcon } from "@/assets/icons/camera-icon.svg";
 import leftPassportPages from "@/assets/imgs/profiles/left-passport-pages.png";
@@ -50,13 +46,6 @@ function BasicInfoPage1() {
     const [selectedImage, setSelectedImage] = useState(null);
     const fileInputRef = useRef(null);
     const [updateProfile, setUpdateProfile] = useState(false);
-
-    const totalLanguage = [
-        { id: 1, label: "한국어", img: KoreaFlagIcon },
-        { id: 2, label: "영어", img: BritainFlagIcon },
-        { id: 3, label: "일본어", img: JapanFlagIcon },
-        { id: 4, label: "중국어", img: ChinaFlagIcon },
-    ];
 
     useEffect(() => {
         async function fetchData() {
@@ -293,12 +282,6 @@ function BasicInfoPage1() {
         setImageModalOpen(true);
     };
 
-    const LanguageImg = totalLanguage.find(
-        (language) =>
-            language.id ===
-            (userProfile.userNativeLanguage ? userProfile.userNativeLanguage.languageId : 1),
-    ).img;
-
     return (
         <LeftPageBox id="LPBox">
             <LeftPassportPages src={leftPassportPages} id="LPPS" />
@@ -406,8 +389,7 @@ function BasicInfoPage1() {
                                 </TitleBox>
                                 <ContentBox>
                                     <ContentWrapper>
-                                        {userProfile.userRating &&
-                                            userProfile.userRating.toFixed(1)}
+                                        {userProfile.userRating?.toFixed(1)}
                                     </ContentWrapper>
                                 </ContentBox>
                             </TitleRowBox>
@@ -423,7 +405,6 @@ function BasicInfoPage1() {
                                 </ContentBox>
                             </TitleRowBox>
                         </TitleRowContainer>
-
                         <TitleRowContainer>
                             <TitleRowBox>
                                 <TitleBox>
@@ -431,8 +412,10 @@ function BasicInfoPage1() {
                                     <SubTitleWrapper>NATIVE LANGUAGE</SubTitleWrapper>
                                 </TitleBox>
                                 <ContentBox>
-                                    <LanguageImg />
-
+                                    <img
+                                        src={userProfile.userNativeLanguage.imageUrl}
+                                        alt="LanguageIcon"
+                                    />
                                     <ContentWrapper>
                                         {userProfile.userNativeLanguage
                                             ? userProfile.userNativeLanguage.languageKorName
