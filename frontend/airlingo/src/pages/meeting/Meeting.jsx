@@ -28,6 +28,7 @@ import {
     ReportConfimModal,
     ReportModal,
     ResponseWaitModal,
+    FeedbackIntroduceModal,
 } from "@/components/modal/meeting";
 import ChatList from "@/components/chatList/ChatList";
 import { ChatSlideMenu, ScriptSlideMenu } from "@/components/common/slideMenu";
@@ -115,7 +116,7 @@ function Meeting() {
     const [openFeedbackRequestModal, setOpenFeedbackRequestModal] = useState(false);
     const [openEvaluateModal, setOpenEvaluateModal] = useState(false);
     const [openFeedbackEndRequestModal, setOpenFeedbackEndRequestModal] = useState(false);
-
+    const [openFeedbackIntroduceModal, setOpenFeedbackIntroduceModal] = useState(false);
     // Data States...
     const [requestCardCode, setRequestCardCode] = useState("");
     const [responseWaitTitle, setResponseWaitTitle] = useState("");
@@ -239,7 +240,6 @@ function Meeting() {
                 200: (response) => {
                     dispatch(addScriptData({ scriptData: response.data.data }));
                     dispatch(addScreenMode({ screenMode: "ScriptFeedback" }));
-
                     session.signal({
                         data: JSON.stringify(response),
                         to: [subscribers[0].stream.connection],
@@ -267,6 +267,7 @@ function Meeting() {
             dispatch(addScriptData({ scriptData: jsonData.data.data }));
             dispatch(addScreenMode({ screenMode: "ScriptFeedback" }));
         }, 100);
+        setOpenFeedbackIntroduceModal(true);
     }
 
     const handleFeedbackEndResponse = async (data) => {
@@ -625,6 +626,7 @@ function Meeting() {
         setTimeout(() => {
             setIsLoading(false);
         }, 6000);
+        setOpenFeedbackIntroduceModal(true);
     };
 
     const handleClickOpenFeedbackStart = async () => {
@@ -786,6 +788,10 @@ function Meeting() {
                     isOpen={openFeedbackEndRequestModal}
                     onClickAgree={() => handleClickFeedbackEndConfirm(true)}
                     onClickDisAgree={() => handleClickFeedbackEndConfirm(false)}
+                />
+                <FeedbackIntroduceModal
+                    isOpen={openFeedbackIntroduceModal}
+                    onClickAgree={() => setOpenFeedbackIntroduceModal(false)}
                 />
                 {(() => {
                     switch (screenMode) {
