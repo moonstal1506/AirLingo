@@ -90,8 +90,8 @@ public class MatchingService {
 		if (!matchingUser.isMatchLanguage(waitingUser)) {
 			return false;
 		}
-		// 둘다 프리미엄일 경우 둘다 프리미엄 기준을 통과해야한다.
-		if (matchingUser.isPremium() && waitingUser.isPremium()) {
+		// 둘 중 한명이 프리미엄이면 상대방도 프리미엄이어야 한다.
+		if (waitingUser.isPremium()||matchingUser.isPremium()) {
 			return matchingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING)
 				&& waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
 		}
@@ -100,6 +100,7 @@ public class MatchingService {
 			return waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
 		}
 		// 조건없이 매칭
+		System.out.println("조건없이 매칭");
 		return true;
 	}
 
