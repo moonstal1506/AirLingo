@@ -425,11 +425,11 @@ function BasicInfoPage1() {
                             </TitleRowBox>
                             <TitleRowBox>
                                 <TitleBox>
-                                    <TitleWrapper>누적 마일리지</TitleWrapper>
-                                    <SubTitleWrapper>TOTAL MILEAGE</SubTitleWrapper>
+                                    <TitleWrapper>마일리지</TitleWrapper>
+                                    <SubTitleWrapper>MILEAGE</SubTitleWrapper>
                                 </TitleBox>
                                 <ContentBox>
-                                    <ContentWrapper>{userProfile.userTotalMileage}</ContentWrapper>
+                                    <ContentWrapper>{userProfile.userMileage}</ContentWrapper>
                                 </ContentBox>
                             </TitleRowBox>
                         </TitleRowContainer>
