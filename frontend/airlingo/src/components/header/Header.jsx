@@ -7,6 +7,7 @@ import ProfileBar from "../profileBar";
 import { TextButton } from "../common/button";
 import { getLogout } from "@/api";
 import { useRouter } from "@/hooks";
+import { removeInfo } from "@/features/Meeting/MeetingSlice";
 
 // ----------------------------------------------------------------------------------------------------
 
@@ -20,6 +21,7 @@ const Header = React.memo(() => {
             responseFunc: {
                 200: () => {
                     dispatch(logoutUser());
+                    dispatch(removeInfo());
                     routeTo("/");
                 },
             },

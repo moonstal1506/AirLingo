@@ -2,7 +2,7 @@
 /* eslint-disable no-shadow */
 import styled from "@emotion/styled";
 import { useEffect, useMemo, useState, useCallback } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectUser } from "@/features/User/UserSlice";
 import { formatLanguage } from "@/utils/format";
 import ticketBackground from "@/assets/imgs/ticket-background.svg";
@@ -15,8 +15,10 @@ import { getConcurrentUser, getPremiumMatching } from "@/api";
 import PremiumModal from "@/components/modal/match/matchhome/PremiumModal";
 import PremiumFailModal from "@/components/modal/match/matchhome/PremiumFailModal";
 import { RightArrowIcon } from "@/assets/icons";
+import { removeInfo } from "@/features/Meeting/MeetingSlice";
 
 function MatchHome() {
+    const dispatch = useDispatch();
     const { routeTo } = useRouter();
     const { userNickname, userNativeLanguage, userLanguages, userId } = useSelector(selectUser);
     const [modalOpen, setModalOpen] = useState(false);
@@ -70,7 +72,9 @@ function MatchHome() {
             fetchConcurrentUser();
         }
     }, [isUserInfoValid, fetchConcurrentUser]);
-
+    useEffect(() => {
+        dispatch(removeInfo());
+    });
     const handleMatching = (premium) => {
         if (studyLanguage) {
             routeTo("/matchqueue", {
