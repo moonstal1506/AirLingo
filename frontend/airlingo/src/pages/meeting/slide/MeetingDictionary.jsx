@@ -53,6 +53,7 @@ function MeetingDictionary() {
     }, [routeTo]);
 
     const searchWord = () => {
+        if (word.length === 0) return;
         async function fetchSearchResult() {
             await getTranslateResult({
                 responseFunc: {
