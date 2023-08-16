@@ -310,7 +310,9 @@ function BasicInfoPage1() {
                 {imageModalOpen && (
                     <Modal title="프로필 이미지 편집" modalOpen={imageModalOpen} Icon={CameraIcon}>
                         <ProfileImageBox>
-                            <ProfileImage src={selectedImage || defaultProfileImage} />
+                            <ProfileImage
+                                src={selectedImage || userProfile.userImgUrl || defaultProfileImage}
+                            />
                             <CloseIconWrapper onClick={() => setImageModalOpen(false)}>
                                 <CloseIcon />
                             </CloseIconWrapper>
