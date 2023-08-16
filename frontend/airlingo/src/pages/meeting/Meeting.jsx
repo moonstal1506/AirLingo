@@ -245,6 +245,7 @@ function Meeting() {
                         to: [subscribers[0].stream.connection],
                         type: "screenmode-change-feedback",
                     });
+                    setOpenFeedbackIntroduceModal(true);
                 },
             },
             data: {
@@ -626,7 +627,6 @@ function Meeting() {
         setTimeout(() => {
             setIsLoading(false);
         }, 6000);
-        setOpenFeedbackIntroduceModal(true);
     };
 
     const handleClickOpenFeedbackStart = async () => {
