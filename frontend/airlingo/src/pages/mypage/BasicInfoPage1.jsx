@@ -686,6 +686,7 @@ const BioAreaBox = styled.div`
 const BioAreaWrapper = styled.textarea`
     border: none;
     outline: none;
+    resize: none;
     width: 330px;
     height: 70px;
     color: #000;
