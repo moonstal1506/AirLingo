@@ -23,6 +23,13 @@ function Home() {
         setCurrentContainerIndex(nextContainerIndex);
     };
 
+    const handleIntroductionClick = () => {
+        window.open(
+            "https://crassula.notion.site/AirLingo-13fac505ac0f415180b61ce0293897f2?pvs=4",
+            "_blank",
+        );
+    };
+
     return (
         <HomeContainer>
             <MainCatchphraseBox ref={containerRefArr[0]}>
@@ -133,7 +140,9 @@ function Home() {
                             &nbsp; &nbsp;
                             <LinkTextUnderline>서비스 이용 약관</LinkTextUnderline>&nbsp; &nbsp; |
                             &nbsp; &nbsp;
-                            <LinkTextUnderline>About Developers</LinkTextUnderline>
+                            <LinkTextUnderline onClick={handleIntroductionClick}>
+                                About Developers
+                            </LinkTextUnderline>
                         </LinkText>
                     </LinkTextWrapper>
                 </FooterText>
@@ -371,7 +380,7 @@ const LinkTextWrapper = styled.div`
     height: 35px;
     flex-direction: column;
     justify-content: center;
-    color: #fff;
+    color: white;
     font-size: 20px;
     font-weight: 400;
 `;
@@ -380,6 +389,7 @@ const LinkText = styled.span``;
 
 const LinkTextUnderline = styled.span`
     text-decoration-line: underline;
+    cursor: pointer;
 `;
 
 const ArrowIcon = styled.img`
