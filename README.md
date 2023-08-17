@@ -78,6 +78,8 @@
     <img src="https://img.shields.io/badge/-VSCode-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white">
 <img src="https://img.shields.io/badge/-Mattermost-00AEEF?style=flat-square">
     <img src="https://img.shields.io/badge/-Webex-00B140?style=flat-square">
+    <img src="https://img.shields.io/badge/-Postman-FF6C37?style=flat-square&logo=postman">
+    <img src="https://img.shields.io/badge/-MobaXterm-014E58?style=flat-square">
     <img src="https://img.shields.io/badge/-Node.js-339933?style=flat-square&logo=node.js&logoColor=white">
     <img src="https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=white">
     <img src="https://img.shields.io/badge/-React_Router-CA4245?style=flat-square&logo=react-router&logoColor=white">
@@ -116,8 +118,6 @@
 </div>
     
 </details>
-
-
 
 ---
 ## 📂 파일 구조
@@ -528,6 +528,78 @@
 
 ---
 ## 💻 구동 방법
+- 로컬 구동 기준으로 작성되었습니다.
+
+1. clone Project
+```
+git clone https://lab.ssafy.com/s09-webmobile1-sub2/AirLingo.git
+```
+
+2. change path to /frontend/airlingo
+```
+npm i --legacy-peer-deps
+```
+
+3. create .env file in /frontend/airlingo/
+```
+VITE_SERVER_URL={your_server_url}
+VITE_SOCKET_URL={your_socket_url}
+VITE_CHAT_SOCKET_URL={your_chat_socket_url}
+```
+
+4. input frontend run script
+```
+npm run dev
+```
+
+5. change path to /backend/airlingo/src/main/resources
+```
+application.yml
+
+cloud:
+  aws:
+    s3:
+      bucket: ${your-bucket-name}
+    credentials:
+      accessKey: ${your-access-key}
+      secretKey: ${your-secret-key}
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
+```
+```
+application-dev.yml
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create #create update none
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${your-db-url}
+    username: ${your-db-username}
+    password: ${your-db-password}
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: ${your-rabbitmq-username}
+    password: ${your-rqbbitmq-password}
+    
+openviduUrl: ${your-openvidu-url}
+openviduSecret: ${your-openvidu-secret}
+```
+
+6. install docker,openvidu,redis,rabbitmq
+7. run openvidu
+```
+docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET openvidu/openvidu-dev:2.28.0
+```
+
+8. change path /matching/airlingo
+9. run docker-compose.yaml for rabbitmq
+10. run backend,matching program
 
 
 ---
