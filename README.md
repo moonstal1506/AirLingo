@@ -122,7 +122,9 @@
 ---
 ## 📂 파일 구조
 
-### 프론트
+<details  style="margin-left: 5px;">
+<summary><b>프론트 프로젝트 구조</b></summary>
+<div>
 
 ```
 📦src
@@ -190,7 +192,12 @@
  ┗ 📜router.jsx
 ```
 
-### 백엔드
+</div>
+</details>
+<br>
+<details  style="margin-left: 5px;">
+<summary><b>백엔드 프로젝트 구조</b></summary>
+<div>
 
 ```
 📦airlingo
@@ -264,6 +271,9 @@
  ┃ ┗ 📂util
  ┗ 📜AirlingoApplication.java
 ```
+
+</div>
+</details>
 
 ---
 ## 📝 설계 문서
@@ -609,8 +619,8 @@ docker run -p 4443:4443 --rm -e OPENVIDU_SECRET=MY_SECRET openvidu/openvidu-dev:
 ### UCC
 https://youtu.be/8numB_R7RLE
 
-### 데모
-
+### 시연 영상
+https://www.youtube.com/watch?v=WcZEspXgMLA
 
 ### PPT
 
