@@ -31,12 +31,14 @@ const useOpenVidu = () => {
             if (event.stream.typeOfVideo === "CAMERA") {
                 const subscriber = cameraSession.subscribe(event.stream, undefined);
                 setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-                await cameraSession.subscribeToSpeechToText(
+                console.log(subscriber);
+                const response = await cameraSession.subscribeToSpeechToText(
                     event.stream,
                     languageCodeConfig.find(
                         (cur) => cur.languageId === otherUser.userStudyLanguageId,
                     ).languageCode,
                 );
+                console.log(response);
             }
         });
 
@@ -71,8 +73,11 @@ const useOpenVidu = () => {
         });
 
         cameraSession.on("exception", async (event) => {
+            console.log("shit : ", event.name);
+
             if (event.name === "SPEECH_TO_TEXT_DISCONNECTED") {
                 let speechToTextReconnected = false;
+                console.log("STT Disconnect!!!!");
                 while (!speechToTextReconnected) {
                     await new Promise((r) => {
                         setTimeout(r, 1000);
