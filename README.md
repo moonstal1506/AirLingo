@@ -76,15 +76,194 @@
 ---
 ## 📂 파일 구조
 
+### 프론트
+
+```
+📦src
+ ┣ 📂api
+ ┣ 📂assets
+ ┃ ┣ 📂fonts
+ ┃ ┣ 📂icons
+ ┃ ┣ 📂imgs
+ ┃ ┃ ┣ 📂profiles
+ ┃ ┗ 📂styles
+ ┣ 📂components
+ ┃ ┣ 📂buttonMenu
+ ┃ ┣ 📂chatList
+ ┃ ┣ 📂common
+ ┃ ┃ ┣ 📂button
+ ┃ ┃ ┣ 📂container
+ ┃ ┃ ┣ 📂dropdown
+ ┃ ┃ ┣ 📂input
+ ┃ ┃ ┣ 📂overlay
+ ┃ ┃ ┣ 📂profile
+ ┃ ┃ ┣ 📂slideMenu
+ ┃ ┃ ┣ 📂tab
+ ┃ ┃ ┗ 📂tooltip
+ ┃ ┣ 📂dialoglist
+ ┃ ┣ 📂drawing
+ ┃ ┣ 📂grade
+ ┃ ┣ 📂header
+ ┃ ┣ 📂langList
+ ┃ ┣ 📂loading
+ ┃ ┣ 📂modal
+ ┃ ┃ ┣ 📂login
+ ┃ ┃ ┣ 📂match
+ ┃ ┃ ┃ ┣ 📂matchhome
+ ┃ ┃ ┣ 📂meeting
+ ┃ ┃ ┣ 📂mypage
+ ┃ ┃ ┣ 📂wordBook
+ ┃ ┣ 📂musicPlayer
+ ┃ ┣ 📂profileBar
+ ┃ ┣ 📂progressBar
+ ┃ ┣ 📂ScriptEditor
+ ┃ ┣ 📂starRate
+ ┃ ┣ 📂validationList
+ ┃ ┗ 📂videoFrame
+ ┣ 📂config
+ ┣ 📂features
+ ┃ ┣ 📂Meeting
+ ┃ ┗ 📂User
+ ┣ 📂hooks
+ ┃ ┣ 📂whiteboard
+ ┣ 📂Layout
+ ┣ 📂pages
+ ┃ ┣ 📂Error
+ ┃ ┣ 📂home
+ ┃ ┣ 📂login
+ ┃ ┣ 📂match
+ ┃ ┣ 📂meeting
+ ┃ ┃ ┣ 📂screen
+ ┃ ┃ ┣ 📂slide
+ ┃ ┣ 📂mypage
+ ┃ ┣ 📂signup
+ ┣ 📂store
+ ┣ 📂utils
+ ┣ 📜App.jsx
+ ┣ 📜main.jsx
+ ┗ 📜router.jsx
+```
+
+### 백엔드
+
+```
+📦airlingo
+┣ 📂domain
+ ┃ ┣ 📂chat
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┗ 📂service
+ ┃ ┣ 📂content
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┃ ┗ 📂response
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┗ 📂service
+ ┃ ┣ 📂language
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┃ ┗ 📂response
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┗ 📂service
+ ┃ ┣ 📂matching
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┣ 📂response
+ ┃ ┃ ┗ 📂service
+ ┃ ┣ 📂report
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┃ ┗ 📂response
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┗ 📂service
+ ┃ ┣ 📂study
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┃ ┗ 📂response
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┗ 📂service
+ ┃ ┣ 📂user
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┃ ┗ 📂response
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┗ 📂service
+ ┃ ┗ 📂word
+ ┃ ┃ ┣ 📂controller
+ ┃ ┃ ┣ 📂dto
+ ┃ ┃ ┃ ┣ 📂request
+ ┃ ┃ ┃ ┗ 📂response
+ ┃ ┃ ┣ 📂entity
+ ┃ ┃ ┣ 📂repository
+ ┃ ┃ ┗ 📂service
+ ┣ 📂global
+ ┃ ┣ 📂config
+ ┃ ┣ 📂entity
+ ┃ ┣ 📂exception
+ ┃ ┣ 📂handler
+ ┃ ┣ 📂openvidu
+ ┃ ┣ 📂rabbitmq
+ ┃ ┣ 📂response
+ ┃ ┗ 📂util
+ ┗ 📜AirlingoApplication.java
+```
 
 ---
 ## 📝 설계 문서
 
 ### ERD
+<details>
+<summary>ERD</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/SJKl2Mj32.png" alt="ERD 페이지"/>
+</div>
+</details>
+
 
 ### API
+<details>
+<summary>전체 문서</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/S1OrpMsn2.png" alt="전체 문서 페이지"/>
+</div>
+</details>
+
+<details>
+<summary>Request</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/SJ3r6Mihh.png" alt="Request 페이지"/>
+</div>
+</details>
+
+
+
+<details>
+<summary>Response</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/H1J86Gjh3.png" alt="Response 페이지"/>
+</div>
+</details> 
+
 
 ### FIGMA
+
+<details>
+<summary>FIGMA</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/BkGm0zs23.png" alt="피그마 페이지"/>
+</div>
+</details> 
 
 
 ---
