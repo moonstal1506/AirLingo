@@ -887,7 +887,7 @@ const ChatInput = styled.input`
 const SliderButtonWrapper = styled.div`
     position: fixed;
     top: -4%;
-    right: ${({ isOpen }) => (isOpen ? "28%" : "1%")};
+    right: ${({ isOpen }) => (isOpen ? "calc(1% + 420px)" : "1%")};
     transition: 0.3s ease-in-out;
     z-index: 31;
 `;
