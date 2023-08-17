@@ -1,5 +1,5 @@
 # AirLingo
-<img src="https://hackmd.io/_uploads/BkhSOei33.png" width="100%" height="200px"/>
+<img src="https://hackmd.io/_uploads/BkhSOei33.png" width="100%" height="300px"/>
 
 
 ## 📖목차
