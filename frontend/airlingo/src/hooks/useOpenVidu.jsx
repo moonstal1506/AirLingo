@@ -27,18 +27,25 @@ const useOpenVidu = () => {
     async function joinSession() {
         const cameraSession = OV.current.initSession();
         const screenSession = shareOV.current.initSession();
-        cameraSession.on("streamCreated", async (event) => {
-            if (event.stream.typeOfVideo === "CAMERA") {
-                const subscriber = cameraSession.subscribe(event.stream, undefined);
-                setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
-                await cameraSession.subscribeToSpeechToText(
-                    event.stream,
-                    languageCodeConfig.find(
-                        (cur) => cur.languageId === otherUser.userStudyLanguageId,
-                    ).languageCode,
-                );
-            }
-        });
+        setTimeout(() =>
+            cameraSession.on(
+                "streamCreated",
+                async (event) => {
+                    if (event.stream.typeOfVideo === "CAMERA") {
+                        const subscriber = cameraSession.subscribe(event.stream, undefined);
+                        setSubscribers((prevSubscribers) => [...prevSubscribers, subscriber]);
+
+                        await cameraSession.subscribeToSpeechToText(
+                            event.stream,
+                            languageCodeConfig.find(
+                                (cur) => cur.languageId === otherUser.userStudyLanguageId,
+                            ).languageCode,
+                        );
+                    }
+                },
+                2000,
+            ),
+        );
 
         screenSession.on("streamCreated", (event) => {
             if (event.stream.typeOfVideo === "SCREEN") {
