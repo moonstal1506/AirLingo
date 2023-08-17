@@ -67,6 +67,9 @@ export const MeetingSlice = createSlice({
             state.scriptData = {};
             state.screenMode = "FreeTalk";
             state.chatList = [];
+            state.myData = {};
+            state.isShareOn = false;
+            state.didReport = false;
         },
         removeScriptData: (state) => {
             state.scriptData = {};
