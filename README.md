@@ -68,8 +68,54 @@
 ---
 ## 🛠 기술 스택
 
-![](https://hackmd.io/_uploads/By33dGj2h.png)
-![](https://hackmd.io/_uploads/SJJpOzo33.png)
+### 기술 스택
+<div align=center>
+    <img src="https://img.shields.io/badge/-GitLab-FCA121?style=flat-square&logo=gitlab&logoColor=white">
+    <img src="https://img.shields.io/badge/-Jira-0052CC?style=flat-square&logo=jira&logoColor=white">
+    <img src="https://img.shields.io/badge/-Notion-000000?style=flat-square&logo=notion&logoColor=white">
+    <img src="https://img.shields.io/badge/-Figma-F24E1E?style=flat-square&logo=figma&logoColor=white">
+    <img src="https://img.shields.io/badge/-IntelliJ_IDEA-000000?style=flat-square&logo=intellij-idea&logoColor=white">
+    <img src="https://img.shields.io/badge/-VSCode-007ACC?style=flat-square&logo=visual-studio-code&logoColor=white">
+<img src="https://img.shields.io/badge/-Mattermost-00AEEF?style=flat-square">
+    <img src="https://img.shields.io/badge/-Webex-00B140?style=flat-square">
+    <img src="https://img.shields.io/badge/-Node.js-339933?style=flat-square&logo=node.js&logoColor=white">
+    <img src="https://img.shields.io/badge/-React-61DAFB?style=flat-square&logo=react&logoColor=white">
+    <img src="https://img.shields.io/badge/-React_Router-CA4245?style=flat-square&logo=react-router&logoColor=white">
+    <img src="https://img.shields.io/badge/-Prop_Types-FFA500?style=flat-square">
+    <img src="https://img.shields.io/badge/-Redux-764ABC?style=flat-square&logo=redux&logoColor=white">
+<img src="https://img.shields.io/badge/-Redux_Toolkit-764ABC?style=flat-square&logo=redux&logoColor=white">
+<img src="https://img.shields.io/badge/-Redux_Persist-764ABC?style=flat-square&logo=redux&logoColor=white">
+    <img src="https://img.shields.io/badge/-Axios-0057B8?style=flat-square&logo=axios&logoColor=white">
+    <img src="https://img.shields.io/badge/-Emotion.js-DB7093?style=flat-square&logo=emotion&logoColor=white">
+    <img src="https://img.shields.io/badge/-Openvidu-4078C0?style=flat-square">
+     <img src="https://img.shields.io/badge/-YJS-000000?style=flat-square">
+    <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=springboot&logoColor=white">
+    <img src="https://img.shields.io/badge/-MySQL-4479A1?style=flat-square&logo=mysql&logoColor=white">
+    <img src="https://img.shields.io/badge/-Redis-DC382D?style=flat-square&logo=redis&logoColor=white">
+    <img src="https://img.shields.io/badge/-Java-007396?style=flat-square&logo=java&logoColor=white">
+    <img src="https://img.shields.io/badge/-JPA-FF5722?style=flat-square">
+     <img src="https://img.shields.io/badge/-RabbitMQ-FF6600?style=flat-squar">
+    <img src="https://img.shields.io/badge/-WebSocket-00BFFF?style=flat-square">
+    <img src="https://img.shields.io/badge/-StompJS-008000?style=flat-square">
+    <img src="https://img.shields.io/badge/-AWS_EC2-232F3E?style=flat-square&logo=amazon-aws&logoColor=white">
+    <img src="https://img.shields.io/badge/-Docker-2496ED?style=flat-square&logo=docker&logoColor=white">
+    <img src="https://img.shields.io/badge/-NGINX-269539?style=flat-square&logo=nginx&logoColor=white">
+    <img src="https://img.shields.io/badge/-Jenkins-D24939?style=flat-square&logo=jenkins&logoColor=white">
+    <img src="https://img.shields.io/badge/-AWS_S3-569A31?style=flat-square&logo=amazon-s3&logoColor=white">
+    <img src="https://img.shields.io/badge/-Lambda-FF9900?style=flat-square">
+</div>
+
+
+### 상세 기술 스택 
+
+<details>
+  <summary>더보기</summary>
+    <div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/SkELSXohh.png"/>
+        <img     src="https://hackmd.io/_uploads/S1YDHXo3n.png"/>
+</div>
+    
+</details>
 
 
 
@@ -495,7 +541,7 @@
 ---
 ## ❤ 팀 소개
 
-![팀로고](https://hackmd.io/_uploads/By6SnGi2h.png)
+<img src="https://hackmd.io/_uploads/By6SnGi2h.png" width="300px" height="300px" />
 
 
 ### 팀명
