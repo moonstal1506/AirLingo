@@ -420,17 +420,73 @@
 ## 📄 문서 정리
     
 ### 회의록
+<details>
+<summary>페이지 전체 모습</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/rk5Okmoh2.png" alt="전체 페이지"/>
+    <img     src="https://hackmd.io/_uploads/HJ9hyXsn2.png" alt="전체 페이지"/>
+    <img     src="https://hackmd.io/_uploads/BJi01mj3n.png" alt="전체 페이지"/>
+</div>
+</details>
+
+<details>
+<summary>기획 회의록 페이지 세부 모습</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/HJoie7j33.png" alt="기획 회의록 페이지 세부 모습"/>
+</div>
+</details>
+<details>
+<summary>스크럼 페이지 세부 모습</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/HyWDZmi3n.png" alt="스크럼 페이지 세부 모습"/>
+</div>
+</details>
+<details>
+<summary>스프린트 페이지 세부 모습</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/S1QCW7j32.png" alt="스프린트 페이지 세부 모습"/>
+</div>
+</details>
     
 ### 버그 리포트
+<details>
+<summary>페이지 전체 모습</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/ryAtAzi3n.png" alt="전체 페이지"/>
+</div>
+</details>
+<details>
+<summary>세부 페이지 모습</summary>
+<div markdown="1">
+    <img src="https://hackmd.io/_uploads/HkY1y7sh3.png" alt="전체 페이지"/>
+</div>
+</details>
+
+
     
 ### 지식 공유
+<details>
+<summary>페이지 전체 모습</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/BkMa3Gs3h.png    " alt="전체 페이지"/>
+</div>
+</details>
+<details>
+<summary>세부 페이지 모습</summary>
+<div markdown="1">       
+    <img     src="https://hackmd.io/_uploads/Hyfgpzs3n.png" alt="전체 페이지"/>
+</div>
+</details>
+
 
 
 ---
 ## 💻 구동 방법
 
+
 ---
 ## 💾 결과물
+    
 
 ### UCC
 ### 데모
@@ -439,6 +495,9 @@
 ---
 ## ❤ 팀 소개
 
+![팀로고](https://hackmd.io/_uploads/By6SnGi2h.png)
+
+
 ### 팀명
 >📢 안녕하세요! 삼성 청년 소프트웨어 아카데미(SSAFY) 서울 3반 교육생으로 조직된 프로젝트 팀 ‘**개발자들**’입니다. 프로젝트 진행 과정에서 발생하는 많은 문제를 팀원 간 공유하고 해결책을 모색하면서 함께 성장하는 기회로 삼겠습니다. 감사합니다.
 
@@ -446,13 +505,13 @@
 ### 팀명의 의미
 각종 영화나 문화 콘텐츠에서 사용하는 ‘~들’의 표현을 사용해 **미래의 개발자를 꿈꾸는 여섯 명의 팀원이 모였다**는 의미를 담았습니다.
 
-### 프론트
-|  |  |
-| --------- | -------- |
-| [고건](https://github.com/Crassula1994)| [김수환](https://github.com/suhwan2004) |
+### Frontend
+|![](https://hackmd.io/_uploads/SJJgizo3h.png)|![](https://hackmd.io/_uploads/BkHbjGs33.png)|
+|:---------:|:--------:|
+| [고건](https://github.com/Crassula1994)| [김수환](https://github.com/suhwan2004)|
 
-### 백
+### Backend
     
-|  |  |  |  |
-| --------- | -------- | --------- | -------- |
-| [고건](https://github.com/Crassula1994)| [김수환](https://github.com/suhwan2004) |
+|![](https://hackmd.io/_uploads/SyeUsMjnh.png)|![](https://hackmd.io/_uploads/H1zwjMonh.png)| ![](https://hackmd.io/_uploads/Sk3djMinh.png)| ![](https://hackmd.io/_uploads/SyiQhGi2h.png)|
+|:---------:|:--------:|:---------:|:--------:|
+| [김하림](https://github.com/Haaarimmm)| [문수정]() | [박시균](https://github.com/SSuSG)| [오유정](https://github.com/yj0111) |
