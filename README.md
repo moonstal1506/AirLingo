@@ -62,9 +62,15 @@
 ---
 ## 🏗️ 아키텍쳐
 
+![](https://hackmd.io/_uploads/Bkgn_Goh2.png)
+
 
 ---
 ## 🛠 기술 스택
+
+![](https://hackmd.io/_uploads/By33dGj2h.png)
+![](https://hackmd.io/_uploads/SJJpOzo33.png)
+
 
 
 ---
