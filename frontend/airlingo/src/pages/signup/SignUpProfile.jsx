@@ -50,11 +50,9 @@ function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
             getNicknameIsDuplicated({
                 responseFunc: {
                     200: () => {
-                        console.log("닉네임이 중복되지 않았습니다!");
                         setNickname((prev) => ({ ...prev, possible: true }));
                     },
                     431: () => {
-                        console.log("이미 사용 중인 닉네임입니다!");
                         setNickname((prev) => ({ ...prev, possible: false }));
                     },
                 },
@@ -70,11 +68,9 @@ function SignUpProfile({ totalState, onHandlePrevStep, onHandleNextStep }) {
             getEmailIsDuplicated({
                 responseFunc: {
                     200: () => {
-                        console.log("이메일이 중복되지 않았습니다!");
                         setEmail((prev) => ({ ...prev, possible: true }));
                     },
                     430: () => {
-                        console.log("이미 사용 중인 이메일입니다!");
                         setEmail((prev) => ({ ...prev, possible: false }));
                     },
                 },

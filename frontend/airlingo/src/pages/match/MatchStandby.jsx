@@ -24,28 +24,22 @@ function DeviceSetup() {
         }, 1000);
 
         // 권한 요청
-        navigator.mediaDevices
-            .getUserMedia({ audio: true, video: true })
-            .then((stream) => {
-                // 장치 목록 가져오기
-                navigator.mediaDevices
-                    .enumerateDevices()
-                    .then((device) => {
-                        // 스트림 중지
-                        stream.getTracks().forEach((track) => track.stop());
+        navigator.mediaDevices.getUserMedia({ audio: true, video: true }).then((stream) => {
+            // 장치 목록 가져오기
+            navigator.mediaDevices.enumerateDevices().then((device) => {
+                // 스트림 중지
+                stream.getTracks().forEach((track) => track.stop());
 
-                        // 장치 설정
-                        setDevices(device);
-                        setSelectedAudioInputDevice(
-                            device.find((cur) => cur.kind === "audioinput").deviceId,
-                        );
-                        setSelectedAudioOutputDevice(
-                            device.find((cur) => cur.kind === "audiooutput").deviceId,
-                        );
-                    })
-                    .catch((err) => console.log(err));
-            })
-            .catch((err) => console.log(err));
+                // 장치 설정
+                setDevices(device);
+                setSelectedAudioInputDevice(
+                    device.find((cur) => cur.kind === "audioinput").deviceId,
+                );
+                setSelectedAudioOutputDevice(
+                    device.find((cur) => cur.kind === "audiooutput").deviceId,
+                );
+            });
+        });
 
         return () => {
             clearInterval(interval);
@@ -54,15 +48,12 @@ function DeviceSetup() {
 
     // 비디오 미리보기 설정
     useEffect(() => {
-        navigator.mediaDevices
-            .getUserMedia({ video: true })
-            .then((stream) => {
-                const video = videoRef.current;
-                if (video) {
-                    video.srcObject = stream;
-                }
-            })
-            .catch((err) => console.log(err));
+        navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
+            const video = videoRef.current;
+            if (video) {
+                video.srcObject = stream;
+            }
+        });
 
         // cleanup function
         return () => {

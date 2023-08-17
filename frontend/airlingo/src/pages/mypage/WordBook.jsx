@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 import styled from "@emotion/styled";
@@ -201,7 +202,7 @@ function WordBook() {
                 routeTo,
             });
         } catch (error) {
-            // console.error("삭제 중 오류가 발생했습니다.", error);
+            throw error;
         }
     };
 
@@ -242,7 +243,7 @@ function WordBook() {
                     routeTo,
                 });
             } catch (error) {
-                // console.error("삭제 중 오류가 발생했습니다.", error);
+                throw error;
             }
         }
     };

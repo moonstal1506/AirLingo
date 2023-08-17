@@ -1,3 +1,4 @@
+/* eslint-disable no-useless-catch */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-shadow */
@@ -125,20 +126,15 @@ function Meeting() {
 
     // 세션 연결 함수
     async function fetchToken() {
-        try {
-            const response = await postOpenviduToken({
-                responseFunc: {
-                    200: () => {},
-                    400: () => {},
-                },
-                data: { sessionId },
-                routeTo,
-            });
-            return response.data.data;
-        } catch (error) {
-            console.error("Failed to fetch token", error);
-            throw error;
-        }
+        const response = await postOpenviduToken({
+            responseFunc: {
+                200: () => {},
+                400: () => {},
+            },
+            data: { sessionId },
+            routeTo,
+        });
+        return response.data.data;
     }
 
     async function initPublisher() {
@@ -154,7 +150,6 @@ function Meeting() {
                 mirror: false,
             });
         } catch (error) {
-            console.error("Failed to init publisher", error);
             throw error;
         }
     }
@@ -166,7 +161,6 @@ function Meeting() {
                 mirror: false,
             });
         } catch (error) {
-            console.error("Failed to init screenPublisher", error);
             throw error;
         }
     }
@@ -304,7 +298,6 @@ function Meeting() {
     };
 
     function handleScreenShareEndRequest() {
-        console.log("상대방이 화면 공유를 종료하였습니다.");
         setShareSubscribers([]);
     }
 
@@ -346,7 +339,6 @@ function Meeting() {
                 dispatch(addChatList({ chat: jsonData }));
                 break;
             default:
-                console.log("없는 이벤트타입입니다.");
         }
     }
     async function connectSession() {
@@ -362,23 +354,15 @@ function Meeting() {
                     setPublisher(curPublisher);
                 })
                 .catch((error) => {
-                    console.error("Error Connecting to OpenVidu", error);
+                    throw error;
                 });
 
             shareSession
                 .connect(shareToken, { clientData: userNickname })
-                .then(() => {
-                    console.log("화면 공유를 위한 세션이 연결되었습니다!");
-                })
-                .catch((error) =>
-                    console.warn(
-                        "화면 공유를 위한 세션 연결 중에 다음과 같은 에러가 발생했습니다: ",
-                        error.code,
-                        error.message,
-                    ),
-                );
+                .then(() => {})
+                .catch(() => {});
         } catch (error) {
-            console.error("Error in connectSession", error);
+            throw error;
         }
     }
 
@@ -391,7 +375,6 @@ function Meeting() {
         shareSession.unpublish(sharePublisher);
         dispatch(addIsShareOn({ isShareOn: false }));
         setShareSubscribers([]);
-        console.log("사용자가 화면공유를 종료하였습니다.");
     }
 
     async function publishScreenShare() {
@@ -402,7 +385,6 @@ function Meeting() {
                 .getMediaStream()
                 .getVideoTracks()[0]
                 .addEventListener("ended", () => {
-                    console.log("사용자가 화면공유를 종료하였습니다.");
                     shareSession.unpublish(curSharePublisher);
                     dispatch(addIsShareOn({ isShareOn: false }));
                 });
@@ -411,7 +393,6 @@ function Meeting() {
         curSharePublisher.once("accessDenied", () => {
             unpublishScreenShare();
             setActiveButton(null);
-            console.warn("화면공유를 위한 접근이 거부되었습니다.");
         });
         setSharePublisher(curSharePublisher);
     }

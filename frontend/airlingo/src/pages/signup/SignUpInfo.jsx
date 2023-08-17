@@ -44,11 +44,9 @@ function SignUpInfo({ totalState, onHandlePrevStep, onHandleNextStep }) {
             getLoginIdIsDuplicated({
                 responseFunc: {
                     200: () => {
-                        console.log("아이디가 중복되지 않았습니다!");
                         setId((prev) => ({ ...prev, possible: true }));
                     },
                     432: () => {
-                        console.log("이미 사용 중인 아이디입니다!");
                         setId((prev) => ({ ...prev, possible: false }));
                     },
                 },

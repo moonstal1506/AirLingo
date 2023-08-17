@@ -1,3 +1,5 @@
+/* eslint-disable no-useless-catch */
+/* eslint-disable no-alert */
 /* eslint-disable react-hooks/exhaustive-deps */
 import styled from "@emotion/styled";
 import { useState, useRef, useEffect } from "react";
@@ -274,7 +276,7 @@ function BasicInfoPage1() {
                 routeTo,
             });
         } catch (error) {
-            console.error("Error updating user image:", error);
+            throw error;
         }
     };
 

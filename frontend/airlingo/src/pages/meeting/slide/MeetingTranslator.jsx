@@ -37,7 +37,7 @@ function MeetingTranslator() {
                         setLanguageList(
                             response.data.data.map((language) => formatLanguage(language)),
                         ),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
                 routeTo,
             });
@@ -60,7 +60,7 @@ function MeetingTranslator() {
             getTranslateResult({
                 responseFunc: {
                     200: (response) => setTranslateResult(response.data.data),
-                    400: (response) => console.log(response),
+                    400: () => {},
                 },
                 data: {
                     source: translatorConfig[sourceLang.id],

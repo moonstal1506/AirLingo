@@ -12,7 +12,6 @@ function MatchResult() {
     const { otherUser } = useSelector(selectMeeting);
     const [time, setTime] = useState(10);
     const { routeTo } = useRouter();
-    console.log(otherUser);
     useEffect(() => {
         if (time === 0) {
             routeTo("/matchstandby");

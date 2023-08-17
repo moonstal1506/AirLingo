@@ -1,3 +1,4 @@
+/* eslint-disable no-empty */
 /* eslint-disable no-await-in-loop */
 /* eslint-disable react-hooks/exhaustive-deps */
 import { useEffect, useState, useRef } from "react";
@@ -84,9 +85,7 @@ const useOpenVidu = () => {
                             ).languageCode,
                         );
                         speechToTextReconnected = true;
-                    } catch (error) {
-                        console.warn("Speech to Text service still unavailable. Retrying again...");
-                    }
+                    } catch (error) {}
                 }
             }
         });

@@ -56,23 +56,12 @@ function CalendarPage() {
         setGridCountByDate({ ...emptyGridCountByDate });
     }, [dailyGridList]);
 
-    // 날짜 포맷팅 함수
-    const formatDate = (date) => {
-        const options = { year: "numeric", month: "2-digit", day: "2-digit" };
-        return date.toLocaleDateString("ko-KR", options).replace(/. /g, "-").slice(0, -1);
-    };
-
-    const handleDayClick = (value) => {
-        console.log("Clicked day:", formatDate(value));
-    };
-
     return (
         <CalendarContainer>
             <Calendar
                 onChange={setSelectedDate}
                 value={selectedDate}
                 locale="en-US"
-                onClickDay={handleDayClick}
                 id="Calendar"
                 tileClassName={({ date }) => {
                     const formattedDate = moment(date).format("DD-MM-YYYY");
