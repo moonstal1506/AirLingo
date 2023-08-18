@@ -50,14 +50,16 @@
 ---
 ## 🎉 프로젝트 기획
 
-![](https://hackmd.io/_uploads/SJe-2B2h3.png)
-![](https://hackmd.io/_uploads/rkzfnSn23.png)
+<img src="https://hackmd.io/_uploads/SJe-2B2h3.png" alt="프로젝트기획"/>
+<img src="https://hackmd.io/_uploads/rkzfnSn23.png" alt="프로젝트기획"/>
+
 
 ---
 ## 🔑 주요 기능
 
-![](https://hackmd.io/_uploads/S1btor2nh.png)
-![](https://hackmd.io/_uploads/rkxT9sBn23.png)
+<img src="https://hackmd.io/_uploads/S1btor2nh.png" alt="주요기능"/>
+<img src="https://hackmd.io/_uploads/rkxT9sBn23.png" alt="주요기능"/>
+
 
 ---
 ## 🖥 서비스 화면
