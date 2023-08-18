@@ -50,14 +50,14 @@
 ---
 ## 🎉 프로젝트 기획
 
-<img src="https://hackmd.io/_uploads/Sy-Uurn2h.png">
-<img src="https://hackmd.io/_uploads/r1xduHhnh.png">
+![](https://hackmd.io/_uploads/SJe-2B2h3.png)
+![](https://hackmd.io/_uploads/rkzfnSn23.png)
 
 ---
 ## 🔑 주요 기능
 
-<img src="https://hackmd.io/_uploads/r1A9_Snhn.png">
-<img src="https://hackmd.io/_uploads/B163_rn3h.png">
+![](https://hackmd.io/_uploads/S1btor2nh.png)
+![](https://hackmd.io/_uploads/rkxT9sBn23.png)
 
 ---
 ## 🖥 서비스 화면
