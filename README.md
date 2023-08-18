@@ -144,7 +144,7 @@
 ---
 ## 🏗️ 아키텍쳐
 
-![](https://hackmd.io/_uploads/Bkgn_Goh2.png)
+<img alt="Group 8" src="https://github.com/CalenDev/calendev/assets/60723373/893a5a73-cc6d-4b80-9842-940e4c3d46a6" />
 
 
 ---
