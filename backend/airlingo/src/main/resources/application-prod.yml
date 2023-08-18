@@ -1,0 +1,25 @@
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: create #create update none
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/airlingo?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=Asia/Seoul&characterEncoding=UTF-8
+    username: airlingo
+    password: 1234
+  rabbitmq:
+    host: localhost
+    port: 5432
+    username: admin
+    password: admin
+# redis 설정
+server:
+  data:
+    redis:
+      host: localhost
+      port: 6379
+      timeout: 5000 # 서버와의 연결 시도 및 응답 대기 시간 최대 5초
+
+#openvidu
+openviduUrl: https://airlingo.site
+openviduSecret: airlingo

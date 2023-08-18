@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "airlingo-395807",
+  "private_key_id": "df08ac1029547489994eae1e6ee79bde5228b28f",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvgIBADANBgkqhkiG9w0BAQEFAASCBKgwggSkAgEAAoIBAQCwNgMG0gZFjT5I\nyAfrkLwdRiezmrFDQdAQF3IkeO9tViwj3rotxSHb9/H95rEHYn62uiRxA5+fPsiS\nvD4dSbypy1z50a8s02s2xubFJlRow/Y/NOFEUZcyNP2TAaI6Jjne+rkXtJsk0xvQ\nkhK+sil8fn8NUNwKSZj0EiXZoCLo4bBHC4nMmJixUtciMnchic6Js4oNNglrFV/h\nKCJfYA/jWmJPh00XnYn8L16TcPUShUqRRLgsitYaU8DvClRg77rdt14/gLBhcW61\nbnyZdJiwcftdIj4TLNMOnAKfgV6k5fuLv5e8CkHy6h+yefKnqjQ72Gl+vfXlZc8K\nOL3Vh3yTAgMBAAECggEAHz+UzdLU9eSUVQfUD7w8/9v/EmSuZsT3BsOBpGIl43fS\noBHRZmh9FqsjqOkOH8chvXnJGJmR5wWVQCBNy5fV8y5zMII01HgxnScsqW2grmuB\n8beI8zqc23R2O2mgwTsiLB6+UCvhD2i4mAYveM3TeZZdJZlfTBu9GhtVxwAU8MM5\niHo3ElYgLFywghhDY7M/7O+cs/ZHRdYItjr0joiJfzvyyu/4trn6kJX22bXKkTkI\nQNrGUVlf015UMF1yqgUnopZRh30gejZhk9XZKs3g4dw+VEIcqDbCfe+Iqh1dupTK\nhoTorg4xtx94Scrvbn8dL4HtNv9R22GHU0YNMcDxYQKBgQDnohNEF4fss0laKC04\n7Y62GLQn0/bU3iXCQeKmCLm3iU/cXodZDNF9MuvPjtccXoVTTEOZ/kXhxwr6Rhpx\nlr/LPq6JguS6z7BcetvFvButw6uphKTI67BhuqkM217Bmsg2Wd1dei/+3e51SdLx\nJY+AKr/e0L+DZTyINc1zj42LaQKBgQDCv2hx1m6VpWFyE/OWqkC1qtnmv6Kb2wQA\nNcS90IYvTE7wZr2G53NAflwb/8jvPJPHpjWxaGJEy9uTMGmKmsnp5lwMEsPfjoTx\nDRPcE4LdRheYirlwhXeJf5s8Cma5loGSuUZ4C1aLY+cEYlNdHBs9McJ804Q4utru\ntA2IN9T0mwKBgCm2fDW07xtnJfyAY7Ruw1ZzmG3btAWdg7s51jEEPT2aErGirEkT\nD961/tU/6ekH9IaNo1bl/XutNoLfgP+XoC5fuVq2Ia6qnB3rWgx/1ZQzOoSqiGpO\nV1MiJDNWhffjgc6X3E9rI52IJdslUkFu/CqeiDL98J8e6gm1dqwq29iRAoGBAKz2\nju68Ag9KiNdmvOtNXpd6nHkCLou54z3Eg24KK4MKhPmiZiXQnl3jXC9J584CwUWK\naxmbmdt8KxH452PAwh/JBmt6pxiAXbYxZTgK5ClePUqvuq8i+t3Vxat3mXCvKXmE\nr/+iIkU+f0k3gs6pTc/1x8RRn5c67YMfyvz2iV6NAoGBAI6W0a2NLeSuNUhbEwpe\n+XcsTNBJlJL7JNibTPoeOpbiV94guBFvwh/wWpHQaPTLcVTBMODzv7QcDx4oj04r\nRPuyi0w6dAjCs6lQoZUL+hJIARw3OOF/6yMToYkIIQILwEWIca4gbaR26FdLVGbE\nsIZJe0HXsbqrqnbOIWv19YpX\n-----END PRIVATE KEY-----\n",
+  "client_email": "airlingo@airlingo-395807.iam.gserviceaccount.com",
+  "client_id": "111094561497558721705",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/airlingo%40airlingo-395807.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

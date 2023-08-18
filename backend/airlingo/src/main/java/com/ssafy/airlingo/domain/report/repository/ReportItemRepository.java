@@ -9,5 +9,4 @@ import com.ssafy.airlingo.domain.report.entity.ReportItem;
 
 @Repository
 public interface ReportItemRepository extends JpaRepository<ReportItem, Long> {
-	public List<ReportItem> findAll();
 }

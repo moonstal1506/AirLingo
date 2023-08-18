@@ -1,7 +1,12 @@
 package com.ssafy.airlingo.domain.study.entity;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
+import com.ssafy.airlingo.domain.language.entity.Language;
+import com.ssafy.airlingo.domain.study.dto.response.ScriptResponseDto;
+import com.ssafy.airlingo.domain.study.dto.response.StudyResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.AttributeOverride;
@@ -38,4 +43,35 @@ public class Study extends BaseTimeEntity {
 	@OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
 	@Column(nullable = false)
 	private List<Script> scripts;
+
+	@OneToMany(mappedBy = "study", cascade = CascadeType.ALL, orphanRemoval = true)
+	@Column(nullable = false)
+	private List<UserStudy> userStudies;
+
+	public StudyResponseDto toDto(LanguageDto nativeLanguageDto, String userNickname, Language language) {
+		return StudyResponseDto.builder()
+			.studyId(this.getStudyId())
+			.studyTime(this.getStudyTime())
+			.createdDate(this.getCreatedDate())
+			.modifiedDate(this.getModifiedDate())
+			.nativeLanguageDto(nativeLanguageDto)
+			.imageUrl(language.getImageUrl())
+			.languageKorName(language.getLanguageKorName())
+			.languageEngName(language.getLanguageEngName())
+			.scripts(scripts.stream().map(script -> ScriptResponseDto.builder()
+				.scriptId(script.getScriptId())
+				.scriptContent(script.getScriptContent())
+				.scriptUrl(script.getScriptUrl())
+				.createdDate(script.getCreatedDate())
+				.modifiedDate(script.getModifiedDate())
+				.korCard(script.getCard().getCardKor())
+				.engCard(script.getCard().getCardEng())
+				.build()).collect(Collectors.toList()))
+			.partnerNickName(userNickname)
+			.build();
+	}
+
+	public void updateStudyTime(int studyTime) {
+		this.studyTime = studyTime;
+	}
 }

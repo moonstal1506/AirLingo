@@ -2,8 +2,8 @@ package com.ssafy.airlingo.domain.user.dto.response;
 
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.ssafy.airlingo.domain.language.dto.request.LanguageDto;
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
+import com.ssafy.airlingo.domain.language.dto.response.MileageGrade;
 import com.ssafy.airlingo.domain.language.entity.Language;
 import com.ssafy.airlingo.domain.user.entity.UserState;
 
@@ -29,14 +29,13 @@ public class UserResponseDto {
 	private String userBio;
 	private int userMileage;
 	private int userTotalMileage;
-	private int userRating;
-	private int userTotalRating;
+	private MileageGrade userMileageGrade;
+	private double userRating;
+	private double userTotalRating;
 	private int userStudyCount;
 	private int userComplain;
 	private int userPassportStyle;
 	private UserState userState;
-	@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 	private Language userNativeLanguage;
 	private List<LanguageDto> userLanguages;
-
 }

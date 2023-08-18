@@ -1,0 +1,57 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+.idea
+.DS_*
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Tests
+coverage
+.nyc_output
+
+# IDEs and editors
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime*
+
+# production
+build
+
+# misc
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+#Custom role
+**/*.backup.*
+**/*.back.*
+bower_components
+psd
+thumb
+sketch

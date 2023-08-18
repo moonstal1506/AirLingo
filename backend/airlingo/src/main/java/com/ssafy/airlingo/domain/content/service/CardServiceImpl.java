@@ -2,8 +2,10 @@ package com.ssafy.airlingo.domain.content.service;
 
 import java.util.*;
 import java.util.stream.Collectors;
+
 import com.ssafy.airlingo.domain.content.dto.response.CardCodeResponseDto;
 import com.ssafy.airlingo.domain.content.entity.Card;
+
 import org.springframework.stereotype.Service;
 
 import com.ssafy.airlingo.domain.content.dto.response.CardResponseDto;
@@ -16,11 +18,12 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class CardServiceImpl {
+public class CardServiceImpl implements CardService {
 
 	private final CardRepository cardRepository;
 
-	public CardResponseDto getCard(String stringCardCode , String languageCode){
+	@Override
+	public CardResponseDto getCard(String stringCardCode, String languageCode) {
 		log.info("CardService_getCard || 대화 대주제에 따른 대화 소주제 랜덤 반환 ");
 
 		CardCode cardCode = Arrays.stream(CardCode.values())
@@ -32,9 +35,12 @@ public class CardServiceImpl {
 		return cardList.get(0).toCardResponseDto(languageCode);
 	}
 
-	public List<CardCodeResponseDto> getCardCodeList(){
+	@Override
+	public List<CardCodeResponseDto> getCardCodeList() {
 		log.info("CardService_getCardCodeList || 모든 대화 대주제 반환 ");
-		return Arrays.stream(CardCode.values()).map(cardCode -> cardCode.toCardCodeResponseDto()).collect(Collectors.toList());
+		return Arrays.stream(CardCode.values())
+			.map(cardCode -> cardCode.toCardCodeResponseDto())
+			.collect(Collectors.toList());
 	}
 }
 

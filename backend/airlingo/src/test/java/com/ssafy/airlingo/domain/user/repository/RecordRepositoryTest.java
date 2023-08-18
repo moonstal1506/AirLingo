@@ -13,6 +13,7 @@
 // import com.ssafy.airlingo.domain.language.repository.LanguageRepository;
 // import com.ssafy.airlingo.domain.language.repository.UserLanguageRepository;
 // import com.ssafy.airlingo.domain.study.entity.Study;
+// import com.ssafy.airlingo.domain.study.entity.Study;
 // import com.ssafy.airlingo.domain.study.repository.StudyRepository;
 // import com.ssafy.airlingo.domain.user.entity.User;
 // import com.ssafy.airlingo.domain.user.entity.UserState;

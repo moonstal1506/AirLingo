@@ -1,5 +1,6 @@
 package com.ssafy.airlingo.domain.user.entity;
 
+import com.ssafy.airlingo.domain.user.dto.response.DailyGridResponseDto;
 import com.ssafy.airlingo.global.entity.BaseTimeEntity;
 
 import jakarta.persistence.Column;
@@ -33,5 +34,18 @@ public class DailyGrid extends BaseTimeEntity {
 	private User user;
 
 	@Column(nullable = false)
-	private int dailyGridTotalTime;
+	private int dailyGridCount;
+
+	public DailyGridResponseDto toDto() {
+		return DailyGridResponseDto.builder()
+			.userId(this.getUser().getUserId())
+			.dailyGridId(this.getDailyGridId())
+			.dailyGridCount(this.getDailyGridCount())
+			.createdDate(this.getCreatedDate())
+			.build();
+	}
+
+	public void update() {
+		dailyGridCount += 1;
+	}
 }

@@ -1,5 +1,7 @@
 package com.ssafy.airlingo.domain.language.entity;
 
+import com.ssafy.airlingo.domain.language.dto.response.LanguageDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -10,7 +12,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
 @Builder
 @Getter
@@ -22,12 +23,23 @@ public class Language {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer languageId;
+	private Long languageId;
 
 	@Column(nullable = false, unique = true, length = 50)
-	private String languageName;
+	private String languageKorName;
 
-	public Language(String languageName) {
-		this.languageName = languageName;
+	@Column(nullable = false, unique = true, length = 50)
+	private String languageEngName;
+
+	@Column(nullable = false, unique = true)
+	private String imageUrl;
+
+	public LanguageDto toLanguageDto() {
+		return LanguageDto.builder()
+			.languageId(languageId)
+			.languageKorName(languageKorName)
+			.languageEngName(languageEngName)
+			.imageUrl(imageUrl)
+			.build();
 	}
 }

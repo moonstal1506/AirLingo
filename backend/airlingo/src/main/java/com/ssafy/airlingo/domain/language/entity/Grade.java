@@ -1,12 +1,18 @@
 package com.ssafy.airlingo.domain.language.entity;
 
+import com.ssafy.airlingo.domain.language.dto.response.GradeDto;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 @Builder
 @Getter
@@ -19,12 +25,28 @@ public class Grade {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Integer gradeId;
+	private Long gradeId;
 
 	@Column(nullable = false, unique = true, length = 100)
 	private String gradeName;
 
-	public Grade(String gradeName) {
+	@Column(nullable = false, unique = true, length = 100)
+	private String gradeKorName;
+
+	@Column(nullable = false)
+	private int gradeScore;
+
+	public Grade(String gradeName, String gradeKorName, int gradeScore) {
 		this.gradeName = gradeName;
+		this.gradeKorName = gradeKorName;
+		this.gradeScore = gradeScore;
+	}
+
+	public GradeDto toGradeDto() {
+		return GradeDto.builder()
+			.gradeId(gradeId)
+			.gradeName(gradeName)
+			.gradeKorName(gradeKorName)
+			.build();
 	}
 }
