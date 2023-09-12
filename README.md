@@ -58,7 +58,7 @@
 ## 🔑 주요 기능
 
 <img src="https://github.com/CalenDev/calendev/assets/60723373/05033195-1a44-43ce-8ae2-df2de2a84bbb" alt="주요기능"/>
-<img src="https://github.com/CalenDev/calendev/assets/60723373/5736a608-2b4d-4365-add3-59a62590345f" alt="주요기능"/>
+<img src="https://github.com/moonstal1506/AirLingo/assets/96678352/0445ad35-17b7-4eb4-b88d-5c7fbb762c14" alt="주요기능"/>
 
 
 ---
