@@ -16,33 +16,33 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 @Configuration
 public class RabbitMqConfig {
 
-	@Bean
-	public DirectExchange directExchange() {
-		return new DirectExchange("matching.exchange");
-	}
+    @Bean
+    public DirectExchange directExchange() {
+        return new DirectExchange("matching.exchange");
+    }
 
-	@Bean
-	public Queue queue() {
-		return new Queue("matching.queue");
-	}
+    @Bean
+    public Queue queue() {
+        return new Queue("matching.queue");
+    }
 
-	@Bean
-	public Binding binding(DirectExchange directExchange, Queue queue) {
-		return BindingBuilder.bind(queue).to(directExchange).with("matching.key");
-	}
+    @Bean
+    public Binding binding(DirectExchange directExchange, Queue queue) {
+        return BindingBuilder.bind(queue).to(directExchange).with("matching.key");
+    }
 
-	@Bean
-	public RabbitTemplate rabbitTemplate(
-		ConnectionFactory connectionFactory,
-		MessageConverter messageConverter
-	) {
-		var rabbitTemplate = new RabbitTemplate(connectionFactory);
-		rabbitTemplate.setMessageConverter(messageConverter);
-		return rabbitTemplate;
-	}
+    @Bean
+    public RabbitTemplate rabbitTemplate(
+            ConnectionFactory connectionFactory,
+            MessageConverter messageConverter
+    ) {
+        var rabbitTemplate = new RabbitTemplate(connectionFactory);
+        rabbitTemplate.setMessageConverter(messageConverter);
+        return rabbitTemplate;
+    }
 
-	@Bean
-	public MessageConverter messageConverter(ObjectMapper objectMapper) {
-		return new Jackson2JsonMessageConverter(objectMapper);
-	}
+    @Bean
+    public MessageConverter messageConverter(ObjectMapper objectMapper) {
+        return new Jackson2JsonMessageConverter(objectMapper);
+    }
 }

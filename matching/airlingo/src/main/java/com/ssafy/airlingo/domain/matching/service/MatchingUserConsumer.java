@@ -13,11 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class MatchingUserConsumer {
 
-	private final MatchingService matchingService;
+    private final MatchingService matchingService;
 
-	@RabbitListener(queues = "matching.queue")
-	public void matchingUserConsumer(MatchingUserDto matchingRequestDto) {
-		log.info("matchingUserConsumer: {}", matchingRequestDto);
-		matchingService.add(matchingRequestDto);
-	}
+    @RabbitListener(queues = "matching.queue")
+    public void matchingUserConsumer(MatchingUserDto matchingRequestDto) {
+        log.info("matchingUserConsumer: {}", matchingRequestDto);
+        matchingService.add(matchingRequestDto);
+    }
 }

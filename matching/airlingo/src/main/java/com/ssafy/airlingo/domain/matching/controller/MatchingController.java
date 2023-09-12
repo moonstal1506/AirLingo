@@ -20,9 +20,9 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @ApiResponses({
-	@ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
-	@ApiResponse(responseCode = "400", description = "응답이 실패하였습니다.",
-		content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
+        @ApiResponse(responseCode = "200", description = "응답이 성공적으로 반환되었습니다."),
+        @ApiResponse(responseCode = "400", description = "응답이 실패하였습니다.",
+                content = @Content(schema = @Schema(implementation = ResponseResult.class)))})
 @Slf4j
 @Tag(name = "Matching Controller", description = "매칭 관련 컨트롤러")
 @RequiredArgsConstructor
@@ -30,21 +30,21 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/matching")
 public class MatchingController {
 
-	private final MatchingService matchingService;
+    private final MatchingService matchingService;
 
-	@Operation(summary = "Waiting Users size", description = "실시간 매칭중인 유저수")
-	@GetMapping("/waiting-users")
-	public ResponseResult countWaitingUsers() {
-		int waitingUserSize = matchingService.countWaitingUsers();
-		log.info("MatchingController_countWaitingUsers : {}", waitingUserSize);
-		return new SingleResponseResult<>(waitingUserSize);
-	}
+    @Operation(summary = "Waiting Users size", description = "실시간 매칭중인 유저수")
+    @GetMapping("/waiting-users")
+    public ResponseResult countWaitingUsers() {
+        int waitingUserSize = matchingService.countWaitingUsers();
+        log.info("MatchingController_countWaitingUsers : {}", waitingUserSize);
+        return new SingleResponseResult<>(waitingUserSize);
+    }
 
-	@Operation(summary = "Cancel matching", description = "매칭 취소")
-	@GetMapping("/cancel/{userId}")
-	public ResponseResult cancelMatching(@PathVariable Long userId) {
-		log.info("MatchingController_cancelMatching");
-		matchingService.cancelMatching(userId);
-		return ResponseResult.successResponse;
-	}
+    @Operation(summary = "Cancel matching", description = "매칭 취소")
+    @GetMapping("/cancel/{userId}")
+    public ResponseResult cancelMatching(@PathVariable Long userId) {
+        log.info("MatchingController_cancelMatching");
+        matchingService.cancelMatching(userId);
+        return ResponseResult.successResponse;
+    }
 }

@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Schema(description = "매칭실패한 유저들 정보")
 public class MatchingFailResponseDto {
 
-	@NotNull
-	@Schema(description = "매칭 실패한 유저들 정보")
-	private List<MatchingUserDto> matchingFailUserList;
+    @NotNull
+    @Schema(description = "매칭 실패한 유저들 정보")
+    private List<MatchingUserDto> matchingFailUserList;
 }

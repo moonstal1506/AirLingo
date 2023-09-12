@@ -14,11 +14,11 @@ import lombok.NoArgsConstructor;
 @Schema(description = "매칭된 유저 정보")
 public class MatchingResponseDto {
 
-	@NotNull
-	@Schema(description = "매칭된 유저1 정보")
-	private MatchingUserDto user1;
+    @NotNull
+    @Schema(description = "매칭된 유저1 정보")
+    private MatchingUserDto user1;
 
-	@NotNull
-	@Schema(description = "매칭된 유저2 정보")
-	private MatchingUserDto user2;
+    @NotNull
+    @Schema(description = "매칭된 유저2 정보")
+    private MatchingUserDto user2;
 }

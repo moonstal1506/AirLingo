@@ -5,11 +5,11 @@ import lombok.Getter;
 @Getter
 public class SingleResponseResult<T> extends ResponseResult {
 
-	private T data;
+    private T data;
 
-	public SingleResponseResult(T data) {
-		super(successResponse.statusCode, successResponse.messages, successResponse.developerMessage,
-			successResponse.timestamp);
-		this.data = data;
-	}
+    public SingleResponseResult(T data) {
+        super(successResponse.statusCode, successResponse.messages, successResponse.developerMessage,
+                successResponse.timestamp);
+        this.data = data;
+    }
 }
