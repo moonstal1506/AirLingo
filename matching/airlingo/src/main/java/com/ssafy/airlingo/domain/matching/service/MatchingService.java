@@ -49,8 +49,8 @@ public class MatchingService {
 
 				// 매칭 가능 유저 필터링
 				Optional<MatchingUserDto> matchingUserDto = matchingList.stream()
-					.filter(waitingUser -> isPossibleUser(matchingUser1, waitingUser))
-					.findFirst();
+																		.filter(waitingUser -> isPossibleUser(matchingUser1, waitingUser))
+																		.findFirst();
 
 				// 매칭 실패 대기열 재진입
 				if (!matchingUserDto.isPresent()) {
@@ -71,36 +71,33 @@ public class MatchingService {
 
 			//매칭 실패 COUNT가 3회 이상인 유저들에게 실패 메시지 전송
 			List<MatchingUserDto> finalFailUserList = matchingFailList.stream()
-				.filter(m -> m.getMatchingFailCount() >= 3)
-				.collect(Collectors.toList());
+																	  .filter(m -> m.getMatchingFailCount() >= 3)
+																	  .collect(Collectors.toList());
 
 			if(finalFailUserList.size() > 0)
 				sendFinalFailMatching(finalFailUserList);
 
 			matchingList.addAll(matchingFailList.stream()
-				.filter(m -> m.getMatchingFailCount() < 3)
-				.collect(Collectors.toList()));
+												.filter(m -> m.getMatchingFailCount() < 3)
+												.collect(Collectors.toList()));
 			matchingFailList = new LinkedList<>();
 		}
 	}
 
-	private boolean isPossibleUser(MatchingUserDto matchingUser, MatchingUserDto waitingUser) {
+	public boolean isPossibleUser(MatchingUserDto matchingUser, MatchingUserDto waitingUser) {
 		log.info("MatchingService_isPossibleUser matchingUser: {}, waitingUser: {}", matchingUser, waitingUser);
 		// 언어 필터링
 		if (!matchingUser.isMatchLanguage(waitingUser)) {
 			return false;
 		}
 		// 둘 중 한명이 프리미엄이면 상대방도 프리미엄이어야 한다.
-		if (waitingUser.isPremium()||matchingUser.isPremium()) {
-			return matchingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING)
-				&& waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
+		if (waitingUser.isPremium()) {
+			return matchingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
 		}
-		// 현재 매칭 유저만 프리미엄일 경우 상대만 프리미엄 기준을 통과하면 된다.
 		if (matchingUser.isPremium()) {
 			return waitingUser.isPossiblePremiumUser(PREMIUM_GRADE_SCORE, PREMIUM_USER_RATING);
 		}
 		// 조건없이 매칭
-		System.out.println("조건없이 매칭");
 		return true;
 	}
 
@@ -139,8 +136,8 @@ public class MatchingService {
 	public void cancelMatching(Long userId) {
 		synchronized (lock) {
 			matchingList= matchingList.stream().
-				filter(m -> !m.getUserId().equals(userId))
-				.collect(Collectors.toCollection(LinkedList::new));
+									  filter(m -> !m.getUserId().equals(userId))
+									  .collect(Collectors.toCollection(LinkedList::new));
 
 		}
 	}
